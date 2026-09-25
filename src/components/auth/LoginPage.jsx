@@ -17,9 +17,9 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
-export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 'admin' }) {
-  const [role, setRole] = useState(initialRole); // 'admin' | 'teacher' | 'student'
-  const [email, setEmail] = useState('admin@ilmhub.com');
+export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 'student' }) {
+  const [role, setRole] = useState(initialRole === 'admin' ? 'student' : initialRole); // 'student' | 'teacher' | 'admin'
+  const [email, setEmail] = useState('student@ilmhub.com');
   const [password, setPassword] = useState('••••••••••••');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -30,12 +30,12 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
   // Handle role switch and update default credentials
   const handleRoleChange = (newRole) => {
     setRole(newRole);
-    if (newRole === 'admin') {
-      setEmail('admin@ilmhub.com');
+    if (newRole === 'student') {
+      setEmail('student@ilmhub.com');
     } else if (newRole === 'teacher') {
       setEmail('ahmed.mohamed@ilmhub.com');
     } else {
-      setEmail('student@ilmhub.com');
+      setEmail('admin@ilmhub.com');
     }
   };
 
@@ -47,7 +47,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
       onLoginSuccess({
         role,
         email,
-        name: role === 'admin' ? 'Admin Portal' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk',
+        name: role === 'teacher' ? 'Ustadz Ahmed Mohamed' : role === 'admin' ? 'Admin Portal' : 'Omar Farouk',
       });
     }, 600);
   };
@@ -237,41 +237,69 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
               </p>
             </div>
 
-            {/* Role Switcher Tabs */}
-            <div className="bg-gray-100/90 p-1 rounded-xl flex items-center gap-1 mb-6">
-              <button
-                type="button"
-                onClick={() => handleRoleChange('admin')}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-center ${
-                  role === 'admin'
-                    ? 'bg-[#114B44] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRoleChange('teacher')}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-center ${
-                  role === 'teacher'
-                    ? 'bg-[#114B44] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Teacher
-              </button>
+            {/* Option 1: Dual Role Selector Visual Cards (Student vs Teacher) */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              
+              {/* Student Card */}
               <button
                 type="button"
                 onClick={() => handleRoleChange('student')}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-center ${
+                className={`p-3 rounded-2xl border-2 transition-all cursor-pointer text-left relative flex flex-col justify-between gap-2 ${
                   role === 'student'
-                    ? 'bg-[#114B44] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'border-[#114B44] bg-emerald-50/90 shadow-sm'
+                    : 'border-gray-200 hover:border-gray-300 bg-[#F8FAFC]'
                 }`}
               >
-                Student
+                <div className="flex items-center justify-between w-full">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                    role === 'student' ? 'bg-[#114B44] text-white shadow-xs' : 'bg-white text-gray-600 border border-gray-200'
+                  }`}>
+                    <GraduationCap className="w-4 h-4" />
+                  </div>
+                  {role === 'student' && (
+                    <CheckCircle2 className="w-4 h-4 text-[#114B44]" />
+                  )}
+                </div>
+                <div>
+                  <h4 className={`text-xs font-extrabold ${role === 'student' ? 'text-[#114B44]' : 'text-gray-900'}`}>
+                    Student
+                  </h4>
+                  <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
+                    Belajar & ruang live
+                  </p>
+                </div>
               </button>
+
+              {/* Teacher Card */}
+              <button
+                type="button"
+                onClick={() => handleRoleChange('teacher')}
+                className={`p-3 rounded-2xl border-2 transition-all cursor-pointer text-left relative flex flex-col justify-between gap-2 ${
+                  role === 'teacher'
+                    ? 'border-[#114B44] bg-emerald-50/90 shadow-sm'
+                    : 'border-gray-200 hover:border-gray-300 bg-[#F8FAFC]'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                    role === 'teacher' ? 'bg-[#114B44] text-white shadow-xs' : 'bg-white text-gray-600 border border-gray-200'
+                  }`}>
+                    <Users className="w-4 h-4" />
+                  </div>
+                  {role === 'teacher' && (
+                    <CheckCircle2 className="w-4 h-4 text-[#114B44]" />
+                  )}
+                </div>
+                <div>
+                  <h4 className={`text-xs font-extrabold ${role === 'teacher' ? 'text-[#114B44]' : 'text-gray-900'}`}>
+                    Teacher
+                  </h4>
+                  <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
+                    Kelola kelas & murid
+                  </p>
+                </div>
+              </button>
+
             </div>
 
             {/* Form */}
@@ -350,7 +378,9 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
                   <span className="inline-block w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 ) : (
                   <>
-                    <span>Sign In</span>
+                    <span>
+                      {role === 'teacher' ? 'Sign In as Teacher' : role === 'admin' ? 'Sign In as Admin' : 'Sign In as Student'}
+                    </span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -416,16 +446,28 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
             </div>
 
             {/* Footer Text */}
-            <p className="text-center text-xs text-gray-500 mt-6">
-              Don't have an account?{' '}
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); alert('Please contact admin@ilmhub.com to create your school account.'); }}
-                className="font-bold text-[#114B44] hover:underline"
-              >
-                Contact your administrator
-              </a>
-            </p>
+            <div className="text-center text-xs text-gray-500 mt-6 space-y-1.5">
+              <p>
+                Don't have an account?{' '}
+                <a
+                  href="#signup"
+                  onClick={(e) => { e.preventDefault(); alert('Registration portal: choose Student or Teacher account'); }}
+                  className="font-bold text-[#114B44] hover:underline cursor-pointer"
+                >
+                  Create an account
+                </a>
+              </p>
+              <p className="text-[11px] text-gray-400">
+                Are you an institution?{' '}
+                <a
+                  href="#admin"
+                  onClick={(e) => { e.preventDefault(); handleRoleChange('admin'); }}
+                  className="text-gray-500 hover:text-gray-700 underline"
+                >
+                  Admin Portal
+                </a>
+              </p>
+            </div>
 
           </div>
         </div>
