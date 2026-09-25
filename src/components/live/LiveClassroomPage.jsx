@@ -553,67 +553,67 @@ export default function LiveClassroomPage({
             </div>
           </div>
 
-          {/* B. PRESENTATION & WHITEBOARD BAR */}
-          <div className="h-10 bg-[#121829] border-b border-slate-800 px-4 flex items-center justify-between text-xs shrink-0">
-            {/* Left mode selector */}
-            <div className="flex items-center gap-1 sm:gap-2">
+          {/* B. PRESENTATION & WHITEBOARD BAR (Horizontal Single Line Scroll) */}
+          <div className="h-11 bg-[#121829] border-b border-slate-800 px-3 sm:px-4 flex items-center justify-between text-xs shrink-0 gap-2">
+            {/* Left mode selector: 1 horizontal line with smooth side-scrolling */}
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 flex-1 min-w-0">
               <button
                 onClick={() => setActiveBoardTab('whiteboard')}
-                className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeBoardTab === 'whiteboard'
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                 }`}
               >
                 Whiteboard
               </button>
               <button
                 onClick={() => setActiveBoardTab('screen')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeBoardTab === 'screen'
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                 }`}
               >
                 Screen Share
               </button>
               <button
                 onClick={() => setActiveBoardTab('presentation')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer hidden sm:inline ${
+                className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeBoardTab === 'presentation'
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                 }`}
               >
                 Presentation
               </button>
               <button
                 onClick={() => setActiveBoardTab('pdf')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer hidden md:inline ${
+                className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeBoardTab === 'pdf'
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                 }`}
               >
                 PDF
               </button>
               <button
                 onClick={() => setActiveBoardTab('youtube')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer hidden lg:inline ${
+                className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeBoardTab === 'youtube'
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                 }`}
               >
                 YouTube
               </button>
-              <button className="text-slate-400 hover:text-slate-200 px-1 py-1 cursor-pointer">
+              <button className="text-slate-400 hover:text-slate-200 px-2 py-1 rounded-lg hover:bg-slate-800/50 cursor-pointer whitespace-nowrap shrink-0">
                 More ▾
               </button>
             </div>
 
             {/* Right page controls & zoom */}
-            <div className="flex items-center gap-2 text-slate-400">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-slate-400 shrink-0 pl-1.5 border-l border-slate-800/80">
               <div className="flex items-center gap-1 bg-slate-800/80 px-2 py-0.5 rounded-lg">
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
