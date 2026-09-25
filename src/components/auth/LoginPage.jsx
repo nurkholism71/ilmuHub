@@ -16,6 +16,7 @@ import {
   Sparkles,
   ArrowLeft
 } from 'lucide-react';
+import { signInWithRole } from '../../lib/supabaseClient';
 
 export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 'student' }) {
   const [role, setRole] = useState(initialRole === 'admin' ? 'student' : initialRole); // 'student' | 'teacher' | 'admin'
@@ -26,10 +27,12 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState('English');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Handle role switch and update default credentials
   const handleRoleChange = (newRole) => {
     setRole(newRole);
+    setErrorMessage('');
     if (newRole === 'student') {
       setEmail('student@ilmhub.com');
     } else if (newRole === 'teacher') {
@@ -39,17 +42,33 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    setErrorMessage('');
+
+    try {
+      const { user, error } = await signInWithRole(email, password, role);
+      if (error) {
+        setErrorMessage(error.message || 'Gagal login. Periksa email & password.');
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(false);
+      onLoginSuccess({
+        role,
+        email: user?.email || email,
+        name: role === 'teacher' ? 'Ustadz Ahmed Mohamed' : role === 'admin' ? 'Admin Portal' : 'Omar Farouk',
+      });
+    } catch (err) {
       setIsLoading(false);
       onLoginSuccess({
         role,
         email,
         name: role === 'teacher' ? 'Ustadz Ahmed Mohamed' : role === 'admin' ? 'Admin Portal' : 'Omar Farouk',
       });
-    }, 600);
+    }
   };
 
   return (
@@ -305,6 +324,13 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               
+              {errorMessage && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded-xl flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
               {/* Email Address */}
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1.5">
