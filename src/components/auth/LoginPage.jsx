@@ -14,12 +14,15 @@ import {
   CheckCircle2,
   Layers,
   Sparkles,
-  ArrowLeft
+  ArrowLeft,
+  User
 } from 'lucide-react';
-import { signInWithRole } from '../../lib/supabaseClient';
+import { signInWithRole, signUpWithRole } from '../../lib/supabaseClient';
 
-export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 'student' }) {
+export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 'student', initialMode = 'signin' }) {
+  const [authMode, setAuthMode] = useState(initialMode); // 'signin' | 'signup'
   const [role, setRole] = useState(initialRole === 'admin' ? 'student' : initialRole); // 'student' | 'teacher' | 'admin'
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('student@ilmhub.com');
   const [password, setPassword] = useState('••••••••••••');
   const [showPassword, setShowPassword] = useState(false);
@@ -28,17 +31,50 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
   const [currentLang, setCurrentLang] = useState('English');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Handle role switch and update default credentials
   const handleRoleChange = (newRole) => {
     setRole(newRole);
     setErrorMessage('');
-    if (newRole === 'student') {
-      setEmail('student@ilmhub.com');
-    } else if (newRole === 'teacher') {
-      setEmail('ahmed.mohamed@ilmhub.com');
+    setSuccessMessage('');
+    if (authMode === 'signin') {
+      if (newRole === 'student') {
+        setEmail('student@ilmhub.com');
+        setPassword('••••••••••••');
+      } else if (newRole === 'teacher') {
+        setEmail('ahmed.mohamed@ilmhub.com');
+        setPassword('••••••••••••');
+      } else {
+        setEmail('admin@ilmhub.com');
+        setPassword('••••••••••••');
+      }
+    }
+  };
+
+  // Toggle between Sign In and Create Account
+  const switchAuthMode = (mode) => {
+    setAuthMode(mode);
+    setErrorMessage('');
+    setSuccessMessage('');
+    if (mode === 'signup') {
+      // Clear out demo values for a clean registration experience
+      setFullName('');
+      setEmail('');
+      setPassword('');
     } else {
-      setEmail('admin@ilmhub.com');
+      // Restore convenience demo credentials in Sign In mode
+      setFullName('');
+      if (role === 'student') {
+        setEmail('student@ilmhub.com');
+        setPassword('••••••••••••');
+      } else if (role === 'teacher') {
+        setEmail('ahmed.mohamed@ilmhub.com');
+        setPassword('••••••••••••');
+      } else {
+        setEmail('admin@ilmhub.com');
+        setPassword('••••••••••••');
+      }
     }
   };
 
@@ -46,7 +82,38 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
+    setSuccessMessage('');
 
+    if (authMode === 'signup') {
+      try {
+        const { user, error } = await signUpWithRole(email, password, fullName || (role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'), role);
+        if (error) {
+          setErrorMessage(error.message || 'Gagal mendaftar. Silakan coba lagi.');
+          setIsLoading(false);
+          return;
+        }
+
+        setIsLoading(false);
+        setSuccessMessage('Akun berhasil dibuat! Mengalihkan...');
+        setTimeout(() => {
+          onLoginSuccess({
+            role,
+            email: user?.email || email,
+            name: fullName || (role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+          });
+        }, 800);
+      } catch (err) {
+        setIsLoading(false);
+        onLoginSuccess({
+          role,
+          email,
+          name: fullName || (role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+        });
+      }
+      return;
+    }
+
+    // Sign In Mode
     try {
       const { user, error } = await signInWithRole(email, password, role);
       if (error) {
@@ -250,14 +317,18 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
                   <circle cx="12" cy="11" r="2" fill="currentColor" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-extrabold text-[#0F172A] tracking-tight">Welcome Back</h2>
+              <h2 className="text-2xl font-extrabold text-[#0F172A] tracking-tight">
+                {authMode === 'signup' ? 'Create Account' : 'Welcome Back'}
+              </h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-                Sign in to your IlmHub account
+                {authMode === 'signup' 
+                  ? 'Join IlmHub to start learning or teaching' 
+                  : 'Sign in to your IlmHub account'}
               </p>
             </div>
 
             {/* Option 1: Dual Role Selector Visual Cards (Student vs Teacher) */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-2 gap-3 mb-5">
               
               {/* Student Card */}
               <button
@@ -284,7 +355,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
                     Student
                   </h4>
                   <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
-                    Belajar & ruang live
+                    {authMode === 'signup' ? 'Register as student' : 'Learn & join live classes'}
                   </p>
                 </div>
               </button>
@@ -314,7 +385,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
                     Teacher
                   </h4>
                   <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
-                    Kelola kelas & murid
+                    {authMode === 'signup' ? 'Register as teacher' : 'Teach & manage classes'}
                   </p>
                 </div>
               </button>
@@ -322,18 +393,45 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               
               {errorMessage && (
-                <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded-xl flex items-center gap-2">
+                <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded-xl flex items-center gap-2 animate-fadeIn">
                   <span>⚠️</span>
                   <span>{errorMessage}</span>
                 </div>
               )}
 
+              {successMessage && (
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-3 py-2 rounded-xl flex items-center gap-2 animate-fadeIn">
+                  <span>✅</span>
+                  <span>{successMessage}</span>
+                </div>
+              )}
+
+              {/* Full Name (Only on Sign Up) */}
+              {authMode === 'signup' && (
+                <div className="animate-fadeIn">
+                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      required
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder={role === 'teacher' ? 'e.g. Ustadz Ahmed Mohamed' : 'e.g. Omar Farouk'}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:ring-1 focus:ring-[#114B44] transition-all font-medium"
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Email Address */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                <label className="block text-xs font-bold text-gray-700 mb-1">
                   Email Address
                 </label>
                 <div className="relative">
@@ -351,7 +449,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
 
               {/* Password */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                <label className="block text-xs font-bold text-gray-700 mb-1">
                   Password
                 </label>
                 <div className="relative">
@@ -361,7 +459,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder={authMode === 'signup' ? 'Create a secure password' : 'Enter your password'}
                     className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:ring-1 focus:ring-[#114B44] transition-all font-medium"
                   />
                   <button
@@ -374,38 +472,42 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
                 </div>
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center gap-2 cursor-pointer select-none text-gray-600">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#114B44] focus:ring-[#114B44] border-gray-300 accent-[#114B44]"
-                  />
-                  <span>Remember me</span>
-                </label>
-                <a
-                  href="#forgot"
-                  onClick={(e) => { e.preventDefault(); alert('Password reset link sent to ' + email); }}
-                  className="font-bold text-[#114B44] hover:underline"
-                >
-                  Forgot password?
-                </a>
-              </div>
+              {/* Remember Me & Forgot Password (Only on Sign In) */}
+              {authMode === 'signin' && (
+                <div className="flex items-center justify-between text-xs pt-0.5">
+                  <label className="flex items-center gap-2 cursor-pointer select-none text-gray-600">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 rounded text-[#114B44] focus:ring-[#114B44] border-gray-300 accent-[#114B44]"
+                    />
+                    <span>Remember me</span>
+                  </label>
+                  <a
+                    href="#forgot"
+                    onClick={(e) => { e.preventDefault(); setSuccessMessage('Password reset link has been sent to ' + email); }}
+                    className="font-bold text-[#114B44] hover:underline"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+              )}
 
-              {/* Sign In Button */}
+              {/* Sign In / Sign Up CTA Button */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold py-3 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer text-sm mt-2 disabled:opacity-75"
+                className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold py-3 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer text-sm mt-3 disabled:opacity-75"
               >
                 {isLoading ? (
                   <span className="inline-block w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 ) : (
                   <>
                     <span>
-                      {role === 'teacher' ? 'Sign In as Teacher' : role === 'admin' ? 'Sign In as Admin' : 'Sign In as Student'}
+                      {authMode === 'signup' 
+                        ? (role === 'teacher' ? 'Create Teacher Account' : 'Create Student Account')
+                        : (role === 'teacher' ? 'Sign In as Teacher' : role === 'admin' ? 'Sign In as Admin' : 'Sign In as Student')}
                     </span>
                     <ArrowRight className="w-4 h-4" />
                   </>
@@ -415,7 +517,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
             </form>
 
             {/* OR CONTINUE WITH */}
-            <div className="relative my-6 text-center">
+            <div className="relative my-5 text-center">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
@@ -451,8 +553,8 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
                 <svg className="w-4 h-4 shrink-0" viewBox="0 0 21 21">
                   <rect x="1" y="1" width="9" height="9" fill="#f25022" />
                   <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
-                  <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
-                  <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+                  <rect x="1" y="1" width="9" height="9" fill="#00a4ef" />
+                  <rect x="11" y="1" width="9" height="9" fill="#ffb900" />
                 </svg>
                 <span>Microsoft</span>
               </button>
@@ -471,17 +573,32 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
 
             </div>
 
-            {/* Footer Text */}
-            <div className="text-center text-xs text-gray-500 mt-6 space-y-1.5">
+            {/* Footer Text (Dynamic Sign In / Sign Up Link) */}
+            <div className="text-center text-xs text-gray-500 mt-5 space-y-1.5">
               <p>
-                Don't have an account?{' '}
-                <a
-                  href="#signup"
-                  onClick={(e) => { e.preventDefault(); alert('Registration portal: choose Student or Teacher account'); }}
-                  className="font-bold text-[#114B44] hover:underline cursor-pointer"
-                >
-                  Create an account
-                </a>
+                {authMode === 'signup' ? (
+                  <>
+                    Already have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => switchAuthMode('signin')}
+                      className="font-bold text-[#114B44] hover:underline cursor-pointer"
+                    >
+                      Sign In
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Don't have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => switchAuthMode('signup')}
+                      className="font-bold text-[#114B44] hover:underline cursor-pointer"
+                    >
+                      Create an account
+                    </button>
+                  </>
+                )}
               </p>
               <p className="text-[11px] text-gray-400">
                 Are you an institution?{' '}
