@@ -109,6 +109,37 @@ export default function App() {
     );
   }
 
+  // If on Fullscreen Role Dashboard view (with dedicated header + left sidebar + wide canvas)
+  if (currentTab === 'dashboard') {
+    if (currentUser?.role === 'admin') {
+      return (
+        <AdminDashboard
+          user={currentUser}
+          onNavigateToLive={handleJoinLive}
+          onBackToHome={() => setCurrentTab('home')}
+        />
+      );
+    } else if (currentUser?.role === 'teacher') {
+      return (
+        <TeacherDashboard
+          user={currentUser}
+          onStartLive={handleJoinLive}
+          onManageCourses={() => setCurrentTab('classes')}
+          onBackToHome={() => setCurrentTab('home')}
+        />
+      );
+    } else {
+      return (
+        <StudentDashboard
+          user={currentUser}
+          onJoinLive={handleJoinLive}
+          onExploreCourses={() => setCurrentTab('classes')}
+          onBackToHome={() => setCurrentTab('home')}
+        />
+      );
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#FBFBF9] text-[#0F172A] flex flex-col font-sans">
       {/* Top Navigation */}
@@ -129,29 +160,9 @@ export default function App() {
         searchQuery={searchQuery}
       />
 
-      {/* Main Content: Render Role Dashboards, Universities Room, Free Classes Room, Classes Room, Tutors Room, Explore Room, or Home Landing */}
+      {/* Main Content: Render Universities Room, Free Classes Room, Classes Room, Tutors Room, Explore Room, or Home Landing */}
       <main className="flex-1">
-        {currentTab === 'dashboard' ? (
-          currentUser?.role === 'admin' ? (
-            <AdminDashboard
-              user={currentUser}
-              onNavigateToLive={handleJoinLive}
-              onBackToHome={() => setCurrentTab('home')}
-            />
-          ) : currentUser?.role === 'teacher' ? (
-            <TeacherDashboard
-              user={currentUser}
-              onStartLive={handleJoinLive}
-              onManageCourses={() => setCurrentTab('classes')}
-            />
-          ) : (
-            <StudentDashboard
-              user={currentUser}
-              onJoinLive={handleJoinLive}
-              onExploreCourses={() => setCurrentTab('classes')}
-            />
-          )
-        ) : currentTab === 'universities' ? (
+        {currentTab === 'universities' ? (
           <UniversityCoursesPage
             onSelectClass={setSelectedClass}
             onRequestCourse={() => setAuthModal({ open: true, mode: 'login' })}
