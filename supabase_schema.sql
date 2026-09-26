@@ -110,12 +110,23 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.live_sessions;
 -- 11. Automatic Profile Trigger on User Signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  assigned_role user_role;
 BEGIN
+  -- Restrict Admin role strictly to nurcholism51@gmail.com
+  IF LOWER(NEW.email) = 'nurcholism51@gmail.com' THEN
+    assigned_role := 'admin'::user_role;
+  ELSIF (NEW.raw_user_meta_data->>'role') = 'teacher' THEN
+    assigned_role := 'teacher'::user_role;
+  ELSE
+    assigned_role := 'student'::user_role;
+  END IF;
+
   INSERT INTO public.profiles (id, full_name, role, avatar_url)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', 'Student User'),
-    COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'student'::user_role),
+    COALESCE(NEW.raw_user_meta_data->>'full_name', CASE WHEN assigned_role = 'admin' THEN 'Super Admin (Nur Kholis)' WHEN assigned_role = 'teacher' THEN 'Teacher' ELSE 'Student User' END),
+    assigned_role,
     COALESCE(NEW.raw_user_meta_data->>'avatar_url', '/images/student_omar.jpg')
   );
   RETURN NEW;

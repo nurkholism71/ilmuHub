@@ -17,11 +17,11 @@ import {
   ArrowLeft,
   User
 } from 'lucide-react';
-import { signInWithRole, signUpWithRole } from '../../lib/supabaseClient';
+import { signInWithRole, signUpWithRole, ADMIN_EMAIL, isAdminEmail } from '../../lib/supabaseClient';
 
 export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 'student', initialMode = 'signin' }) {
   const [authMode, setAuthMode] = useState(initialMode); // 'signin' | 'signup'
-  const [role, setRole] = useState(initialRole === 'admin' ? 'student' : initialRole); // 'student' | 'teacher' | 'admin'
+  const [role, setRole] = useState(initialRole === 'admin' ? 'admin' : initialRole); // 'student' | 'teacher' | 'admin'
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('student@ilmhub.com');
   const [password, setPassword] = useState('••••••••••••');
@@ -45,8 +45,8 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
       } else if (newRole === 'teacher') {
         setEmail('ahmed.mohamed@ilmhub.com');
         setPassword('••••••••••••');
-      } else {
-        setEmail('admin@ilmhub.com');
+      } else if (newRole === 'admin') {
+        setEmail(ADMIN_EMAIL);
         setPassword('••••••••••••');
       }
     }
@@ -62,6 +62,10 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
       setFullName('');
       setEmail('');
       setPassword('');
+      // Admin cannot be registered via public signup - fallback to student if in admin mode
+      if (role === 'admin') {
+        setRole('student');
+      }
     } else {
       // Restore convenience demo credentials in Sign In mode
       setFullName('');
@@ -71,8 +75,8 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
       } else if (role === 'teacher') {
         setEmail('ahmed.mohamed@ilmhub.com');
         setPassword('••••••••••••');
-      } else {
-        setEmail('admin@ilmhub.com');
+      } else if (role === 'admin') {
+        setEmail(ADMIN_EMAIL);
         setPassword('••••••••••••');
       }
     }
@@ -83,6 +87,13 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
     setIsLoading(true);
     setErrorMessage('');
     setSuccessMessage('');
+
+    // Check admin restriction
+    if (role === 'admin' && !isAdminEmail(email)) {
+      setErrorMessage(`Akses Admin hanya diizinkan untuk email ${ADMIN_EMAIL}`);
+      setIsLoading(false);
+      return;
+    }
 
     if (authMode === 'signup') {
       try {
@@ -97,17 +108,17 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
         setSuccessMessage('Akun berhasil dibuat! Mengalihkan...');
         setTimeout(() => {
           onLoginSuccess({
-            role,
+            role: isAdminEmail(email) ? 'admin' : role,
             email: user?.email || email,
-            name: fullName || (role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+            name: fullName || (isAdminEmail(email) ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
           });
         }, 800);
       } catch (err) {
         setIsLoading(false);
         onLoginSuccess({
-          role,
+          role: isAdminEmail(email) ? 'admin' : role,
           email,
-          name: fullName || (role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+          name: fullName || (isAdminEmail(email) ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
         });
       }
       return;
@@ -124,16 +135,16 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
 
       setIsLoading(false);
       onLoginSuccess({
-        role,
+        role: isAdminEmail(email) ? 'admin' : role,
         email: user?.email || email,
-        name: role === 'teacher' ? 'Ustadz Ahmed Mohamed' : role === 'admin' ? 'Admin Portal' : 'Omar Farouk',
+        name: isAdminEmail(email) ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk',
       });
     } catch (err) {
       setIsLoading(false);
       onLoginSuccess({
-        role,
+        role: isAdminEmail(email) ? 'admin' : role,
         email,
-        name: role === 'teacher' ? 'Ustadz Ahmed Mohamed' : role === 'admin' ? 'Admin Portal' : 'Omar Farouk',
+        name: isAdminEmail(email) ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk',
       });
     }
   };
@@ -326,6 +337,23 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
                   : 'Sign in to your IlmHub account'}
               </p>
             </div>
+
+            {/* Admin Portal Indicator Badge if Role is Admin */}
+            {role === 'admin' && (
+              <div className="mb-4 bg-purple-50 border border-purple-200 text-purple-900 rounded-2xl p-3 flex items-center justify-between text-xs animate-fadeIn">
+                <div className="flex items-center gap-2 font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
+                  <span>Admin Portal Access (nurcholism51@gmail.com)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleRoleChange('student')}
+                  className="text-[11px] text-purple-700 hover:text-purple-900 font-bold underline cursor-pointer"
+                >
+                  Exit Admin
+                </button>
+              </div>
+            )}
 
             {/* Option 1: Dual Role Selector Visual Cards (Student vs Teacher) */}
             <div className="grid grid-cols-2 gap-3 mb-5">

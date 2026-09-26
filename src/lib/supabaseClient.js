@@ -17,18 +17,36 @@ export const isSupabaseConfigured =
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export const ADMIN_EMAIL = 'nurcholism51@gmail.com';
+
+export function isAdminEmail(email) {
+  return email?.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase();
+}
+
 /**
  * Authentication Helpers for IlmHub
  */
 export async function signInWithRole(email, password, role = 'student') {
+  // Validate that only nurcholism51@gmail.com can sign in as admin
+  if (role === 'admin' && !isAdminEmail(email)) {
+    return {
+      user: null,
+      error: { message: `Akses Admin hanya diizinkan untuk email ${ADMIN_EMAIL}` }
+    };
+  }
+
+  const effectiveRole = isAdminEmail(email) ? 'admin' : role;
+
   if (!isSupabaseConfigured) {
     // Mock successful authentication if Supabase is not yet connected
-    console.warn('Supabase not fully configured yet. Running in demo mode.');
     return {
       user: {
         id: 'demo-user-' + Date.now(),
         email,
-        user_metadata: { role, full_name: role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk' }
+        user_metadata: { 
+          role: effectiveRole, 
+          full_name: effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk' 
+        }
       },
       error: null
     };
@@ -43,12 +61,18 @@ export async function signInWithRole(email, password, role = 'student') {
 }
 
 export async function signUpWithRole(email, password, fullName, role = 'student') {
+  // Enforce admin role strictly to ADMIN_EMAIL
+  const effectiveRole = isAdminEmail(email) ? 'admin' : (role === 'admin' ? 'student' : role);
+
   if (!isSupabaseConfigured) {
     return {
       user: {
         id: 'demo-user-' + Date.now(),
         email,
-        user_metadata: { role, full_name: fullName }
+        user_metadata: { 
+          role: effectiveRole, 
+          full_name: effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : fullName 
+        }
       },
       error: null
     };
@@ -59,8 +83,8 @@ export async function signUpWithRole(email, password, fullName, role = 'student'
     password,
     options: {
       data: {
-        full_name: fullName,
-        role: role,
+        full_name: effectiveRole === 'admin' ? (fullName || 'Super Admin (Nur Kholis)') : fullName,
+        role: effectiveRole,
       }
     }
   });
