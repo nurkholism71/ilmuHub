@@ -1,15 +1,44 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Globe, Menu, X, Moon, Sun, ChevronDown, MoreHorizontal, GraduationCap, Radio, Gift, BookOpen, UserCheck, Compass } from 'lucide-react';
+import { 
+  Search, 
+  Globe, 
+  Menu, 
+  X, 
+  Moon, 
+  Sun, 
+  ChevronDown, 
+  MoreHorizontal, 
+  GraduationCap, 
+  Radio, 
+  Gift, 
+  BookOpen, 
+  UserCheck, 
+  Compass,
+  LayoutDashboard,
+  LogOut,
+  User,
+  ShieldCheck
+} from 'lucide-react';
 
-export default function Navbar({ activeTab = 'explore', onNavigate, onOpenAuth, onSearch, searchQuery }) {
+export default function Navbar({ 
+  activeTab = 'explore', 
+  onNavigate, 
+  onOpenAuth, 
+  onSearch, 
+  searchQuery, 
+  currentUser, 
+  onLogout 
+}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState('العربية');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const moreDropdownRef = useRef(null);
   const langDropdownRef = useRef(null);
+  const userDropdownRef = useRef(null);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -19,6 +48,9 @@ export default function Navbar({ activeTab = 'explore', onNavigate, onOpenAuth, 
       }
       if (langDropdownRef.current && !langDropdownRef.current.contains(e.target)) {
         setLangMenuOpen(false);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -251,21 +283,159 @@ export default function Navbar({ activeTab = 'explore', onNavigate, onOpenAuth, 
             {isDarkMode ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4" />}
           </button>
 
-          {/* Log In Button */}
-          <button
-            onClick={() => onOpenAuth('login')}
-            className="text-xs font-bold text-gray-700 hover:text-[#114B44] px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 transition-all cursor-pointer whitespace-nowrap shrink-0"
-          >
-            Log In
-          </button>
+          {/* Authenticated User Avatar & Dropdown OR Guest Login CTA */}
+          {currentUser ? (
+            <div className="relative" ref={userDropdownRef}>
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-gray-200 hover:border-[#114B44] bg-white hover:bg-emerald-50/50 transition-all cursor-pointer shadow-2xs"
+              >
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shrink-0">
+                  <img
+                    src={
+                      currentUser.role === 'teacher' 
+                        ? '/images/tutor_ahmed.jpg' 
+                        : currentUser.role === 'admin' 
+                        ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' 
+                        : '/images/student_omar.jpg'
+                    }
+                    alt={currentUser.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80';
+                    }}
+                  />
+                </div>
+                <div className="text-left hidden sm:block">
+                  <span className="block text-xs font-bold text-gray-900 leading-tight max-w-[120px] truncate">
+                    {currentUser.name}
+                  </span>
+                  <span className="block text-[10px] text-emerald-700 font-semibold uppercase tracking-wider -mt-0.5">
+                    {currentUser.role === 'admin' ? 'Super Admin' : currentUser.role === 'teacher' ? 'Teacher' : 'Student'}
+                  </span>
+                </div>
+                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-          {/* Get Started Button */}
-          <button
-            onClick={() => onOpenAuth('signup')}
-            className="text-xs font-bold bg-[#114B44] hover:bg-[#0d3b35] text-white px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-xs hover:shadow transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
-          >
-            Get Started
-          </button>
+              {/* User Dropdown Popup */}
+              {userMenuOpen && (
+                <div className="absolute right-0 mt-2 w-64 sm:w-72 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50 text-xs animate-fadeIn">
+                  
+                  {/* Profile Header */}
+                  <div className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl mb-2 flex items-center gap-3 border border-emerald-100">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shrink-0">
+                      <img
+                        src={
+                          currentUser.role === 'teacher' 
+                            ? '/images/tutor_ahmed.jpg' 
+                            : currentUser.role === 'admin' 
+                            ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' 
+                            : '/images/student_omar.jpg'
+                        }
+                        alt={currentUser.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-extrabold text-sm text-gray-900 truncate">{currentUser.name}</h4>
+                      <p className="text-[11px] text-gray-500 truncate font-mono">{currentUser.email}</p>
+                      <span className={`inline-block mt-1 text-[9px] font-extrabold px-2 py-0.5 rounded-full ${
+                        currentUser.role === 'admin' 
+                          ? 'bg-purple-100 text-purple-800' 
+                          : currentUser.role === 'teacher' 
+                          ? 'bg-emerald-100 text-[#114B44]' 
+                          : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        {currentUser.role === 'admin' ? '👑 Super Admin' : currentUser.role === 'teacher' ? '👨‍🏫 Teacher / Tutor' : '🎓 Student'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Menu Actions */}
+                  <div className="space-y-1">
+                    {/* Role-Specific Dashboard Button */}
+                    <button
+                      onClick={() => {
+                        onNavigate('dashboard');
+                        setUserMenuOpen(false);
+                      }}
+                      className="w-full text-left p-2.5 rounded-xl hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] font-bold flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#114B44] flex items-center justify-center shrink-0">
+                        <LayoutDashboard className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="block truncate">
+                          {currentUser.role === 'admin' 
+                            ? 'Super Admin Dashboard' 
+                            : currentUser.role === 'teacher' 
+                            ? 'Teacher Dashboard' 
+                            : 'Student Dashboard'}
+                        </span>
+                        <p className="text-[10px] text-gray-400 font-normal truncate">
+                          {currentUser.role === 'admin'
+                            ? 'Overview sistem, pengguna & mata kuliah'
+                            : currentUser.role === 'teacher'
+                            ? 'Kelola kelas, live & pendapatan EGP'
+                            : 'Kelas terdaftar, jadwal & sertifikat'}
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Live Room Button */}
+                    <button
+                      onClick={() => {
+                        onNavigate('live');
+                        setUserMenuOpen(false);
+                      }}
+                      className="w-full text-left p-2.5 rounded-xl hover:bg-red-50 text-gray-700 hover:text-red-700 font-bold flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                        <Radio className="w-4 h-4 animate-pulse" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="block truncate">Live Classroom</span>
+                        <p className="text-[10px] text-gray-400 font-normal truncate">Papan tulis interaktif & video live</p>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="my-1.5 border-t border-gray-100"></div>
+
+                  {/* Sign Out Button */}
+                  <button
+                    onClick={() => {
+                      onLogout();
+                      setUserMenuOpen(false);
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-red-50 text-red-600 font-bold flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              {/* Log In Button */}
+              <button
+                onClick={() => onOpenAuth('login')}
+                className="text-xs font-bold text-gray-700 hover:text-[#114B44] px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 transition-all cursor-pointer whitespace-nowrap shrink-0"
+              >
+                Log In
+              </button>
+
+              {/* Get Started Button */}
+              <button
+                onClick={() => onOpenAuth('signup')}
+                className="text-xs font-bold bg-[#114B44] hover:bg-[#0d3b35] text-white px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-xs hover:shadow transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
+              >
+                Get Started
+              </button>
+            </>
+          )}
 
           {/* Mobile hamburger menu button */}
           <button

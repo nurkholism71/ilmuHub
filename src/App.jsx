@@ -16,12 +16,15 @@ import FreeClassesPage from './components/freeclasses/FreeClassesPage';
 import UniversityCoursesPage from './components/university/UniversityCoursesPage';
 import LiveClassroomPage from './components/live/LiveClassroomPage';
 import LoginPage from './components/auth/LoginPage';
+import StudentDashboard from './components/dashboard/StudentDashboard';
+import TeacherDashboard from './components/dashboard/TeacherDashboard';
+import AdminDashboard from './components/dashboard/AdminDashboard';
 import ClassModal from './components/ClassModal';
 import TutorModal from './components/TutorModal';
 import AuthModal from './components/AuthModal';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState('live'); // Default to 'live' classroom room as requested!
+  const [currentTab, setCurrentTab] = useState('universities'); // Default tab
   const [previousTab, setPreviousTab] = useState('universities');
   const [selectedSubject, setSelectedSubject] = useState('nahwu');
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,9 +43,9 @@ export default function App() {
     if (course) {
       setActiveLiveCourse({
         title: course.title || 'Nahwu for Beginners',
-        tutor: course.tutor?.name || 'Ahmed Mohamed',
-        thumbnail: course.image || '/images/class_nahwu.jpg',
-        avatar: course.tutor?.avatar || '/images/tutor_ahmed.jpg'
+        tutor: course.tutor?.name || course.tutor || 'Ahmed Mohamed',
+        thumbnail: course.image || course.thumbnail || '/images/class_nahwu.jpg',
+        avatar: course.tutor?.avatar || course.avatar || '/images/tutor_ahmed.jpg'
       });
     }
     setPreviousTab(currentTab);
@@ -58,8 +61,14 @@ export default function App() {
 
   const handleLoginSuccess = (userData) => {
     setCurrentUser(userData);
-    // Directly enter live study room upon login as requested!
-    setCurrentTab('live');
+    // Direct user straight to their personalized dashboard according to role!
+    setCurrentTab('dashboard');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setCurrentTab('home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -105,6 +114,8 @@ export default function App() {
       {/* Top Navigation */}
       <Navbar
         activeTab={currentTab}
+        currentUser={currentUser}
+        onLogout={handleLogout}
         onNavigate={(tab) => {
           if (tab === 'login') {
             handleOpenLogin();
@@ -118,9 +129,29 @@ export default function App() {
         searchQuery={searchQuery}
       />
 
-      {/* Main Content: Render Universities Room, Free Classes Room, Classes Room, Tutors Room, Explore Room, or Home Landing */}
+      {/* Main Content: Render Role Dashboards, Universities Room, Free Classes Room, Classes Room, Tutors Room, Explore Room, or Home Landing */}
       <main className="flex-1">
-        {currentTab === 'universities' ? (
+        {currentTab === 'dashboard' ? (
+          currentUser?.role === 'admin' ? (
+            <AdminDashboard
+              user={currentUser}
+              onNavigateToLive={handleJoinLive}
+              onBackToHome={() => setCurrentTab('home')}
+            />
+          ) : currentUser?.role === 'teacher' ? (
+            <TeacherDashboard
+              user={currentUser}
+              onStartLive={handleJoinLive}
+              onManageCourses={() => setCurrentTab('classes')}
+            />
+          ) : (
+            <StudentDashboard
+              user={currentUser}
+              onJoinLive={handleJoinLive}
+              onExploreCourses={() => setCurrentTab('classes')}
+            />
+          )
+        ) : currentTab === 'universities' ? (
           <UniversityCoursesPage
             onSelectClass={setSelectedClass}
             onRequestCourse={() => setAuthModal({ open: true, mode: 'login' })}
