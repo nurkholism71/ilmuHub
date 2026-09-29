@@ -79,7 +79,13 @@ import {
   Send,
   ThumbsUp,
   MessageCircle,
-  Flag
+  Flag,
+  Camera,
+  CreditCard,
+  Palette,
+  AlertTriangle,
+  Cloud,
+  MapPin
 } from 'lucide-react';
 
 export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
@@ -1754,6 +1760,41 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     { id: 4, name: 'Ali Khan', completion: '85% completion', activities: '20 activities', avatar: '/images/student_ali.jpg' },
     { id: 5, name: 'Sara Nabilah', completion: '82% completion', activities: '18 activities', avatar: null, initials: 'SN', initialBg: 'bg-sky-100 text-sky-800' },
   ];
+
+  // =========================================================
+  // SETTINGS VIEW STATES (matching media_1790725068483.jpg)
+  // =========================================================
+  const [settingsActiveTab, setSettingsActiveTab] = useState('account'); // 'account' | 'profile' | 'notifications' | 'privacy' | 'payment' | 'appearance' | 'language' | 'integrations' | 'danger'
+  
+  const [accountForm, setAccountForm] = useState({
+    fullName: 'Ahmed Mohamed',
+    email: 'ahmed@example.com',
+    role: 'Teacher',
+    phone: '+20 123 456 7890',
+    timezone: '(GMT+2) Cairo',
+    language: 'English'
+  });
+
+  const [profileForm, setProfileForm] = useState({
+    avatar: '/images/tutor_ahmed.jpg',
+    cover: '/images/cairo_cover.jpg',
+    bio: 'Arabic & Nahwu tutor with 5+ years of experience. Passionate about making Arabic learning easy and engaging for all levels.',
+    website: 'https://ahmedtutor.com',
+    location: 'Cairo, Egypt',
+    youtube: 'https://youtube.com/@ahmed',
+    twitter: 'https://x.com/ahmed',
+    linkedin: 'https://linkedin.com/in/ahmed',
+    instagram: 'https://instagram.com/ahmed'
+  });
+
+  const [notificationToggles, setNotificationToggles] = useState({
+    newEnrollments: true,
+    messages: true,
+    assignmentSubmissions: true,
+    liveClassReminders: true,
+    reviewsFeedback: true,
+    marketingUpdates: false
+  });
 
   // Sidebar Items matching reference image
   const sidebarItems = [
@@ -9903,6 +9944,616 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       </div>
                     </div>
                   </div>
+                </div>
+
+              </div>
+
+            </div>
+          ) : activeNav === 'settings' ? (
+            /* ========================================================= */
+            /* VIEW: SETTINGS (MATCHING media_1790725068483.jpg)         */
+            /* ========================================================= */
+            <div className="space-y-5">
+              
+              {/* TOP HEADER: Icon, Title, and Subtitle */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <Settings className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Settings</h1>
+                    <p className="text-xs text-gray-500 font-medium">Kelola akun, preferensi, keamanan, dan pengaturan platform Anda.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* NAVIGATION TABS PILLS TOOLBAR */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {[
+                  { id: 'account', label: 'Account', icon: User },
+                  { id: 'profile', label: 'Profile', icon: UserCheck },
+                  { id: 'notifications', label: 'Notifications', icon: Bell },
+                  { id: 'privacy', label: 'Privacy', icon: Lock },
+                  { id: 'payment', label: 'Payment', icon: CreditCard },
+                  { id: 'appearance', label: 'Appearance', icon: Palette },
+                  { id: 'language', label: 'Language', icon: Globe },
+                  { id: 'integrations', label: 'Integrations', icon: Layers },
+                  { id: 'danger', label: 'Danger Zone', icon: AlertTriangle, isDanger: true },
+                ].map((tab) => {
+                  const isActive = settingsActiveTab === tab.id;
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setSettingsActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-2xs'
+                          : tab.isDanger
+                          ? 'bg-white hover:bg-rose-50 text-rose-600 border border-gray-200/80 shadow-2xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/80 shadow-2xs'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* MAIN 2-COLUMN GRID (Settings Forms + Right Sidebar) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                
+                {/* LEFT MAIN COLUMN: 3 Stacked Settings Cards (8 of 12 Cols) */}
+                <div className="lg:col-span-8 space-y-5">
+                  
+                  {/* CARD 1: Account Information */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Account Information</h3>
+                      <p className="text-[11px] text-gray-500 mt-0.5">Kelola informasi dasar akun Anda.</p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-start gap-5 pt-2">
+                      {/* Avatar with camera badge */}
+                      <div className="relative shrink-0 mx-auto sm:mx-0">
+                        <img
+                          src={profileForm.avatar}
+                          alt={accountForm.fullName}
+                          className="w-20 h-20 rounded-full object-cover border-2 border-gray-200 shadow-2xs"
+                          onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                        />
+                        <button
+                          onClick={() => alert('Pilih foto profil baru dari perangkat Anda...')}
+                          className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-[#114B44] text-white flex items-center justify-center shadow-md hover:bg-[#0D3B35] cursor-pointer"
+                          title="Change photo"
+                        >
+                          <Camera className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Fields 3x2 Grid */}
+                      <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-xs">
+                        {/* Full Name */}
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Full Name</label>
+                          <input
+                            type="text"
+                            value={accountForm.fullName}
+                            onChange={(e) => setAccountForm({ ...accountForm, fullName: e.target.value })}
+                            className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                          />
+                        </div>
+
+                        {/* Email Address */}
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Email Address</label>
+                          <div className="relative">
+                            <input
+                              type="email"
+                              value={accountForm.email}
+                              onChange={(e) => setAccountForm({ ...accountForm, email: e.target.value })}
+                              className="w-full bg-white border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                            />
+                            <Mail className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Role */}
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Role</label>
+                          <div className="relative">
+                            <select
+                              value={accountForm.role}
+                              onChange={(e) => setAccountForm({ ...accountForm, role: e.target.value })}
+                              className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-semibold text-gray-800 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            >
+                              <option>Teacher</option>
+                              <option>Student</option>
+                              <option>Admin</option>
+                            </select>
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Phone Number */}
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Phone Number</label>
+                          <div className="flex items-center bg-white border border-gray-200 rounded-xl overflow-hidden focus-within:border-[#114B44]">
+                            <span className="pl-3 pr-1 text-sm">🇪🇬</span>
+                            <input
+                              type="text"
+                              value={accountForm.phone}
+                              onChange={(e) => setAccountForm({ ...accountForm, phone: e.target.value })}
+                              className="w-full bg-transparent px-2 py-2 text-xs font-semibold text-gray-800 focus:outline-none"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Timezone */}
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Timezone</label>
+                          <div className="relative">
+                            <select
+                              value={accountForm.timezone}
+                              onChange={(e) => setAccountForm({ ...accountForm, timezone: e.target.value })}
+                              className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-semibold text-gray-800 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            >
+                              <option>(GMT+2) Cairo</option>
+                              <option>(GMT+3) Riyadh / Makkah</option>
+                              <option>(GMT+7) Jakarta / WIB</option>
+                              <option>(GMT+8) Kuala Lumpur</option>
+                              <option>(GMT+0) London / UTC</option>
+                            </select>
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Language */}
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Language</label>
+                          <div className="relative">
+                            <select
+                              value={accountForm.language}
+                              onChange={(e) => setAccountForm({ ...accountForm, language: e.target.value })}
+                              className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-semibold text-gray-800 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            >
+                              <option>English</option>
+                              <option>العربية (Arabic)</option>
+                              <option>Bahasa Indonesia</option>
+                            </select>
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => alert('Perubahan informasi akun berhasil disimpan!')}
+                        className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Profile Settings */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Profile Settings</h3>
+                      <p className="text-[11px] text-gray-500 mt-0.5">Kelola informasi profil publik Anda yang akan dilihat oleh siswa.</p>
+                    </div>
+
+                    {/* Dual Uploaders (Avatar & Cover Image) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                      
+                      {/* Avatar Uploader */}
+                      <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200/80">
+                        <img
+                          src={profileForm.avatar}
+                          alt="Avatar"
+                          className="w-12 h-12 rounded-full object-cover border border-gray-200 shrink-0"
+                          onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <button
+                            onClick={() => alert('Pilih foto baru...')}
+                            className="bg-white border border-gray-200 hover:bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+                          >
+                            <Camera className="w-3.5 h-3.5" />
+                            <span>Change Photo</span>
+                          </button>
+                          <p className="text-[9px] text-gray-400 mt-1">JPG, PNG or WEBP. Max 2MB.</p>
+                        </div>
+                      </div>
+
+                      {/* Cover Image Uploader */}
+                      <div className="relative rounded-xl overflow-hidden border border-gray-200/80 h-20 group">
+                        <img
+                          src={profileForm.cover}
+                          alt="Cover"
+                          className="w-full h-full object-cover"
+                          onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                        />
+                        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-2 text-center">
+                          <button
+                            onClick={() => alert('Pilih banner cover baru...')}
+                            className="bg-white/90 hover:bg-white text-gray-800 px-3 py-1 rounded-lg text-[10px] font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
+                          >
+                            <Camera className="w-3 h-3" />
+                            <span>Change Cover</span>
+                          </button>
+                          <p className="text-[8px] text-white/80 mt-1">Recommended size: 1200 x 300 px.</p>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Bio Field */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <label className="font-bold text-gray-700">Bio</label>
+                        <span className="text-[10px] text-gray-400">120/500</span>
+                      </div>
+                      <textarea
+                        rows={3}
+                        value={profileForm.bio}
+                        onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                        className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs text-gray-800 focus:outline-none focus:border-[#114B44] leading-relaxed resize-none"
+                      />
+                    </div>
+
+                    {/* Website & Location */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Website (Optional)</label>
+                        <div className="relative">
+                          <input
+                            type="url"
+                            value={profileForm.website}
+                            onChange={(e) => setProfileForm({ ...profileForm, website: e.target.value })}
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                          />
+                          <Link2 className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Location</label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={profileForm.location}
+                            onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                          />
+                          <MapPin className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Social Links (4 Grid) */}
+                    <div className="space-y-1.5 pt-1">
+                      <label className="block text-xs font-bold text-gray-700">Social Links (Optional)</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+                        {/* YouTube */}
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={profileForm.youtube}
+                            onChange={(e) => setProfileForm({ ...profileForm, youtube: e.target.value })}
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-8 pr-2.5 py-1.5 text-[11px] font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                          />
+                          <div className="w-4 h-4 rounded-full bg-red-600 text-white flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 text-[8px] font-black">
+                            ▶
+                          </div>
+                        </div>
+
+                        {/* Twitter/X */}
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={profileForm.twitter}
+                            onChange={(e) => setProfileForm({ ...profileForm, twitter: e.target.value })}
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-8 pr-2.5 py-1.5 text-[11px] font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                          />
+                          <div className="w-4 h-4 rounded-full bg-black text-white flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 text-[9px] font-black">
+                            𝕏
+                          </div>
+                        </div>
+
+                        {/* LinkedIn */}
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={profileForm.linkedin}
+                            onChange={(e) => setProfileForm({ ...profileForm, linkedin: e.target.value })}
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-8 pr-2.5 py-1.5 text-[11px] font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                          />
+                          <div className="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 text-[8px] font-black">
+                            in
+                          </div>
+                        </div>
+
+                        {/* Instagram */}
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={profileForm.instagram}
+                            onChange={(e) => setProfileForm({ ...profileForm, instagram: e.target.value })}
+                            className="w-full bg-white border border-gray-200 rounded-xl pl-8 pr-2.5 py-1.5 text-[11px] font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                          />
+                          <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 text-[8px] font-black">
+                            📷
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* CARD 3: Notification Settings */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Notification Settings</h3>
+                      <p className="text-[11px] text-gray-500 mt-0.5">Pilih notifikasi yang ingin Anda terima.</p>
+                    </div>
+
+                    {/* 2-Column Toggles Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                      
+                      {/* 1. New Enrollments */}
+                      <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <Users className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-gray-900 text-xs">New Enrollments</p>
+                            <p className="text-[10px] text-gray-400 truncate">Saat ada siswa baru mendaftar di kelas Anda</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setNotificationToggles(p => ({ ...p, newEnrollments: !p.newEnrollments }))}
+                          className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer shrink-0 ${
+                            notificationToggles.newEnrollments ? 'bg-[#114B44]' : 'bg-gray-300'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                            notificationToggles.newEnrollments ? 'translate-x-4' : 'translate-x-0'
+                          }`}></div>
+                        </button>
+                      </div>
+
+                      {/* 2. Messages */}
+                      <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                            <MessageSquare className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-gray-900 text-xs">Messages</p>
+                            <p className="text-[10px] text-gray-400 truncate">Saat ada pesan baru dari siswa</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setNotificationToggles(p => ({ ...p, messages: !p.messages }))}
+                          className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer shrink-0 ${
+                            notificationToggles.messages ? 'bg-[#114B44]' : 'bg-gray-300'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                            notificationToggles.messages ? 'translate-x-4' : 'translate-x-0'
+                          }`}></div>
+                        </button>
+                      </div>
+
+                      {/* 3. Assignment Submissions */}
+                      <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                            <FileText className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-gray-900 text-xs">Assignment Submissions</p>
+                            <p className="text-[10px] text-gray-400 truncate">Saat siswa mengumpulkan tugas</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setNotificationToggles(p => ({ ...p, assignmentSubmissions: !p.assignmentSubmissions }))}
+                          className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer shrink-0 ${
+                            notificationToggles.assignmentSubmissions ? 'bg-[#114B44]' : 'bg-gray-300'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                            notificationToggles.assignmentSubmissions ? 'translate-x-4' : 'translate-x-0'
+                          }`}></div>
+                        </button>
+                      </div>
+
+                      {/* 4. Live Class Reminders */}
+                      <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                            <Video className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-gray-900 text-xs">Live Class Reminders</p>
+                            <p className="text-[10px] text-gray-400 truncate">Pengingat sebelum kelas live dimulai</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setNotificationToggles(p => ({ ...p, liveClassReminders: !p.liveClassReminders }))}
+                          className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer shrink-0 ${
+                            notificationToggles.liveClassReminders ? 'bg-[#114B44]' : 'bg-gray-300'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                            notificationToggles.liveClassReminders ? 'translate-x-4' : 'translate-x-0'
+                          }`}></div>
+                        </button>
+                      </div>
+
+                      {/* 5. Reviews & Feedback */}
+                      <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                            <Star className="w-3.5 h-3.5 fill-amber-500" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-gray-900 text-xs">Reviews & Feedback</p>
+                            <p className="text-[10px] text-gray-400 truncate">Saat ada ulasan baru dari siswa</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setNotificationToggles(p => ({ ...p, reviewsFeedback: !p.reviewsFeedback }))}
+                          className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer shrink-0 ${
+                            notificationToggles.reviewsFeedback ? 'bg-[#114B44]' : 'bg-gray-300'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                            notificationToggles.reviewsFeedback ? 'translate-x-4' : 'translate-x-0'
+                          }`}></div>
+                        </button>
+                      </div>
+
+                      {/* 6. Marketing Updates */}
+                      <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-emerald-50 text-[#114B44] flex items-center justify-center shrink-0">
+                            <Megaphone className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-gray-900 text-xs">Marketing Updates</p>
+                            <p className="text-[10px] text-gray-400 truncate">Tips, fitur baru, dan informasi penting</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setNotificationToggles(p => ({ ...p, marketingUpdates: !p.marketingUpdates }))}
+                          className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer shrink-0 ${
+                            notificationToggles.marketingUpdates ? 'bg-[#114B44]' : 'bg-gray-300'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                            notificationToggles.marketingUpdates ? 'translate-x-4' : 'translate-x-0'
+                          }`}></div>
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: 4 Stacked Cards (4 of 12 Cols) */}
+                <div className="lg:col-span-4 space-y-4">
+                  
+                  {/* CARD 1: Account Status */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-2.5">
+                    <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">Account Status</h4>
+                    
+                    <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200/80 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-2xs shrink-0">
+                        <Check className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-emerald-950">Verified Teacher</p>
+                        <p className="text-[10px] text-emerald-800 mt-0.5 font-medium">Your account is verified and active.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Plan & Subscription */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">Plan & Subscription</h4>
+                    
+                    <div className="p-3.5 bg-gradient-to-br from-purple-50/80 to-indigo-50/80 rounded-xl border border-purple-100 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-2xs shrink-0">
+                          <Sparkles className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-black text-gray-900">Pro Teacher Plan</p>
+                          <p className="text-xs font-extrabold text-purple-700">$12.00 <span className="text-[10px] text-gray-500 font-normal">/ month</span></p>
+                          <p className="text-[9px] text-gray-400 mt-0.5">Access all premium features</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => alert('Membuka detail paket langganan pengajar...')}
+                      className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1"
+                    >
+                      <span>Manage Plan</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* CARD 3: Storage Usage */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider">Storage Usage</h4>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                        <Cloud className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-bold text-gray-800">1.2 GB <span className="text-[10px] text-gray-400 font-normal">of 10 GB used</span></span>
+                          <span className="font-black text-gray-900 text-[10px]">12%</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1.5">
+                          <div className="h-full bg-emerald-500 rounded-full w-[12%]"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => alert('Membuka opsi upgrade kuota cloud storage...')}
+                      className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      Upgrade Storage
+                    </button>
+                  </div>
+
+                  {/* CARD 4: Quick Actions */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-2">
+                    <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider px-1">Quick Actions</h4>
+
+                    <div className="space-y-1">
+                      {[
+                        { title: 'Download My Data', sub: 'Export your classes, students, and content', icon: Download, color: 'text-emerald-700 bg-emerald-50' },
+                        { title: 'Delete Account', sub: 'Permanently delete your account', icon: Trash2, color: 'text-rose-700 bg-rose-50' },
+                        { title: 'Help & Support', sub: 'Get help or contact support', icon: HelpCircle, color: 'text-blue-700 bg-blue-50' },
+                        { title: 'Terms of Service', sub: 'Read our terms and conditions', icon: FileText, color: 'text-emerald-700 bg-emerald-50' },
+                        { title: 'Privacy Policy', sub: 'Learn how we protect your data', icon: ShieldCheck, color: 'text-sky-700 bg-sky-50' },
+                      ].map((item, idx) => {
+                        const Icon = item.icon;
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => alert(`Aksi: ${item.title}`)}
+                            className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors group"
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className={`w-7 h-7 rounded-lg ${item.color} flex items-center justify-center shrink-0`}>
+                                <Icon className="w-3.5 h-3.5" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-bold text-gray-900 text-[11px] truncate group-hover:text-[#114B44] transition-colors">{item.title}</p>
+                                <p className="text-[9px] text-gray-400 truncate">{item.sub}</p>
+                              </div>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-700 transition-colors shrink-0" />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
