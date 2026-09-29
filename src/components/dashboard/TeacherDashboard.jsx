@@ -76,7 +76,10 @@ import {
   Phone,
   Paperclip,
   Smile,
-  Send
+  Send,
+  ThumbsUp,
+  MessageCircle,
+  Flag
 } from 'lucide-react';
 
 export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
@@ -1552,6 +1555,162 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
       isGroup: true,
       stats: { classes: 4, avgScore: '80%', certificates: 48 },
       messages: []
+    }
+  ]);
+
+  // =========================================================
+  // REVIEWS VIEW STATES & DATA (matching media_1790724440982.jpg)
+  // =========================================================
+  const [reviewTabFilter, setReviewTabFilter] = useState('all'); // 'all' (128) | 'published' (120) | 'pending' (5) | 'reported' (3)
+  const [reviewClassFilter, setReviewClassFilter] = useState('All Classes');
+  const [reviewRatingFilter, setReviewRatingFilter] = useState('All Ratings');
+  const [reviewStatusFilter, setReviewStatusFilter] = useState('All Status');
+  const [reviewSearchQuery, setReviewSearchQuery] = useState('');
+  const [reviewSortOrder, setReviewSortOrder] = useState('Newest First');
+  const [reviewsCurrentPage, setReviewsCurrentPage] = useState(1);
+  const [isRequestReviewModalOpen, setIsRequestReviewModalOpen] = useState(false);
+  const [selectedReviewForReply, setSelectedReviewForReply] = useState(null);
+  const [replyInputText, setReplyInputText] = useState('');
+  const [selectedReviewDetailModal, setSelectedReviewDetailModal] = useState(null);
+
+  const [reviewsList, setReviewsList] = useState([
+    {
+      id: 'rev-1',
+      studentName: 'Aisha Rahman',
+      avatar: '/images/student_aisha.jpg',
+      date: '25 Sep 2026',
+      rating: 5,
+      className: 'Nahwu for Beginners',
+      classTagColor: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+      comment: 'Penjelasan sangat jelas dan mudah dipahami. Ustadz menjelaskan dengan sabar dan memberikan contoh yang relevan. Alhamdulillah sangat membantu.',
+      status: 'Published',
+      replies: [
+        {
+          id: 'rep-1',
+          author: 'Ahmed Mohamed',
+          role: 'Teacher',
+          date: '25 Sep 2026',
+          text: "Alhamdulillah, barakallahu fiik Aisha. Tetap semangat mengulang kaidah bab Fa'il dan Maf'ul Bih ya!"
+        }
+      ]
+    },
+    {
+      id: 'rev-2',
+      studentName: 'Omar Hassan',
+      avatar: '/images/student_omar.jpg',
+      date: '24 Sep 2026',
+      rating: 5,
+      className: 'Sharaf Basic',
+      classTagColor: 'bg-purple-50 text-purple-700 border-purple-100',
+      comment: 'Kelasnya terstruktur dan materi disampaikan dengan baik. Banyak latihan soal sehingga lebih mudah memahami. Jazakum Allahu khairan.',
+      status: 'Published',
+      replies: []
+    },
+    {
+      id: 'rev-3',
+      studentName: 'Fatimah Zahra',
+      avatar: '/images/student_fatimah.jpg',
+      date: '22 Sep 2026',
+      rating: 4,
+      className: 'Arabic Conversation',
+      classTagColor: 'bg-blue-50 text-blue-700 border-blue-100',
+      comment: 'Materinya bagus, tapi mungkin bisa lebih banyak praktik percakapan di kelas live. Secara keseluruhan sangat bermanfaat.',
+      status: 'Published',
+      replies: []
+    },
+    {
+      id: 'rev-4',
+      studentName: 'Sara Nabilah',
+      avatar: null,
+      initials: 'SN',
+      initialBg: 'bg-sky-100 text-sky-800',
+      date: '20 Sep 2026',
+      rating: 5,
+      className: 'Quran Tajweed',
+      classTagColor: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+      comment: "Ustadz sangat sabar dan cara mengajarnya mudah dipahami. Saya jadi lebih percaya diri membaca Al-Qur'an dengan tajwid yang benar.",
+      status: 'Published',
+      replies: []
+    },
+    {
+      id: 'rev-5',
+      studentName: 'Ali Khan',
+      avatar: '/images/student_ali.jpg',
+      date: '18 Sep 2026',
+      rating: 5,
+      className: 'Academic Writing',
+      classTagColor: 'bg-amber-50 text-amber-700 border-amber-100',
+      comment: 'Materi sangat lengkap dan contoh-contohnya jelas. Tugas dan feedback membantu saya meningkatkan kemampuan menulis dalam bahasa Arab.',
+      status: 'Published',
+      replies: []
+    },
+    {
+      id: 'rev-6',
+      studentName: 'Hasan Ali',
+      avatar: null,
+      initials: 'HA',
+      initialBg: 'bg-emerald-100 text-emerald-800',
+      date: '16 Sep 2026',
+      rating: 5,
+      className: 'Nahwu for Beginners',
+      classTagColor: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+      comment: 'Penjelasan tabel tashrif dan skema bagan nahwu sangat sistematis. Rekaman kelas juga sangat membantu pengulangan mandiri.',
+      status: 'Published',
+      replies: []
+    },
+    {
+      id: 'rev-7',
+      studentName: 'Layla Ahmad',
+      avatar: '/images/student_layla.jpg',
+      date: '14 Sep 2026',
+      rating: 4,
+      className: 'Arabic Conversation',
+      classTagColor: 'bg-blue-50 text-blue-700 border-blue-100',
+      comment: 'Sesi dialog interaktif 2 arah membuat santri tidak takut salah berbicara dalam bahasa fusha.',
+      status: 'Published',
+      replies: []
+    },
+    {
+      id: 'rev-8',
+      studentName: 'Tariq Ziyad',
+      avatar: null,
+      initials: 'TZ',
+      initialBg: 'bg-indigo-100 text-indigo-800',
+      date: '12 Sep 2026',
+      rating: 5,
+      className: 'Sharaf Basic',
+      classTagColor: 'bg-purple-50 text-purple-700 border-purple-100',
+      comment: 'Ustadz sangat menguasai materi dan selalu memberikan kuis cepat di akhir pertemuan untuk menguji pemahaman.',
+      status: 'Published',
+      replies: []
+    },
+    {
+      id: 'rev-9',
+      studentName: 'Maryam Basyir',
+      avatar: null,
+      initials: 'MB',
+      initialBg: 'bg-pink-100 text-pink-800',
+      date: '10 Sep 2026',
+      rating: 5,
+      className: 'Quran Tajweed',
+      classTagColor: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+      comment: 'Bimbingan privat makhraj huruf sangat teliti. Menunggu persetujuan moderasi.',
+      status: 'Pending',
+      replies: []
+    },
+    {
+      id: 'rev-10',
+      studentName: 'Bilal Ibrahim',
+      avatar: null,
+      initials: 'BI',
+      initialBg: 'bg-rose-100 text-rose-800',
+      date: '08 Sep 2026',
+      rating: 2,
+      className: 'Academic Writing',
+      classTagColor: 'bg-amber-50 text-amber-700 border-amber-100',
+      comment: 'Koneksi audio sempat terputus pada pertemuan ke-3, mohon periksa mikrofon.',
+      status: 'Reported',
+      replies: []
     }
   ]);
 
@@ -8254,6 +8413,589 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
             </div>
+          ) : activeNav === 'reviews' ? (
+            /* ========================================================= */
+            /* VIEW: REVIEWS (MATCHING media_1790724440982.jpg)          */
+            /* ========================================================= */
+            <div className="space-y-5">
+              
+              {/* TOP HEADER: Icon, Title, Subtitle, and Request Review Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <Star className="w-5 h-5 fill-white text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Reviews</h1>
+                    <p className="text-xs text-gray-500 font-medium">Lihat ulasan dari siswa, kelola feedback, dan tingkatkan kualitas kelas Anda.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => setIsRequestReviewModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Request Review</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* TABS FILTER PILLS */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {[
+                  { id: 'all', label: 'All Reviews', count: 128 },
+                  { id: 'published', label: 'Published', count: 120 },
+                  { id: 'pending', label: 'Pending', count: 5, badgeColor: 'bg-rose-500 text-white' },
+                  { id: 'reported', label: 'Reported', count: 3, badgeColor: 'bg-indigo-600 text-white' },
+                ].map((tab) => {
+                  const isActive = reviewTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setReviewTabFilter(tab.id)}
+                      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-2xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/80 shadow-2xs'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      {tab.count !== undefined && (
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                          isActive ? 'bg-white/20 text-white' : tab.badgeColor || 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {tab.count}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* FILTER & SEARCH TOOLBAR */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-0">
+                  
+                  {/* Select Class */}
+                  <div className="relative">
+                    <select
+                      value={reviewClassFilter}
+                      onChange={(e) => setReviewClassFilter(e.target.value)}
+                      className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer"
+                    >
+                      <option>All Classes</option>
+                      <option>Nahwu for Beginners</option>
+                      <option>Sharaf Basic</option>
+                      <option>Arabic Conversation</option>
+                      <option>Quran Tajweed</option>
+                      <option>Academic Writing</option>
+                      <option>Fiqh Ibadah</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Select Rating */}
+                  <div className="relative">
+                    <select
+                      value={reviewRatingFilter}
+                      onChange={(e) => setReviewRatingFilter(e.target.value)}
+                      className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer"
+                    >
+                      <option>All Ratings</option>
+                      <option value="5">5 Stars (★★★★★)</option>
+                      <option value="4">4 Stars (★★★★☆)</option>
+                      <option value="3">3 Stars (★★★☆☆)</option>
+                      <option value="2">2 Stars (★★☆☆☆)</option>
+                      <option value="1">1 Star (★☆☆☆☆)</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Select Status */}
+                  <div className="relative">
+                    <select
+                      value={reviewStatusFilter}
+                      onChange={(e) => setReviewStatusFilter(e.target.value)}
+                      className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer"
+                    >
+                      <option>All Status</option>
+                      <option>Published</option>
+                      <option>Pending</option>
+                      <option>Reported</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Search Input */}
+                  <div className="relative flex-1 min-w-[180px]">
+                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={reviewSearchQuery}
+                      onChange={(e) => setReviewSearchQuery(e.target.value)}
+                      placeholder="Search reviews..."
+                      className="w-full bg-gray-50/80 border border-gray-200/80 rounded-xl pl-8 pr-3 py-1.5 text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Sort dropdown */}
+                <div className="relative shrink-0">
+                  <select
+                    value={reviewSortOrder}
+                    onChange={(e) => setReviewSortOrder(e.target.value)}
+                    className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none cursor-pointer"
+                  >
+                    <option>Newest First</option>
+                    <option>Highest Rating</option>
+                    <option>Lowest Rating</option>
+                    <option>Oldest First</option>
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* MAIN REVIEWS CANVAS: 2-Column Grid (Main Reviews Feed + Right Sidebar) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                
+                {/* LEFT COLUMN: 4 Summary Cards + Reviews List (8 of 12 Cols) */}
+                <div className="lg:col-span-8 space-y-5">
+                  
+                  {/* 4 SUMMARY METRIC CARDS */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                    
+                    {/* Card 1: Average Rating */}
+                    <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                        <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xl font-black text-gray-900 leading-none">4.9</span>
+                          <div className="flex text-amber-400 text-xs">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                              <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-[10px] font-medium text-gray-400 mt-1 truncate">Average Rating</p>
+                        <p className="text-[9px] text-gray-400">from 128 reviews</p>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Total Students */}
+                    <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-xl font-black text-gray-900 leading-none">1.2K</span>
+                        <p className="text-[10px] font-medium text-gray-400 mt-1">Total Students</p>
+                        <span className="inline-block text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded-md mt-0.5">
+                          +18% this month
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Total Reviews */}
+                    <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
+                        <MessageSquare className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-xl font-black text-gray-900 leading-none">128</span>
+                        <p className="text-[10px] font-medium text-gray-400 mt-1">Total Reviews</p>
+                        <span className="inline-block text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded-md mt-0.5">
+                          +24 this month
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Positive Reviews */}
+                    <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                        <ThumbsUp className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-xl font-black text-gray-900 leading-none">96%</span>
+                        <p className="text-[10px] font-medium text-gray-400 mt-1">Positive Reviews</p>
+                        <p className="text-[9px] text-gray-400 mt-0.5">(4-5 stars)</p>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* REVIEWS LIST CONTAINER */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs divide-y divide-gray-100 overflow-hidden">
+                    {reviewsList
+                      .filter((rev) => {
+                        if (reviewTabFilter === 'published') return rev.status === 'Published';
+                        if (reviewTabFilter === 'pending') return rev.status === 'Pending';
+                        if (reviewTabFilter === 'reported') return rev.status === 'Reported';
+                        return true;
+                      })
+                      .filter((rev) => {
+                        if (reviewClassFilter !== 'All Classes') return rev.className === reviewClassFilter;
+                        return true;
+                      })
+                      .filter((rev) => {
+                        if (reviewRatingFilter !== 'All Ratings') return rev.rating === Number(reviewRatingFilter);
+                        return true;
+                      })
+                      .filter((rev) => {
+                        if (reviewStatusFilter !== 'All Status') return rev.status === reviewStatusFilter;
+                        return true;
+                      })
+                      .filter((rev) => {
+                        if (reviewSearchQuery) {
+                          const q = reviewSearchQuery.toLowerCase();
+                          return (
+                            rev.studentName.toLowerCase().includes(q) ||
+                            rev.comment.toLowerCase().includes(q) ||
+                            rev.className.toLowerCase().includes(q)
+                          );
+                        }
+                        return true;
+                      })
+                      .map((review) => (
+                        <div key={review.id} className="p-4 sm:p-5 hover:bg-gray-50/50 transition-colors space-y-3">
+                          
+                          {/* Row 1: Student Header, Class Tag, Status, and Options */}
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3 min-w-0">
+                              <div className="relative shrink-0 mt-0.5">
+                                {review.avatar ? (
+                                  <img
+                                    src={review.avatar}
+                                    alt={review.studentName}
+                                    className="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-2xs"
+                                    onError={(e) => {
+                                      e.target.style.display = 'none';
+                                      e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                  />
+                                ) : null}
+                                <div className={`w-10 h-10 rounded-full font-black text-xs items-center justify-center ${review.initialBg || 'bg-emerald-100 text-emerald-800'} ${review.avatar ? 'hidden' : 'flex'}`}>
+                                  {review.initials || review.studentName.slice(0, 2).toUpperCase()}
+                                </div>
+                              </div>
+
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <h4 className="font-extrabold text-sm text-gray-900">{review.studentName}</h4>
+                                  
+                                  {/* Class Badge */}
+                                  <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${review.classTagColor || 'bg-indigo-50 text-indigo-700 border-indigo-100'}`}>
+                                    {review.className}
+                                  </span>
+                                </div>
+                                
+                                <div className="flex items-center gap-2 mt-1">
+                                  {/* Star row */}
+                                  <div className="flex items-center gap-0.5 text-amber-400">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <Star
+                                        key={star}
+                                        className={`w-3.5 h-3.5 ${
+                                          star <= review.rating
+                                            ? 'fill-amber-400 text-amber-400'
+                                            : 'fill-gray-200 text-gray-200'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                  <span className="text-[11px] text-gray-400 font-medium">• {review.date}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Right Status Badge & Action */}
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold flex items-center gap-1 ${
+                                review.status === 'Published'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : review.status === 'Pending'
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : 'bg-rose-100 text-rose-800'
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${
+                                  review.status === 'Published' ? 'bg-emerald-500' : review.status === 'Pending' ? 'bg-amber-500' : 'bg-rose-500'
+                                }`}></span>
+                                {review.status}
+                              </span>
+
+                              <button
+                                onClick={() => setSelectedReviewDetailModal(review)}
+                                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer"
+                              >
+                                <MoreVertical className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Row 2: Review Content Text */}
+                          <p className="text-xs sm:text-[13px] text-gray-700 leading-relaxed pl-13">
+                            {review.comment}
+                          </p>
+
+                          {/* Row 3: Teacher Replies / Responses */}
+                          {review.replies && review.replies.length > 0 && (
+                            <div className="ml-13 space-y-2 pt-2">
+                              {review.replies.map((reply) => (
+                                <div key={reply.id} className="p-3 bg-[#E8F8F5] border border-[#B3E5DC] rounded-xl text-xs space-y-1">
+                                  <div className="flex items-center justify-between text-[11px]">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-extrabold text-[#0A3D36]">{reply.author}</span>
+                                      <span className="text-[9px] bg-[#114B44] text-white px-1.5 py-0.2 rounded-sm font-bold">
+                                        {reply.role}
+                                      </span>
+                                    </div>
+                                    <span className="text-gray-400 text-[10px]">{reply.date}</span>
+                                  </div>
+                                  <p className="text-gray-800 text-xs leading-relaxed">{reply.text}</p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Row 4: Reply & Action Buttons */}
+                          <div className="flex items-center justify-end gap-2 pt-1 pl-13">
+                            <button
+                              onClick={() => {
+                                setSelectedReviewForReply(review);
+                                setReplyInputText('');
+                              }}
+                              className="px-3 py-1.5 rounded-xl border border-gray-200 hover:border-[#114B44] text-gray-700 hover:text-[#114B44] bg-white hover:bg-emerald-50/50 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                            >
+                              <MessageSquare className="w-3.5 h-3.5" />
+                              <span>Reply</span>
+                            </button>
+                          </div>
+
+                        </div>
+                      ))}
+                  </div>
+
+                  {/* PAGINATION FOOTER */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                    <span className="text-gray-500 font-medium">Showing 1-5 of 128 reviews</span>
+
+                    <div className="flex items-center gap-1">
+                      <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 cursor-pointer">
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </button>
+                      <button className="w-7 h-7 rounded-lg bg-[#114B44] text-white font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                        1
+                      </button>
+                      <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                        2
+                      </button>
+                      <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                        3
+                      </button>
+                      <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                        4
+                      </button>
+                      <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                        5
+                      </button>
+                      <span className="px-1 text-gray-400">...</span>
+                      <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                        26
+                      </button>
+                      <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 cursor-pointer">
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="relative">
+                      <select className="bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1 pr-6 text-xs font-bold text-gray-700 appearance-none focus:outline-none cursor-pointer">
+                        <option>5 per page</option>
+                        <option>10 per page</option>
+                        <option>20 per page</option>
+                      </select>
+                      <ChevronDown className="w-3 h-3 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: 4 Stacked Cards (4 of 12 Cols) */}
+                <div className="lg:col-span-4 space-y-4">
+                  
+                  {/* CARD 1: Rating Distribution */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider">Rating Distribution</h3>
+                    
+                    <div className="space-y-2 text-xs">
+                      {[
+                        { star: 5, count: 82, pct: '64%', barWidth: 'w-[64%]', color: 'bg-emerald-600' },
+                        { star: 4, count: 40, pct: '31%', barWidth: 'w-[31%]', color: 'bg-emerald-500' },
+                        { star: 3, count: 5, pct: '4%', barWidth: 'w-[4%]', color: 'bg-amber-500' },
+                        { star: 2, count: 1, pct: '1%', barWidth: 'w-[1%]', color: 'bg-orange-500' },
+                        { star: 1, count: 0, pct: '0%', barWidth: 'w-[0%]', color: 'bg-rose-500' },
+                      ].map((item) => (
+                        <div key={item.star} className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 w-8 shrink-0 text-[11px] font-bold text-gray-700">
+                            <span>{item.star}</span>
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          </div>
+
+                          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div className={`h-full ${item.color} rounded-full`} style={{ width: item.pct }}></div>
+                          </div>
+
+                          <span className="text-[11px] font-bold text-gray-600 w-14 text-right shrink-0">
+                            {item.count} <span className="text-gray-400 font-normal">({item.pct})</span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Recent Reviews */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider">Recent Reviews</h3>
+                      <button
+                        onClick={() => setReviewTabFilter('all')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {[
+                        { name: 'Aisha Rahman', rating: 5, avatar: '/images/student_aisha.jpg', text: 'Penjelasan sangat jelas dan mudah dipahami...' },
+                        { name: 'Omar Hassan', rating: 5, avatar: '/images/student_omar.jpg', text: '24 Sep 2026 • Kelasnya terstruktur dan materi...' },
+                        { name: 'Fatimah Zahra', rating: 4, avatar: '/images/student_fatimah.jpg', text: 'Materinya bagus, tapi mungkin bisa lebih banya...' },
+                      ].map((mini, idx) => (
+                        <div key={idx} className="flex items-start justify-between gap-2 text-xs pb-2 border-b border-gray-100 last:border-0 last:pb-0">
+                          <div className="flex items-start gap-2 min-w-0">
+                            <img
+                              src={mini.avatar}
+                              alt={mini.name}
+                              className="w-7 h-7 rounded-full object-cover border border-gray-100 shrink-0 mt-0.5"
+                            />
+                            <div className="min-w-0">
+                              <p className="font-bold text-gray-900 text-xs truncate">{mini.name}</p>
+                              <div className="flex items-center gap-0.5 text-amber-400 mt-0.5">
+                                {[1, 2, 3, 4, 5].map((s) => (
+                                  <Star key={s} className={`w-2.5 h-2.5 ${s <= mini.rating ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'}`} />
+                                ))}
+                              </div>
+                              <p className="text-[10px] text-gray-500 truncate mt-0.5">{mini.text}</p>
+                            </div>
+                          </div>
+                          <button className="p-1 text-gray-400 hover:text-gray-700 cursor-pointer shrink-0">
+                            <MoreVertical className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CARD 3: Top Rated Classes */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider">Top Rated Classes</h3>
+                      <button
+                        onClick={() => setActiveNav('classes')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {[
+                        { title: 'Nahwu for Beginners', img: '/images/class_nahwu.jpg', rating: '4.9', reviews: '56' },
+                        { title: 'Sharaf Basic', img: '/images/class_conversation.jpg', rating: '4.8', reviews: '42' },
+                        { title: 'Arabic Conversation', img: '/images/class_nahwu.jpg', rating: '4.8', reviews: '28' },
+                      ].map((cls, idx) => (
+                        <div key={idx} className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-gray-50 transition-colors">
+                          <img
+                            src={cls.img}
+                            alt={cls.title}
+                            className="w-10 h-10 rounded-xl object-cover shrink-0 border border-gray-100"
+                            onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                          />
+                          <div className="min-w-0">
+                            <p className="font-bold text-xs text-gray-900 truncate">{cls.title}</p>
+                            <div className="flex items-center gap-1 text-[11px] font-bold text-amber-500 mt-0.5">
+                              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                              <span>{cls.rating}</span>
+                              <span className="text-gray-400 font-normal text-[10px]">({cls.reviews} reviews)</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CARD 4: Quick Actions */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-2.5">
+                    <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider">Quick Actions</h3>
+
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <button
+                        onClick={() => setIsRequestReviewModalOpen(true)}
+                        className="p-2.5 rounded-xl bg-emerald-50/60 hover:bg-emerald-100/60 text-[#114B44] flex flex-col items-center gap-1.5 cursor-pointer transition-colors border border-emerald-100"
+                      >
+                        <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-2xs">
+                          <Star className="w-3.5 h-3.5 fill-white" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black text-gray-900 leading-tight">Ask for Review</p>
+                          <p className="text-[8px] text-gray-500 mt-0.5 line-clamp-2">Kirim permintaan ulasan ke siswa</p>
+                        </div>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const firstUnreplied = reviewsList.find(r => !r.replies || r.replies.length === 0);
+                          if (firstUnreplied) {
+                            setSelectedReviewForReply(firstUnreplied);
+                          } else {
+                            alert('Semua ulasan telah ditanggapi!');
+                          }
+                        }}
+                        className="p-2.5 rounded-xl bg-purple-50/60 hover:bg-purple-100/60 text-purple-700 flex flex-col items-center gap-1.5 cursor-pointer transition-colors border border-purple-100"
+                      >
+                        <div className="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center shadow-2xs">
+                          <Mail className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black text-gray-900 leading-tight">Reply to Reviews</p>
+                          <p className="text-[8px] text-gray-500 mt-0.5 line-clamp-2">Tanggapi ulasan siswa</p>
+                        </div>
+                      </button>
+
+                      <button
+                        onClick={() => setActiveNav('analytics')}
+                        className="p-2.5 rounded-xl bg-sky-50/60 hover:bg-sky-100/60 text-sky-700 flex flex-col items-center gap-1.5 cursor-pointer transition-colors border border-sky-100"
+                      >
+                        <div className="w-7 h-7 rounded-full bg-sky-600 text-white flex items-center justify-center shadow-2xs">
+                          <BarChart2 className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black text-gray-900 leading-tight">View Analytics</p>
+                          <p className="text-[8px] text-gray-500 mt-0.5 line-clamp-2">Lihat analisis rating & feedback</p>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
             /* ========================================================= */
             /* VIEW 6: DASHBOARD OVERVIEW CANVAS                         */
@@ -10762,6 +11504,283 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: REQUEST REVIEW MODAL                                */}
+      {/* ========================================================= */}
+      {isRequestReviewModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-[#114B44] flex items-center justify-center">
+                  <Star className="w-4 h-4 fill-[#114B44]" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Request Review</h3>
+                  <p className="text-xs text-gray-500">Kirim permintaan ulasan & feedback ke santri Anda</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsRequestReviewModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              alert('Permintaan ulasan berhasil dikirimkan ke santri!');
+              setIsRequestReviewModalOpen(false);
+            }} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">Pilih Kelas Sasaran</label>
+                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-medium text-gray-800 focus:outline-none focus:border-[#114B44] focus:bg-white transition-colors">
+                  <option value="nahwu">Nahwu for Beginners (34 Santri)</option>
+                  <option value="sharaf">Sharaf Basic (28 Santri)</option>
+                  <option value="conversation">Arabic Conversation (22 Santri)</option>
+                  <option value="tajweed">Quran Tajweed (40 Santri)</option>
+                  <option value="all">Semua Siswa Terdaftar (128 Santri)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">Target Penerima</label>
+                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-medium text-gray-800 focus:outline-none focus:border-[#114B44] focus:bg-white transition-colors">
+                  <option value="completed">Siswa yang baru menyelesaikan tugas / kuis</option>
+                  <option value="all">Seluruh siswa aktif di kelas ini</option>
+                  <option value="specific">Pilih siswa tertentu</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">Pesan Undangan Ulasan</label>
+                <textarea 
+                  rows={4}
+                  defaultValue={"Assalamu'alaikum, terima kasih telah mengikuti kelas kami dengan sungguh-sungguh. Mohon luangkan 1 menit untuk memberikan ulasan & masukan jujur agar kami dapat terus meningkatkan kualitas pembelajaran. Jazakumullahu khairan!"}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-gray-800 focus:outline-none focus:border-[#114B44] focus:bg-white transition-colors resize-none leading-relaxed"
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setIsRequestReviewModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 active:scale-95"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Kirim Permintaan</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: REPLY TO STUDENT REVIEW DIALOG                      */}
+      {/* ========================================================= */}
+      {selectedReviewForReply && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-[#114B44] flex items-center justify-center">
+                  <MessageSquare className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Tanggapi Ulasan</h3>
+                  <p className="text-xs text-gray-500">Balasan akan tampil publik di bawah ulasan siswa</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedReviewForReply(null)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Review Preview Card */}
+            <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-gray-900">{selectedReviewForReply.studentName}</span>
+                  <span className="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md font-bold">
+                    {selectedReviewForReply.className}
+                  </span>
+                </div>
+                <div className="flex items-center gap-0.5 text-amber-400">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star key={s} className={`w-3 h-3 ${s <= selectedReviewForReply.rating ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'}`} />
+                  ))}
+                </div>
+              </div>
+              <p className="text-gray-600 italic">"{selectedReviewForReply.comment}"</p>
+            </div>
+
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if (!replyInputText.trim()) return;
+
+              const newReply = {
+                id: `rep-${Date.now()}`,
+                author: teacherName,
+                role: 'Teacher',
+                date: 'Just now',
+                text: replyInputText
+              };
+
+              setReviewsList(prev => prev.map(r => {
+                if (r.id === selectedReviewForReply.id) {
+                  return {
+                    ...r,
+                    replies: [...(r.replies || []), newReply]
+                  };
+                }
+                return r;
+              }));
+
+              alert('Balasan ulasan berhasil dipublikasikan!');
+              setSelectedReviewForReply(null);
+              setReplyInputText('');
+            }} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">Tulis Balasan Ustadz / Pengajar</label>
+                <textarea 
+                  rows={4}
+                  required
+                  value={replyInputText}
+                  onChange={(e) => setReplyInputText(e.target.value)}
+                  placeholder="Ketik tanggapan Anda untuk santri, contoh: Jazakallahu khairan atas masukan dan semangat belajarnya..."
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-gray-800 focus:outline-none focus:border-[#114B44] focus:bg-white transition-colors resize-none leading-relaxed"
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setSelectedReviewForReply(null)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 active:scale-95"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Kirim Balasan</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: REVIEW DETAIL & MODERATION DIALOG                   */}
+      {/* ========================================================= */}
+      {selectedReviewDetailModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                  <Star className="w-4 h-4 fill-amber-500" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Kelola Ulasan</h3>
+                  <p className="text-xs text-gray-500">Moderasi dan tindakan ulasan siswa</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedReviewDetailModal(null)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs bg-gray-50 p-4 rounded-2xl border border-gray-100">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Nama Siswa:</span>
+                <span className="font-extrabold text-gray-900">{selectedReviewDetailModal.studentName}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Kelas:</span>
+                <span className="font-bold text-gray-800">{selectedReviewDetailModal.className}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Rating:</span>
+                <span className="font-bold text-amber-500 flex items-center gap-1">
+                  <Star className="w-3.5 h-3.5 fill-amber-400" />
+                  {selectedReviewDetailModal.rating} dari 5.0
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Tanggal:</span>
+                <span className="font-bold text-gray-800">{selectedReviewDetailModal.date}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Status:</span>
+                <span className="font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full text-[10px]">
+                  {selectedReviewDetailModal.status}
+                </span>
+              </div>
+              <div className="pt-2 border-t border-gray-200">
+                <span className="text-gray-500 block mb-1 font-semibold">Isi Ulasan:</span>
+                <p className="text-gray-800 bg-white p-2.5 rounded-xl border border-gray-200 leading-relaxed italic">
+                  "{selectedReviewDetailModal.comment}"
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+              <button
+                type="button"
+                onClick={() => {
+                  alert(`Ulasan dari ${selectedReviewDetailModal.studentName} berhasil ditandai sebagai ulasan unggulan (Featured Review)!`);
+                  setSelectedReviewDetailModal(null);
+                }}
+                className="p-2.5 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-800 font-bold hover:bg-emerald-100 cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Jadikan Unggulan</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  alert(`Laporan ulasan telah diteruskan ke tim moderasi IlmuHub.`);
+                  setSelectedReviewDetailModal(null);
+                }}
+                className="p-2.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 font-bold hover:bg-rose-100 cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Flag className="w-3.5 h-3.5" />
+                <span>Laporkan Ulasan</span>
+              </button>
+            </div>
+
+            <div className="pt-1 flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedReviewDetailModal(null)}
+                className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 text-xs cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       )}
