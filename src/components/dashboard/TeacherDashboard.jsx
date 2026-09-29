@@ -469,20 +469,20 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
           {/* VIEW 1: MY CLASSES VIEW (Matching media_1790719920914.jpg) */}
           {/* ========================================================= */}
           {activeNav === 'classes' ? (
-            <div className="flex flex-col 2xl:flex-row gap-6">
+            <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
               
-              {/* LEFT / CENTER COLUMN: My Classes Catalog */}
-              <div className="flex-1 space-y-5 min-w-0">
+              {/* LEFT / CENTER COLUMN: My Classes Catalog (Lebar, Luas & Rapi) */}
+              <div className="flex-1 min-w-0 w-full space-y-4">
                 
                 {/* Header Section */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-[#114B44] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                    <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
                       <BookOpen className="w-5 h-5" />
                     </div>
                     <div>
-                      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">My Classes</h1>
-                      <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                      <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">My Classes</h1>
+                      <p className="text-xs text-gray-500 mt-0.5">
                         Kelola semua kelas yang kamu ajar. Buat kelas baru, atur jadwal, lihat siswa, dan mulai mengajar.
                       </p>
                     </div>
@@ -492,23 +492,23 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
                     <button 
                       onClick={() => alert('Membuka form buat kelas baru')}
-                      className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer active:scale-95"
+                      className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
                     >
                       <PlusCircle className="w-4 h-4" />
                       <span>Create Class</span>
                     </button>
                     <button 
                       onClick={() => setActiveNav('schedule')}
-                      className="bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer"
+                      className="bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
-                      <Calendar className="w-4 h-4 text-gray-500" />
+                      <Calendar className="w-3.5 h-3.5 text-gray-500" />
                       <span>Manage Schedule</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Filter Tabs Pills */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
                   {[
                     { id: 'all', label: 'All Classes', count: countAll },
                     { id: 'ongoing', label: 'Ongoing', count: countOngoing },
@@ -522,10 +522,10 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       <button
                         key={tab.id}
                         onClick={() => setClassTabFilter(tab.id)}
-                        className={`px-3.5 py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
                           isActive
                             ? 'bg-[#114B44] text-white shadow-xs'
-                            : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                            : 'bg-white border border-gray-200/80 text-gray-600 hover:bg-gray-50'
                         }`}
                       >
                         <span>{tab.label}</span>
@@ -540,24 +540,23 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
 
                 {/* Search & Filter Dropdowns Bar */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 bg-white p-3 rounded-2xl border border-gray-200/80 shadow-2xs">
                   <div className="relative flex-1">
-                    <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input 
                       type="text" 
                       placeholder="Search my classes..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:ring-1 focus:ring-[#114B44]"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44]"
                     />
                   </div>
 
                   <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-                    {/* Subject Filter */}
                     <select 
                       value={subjectFilter} 
                       onChange={(e) => setSubjectFilter(e.target.value)}
-                      className="bg-white border border-gray-200 text-gray-700 text-xs font-semibold rounded-xl px-3 py-2.5 focus:outline-none cursor-pointer"
+                      className="bg-[#F8FAFC] border border-gray-200 text-gray-700 text-xs font-semibold rounded-xl px-2.5 py-2 focus:outline-none cursor-pointer"
                     >
                       <option value="All Subjects">All Subjects</option>
                       <option value="Arabic Language">Arabic Language</option>
@@ -565,11 +564,10 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       <option value="Islamic Studies">Islamic Studies</option>
                     </select>
 
-                    {/* Status Filter */}
                     <select 
                       value={statusFilter} 
                       onChange={(e) => setStatusFilter(e.target.value)}
-                      className="bg-white border border-gray-200 text-gray-700 text-xs font-semibold rounded-xl px-3 py-2.5 focus:outline-none cursor-pointer"
+                      className="bg-[#F8FAFC] border border-gray-200 text-gray-700 text-xs font-semibold rounded-xl px-2.5 py-2 focus:outline-none cursor-pointer"
                     >
                       <option value="All Status">All Status</option>
                       <option value="Ongoing">Ongoing</option>
@@ -579,11 +577,10 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       <option value="Archived">Archived</option>
                     </select>
 
-                    {/* Sort By */}
                     <select 
                       value={sortBy} 
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="bg-white border border-gray-200 text-gray-700 text-xs font-semibold rounded-xl px-3 py-2.5 focus:outline-none cursor-pointer"
+                      className="bg-[#F8FAFC] border border-gray-200 text-gray-700 text-xs font-semibold rounded-xl px-2.5 py-2 focus:outline-none cursor-pointer"
                     >
                       <option value="Newest">Newest</option>
                       <option value="Oldest">Oldest</option>
@@ -593,10 +590,10 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
 
                 {/* Class Cards List */}
-                <div className="space-y-3.5">
+                <div className="space-y-3">
                   {filteredClasses.length === 0 ? (
-                    <div className="bg-white rounded-3xl border border-dashed border-gray-200 p-12 text-center space-y-3">
-                      <BookOpen className="w-10 h-10 text-gray-300 mx-auto" />
+                    <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center space-y-2">
+                      <BookOpen className="w-8 h-8 text-gray-300 mx-auto" />
                       <h4 className="text-sm font-bold text-gray-700">Tidak ada kelas yang sesuai filter</h4>
                       <p className="text-xs text-gray-400">Coba ubah kata kunci pencarian atau tab filter di atas.</p>
                       <button 
@@ -610,14 +607,14 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                     filteredClasses.map((cls) => (
                       <div 
                         key={cls.id}
-                        className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all"
+                        className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs hover:shadow-md transition-all space-y-2.5"
                       >
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
                           
-                          {/* Left: Thumbnail + Info */}
-                          <div className="flex items-start sm:items-center gap-4 flex-1 min-w-0">
+                          {/* Left: Thumbnail + Title + Description + Metadata */}
+                          <div className="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
                             {/* Thumbnail */}
-                            <div className="relative w-28 h-20 sm:w-36 sm:h-24 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-100 shadow-2xs">
+                            <div className="relative w-28 h-20 sm:w-32 sm:h-22 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-100 shadow-2xs">
                               <img 
                                 src={cls.image} 
                                 alt={cls.title} 
@@ -628,8 +625,8 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                                 }}
                               />
                               
-                              <div className="absolute top-2 left-2 flex items-center gap-1">
-                                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-xs ${
+                              <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
+                                <span className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shadow-xs ${
                                   cls.status === 'ongoing' ? 'bg-[#114B44] text-white' :
                                   cls.status === 'upcoming' ? 'bg-blue-600 text-white' :
                                   cls.status === 'completed' ? 'bg-gray-700 text-white' :
@@ -641,7 +638,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                               </div>
 
                               {cls.isLiveNow && (
-                                <div className="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-1 shadow-xs animate-pulse">
+                                <div className="absolute top-1.5 right-1.5 bg-red-600 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-1 shadow-xs animate-pulse">
                                   <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
                                   <span>LIVE</span>
                                 </div>
@@ -649,9 +646,9 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             </div>
 
                             {/* Info */}
-                            <div className="flex-1 min-w-0 space-y-1.5">
+                            <div className="flex-1 min-w-0 space-y-1">
                               <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="text-base font-extrabold text-gray-900 leading-tight">
+                                <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
                                   {cls.title}
                                 </h3>
                                 <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
@@ -659,12 +656,12 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                                 </span>
                               </div>
 
-                              <p className="text-xs text-gray-500 line-clamp-2 sm:line-clamp-1 leading-relaxed">
+                              <p className="text-xs text-gray-500 line-clamp-1 leading-relaxed">
                                 {cls.description}
                               </p>
 
                               {/* Metadata */}
-                              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] text-gray-500 pt-0.5">
+                              <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500 pt-0.5">
                                 <span className="flex items-center gap-1 font-medium">
                                   <Users className="w-3.5 h-3.5 text-gray-400" />
                                   <span>{cls.studentsCount} students</span>
@@ -672,7 +669,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
 
                                 {cls.isLiveNow && (
                                   <span className="flex items-center gap-1 text-red-600 font-bold">
-                                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
                                     <span>Live Now</span>
                                   </span>
                                 )}
@@ -696,11 +693,11 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                           </div>
 
                           {/* Right: Progress/Countdown + Action Buttons */}
-                          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between lg:justify-end gap-4 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-gray-100">
+                          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
                             
                             {/* Progress info */}
                             {cls.lessonInfo && (
-                              <div className="w-36 sm:w-40 space-y-1">
+                              <div className="w-32 sm:w-36 space-y-1">
                                 <div className="flex items-center justify-between text-[11px] font-bold">
                                   <span className="text-gray-700">{cls.lessonInfo.lessonText}</span>
                                   <span className="text-emerald-700">{cls.lessonInfo.percent}%</span>
@@ -720,7 +717,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             )}
 
                             {cls.completionPercent && (
-                              <div className="w-32 space-y-1">
+                              <div className="w-28 space-y-1">
                                 <div className="flex items-center justify-between text-[11px] font-bold">
                                   <span className="text-gray-400">Completion</span>
                                   <span className="text-emerald-600">{cls.completionPercent}%</span>
@@ -732,7 +729,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             )}
 
                             {/* Buttons */}
-                            <div className="flex items-center gap-2 shrink-0">
+                            <div className="flex items-center gap-1.5 shrink-0">
                               {cls.primaryAction?.type === 'enter-live' && (
                                 <button
                                   onClick={() => onStartLive({
@@ -740,7 +737,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                                     tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
                                     image: cls.image
                                   })}
-                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
+                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
                                 >
                                   <span>Enter Classroom</span>
                                   <ArrowRight className="w-3.5 h-3.5" />
@@ -754,7 +751,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                                     tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
                                     image: cls.image
                                   })}
-                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap"
+                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap"
                                 >
                                   Start Class
                                 </button>
@@ -763,7 +760,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                               {cls.primaryAction?.type === 'publish' && (
                                 <button
                                   onClick={() => alert(`Mempublikasikan kelas: ${cls.title}`)}
-                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer whitespace-nowrap"
+                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer whitespace-nowrap"
                                 >
                                   Publish Class
                                 </button>
@@ -772,7 +769,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                               {cls.primaryAction?.type === 'report' && (
                                 <button
                                   onClick={() => alert(`Laporan kelas: ${cls.title}`)}
-                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                                 >
                                   View Report
                                 </button>
@@ -781,7 +778,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                               {cls.primaryAction?.type === 'view' && (
                                 <button
                                   onClick={() => alert(`Lihat arsip kelas: ${cls.title}`)}
-                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                                 >
                                   View Class
                                 </button>
@@ -790,7 +787,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                               {cls.secondaryAction?.type === 'clone' && (
                                 <button
                                   onClick={() => alert(`Duplikasi kelas: ${cls.title}`)}
-                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                                 >
                                   Clone Class
                                 </button>
@@ -799,7 +796,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                               {cls.secondaryAction?.type === 'unarchive' && (
                                 <button
                                   onClick={() => alert(`Buka arsip kelas: ${cls.title}`)}
-                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                                 >
                                   Unarchive
                                 </button>
@@ -809,21 +806,21 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                                 <>
                                   <button 
                                     onClick={() => alert(`Lihat detail kelas: ${cls.title}`)}
-                                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-2.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
                                   >
                                     View
                                   </button>
                                   <button 
                                     onClick={() => alert(`Edit kelas: ${cls.title}`)}
-                                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-2.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
                                   >
                                     Edit
                                   </button>
                                 </>
                               )}
 
-                              <button className="p-2 text-gray-400 hover:text-gray-700 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
-                                <MoreVertical className="w-4 h-4" />
+                              <button className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                                <MoreVertical className="w-3.5 h-3.5" />
                               </button>
                             </div>
 
@@ -836,29 +833,29 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
 
               </div>
 
-              {/* RIGHT SIDEBAR WIDGETS COLUMN (1/3 width) */}
-              <div className="w-full lg:w-80 xl:w-88 space-y-6 shrink-0">
+              {/* RIGHT SIDEBAR WIDGETS COLUMN (Ramping, Compact & Rapi) */}
+              <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
                 
                 {/* Widget 1: Today's Schedule */}
-                <div className="bg-white rounded-3xl border border-gray-200 p-5 shadow-xs space-y-4">
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-extrabold text-gray-900">Today's Schedule</h2>
+                    <h2 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Today's Schedule</h2>
                     <button 
                       onClick={() => setActiveNav('schedule')}
-                      className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
                     >
                       <span>View All</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
+                      <ChevronRight className="w-3 h-3" />
                     </button>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {todayScheduleItems.map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between gap-3 text-xs">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="text-center bg-gray-50 p-2 rounded-xl border border-gray-100 shrink-0 w-14">
-                            <span className="block font-extrabold text-gray-900 text-[11px] leading-tight">{item.timeStart}</span>
-                            <span className="block text-[9px] text-gray-400 leading-tight">{item.timeEnd}</span>
+                      <div key={idx} className="flex items-center justify-between gap-2.5 text-xs p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="text-center bg-gray-50 p-1.5 rounded-lg border border-gray-100 shrink-0 w-12">
+                            <span className="block font-black text-gray-900 text-[10px] leading-tight">{item.timeStart}</span>
+                            <span className="block text-[8px] text-gray-400 leading-tight">{item.timeEnd}</span>
                           </div>
                           <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 shrink-0 border border-gray-200">
                             <img 
@@ -872,8 +869,8 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             />
                           </div>
                           <div className="min-w-0">
-                            <h4 className="font-extrabold text-gray-900 truncate leading-snug">{item.title}</h4>
-                            <p className="text-[10px] text-gray-500 truncate">
+                            <h4 className="font-extrabold text-gray-900 text-xs truncate leading-tight">{item.title}</h4>
+                            <p className="text-[10px] text-gray-500 truncate mt-0.5">
                               {item.statusBadge ? (
                                 <span className="text-red-600 font-bold">{item.statusBadge} • {item.subtext}</span>
                               ) : (
@@ -890,13 +887,13 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                               tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
                               image: item.image
                             })}
-                            className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer shrink-0"
+                            className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shadow-xs cursor-pointer shrink-0"
                           >
                             Join
                           </button>
                         ) : (
                           <button className="text-gray-400 hover:text-gray-600 p-1 cursor-pointer shrink-0">
-                            <MoreVertical className="w-4 h-4" />
+                            <MoreVertical className="w-3.5 h-3.5" />
                           </button>
                         )}
                       </div>
@@ -905,28 +902,27 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
 
                 {/* Widget 2: Class Statistics */}
-                <div className="bg-white rounded-3xl border border-gray-200 p-5 shadow-xs space-y-4">
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-extrabold text-gray-900">Class Statistics</h2>
-                    <select className="text-[11px] font-semibold text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 cursor-pointer focus:outline-none">
+                    <h2 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Class Statistics</h2>
+                    <select className="text-[10px] font-semibold text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-2 py-0.5 cursor-pointer focus:outline-none">
                       <option>Last 30 days</option>
                       <option>Last 6 months</option>
-                      <option>This Year</option>
                     </select>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2.5">
                     {classStats.map((stat, i) => {
                       const Icon = stat.icon;
                       return (
-                        <div key={i} className="p-3 rounded-2xl bg-[#F8FAFC] border border-gray-100 flex items-start justify-between">
+                        <div key={i} className="p-2.5 rounded-xl bg-[#F8FAFC] border border-gray-100 flex items-start justify-between">
                           <div className="space-y-0.5">
-                            <span className="text-[10px] text-gray-400 font-medium">{stat.label}</span>
-                            <div className="text-lg font-black text-gray-900">{stat.value}</div>
-                            <span className="text-[10px] text-emerald-600 font-bold">{stat.change}</span>
+                            <span className="text-[9px] text-gray-400 font-medium">{stat.label}</span>
+                            <div className="text-base font-black text-gray-900">{stat.value}</div>
+                            <span className="text-[9px] text-emerald-600 font-bold">{stat.change}</span>
                           </div>
-                          <div className={`p-2 rounded-xl ${stat.bg} ${stat.color} shrink-0`}>
-                            <Icon className="w-4 h-4" />
+                          <div className={`p-1.5 rounded-lg ${stat.bg} ${stat.color} shrink-0`}>
+                            <Icon className="w-3.5 h-3.5" />
                           </div>
                         </div>
                       );
@@ -935,52 +931,52 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
 
                 {/* Widget 3: Quick Actions */}
-                <div className="bg-white rounded-3xl border border-gray-200 p-5 shadow-xs space-y-3">
-                  <h2 className="text-sm font-extrabold text-gray-900">Quick Actions</h2>
-                  <div className="space-y-2">
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-2.5">
+                  <h2 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Quick Actions</h2>
+                  <div className="space-y-1.5">
                     <button 
                       onClick={() => alert('Membuka form buat kelas baru')}
-                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
+                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
                     >
-                      <PlusCircle className="w-4 h-4 text-emerald-700" />
+                      <PlusCircle className="w-3.5 h-3.5 text-emerald-700" />
                       <span>Create New Class</span>
                     </button>
                     <button 
                       onClick={() => alert('Membuka upload materi PDF / Video')}
-                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
+                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
                     >
-                      <Upload className="w-4 h-4 text-blue-700" />
+                      <Upload className="w-3.5 h-3.5 text-blue-700" />
                       <span>Upload Material</span>
                     </button>
                     <button 
                       onClick={() => alert('Membuka form penugasan baru')}
-                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
+                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
                     >
-                      <FileText className="w-4 h-4 text-purple-700" />
+                      <FileText className="w-3.5 h-3.5 text-purple-700" />
                       <span>Create Assignment</span>
                     </button>
                     <button 
                       onClick={() => alert('Membuka form kuis baru')}
-                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
+                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
                     >
-                      <HelpCircle className="w-4 h-4 text-amber-700" />
+                      <HelpCircle className="w-3.5 h-3.5 text-amber-700" />
                       <span>Create Quiz</span>
                     </button>
                     <button 
                       onClick={() => setActiveNav('schedule')}
-                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
+                      className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
                     >
-                      <Calendar className="w-4 h-4 text-emerald-700" />
+                      <Calendar className="w-3.5 h-3.5 text-emerald-700" />
                       <span>Manage Schedule</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Widget 4: Schedule Promo Helper */}
-                <div className="bg-gradient-to-br from-emerald-50 via-teal-50/50 to-white rounded-3xl border border-emerald-100 p-5 space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-600/10 text-[#114B44] flex items-center justify-center shrink-0">
-                      <CalendarPlus className="w-5 h-5" />
+                <div className="bg-gradient-to-br from-emerald-50 via-teal-50/40 to-white rounded-2xl border border-emerald-200/60 p-4 space-y-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-600/10 text-[#114B44] flex items-center justify-center shrink-0">
+                      <CalendarPlus className="w-4 h-4" />
                     </div>
                     <div>
                       <h4 className="text-xs font-extrabold text-gray-900">Kelola jadwal dengan mudah</h4>
@@ -991,7 +987,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   </div>
                   <button 
                     onClick={() => setActiveNav('schedule')}
-                    className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
                   >
                     Open Schedule →
                   </button>
