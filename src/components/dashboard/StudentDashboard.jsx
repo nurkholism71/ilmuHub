@@ -189,6 +189,36 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
     }
   ];
 
+  const recommendedCourses = [
+    {
+      id: 'rc-1',
+      title: 'Arabic Writing Skills',
+      tutor: 'Dr. Layla Ahmad',
+      rating: 4.9,
+      students: 320,
+      price: 'Free',
+      avatar: '/images/student_layla.jpg',
+    },
+    {
+      id: 'rc-2',
+      title: 'Islamic History & Civilizations',
+      tutor: 'Ustadz Ali Khan',
+      rating: 4.9,
+      students: 210,
+      price: '150 EGP',
+      avatar: '/images/student_ali.jpg',
+    },
+    {
+      id: 'rc-3',
+      title: 'English for Academic Studies',
+      tutor: 'Dr. Sara Nabilah',
+      rating: 4.8,
+      students: 540,
+      price: 'Free',
+      avatar: '/images/student_fatimah.jpg',
+    },
+  ];
+
   return (
     <div className="h-screen flex flex-col bg-[#F8FAFC] font-sans text-gray-800 antialiased selection:bg-[#114B44] selection:text-white overflow-hidden">
       
@@ -858,7 +888,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
             </div>
           ) : (
             /* ========================================================= */
-            /* DEFAULT STUDENT OVERVIEW DASHBOARD                        */
+            /* VIEW: DEFAULT STUDENT OVERVIEW DASHBOARD (FULL & RICH)   */
             /* ========================================================= */
             <div className="space-y-6">
               
@@ -869,7 +899,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                     Welcome back, {studentName.split(' ')[0]}!
                   </h1>
                   <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-                    Continue your learning journey.
+                    Continue your learning journey and explore upcoming classes.
                   </p>
                 </div>
 
@@ -907,7 +937,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   </div>
                   <div>
                     <span className="text-xs text-gray-500 font-medium">Certificates</span>
-                    <div className="text-2xl font-extrabold text-gray-900 mt-0.5">2</div>
+                    <div className="text-2xl font-extrabold text-gray-900 mt-0.5">3</div>
                   </div>
                 </div>
 
@@ -922,28 +952,343 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                 </div>
               </div>
 
-              {/* Continue Learning Banner */}
-              <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div className="space-y-2">
-                  <span className="text-xs font-bold text-[#114B44] bg-emerald-50 px-2.5 py-1 rounded-full">
-                    Active Course
-                  </span>
-                  <h3 className="text-lg font-black text-gray-900">Nahwu for Beginners</h3>
-                  <p className="text-xs text-gray-500">Lesson 12 of 14: Kaidah Maf'ul Bih dan Contoh Kalimat</p>
-                  <div className="w-64 h-2 bg-gray-100 rounded-full overflow-hidden mt-2">
-                    <div className="h-full bg-[#114B44] rounded-full w-[85%]"></div>
+              {/* Section 1: Continue Learning (Left 2 Cols) & Next Class (Right 1 Col) */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Continue Learning Big Card */}
+                <div className="lg:col-span-2 bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="p-6 pb-3 flex items-center justify-between">
+                      <h2 className="text-base font-extrabold text-gray-900">Continue Learning</h2>
+                      <span className="text-xs font-bold text-[#114B44] bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1">
+                        <span>📊 85% Completed</span>
+                      </span>
+                    </div>
+
+                    <div className="px-6 space-y-4">
+                      <div className="relative aspect-[21/9] w-full rounded-2xl overflow-hidden bg-gray-100 border border-gray-100">
+                        <img 
+                          src="/images/class_nahwu.jpg" 
+                          alt="Nahwu for Beginners" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      <div>
+                        <h3 className="font-extrabold text-lg text-gray-900">Nahwu for Beginners</h3>
+                        <p className="text-xs text-gray-500 mt-0.5">by Ustadz Ahmad Fauzi</p>
+                        
+                        {/* Progress Bar */}
+                        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mt-3">
+                          <div className="h-full bg-[#114B44] rounded-full w-[85%]"></div>
+                        </div>
+                        <p className="text-[11px] text-gray-400 mt-1">Lesson 12 of 14: <strong className="text-gray-700">Kaidah Maf'ul Bih dan Contoh Kalimat</strong></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-6 pt-4">
+                    <button
+                      onClick={() => onJoinLive({
+                        title: 'Nahwu for Beginners',
+                        tutor: { name: 'Ustadz Ahmad Fauzi', avatar: '/images/tutor_ahmed.jpg' },
+                        image: '/images/class_nahwu.jpg'
+                      })}
+                      className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all"
+                    >
+                      <span>Continue Learning</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => onJoinLive({
-                    title: 'Nahwu for Beginners',
-                    tutor: { name: 'Ustadz Ahmad Fauzi', avatar: '/images/tutor_ahmed.jpg' },
-                    image: '/images/class_nahwu.jpg'
-                  })}
-                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-xs cursor-pointer active:scale-95 transition-all shrink-0"
-                >
-                  Lanjut Belajar
-                </button>
+
+                {/* Next Class & Upcoming Classes */}
+                <div className="space-y-4">
+                  
+                  {/* Next Class Card */}
+                  <div className="bg-white rounded-3xl border border-gray-200 p-5 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-sm font-extrabold text-gray-900">Next Class</h2>
+                      <button 
+                        onClick={() => setActiveNav('classes')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline"
+                      >
+                        View All
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="text-center bg-gray-50 p-2.5 rounded-xl border border-gray-100 shrink-0">
+                        <span className="block text-base font-extrabold text-gray-900">24</span>
+                        <span className="block text-[10px] text-gray-400 font-bold uppercase">Sep</span>
+                      </div>
+                      <div>
+                        <h4 className="font-extrabold text-xs text-gray-900">Sharaf Basic</h4>
+                        <span className="text-[11px] text-gray-500 block">🕒 13:00 - 14:30 (GMT+2)</span>
+                        <span className="text-[11px] text-gray-400 block">with Ustadzah Fatimah Zahra</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={() => onJoinLive({
+                          title: 'Sharaf Basic',
+                          tutor: { name: 'Ustadzah Fatimah Zahra', avatar: '/images/tutor_ahmed.jpg' },
+                          image: '/images/class_conversation.jpg'
+                        })}
+                        className="flex-1 bg-[#114B44] hover:bg-[#0D3B35] text-white py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                      >
+                        Join Class
+                      </button>
+                      <button 
+                        onClick={() => alert('Jadwal kelas berhasil disinkronkan ke kalender Anda!')}
+                        className="flex items-center gap-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer"
+                      >
+                        <CalendarPlus className="w-3.5 h-3.5" />
+                        <span>Add to Calendar</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Upcoming Classes */}
+                  <div className="bg-white rounded-3xl border border-gray-200 p-5 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-sm font-extrabold text-gray-900">Upcoming Classes</h2>
+                      <button 
+                        onClick={() => setActiveNav('classes')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline"
+                      >
+                        View All
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 text-xs">
+                        <div className="text-center bg-gray-50 p-2 rounded-xl border border-gray-100 shrink-0 w-10">
+                          <span className="block font-bold text-gray-900">26</span>
+                          <span className="block text-[9px] text-gray-400 uppercase">Sep</span>
+                        </div>
+                        <div>
+                          <h5 className="font-bold text-gray-900">Arabic Conversation</h5>
+                          <p className="text-[11px] text-gray-400">18:00 - 20:30 • with Ustadz Omar Hassan</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-xs">
+                        <div className="text-center bg-gray-50 p-2 rounded-xl border border-gray-100 shrink-0 w-10">
+                          <span className="block font-bold text-gray-900">28</span>
+                          <span className="block text-[9px] text-gray-400 uppercase">Sep</span>
+                        </div>
+                        <div>
+                          <h5 className="font-bold text-gray-900">Academic Writing</h5>
+                          <p className="text-[11px] text-gray-400">10:00 - 11:30 • with Dr. Layla Ahmad</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* Section 2: My Active Classes (4 Horizontal Cards) */}
+              <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-xs space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-base font-extrabold text-gray-900">My Active Classes</h2>
+                    <p className="text-xs text-gray-400 mt-0.5">Kelas-kelas yang sedang aktif Anda pelajari.</p>
+                  </div>
+
+                  <button 
+                    onClick={() => setActiveNav('classes')}
+                    className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-center"
+                  >
+                    <span>View All (8 Classes)</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* 4 Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {studentClassesList.slice(0, 4).map((c) => (
+                    <div 
+                      key={c.id}
+                      onClick={() => onJoinLive({
+                        title: c.title,
+                        tutor: { name: c.tutor, avatar: '/images/tutor_ahmed.jpg' },
+                        image: c.image
+                      })}
+                      className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md hover:border-emerald-300 transition-all flex flex-col justify-between cursor-pointer group"
+                    >
+                      <div>
+                        <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100">
+                          <img src={c.image} alt={c.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          <span className="absolute top-2 right-2 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded-md backdrop-blur-xs">
+                            {c.primaryTag}
+                          </span>
+                        </div>
+                        <div className="p-3.5 space-y-1">
+                          <h4 className="font-extrabold text-xs text-gray-900 truncate group-hover:text-[#114B44] transition-colors">{c.title}</h4>
+                          <p className="text-[11px] text-gray-400">{c.tutor}</p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 pt-0 space-y-1.5">
+                        <div className="flex items-center justify-between text-[10px] font-bold">
+                          <span className="text-gray-400">{c.completedLessons}/{c.totalLessons} Lessons</span>
+                          <span className="text-emerald-700">{c.progress}%</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-[#114B44] rounded-full" style={{ width: `${c.progress}%` }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section 3: Learning Progress Chart & Recommended for You */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Learning Progress (Left 2 Cols) */}
+                <div className="lg:col-span-2 bg-white rounded-3xl border border-gray-200 p-6 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-extrabold text-gray-900">Learning Progress</h3>
+                      <p className="text-xs text-gray-400 mt-0.5">Grafik jam belajar dan penyelesaian materi.</p>
+                    </div>
+                    <button className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-xl cursor-pointer">
+                      <span>September 2026</span>
+                      <ChevronDown className="w-3 h-3 text-gray-400" />
+                    </button>
+                  </div>
+
+                  {/* Bar Chart */}
+                  <div className="pt-2">
+                    <div className="h-32 flex items-end justify-between gap-3 px-2">
+                      {[40, 65, 30, 85, 45, 95, 60, 75, 90, 70, 80].map((val, i) => (
+                        <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+                          <div 
+                            className="w-full bg-[#114B44] hover:bg-emerald-600 rounded-t-md transition-all shadow-2xs"
+                            style={{ height: `${val}%` }}
+                          ></div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 3 Metric Pills */}
+                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-gray-100 text-center">
+                    <div className="p-2 bg-gray-50 rounded-xl">
+                      <span className="text-[10px] text-gray-400 block font-bold uppercase">Lessons Completed</span>
+                      <span className="text-base font-black text-gray-900">12</span>
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded-xl">
+                      <span className="text-[10px] text-gray-400 block font-bold uppercase">Study Time</span>
+                      <span className="text-base font-black text-gray-900">18 hours</span>
+                    </div>
+                    <div className="p-2 bg-gray-50 rounded-xl">
+                      <span className="text-[10px] text-gray-400 block font-bold uppercase">Average Score</span>
+                      <span className="text-base font-black text-emerald-600">92%</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recommended for You (Right 1 Col) */}
+                <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-extrabold text-gray-900">Recommended for You</h3>
+                  </div>
+
+                  <div className="space-y-3">
+                    {recommendedCourses.map((rc) => (
+                      <div key={rc.id} className="flex items-center justify-between gap-3 p-2 hover:bg-gray-50 rounded-xl transition-colors">
+                        <div className="flex items-center gap-2.5">
+                          <img src={rc.avatar} alt={rc.tutor} className="w-8 h-8 rounded-full object-cover border border-gray-200" />
+                          <div>
+                            <h5 className="font-extrabold text-xs text-gray-900 line-clamp-1">{rc.title}</h5>
+                            <p className="text-[10px] text-gray-400">{rc.tutor}</p>
+                            <div className="flex items-center gap-1 text-[10px] text-gray-500">
+                              <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                              <span>{rc.rating} ({rc.students} students)</span>
+                            </div>
+                          </div>
+                        </div>
+                        <span className="text-xs font-extrabold text-[#114B44]">{rc.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Section 4: Explore More Classes Banner + Your Certificates */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Explore More Classes Wide Banner */}
+                <div className="lg:col-span-2 relative rounded-3xl overflow-hidden p-6 text-white flex flex-col justify-between shadow-md">
+                  <img 
+                    src="/images/login_lms_desk_bg.jpg" 
+                    alt="Explore Background" 
+                    className="absolute inset-0 w-full h-full object-cover brightness-50"
+                  />
+                  <div className="relative z-10 space-y-2">
+                    <h3 className="text-xl font-extrabold">Explore More Classes</h3>
+                    <p className="text-xs text-gray-200">Temukan ribuan kelas dan materi dari tutor berpengalaman di seluruh dunia.</p>
+                  </div>
+
+                  <div className="relative z-10 mt-6 max-w-md">
+                    <div className="relative">
+                      <input 
+                        type="text" 
+                        placeholder="Search classes, subjects, or tutors..."
+                        className="w-full bg-white/95 text-gray-900 rounded-full pl-4 pr-10 py-2.5 text-xs placeholder-gray-400 focus:outline-none shadow-xs"
+                      />
+                      <button 
+                        onClick={onExploreCourses}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-full flex items-center justify-center cursor-pointer shadow-xs"
+                      >
+                        <Search className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Your Certificates */}
+                <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-extrabold text-gray-900">Your Certificates</h3>
+                    <button 
+                      onClick={() => setActiveNav('classes')}
+                      className="text-xs font-bold text-[#114B44] hover:underline"
+                    >
+                      View All
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200">
+                        <Award className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h5 className="font-extrabold text-xs text-gray-900">Islamic History</h5>
+                        <p className="text-[10px] text-gray-400">Completed on 20 Sep 2026</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200">
+                        <Award className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h5 className="font-extrabold text-xs text-gray-900">Quran Tajweed Mastery</h5>
+                        <p className="text-[10px] text-gray-400">Completed on 10 Sep 2026</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
             </div>
