@@ -607,97 +607,96 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                     filteredClasses.map((cls) => (
                       <div 
                         key={cls.id}
-                        className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs hover:shadow-md transition-all space-y-2.5"
+                        className="bg-white rounded-2xl border border-gray-200/80 p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all space-y-3"
                       >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
-                          
-                          {/* Left: Thumbnail + Title + Description + Metadata */}
-                          <div className="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
-                            {/* Thumbnail */}
-                            <div className="relative w-28 h-20 sm:w-32 sm:h-22 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-100 shadow-2xs">
-                              <img 
-                                src={cls.image} 
-                                alt={cls.title} 
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src = '/images/class_nahwu.jpg';
-                                }}
-                              />
-                              
-                              <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
-                                <span className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shadow-xs ${
-                                  cls.status === 'ongoing' ? 'bg-[#114B44] text-white' :
-                                  cls.status === 'upcoming' ? 'bg-blue-600 text-white' :
-                                  cls.status === 'completed' ? 'bg-gray-700 text-white' :
-                                  cls.status === 'draft' ? 'bg-amber-600 text-white' :
-                                  'bg-gray-500 text-white'
-                                }`}>
-                                  {cls.statusLabel}
-                                </span>
-                              </div>
-
-                              {cls.isLiveNow && (
-                                <div className="absolute top-1.5 right-1.5 bg-red-600 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-1 shadow-xs animate-pulse">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-                                  <span>LIVE</span>
-                                </div>
-                              )}
+                        {/* TIER 1: TOP MAIN ROW (Thumbnail + Details) */}
+                        <div className="flex items-start gap-3.5 sm:gap-4">
+                          {/* Thumbnail */}
+                          <div className="relative w-24 h-18 sm:w-28 sm:h-20 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-100 shadow-2xs">
+                            <img 
+                              src={cls.image} 
+                              alt={cls.title} 
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/images/class_nahwu.jpg';
+                              }}
+                            />
+                            
+                            <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
+                              <span className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded shadow-xs ${
+                                cls.status === 'ongoing' ? 'bg-[#114B44] text-white' :
+                                cls.status === 'upcoming' ? 'bg-blue-600 text-white' :
+                                cls.status === 'completed' ? 'bg-gray-700 text-white' :
+                                cls.status === 'draft' ? 'bg-amber-600 text-white' :
+                                'bg-gray-500 text-white'
+                              }`}>
+                                {cls.statusLabel}
+                              </span>
                             </div>
 
-                            {/* Info */}
-                            <div className="flex-1 min-w-0 space-y-1">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
-                                  {cls.title}
-                                </h3>
-                                <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
-                                  {cls.subject}
-                                </span>
+                            {cls.isLiveNow && (
+                              <div className="absolute top-1.5 right-1.5 bg-red-600 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded flex items-center gap-1 shadow-xs animate-pulse">
+                                <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                <span>LIVE</span>
                               </div>
-
-                              <p className="text-xs text-gray-500 line-clamp-1 leading-relaxed">
-                                {cls.description}
-                              </p>
-
-                              {/* Metadata */}
-                              <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500 pt-0.5">
-                                <span className="flex items-center gap-1 font-medium">
-                                  <Users className="w-3.5 h-3.5 text-gray-400" />
-                                  <span>{cls.studentsCount} students</span>
-                                </span>
-
-                                {cls.isLiveNow && (
-                                  <span className="flex items-center gap-1 text-red-600 font-bold">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                    <span>Live Now</span>
-                                  </span>
-                                )}
-
-                                {cls.time && (
-                                  <span className="flex items-center gap-1 text-gray-500 font-medium">
-                                    <Clock className="w-3.5 h-3.5 text-gray-400" />
-                                    <span>{cls.time}</span>
-                                  </span>
-                                )}
-
-                                {cls.completedDate && (
-                                  <span className="text-gray-400 font-medium">{cls.completedDate}</span>
-                                )}
-
-                                {cls.archivedDate && (
-                                  <span className="text-gray-400 font-medium">{cls.archivedDate}</span>
-                                )}
-                              </div>
-                            </div>
+                            )}
                           </div>
 
-                          {/* Right: Progress/Countdown + Action Buttons */}
-                          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
-                            
-                            {/* Progress info */}
+                          {/* Info Column */}
+                          <div className="flex-1 min-w-0 space-y-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
+                                {cls.title}
+                              </h3>
+                              <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
+                                {cls.subject}
+                              </span>
+                            </div>
+
+                            <p className="text-xs text-gray-500 line-clamp-1 leading-relaxed">
+                              {cls.description}
+                            </p>
+
+                            {/* Metadata */}
+                            <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500 pt-0.5">
+                              <span className="flex items-center gap-1 font-medium">
+                                <Users className="w-3.5 h-3.5 text-gray-400" />
+                                <span>{cls.studentsCount} students</span>
+                              </span>
+
+                              {cls.isLiveNow && (
+                                <span className="flex items-center gap-1 text-red-600 font-bold">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                  <span>Live Now</span>
+                                </span>
+                              )}
+
+                              {cls.time && (
+                                <span className="flex items-center gap-1 text-gray-500 font-medium">
+                                  <Clock className="w-3.5 h-3.5 text-gray-400" />
+                                  <span>{cls.time}</span>
+                                </span>
+                              )}
+
+                              {cls.completedDate && (
+                                <span className="text-gray-400 font-medium">{cls.completedDate}</span>
+                              )}
+
+                              {cls.archivedDate && (
+                                <span className="text-gray-400 font-medium">{cls.archivedDate}</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* TIER 2: BOTTOM ACTION & PROGRESS BAR ROW */}
+                        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 pt-2.5 border-t border-gray-100">
+                          
+                          {/* Left: Progress info / Countdown / Completion */}
+                          <div className="flex items-center gap-3 min-w-0">
                             {cls.lessonInfo && (
-                              <div className="w-32 sm:w-36 space-y-1">
+                              <div className="w-40 sm:w-48 space-y-1">
                                 <div className="flex items-center justify-between text-[11px] font-bold">
                                   <span className="text-gray-700">{cls.lessonInfo.lessonText}</span>
                                   <span className="text-emerald-700">{cls.lessonInfo.percent}%</span>
@@ -710,14 +709,14 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             )}
 
                             {cls.startsIn && (
-                              <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-xl whitespace-nowrap">
+                              <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1 rounded-xl whitespace-nowrap">
                                 <Clock className="w-3.5 h-3.5 text-blue-600" />
                                 <span>{cls.startsIn}</span>
                               </div>
                             )}
 
                             {cls.completionPercent && (
-                              <div className="w-28 space-y-1">
+                              <div className="w-36 space-y-1">
                                 <div className="flex items-center justify-between text-[11px] font-bold">
                                   <span className="text-gray-400">Completion</span>
                                   <span className="text-emerald-600">{cls.completionPercent}%</span>
@@ -727,104 +726,104 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                                 </div>
                               </div>
                             )}
-
-                            {/* Buttons */}
-                            <div className="flex items-center gap-1.5 shrink-0">
-                              {cls.primaryAction?.type === 'enter-live' && (
-                                <button
-                                  onClick={() => onStartLive({
-                                    title: cls.title,
-                                    tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
-                                    image: cls.image
-                                  })}
-                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
-                                >
-                                  <span>Enter Classroom</span>
-                                  <ArrowRight className="w-3.5 h-3.5" />
-                                </button>
-                              )}
-
-                              {cls.primaryAction?.type === 'start' && (
-                                <button
-                                  onClick={() => onStartLive({
-                                    title: cls.title,
-                                    tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
-                                    image: cls.image
-                                  })}
-                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap"
-                                >
-                                  Start Class
-                                </button>
-                              )}
-
-                              {cls.primaryAction?.type === 'publish' && (
-                                <button
-                                  onClick={() => alert(`Mempublikasikan kelas: ${cls.title}`)}
-                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer whitespace-nowrap"
-                                >
-                                  Publish Class
-                                </button>
-                              )}
-
-                              {cls.primaryAction?.type === 'report' && (
-                                <button
-                                  onClick={() => alert(`Laporan kelas: ${cls.title}`)}
-                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
-                                >
-                                  View Report
-                                </button>
-                              )}
-
-                              {cls.primaryAction?.type === 'view' && (
-                                <button
-                                  onClick={() => alert(`Lihat arsip kelas: ${cls.title}`)}
-                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
-                                >
-                                  View Class
-                                </button>
-                              )}
-
-                              {cls.secondaryAction?.type === 'clone' && (
-                                <button
-                                  onClick={() => alert(`Duplikasi kelas: ${cls.title}`)}
-                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
-                                >
-                                  Clone Class
-                                </button>
-                              )}
-
-                              {cls.secondaryAction?.type === 'unarchive' && (
-                                <button
-                                  onClick={() => alert(`Buka arsip kelas: ${cls.title}`)}
-                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
-                                >
-                                  Unarchive
-                                </button>
-                              )}
-
-                              {!cls.secondaryAction && cls.status !== 'completed' && (
-                                <>
-                                  <button 
-                                    onClick={() => alert(`Lihat detail kelas: ${cls.title}`)}
-                                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-2.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                                  >
-                                    View
-                                  </button>
-                                  <button 
-                                    onClick={() => alert(`Edit kelas: ${cls.title}`)}
-                                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-2.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                                  >
-                                    Edit
-                                  </button>
-                                </>
-                              )}
-
-                              <button className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                                <MoreVertical className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-
                           </div>
+
+                          {/* Right: Buttons */}
+                          <div className="flex items-center gap-2 ml-auto shrink-0">
+                            {cls.primaryAction?.type === 'enter-live' && (
+                              <button
+                                onClick={() => onStartLive({
+                                  title: cls.title,
+                                  tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                                  image: cls.image
+                                })}
+                                className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
+                              >
+                                <span>Enter Classroom</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+
+                            {cls.primaryAction?.type === 'start' && (
+                              <button
+                                onClick={() => onStartLive({
+                                  title: cls.title,
+                                  tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                                  image: cls.image
+                                })}
+                                className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap"
+                              >
+                                Start Class
+                              </button>
+                            )}
+
+                            {cls.primaryAction?.type === 'publish' && (
+                              <button
+                                onClick={() => alert(`Mempublikasikan kelas: ${cls.title}`)}
+                                className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer whitespace-nowrap"
+                              >
+                                Publish Class
+                              </button>
+                            )}
+
+                            {cls.primaryAction?.type === 'report' && (
+                              <button
+                                onClick={() => alert(`Laporan kelas: ${cls.title}`)}
+                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                              >
+                                View Report
+                              </button>
+                            )}
+
+                            {cls.primaryAction?.type === 'view' && (
+                              <button
+                                onClick={() => alert(`Lihat arsip kelas: ${cls.title}`)}
+                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                              >
+                                View Class
+                              </button>
+                            )}
+
+                            {cls.secondaryAction?.type === 'clone' && (
+                              <button
+                                onClick={() => alert(`Duplikasi kelas: ${cls.title}`)}
+                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                              >
+                                Clone Class
+                              </button>
+                            )}
+
+                            {cls.secondaryAction?.type === 'unarchive' && (
+                              <button
+                                onClick={() => alert(`Buka arsip kelas: ${cls.title}`)}
+                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                              >
+                                Unarchive
+                              </button>
+                            )}
+
+                            {!cls.secondaryAction && cls.status !== 'completed' && (
+                              <>
+                                <button 
+                                  onClick={() => alert(`Lihat detail kelas: ${cls.title}`)}
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                                >
+                                  View
+                                </button>
+                                <button 
+                                  onClick={() => alert(`Edit kelas: ${cls.title}`)}
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                                >
+                                  Edit
+                                </button>
+                              </>
+                            )}
+
+                            <button className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                              <MoreVertical className="w-4 h-4" />
+                            </button>
+                          </div>
+
                         </div>
                       </div>
                     ))
