@@ -70,7 +70,9 @@ import {
   ClipboardCheck,
   CheckSquare,
   FolderOpen,
-  CalendarDays
+  CalendarDays,
+  Edit,
+  Sliders
 } from 'lucide-react';
 
 export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
