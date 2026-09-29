@@ -57,21 +57,21 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
       title: 'Sharaf Basic',
       tutor: 'Ahmed Mohamed',
       progress: 40,
-      image: '/images/class_balaghah.jpg',
+      image: '/images/class_sharaf.jpg',
     },
     {
       id: 'sc-3',
       title: 'Quran Tajweed',
       tutor: 'Fatimah Zahra',
       progress: 80,
-      image: '/images/class_quran.jpg',
+      image: '/images/class_tajweed.jpg',
     },
     {
       id: 'sc-4',
       title: 'Arabic Conversation',
       tutor: 'Sara Ahmed',
       progress: 25,
-      image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=400&q=80',
+      image: '/images/class_conversation.jpg',
     },
   ];
 
@@ -356,7 +356,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                     onClick={() => onJoinLive({
                       title: 'Sharaf Basic',
                       tutor: { name: 'Ahmed Mohamed', avatar: '/images/tutor_ahmed.jpg' },
-                      image: '/images/class_balaghah.jpg'
+                      image: '/images/class_sharaf.jpg'
                     })}
                     className="flex-1 bg-[#114B44] hover:bg-[#0D3B35] text-white py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
                   >

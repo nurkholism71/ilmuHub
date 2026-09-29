@@ -73,7 +73,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
       title: 'Sharaf Basic',
       studentsCount: 28,
       type: 'Live Class',
-      image: '/images/class_balaghah.jpg',
+      image: '/images/class_sharaf.jpg',
     },
     {
       id: 'tc-3',
@@ -82,7 +82,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
       title: 'Arabic Conversation',
       studentsCount: 32,
       type: 'Live Class',
-      image: '/images/class_quran.jpg',
+      image: '/images/class_arabic.jpg',
     },
   ];
 
@@ -107,7 +107,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
       rating: 4.8,
       reviews: 64,
       price: '200 EGP',
-      image: '/images/class_balaghah.jpg',
+      image: '/images/class_sharaf.jpg',
       category: 'live',
     },
     {
@@ -118,7 +118,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
       rating: 4.9,
       reviews: 102,
       price: '150 EGP',
-      image: '/images/class_quran.jpg',
+      image: '/images/class_conversation.jpg',
       category: 'live',
     },
   ];
@@ -373,8 +373,16 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       </div>
 
                       {/* Course Thumbnail */}
-                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-200 shrink-0">
-                        <img src={cls.image} alt={cls.title} className="w-full h-full object-cover" />
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-emerald-50 border border-emerald-100 shrink-0">
+                        <img 
+                          src={cls.image} 
+                          alt={cls.title} 
+                          className="w-full h-full object-cover" 
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/images/class_nahwu.jpg';
+                          }}
+                        />
                       </div>
 
                       {/* Info */}
@@ -514,8 +522,16 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
                 >
                   <div>
-                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100">
-                      <img src={course.image} alt={course.title} className="w-full h-full object-cover" />
+                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-emerald-50 border-b border-gray-100">
+                      <img 
+                        src={course.image} 
+                        alt={course.title} 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/images/class_nahwu.jpg';
+                        }}
+                      />
                       <span className="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
                         {course.status}
                       </span>
@@ -558,6 +574,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-extrabold text-gray-900">Student Growth</h3>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Total enrolled students over time</p>
                 </div>
                 <button className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-xl cursor-pointer">
                   <span>Last 6 months</span>
@@ -566,34 +583,52 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
               {/* Bar Chart Visualization */}
-              <div className="pt-4">
-                <div className="relative h-44 flex items-end justify-between gap-2 sm:gap-4 px-2">
-                  {[
-                    { month: 'Jan', val: 500 },
-                    { month: 'Feb', val: 650 },
-                    { month: 'Mar', val: 750 },
-                    { month: 'Apr', val: 820 },
-                    { month: 'May', val: 900 },
-                    { month: 'Jun', val: 980 },
-                    { month: 'Jul', val: 1050 },
-                    { month: 'Aug', val: 1150 },
-                    { month: 'Sep', val: 1240, active: true },
-                  ].map((bar, i) => (
-                    <div key={bar.month} className="flex-1 flex flex-col items-center gap-2 group relative">
-                      {bar.active && (
-                        <div className="absolute -top-10 bg-gray-900 text-white text-[10px] font-extrabold px-2 py-1 rounded-md shadow-md whitespace-nowrap z-10 animate-bounce">
-                          Sep 2026: 1,240 students
+              <div className="pt-6">
+                <div className="relative h-48">
+                  {/* Horizontal Guide Lines */}
+                  <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
+                    <div className="border-b border-dashed border-gray-100 w-full"></div>
+                    <div className="border-b border-dashed border-gray-100 w-full"></div>
+                    <div className="border-b border-dashed border-gray-100 w-full"></div>
+                    <div className="border-b border-dashed border-gray-100 w-full"></div>
+                  </div>
+
+                  {/* Bars */}
+                  <div className="relative h-full flex items-end justify-between gap-1.5 sm:gap-3 px-1 z-10">
+                    {[
+                      { month: 'Jan', val: 500, height: '40%' },
+                      { month: 'Feb', val: 650, height: '50%' },
+                      { month: 'Mar', val: 750, height: '58%' },
+                      { month: 'Apr', val: 820, height: '65%' },
+                      { month: 'May', val: 900, height: '72%' },
+                      { month: 'Jun', val: 980, height: '78%' },
+                      { month: 'Jul', val: 1050, height: '84%' },
+                      { month: 'Aug', val: 1150, height: '90%' },
+                      { month: 'Sep', val: 1240, height: '98%', active: true },
+                    ].map((bar) => (
+                      <div key={bar.month} className="flex-1 h-full flex flex-col justify-end items-center gap-2 group relative">
+                        {bar.active && (
+                          <div className="absolute -top-3 bg-[#0F172A] text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg whitespace-nowrap z-20 flex flex-col items-center">
+                            <span>Sep 2026: 1,240 students</span>
+                            <div className="w-2 h-2 bg-[#0F172A] rotate-45 -mb-1 mt-0.5"></div>
+                          </div>
+                        )}
+                        <div className="w-full flex-1 flex items-end justify-center">
+                          <div 
+                            className={`w-full max-w-[32px] rounded-t-lg transition-all duration-500 cursor-pointer ${
+                              bar.active 
+                                ? 'bg-gradient-to-t from-[#0A302B] to-[#114B44] shadow-md' 
+                                : 'bg-[#D1FAE5] hover:bg-[#A7F3D0]'
+                            }`}
+                            style={{ height: bar.height }}
+                          ></div>
                         </div>
-                      )}
-                      <div 
-                        className={`w-full rounded-t-lg transition-all duration-500 ${
-                          bar.active ? 'bg-[#114B44]' : 'bg-emerald-100 hover:bg-emerald-200'
-                        }`}
-                        style={{ height: `${(bar.val / 1300) * 100}%` }}
-                      ></div>
-                      <span className="text-[10px] text-gray-400 font-semibold">{bar.month}</span>
-                    </div>
-                  ))}
+                        <span className={`text-[10px] font-semibold ${bar.active ? 'text-[#114B44] font-bold' : 'text-gray-400'}`}>
+                          {bar.month}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -603,6 +638,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-extrabold text-gray-900">Earnings Overview</h3>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Monthly revenue in EGP</p>
                 </div>
                 <button className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-xl cursor-pointer">
                   <span>Last 6 months</span>
@@ -611,34 +647,46 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
               {/* Line/Area Chart Visualization */}
-              <div className="pt-4">
-                <div className="relative h-44 flex flex-col justify-between">
-                  <div className="absolute top-0 right-12 bg-gray-900 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-md shadow-md">
-                    Sep 2026: 18,450 EGP
+              <div className="pt-6">
+                <div className="relative h-48 flex flex-col justify-between">
+                  {/* Floating Tooltip */}
+                  <div className="absolute -top-3 right-4 bg-[#0F172A] text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg z-20 flex flex-col items-center">
+                    <span>Sep 2026: 18,450 EGP</span>
+                    <div className="w-2 h-2 bg-[#0F172A] rotate-45 -mb-1 mt-0.5"></div>
+                  </div>
+
+                  {/* Horizontal Guide Lines */}
+                  <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
+                    <div className="border-b border-dashed border-gray-100 w-full flex justify-end pr-1 text-[9px] text-gray-300">20k</div>
+                    <div className="border-b border-dashed border-gray-100 w-full flex justify-end pr-1 text-[9px] text-gray-300">15k</div>
+                    <div className="border-b border-dashed border-gray-100 w-full flex justify-end pr-1 text-[9px] text-gray-300">10k</div>
+                    <div className="border-b border-dashed border-gray-100 w-full flex justify-end pr-1 text-[9px] text-gray-300">5k</div>
                   </div>
                   
                   {/* Stylized SVG Chart */}
-                  <svg className="w-full h-36 overflow-visible" viewBox="0 0 500 120">
-                    <defs>
-                      <linearGradient id="earnGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#114B44" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#114B44" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d="M 0 100 Q 80 85, 140 75 T 280 50 T 420 30 T 500 15 L 500 120 L 0 120 Z"
-                      fill="url(#earnGrad)"
-                    />
-                    <path
-                      d="M 0 100 Q 80 85, 140 75 T 280 50 T 420 30 T 500 15"
-                      fill="none"
-                      stroke="#114B44"
-                      strokeWidth="3.5"
-                    />
-                    <circle cx="500" cy="15" r="5" fill="#114B44" stroke="#ffffff" strokeWidth="2" />
-                  </svg>
+                  <div className="relative flex-1 w-full flex items-end z-10">
+                    <svg className="w-full h-32 overflow-visible" viewBox="0 0 500 120" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="earnGradTeacher" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#114B44" stopOpacity="0.35" />
+                          <stop offset="100%" stopColor="#114B44" stopOpacity="0.02" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        d="M 0 95 Q 60 85, 120 72 T 250 50 T 380 32 T 500 10 L 500 120 L 0 120 Z"
+                        fill="url(#earnGradTeacher)"
+                      />
+                      <path
+                        d="M 0 95 Q 60 85, 120 72 T 250 50 T 380 32 T 500 10"
+                        fill="none"
+                        stroke="#114B44"
+                        strokeWidth="3.5"
+                      />
+                      <circle cx="500" cy="10" r="5" fill="#114B44" stroke="#ffffff" strokeWidth="2.5" />
+                    </svg>
+                  </div>
 
-                  <div className="flex justify-between text-[10px] text-gray-400 font-semibold px-1">
+                  <div className="flex justify-between text-[10px] text-gray-400 font-semibold px-2 pt-2 border-t border-gray-100">
                     <span>Jan</span>
                     <span>Mar</span>
                     <span>May</span>
