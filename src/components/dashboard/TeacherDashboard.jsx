@@ -136,10 +136,10 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-gray-800 antialiased selection:bg-[#114B44] selection:text-white">
+    <div className="h-screen flex flex-col bg-[#F8FAFC] font-sans text-gray-800 antialiased selection:bg-[#114B44] selection:text-white overflow-hidden">
       
       {/* Top Fixed Header Bar */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+      <header className="shrink-0 z-40 bg-white border-b border-gray-200 h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         {/* Logo */}
         <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={onBackToHome}>
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#114B44] to-[#0A302B] flex items-center justify-center shadow-xs">
@@ -203,11 +203,11 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
         </div>
       </header>
 
-      {/* Main Dashboard Layout: Sticky Fixed Left Sidebar + Scrollable Spacious Canvas */}
-      <div className="flex-1 flex max-w-[1600px] w-full mx-auto relative">
+      {/* Main Dashboard Layout: Fixed Locked Left Sidebar + Scrollable Spacious Canvas */}
+      <div className="flex-1 flex overflow-hidden max-w-[1600px] w-full mx-auto">
         
-        {/* STICKY FIXED LEFT SIDEBAR (Mentok Tidak Ikut Scroll) */}
-        <aside className="w-60 lg:w-64 bg-white border-r border-gray-200 p-4 shrink-0 hidden md:block sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto no-scrollbar select-none">
+        {/* FIXED LOCKED LEFT SIDEBAR (Mentok Tidak Ikut Scroll) */}
+        <aside className="w-60 lg:w-64 bg-white border-r border-gray-200 p-4 shrink-0 hidden md:flex flex-col h-full overflow-y-auto no-scrollbar select-none">
           <div className="space-y-1">
             {sidebarItems.map((item) => {
               const Icon = item.icon;
@@ -251,7 +251,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
         </aside>
 
         {/* MAIN CANVAS (BESAR, RAPI & SCROLLABLE) */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 min-w-0 pb-16">
+        <main className="flex-1 h-full overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 min-w-0 pb-16">
           
           {/* Top Greeting Header with Month Selector */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
