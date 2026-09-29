@@ -1004,6 +1004,197 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     { studentName: 'Ali Khan', quizTitle: 'Kuis Teks Arab', score: '60%', scoreBadge: 'bg-amber-100 text-amber-800', time: '2 hours ago', avatar: '/images/student_ali.jpg' },
   ];
 
+  // Certificates View States (matching media_1790723361189.jpg)
+  const [certTabFilter, setCertTabFilter] = useState('all'); // 'all' (48) | 'templates' (8) | 'issued' (36) | 'drafts' (6) | 'expired' (6)
+  const [certClassFilter, setCertClassFilter] = useState('All Classes');
+  const [certStatusFilter, setCertStatusFilter] = useState('All Status');
+  const [certTypeFilter, setCertTypeFilter] = useState('All Certificate Types');
+  const [certSearchQuery, setCertSearchQuery] = useState('');
+  const [selectedCertIds, setSelectedCertIds] = useState([]);
+  const [isCreateCertModalOpen, setIsCreateCertModalOpen] = useState(false);
+  const [selectedCertModal, setSelectedCertModal] = useState(null);
+
+  // New Certificate Form State
+  const [newCertForm, setNewCertForm] = useState({
+    studentName: 'Aisha Rahman',
+    studentEmail: 'aisha@example.com',
+    className: 'Nahwu for Beginners',
+    type: 'Course Completion',
+    template: 'Modern Islamic',
+    issueDate: '2026-09-30',
+    status: 'issued'
+  });
+
+  const certTemplatesList = [
+    {
+      id: 'tpl-1',
+      title: 'Modern Islamic',
+      subtitle: 'For general courses',
+      theme: 'emerald',
+      bgGradient: 'from-[#0A3D36] via-[#114B44] to-[#062823]',
+      borderPattern: 'border-emerald-400/40',
+      badge: 'Modern'
+    },
+    {
+      id: 'tpl-2',
+      title: 'Classic Arabic',
+      subtitle: 'For Arabic courses',
+      theme: 'amber',
+      bgGradient: 'from-amber-950 via-yellow-950 to-stone-900',
+      borderPattern: 'border-amber-400/50',
+      badge: 'Calligraphy'
+    },
+    {
+      id: 'tpl-3',
+      title: 'Minimal Clean',
+      subtitle: 'For all subjects',
+      theme: 'sky',
+      bgGradient: 'from-slate-900 via-sky-950 to-blue-950',
+      borderPattern: 'border-sky-400/40',
+      badge: 'Minimal'
+    },
+    {
+      id: 'tpl-4',
+      title: 'Premium Gold',
+      subtitle: 'For advanced courses',
+      theme: 'gold',
+      bgGradient: 'from-zinc-950 via-neutral-900 to-black',
+      borderPattern: 'border-amber-300/60',
+      badge: 'Premium'
+    }
+  ];
+
+  const [certificatesDataList, setCertificatesDataList] = useState([
+    {
+      id: 'crt-1',
+      num: 1,
+      studentName: 'Aisha Rahman',
+      email: 'aisha@example.com',
+      avatar: '/images/student_aisha.jpg',
+      className: 'Nahwu for Beginners',
+      classColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      type: 'Course Completion',
+      typeColor: 'text-emerald-700 bg-emerald-50 border border-emerald-200',
+      issueDate: '25 Sep 2026',
+      issueTime: '10:24 AM',
+      status: 'issued',
+      certId: 'ILM-2026-NHW-001'
+    },
+    {
+      id: 'crt-2',
+      num: 2,
+      studentName: 'Omar Hassan',
+      email: 'omar@example.com',
+      avatar: '/images/student_omar.jpg',
+      className: 'Sharaf Basic',
+      classColor: 'bg-[#F5EDFD] text-[#581C87] border border-[#E9D5FF]',
+      type: 'Quiz Certificate',
+      typeColor: 'text-purple-700 bg-purple-50 border border-purple-200',
+      issueDate: '24 Sep 2026',
+      issueTime: '02:15 PM',
+      status: 'issued',
+      certId: 'ILM-2026-SHR-002'
+    },
+    {
+      id: 'crt-3',
+      num: 3,
+      studentName: 'Fatimah Zahra',
+      email: 'fatimah@example.com',
+      avatar: '/images/student_fatimah.jpg',
+      className: 'Arabic Conversation',
+      classColor: 'bg-[#EAF2FD] text-[#1E3A8A] border border-[#BFDBFE]',
+      type: 'Course Completion',
+      typeColor: 'text-emerald-700 bg-emerald-50 border border-emerald-200',
+      issueDate: '20 Sep 2026',
+      issueTime: '09:40 AM',
+      status: 'issued',
+      certId: 'ILM-2026-ARB-003'
+    },
+    {
+      id: 'crt-4',
+      num: 4,
+      studentName: 'Ali Khan',
+      email: 'ali@example.com',
+      avatar: '/images/student_ali.jpg',
+      className: 'Quran Tajweed',
+      classColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      type: 'Assignment Certificate',
+      typeColor: 'text-amber-700 bg-amber-50 border border-amber-200',
+      issueDate: '18 Sep 2026',
+      issueTime: '11:30 AM',
+      status: 'issued',
+      certId: 'ILM-2026-QRN-004'
+    },
+    {
+      id: 'crt-5',
+      num: 5,
+      studentName: 'Sara Nabilah',
+      email: 'sara@example.com',
+      initials: 'SN',
+      className: 'Academic Writing',
+      classColor: 'bg-amber-50 text-amber-700 border border-amber-200',
+      type: 'Course Completion',
+      typeColor: 'text-emerald-700 bg-emerald-50 border border-emerald-200',
+      issueDate: '15 Sep 2026',
+      issueTime: '03:20 PM',
+      status: 'issued',
+      certId: 'ILM-2026-WRT-005'
+    },
+    {
+      id: 'crt-6',
+      num: 6,
+      studentName: 'Yusuf Mansur',
+      email: 'yusuf@example.com',
+      initials: 'YM',
+      className: 'Nahwu for Beginners',
+      classColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      type: 'Quiz Certificate',
+      typeColor: 'text-purple-700 bg-purple-50 border border-purple-200',
+      issueDate: '12 Sep 2026',
+      issueTime: '08:10 AM',
+      status: 'pending',
+      certId: 'ILM-2026-NHW-006'
+    },
+    {
+      id: 'crt-7',
+      num: 7,
+      studentName: 'Layla Ahmad',
+      email: 'layla@example.com',
+      avatar: '/images/tutor_layla.jpg',
+      className: 'Sharaf Basic',
+      classColor: 'bg-[#F5EDFD] text-[#581C87] border border-[#E9D5FF]',
+      type: 'Course Completion',
+      typeColor: 'text-emerald-700 bg-emerald-50 border border-emerald-200',
+      issueDate: '10 Sep 2026',
+      issueTime: '01:45 PM',
+      status: 'issued',
+      certId: 'ILM-2026-SHR-007'
+    },
+    {
+      id: 'crt-8',
+      num: 8,
+      studentName: 'Hasan Ali',
+      email: 'hasan@example.com',
+      initials: 'HA',
+      className: 'Arabic Conversation',
+      classColor: 'bg-[#EAF2FD] text-[#1E3A8A] border border-[#BFDBFE]',
+      type: 'Assignment Certificate',
+      typeColor: 'text-amber-700 bg-amber-50 border border-amber-200',
+      issueDate: '5 Sep 2026',
+      issueTime: '04:30 PM',
+      status: 'expired',
+      certId: 'ILM-2026-ARB-008'
+    }
+  ]);
+
+  const recentCertificatesList = [
+    { studentName: 'Aisha Rahman', type: 'Course Completion', date: '25 Sep 2026', avatar: '/images/student_aisha.jpg' },
+    { studentName: 'Omar Hassan', type: 'Quiz Certificate', date: '24 Sep 2026', avatar: '/images/student_omar.jpg' },
+    { studentName: 'Fatimah Zahra', type: 'Course Completion', date: '20 Sep 2026', avatar: '/images/student_fatimah.jpg' },
+    { studentName: 'Ali Khan', type: 'Assignment Certificate', date: '18 Sep 2026', avatar: '/images/student_ali.jpg' },
+    { studentName: 'Sara Nabilah', type: 'Course Completion', date: '15 Sep 2026', initials: 'SN' },
+  ];
+
   // Sidebar Items matching reference image
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -5858,6 +6049,751 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
             </div>
+          ) : activeNav === 'certificates' ? (
+            /* ========================================================= */
+            /* VIEW: CERTIFICATES (MATCHING MOCKUP & COMPACT SIDEBAR)   */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* TOP HEADER: Icon, Title, Subtitle, and + Create Certificate Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <Award className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Certificates</h1>
+                    <p className="text-xs text-gray-500 font-medium">Buat, kelola, dan berikan sertifikat untuk siswa yang menyelesaikan kelas, kuis, atau tugas.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => setIsCreateCertModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Create Certificate</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* TABS FILTER (Matching Mockup with count pills) */}
+              <div className="flex items-center gap-2 border-b border-gray-200/80 pb-px overflow-x-auto no-scrollbar">
+                {[
+                  { id: 'all', label: 'All Certificates', count: 48 },
+                  { id: 'templates', label: 'Templates', count: 8 },
+                  { id: 'issued', label: 'Issued', count: 36 },
+                  { id: 'drafts', label: 'Drafts', count: 6 },
+                  { id: 'expired', label: 'Expired', count: 6 },
+                ].map((tab) => {
+                  const isActive = certTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setCertTabFilter(tab.id)}
+                      className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-bold transition-all border-b-2 whitespace-nowrap cursor-pointer ${
+                        isActive
+                          ? 'border-[#114B44] text-[#114B44]'
+                          : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
+                        isActive ? 'bg-[#114B44] text-white' : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {tab.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 4 METRIC SUMMARY CARDS */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {/* Total Certificates */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">48</h3>
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Total Certificates</p>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-0.5">+12 this month</p>
+                  </div>
+                </div>
+
+                {/* Issued Certificates */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">36</h3>
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Issued Certificates</p>
+                    <p className="text-[10px] text-purple-700 font-bold mt-0.5">75% completion rate</p>
+                  </div>
+                </div>
+
+                {/* Average Rating */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
+                    <Star className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">4.9</h3>
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Average Rating</p>
+                    <div className="flex items-center gap-0.5 text-amber-400 text-xs mt-0.5">
+                      {'★'.repeat(5)}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pending Issue */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">6</h3>
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Pending Issue</p>
+                    <p className="text-[10px] text-amber-700 font-bold mt-0.5">Need review</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CERTIFICATE TEMPLATES SECTION (Matching Mockup with 4 Cards) */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-sm font-black text-gray-900">Certificate Templates</h2>
+                    <p className="text-xs text-gray-500">Pilih template atau buat desain sertifikat sendiri.</p>
+                  </div>
+                  <button
+                    onClick={() => setCertTabFilter('templates')}
+                    className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>View All Templates</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* 4 Template Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                  {certTemplatesList.map((tpl) => (
+                    <div
+                      key={tpl.id}
+                      onClick={() => {
+                        setSelectedCertModal({
+                          studentName: 'Nama Siswa Contoh',
+                          className: 'Nahwu for Beginners',
+                          type: 'Course Completion',
+                          issueDate: '30 Sep 2026',
+                          certId: 'ILM-SAMPLE-2026',
+                          template: tpl.title
+                        });
+                      }}
+                      className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs hover:shadow-md transition-all cursor-pointer group space-y-2.5"
+                    >
+                      {/* Template Preview Graphic */}
+                      <div className={`relative h-28 rounded-xl bg-linear-to-br ${tpl.bgGradient} p-3 flex flex-col justify-between overflow-hidden border ${tpl.borderPattern}`}>
+                        {/* Decorative Islamic border corners */}
+                        <div className="absolute inset-1.5 border border-white/10 rounded-lg pointer-events-none"></div>
+                        <div className="flex items-center justify-between z-10">
+                          <span className="text-[9px] font-black tracking-widest text-amber-300 uppercase">Certificate</span>
+                          <span className="text-[8px] bg-white/20 text-white font-bold px-1.5 py-0.5 rounded backdrop-blur-xs">
+                            {tpl.badge}
+                          </span>
+                        </div>
+                        <div className="text-center z-10 my-auto">
+                          <p className="text-[11px] font-serif font-bold text-white tracking-wide">of Completion</p>
+                          <p className="text-[9px] text-white/70 font-medium mt-0.5">Student Name</p>
+                        </div>
+                        <div className="flex items-center justify-between text-[8px] text-white/50 z-10">
+                          <span>IlmHub Verified</span>
+                          <span>★ Official</span>
+                        </div>
+                      </div>
+
+                      {/* Template Title & Subtitle */}
+                      <div className="flex items-center justify-between pt-0.5">
+                        <div className="min-w-0">
+                          <p className="font-bold text-gray-900 text-xs truncate group-hover:text-[#114B44] transition-colors">{tpl.title}</p>
+                          <p className="text-[11px] text-gray-400 truncate">{tpl.subtitle}</p>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`Memilih template ${tpl.title} sebagai default.`);
+                          }}
+                          className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer"
+                        >
+                          <MoreVertical className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CONTROLS TOOLBAR: Class Dropdown, Status Dropdown, Type Dropdown, Search bar, Calendar button */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {/* Class Filter */}
+                  <div className="relative">
+                    <select
+                      value={certClassFilter}
+                      onChange={(e) => setCertClassFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Classes">All Classes</option>
+                      <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                      <option value="Arabic Conversation">Arabic Conversation</option>
+                      <option value="Sharaf Basic">Sharaf Basic</option>
+                      <option value="Quran Tajweed">Quran Tajweed</option>
+                      <option value="Academic Writing">Academic Writing</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Status Filter */}
+                  <div className="relative">
+                    <select
+                      value={certStatusFilter}
+                      onChange={(e) => setCertStatusFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Status">All Status</option>
+                      <option value="issued">Issued</option>
+                      <option value="pending">Pending</option>
+                      <option value="expired">Expired</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Type Filter */}
+                  <div className="relative">
+                    <select
+                      value={certTypeFilter}
+                      onChange={(e) => setCertTypeFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Certificate Types">All Certificate Types</option>
+                      <option value="Course Completion">Course Completion</option>
+                      <option value="Quiz Certificate">Quiz Certificate</option>
+                      <option value="Assignment Certificate">Assignment Certificate</option>
+                      <option value="Custom Certificate">Custom Certificate</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  {/* Search bar */}
+                  <div className="relative flex-1 md:w-56">
+                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={certSearchQuery}
+                      onChange={(e) => setCertSearchQuery(e.target.value)}
+                      placeholder="Search certificates..."
+                      className="w-full bg-gray-50/80 border border-gray-200/80 rounded-xl pl-8 pr-3 py-1.5 text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all"
+                    />
+                  </div>
+
+                  {/* Calendar filter button */}
+                  <button
+                    onClick={() => alert('Filter berdasarkan rentang tanggal penerbitan sertifikat')}
+                    className="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200/80 text-gray-600 cursor-pointer"
+                    title="Filter by Date"
+                  >
+                    <CalendarDays className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* 2-COLUMN LAYOUT: Center Certificates Table Canvas + Right Sidebar Column */}
+              <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
+                
+                {/* CENTER CANVAS: Certificates Table (flex-1 min-w-0 w-full) */}
+                <div className="flex-1 min-w-0 w-full space-y-4">
+                  
+                  {/* Table Container */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-gray-200 bg-gray-50/60 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                            <th className="py-3 px-3 w-10">
+                              <input
+                                type="checkbox"
+                                checked={selectedCertIds.length > 0 && selectedCertIds.length === certificatesDataList.length}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedCertIds(certificatesDataList.map(c => c.id));
+                                  } else {
+                                    setSelectedCertIds([]);
+                                  }
+                                }}
+                                className="rounded border-gray-300 text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                              />
+                            </th>
+                            <th className="py-3 px-2 w-8 text-center">#</th>
+                            <th className="py-3 px-3">Student</th>
+                            <th className="py-3 px-3">Class</th>
+                            <th className="py-3 px-3">Type</th>
+                            <th className="py-3 px-3">Issue Date</th>
+                            <th className="py-3 px-3">Status</th>
+                            <th className="py-3 px-3 text-center">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 text-xs">
+                          {certificatesDataList
+                            .filter(item => {
+                              if (certTabFilter === 'issued') return item.status === 'issued';
+                              if (certTabFilter === 'drafts') return item.status === 'draft';
+                              if (certTabFilter === 'expired') return item.status === 'expired';
+                              return true;
+                            })
+                            .filter(item => {
+                              if (certClassFilter !== 'All Classes' && item.className !== certClassFilter) return false;
+                              if (certStatusFilter !== 'All Status' && item.status !== certStatusFilter.toLowerCase()) return false;
+                              if (certTypeFilter !== 'All Certificate Types' && item.type !== certTypeFilter) return false;
+                              if (certSearchQuery) {
+                                const q = certSearchQuery.toLowerCase();
+                                return (
+                                  item.studentName.toLowerCase().includes(q) ||
+                                  item.email?.toLowerCase().includes(q) ||
+                                  item.className.toLowerCase().includes(q) ||
+                                  item.certId?.toLowerCase().includes(q)
+                                );
+                              }
+                              return true;
+                            })
+                            .map((cert) => {
+                              const isSelected = selectedCertIds.includes(cert.id);
+                              return (
+                                <tr
+                                  key={cert.id}
+                                  className={`hover:bg-gray-50/80 transition-colors ${
+                                    isSelected ? 'bg-emerald-50/30' : ''
+                                  }`}
+                                >
+                                  {/* Checkbox */}
+                                  <td className="py-3.5 px-3">
+                                    <input
+                                      type="checkbox"
+                                      checked={isSelected}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setSelectedCertIds(prev => [...prev, cert.id]);
+                                        } else {
+                                          setSelectedCertIds(prev => prev.filter(id => id !== cert.id));
+                                        }
+                                      }}
+                                      className="rounded border-gray-300 text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Index # */}
+                                  <td className="py-3.5 px-2 text-center text-gray-400 font-bold text-[11px]">
+                                    {cert.num}
+                                  </td>
+
+                                  {/* Student Name & Email */}
+                                  <td className="py-3.5 px-3 min-w-[180px]">
+                                    <div 
+                                      onClick={() => setSelectedCertModal(cert)}
+                                      className="flex items-center gap-2.5 cursor-pointer group"
+                                    >
+                                      {cert.avatar ? (
+                                        <img 
+                                          src={cert.avatar} 
+                                          alt={cert.studentName} 
+                                          className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-100 group-hover:scale-105 transition-transform" 
+                                          onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                          }}
+                                        />
+                                      ) : null}
+                                      <div className={`w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px] items-center justify-center shrink-0 ${cert.avatar ? 'hidden' : 'flex'}`}>
+                                        {cert.initials || cert.studentName.slice(0, 2).toUpperCase()}
+                                      </div>
+                                      <div className="min-w-0">
+                                        <p className="font-bold text-gray-900 group-hover:text-[#114B44] transition-colors text-xs truncate">
+                                          {cert.studentName}
+                                        </p>
+                                        <p className="text-[11px] text-gray-400 truncate max-w-[160px]">
+                                          {cert.email}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Class */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold border ${cert.classColor}`}>
+                                      {cert.className}
+                                    </span>
+                                  </td>
+
+                                  {/* Type */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold ${cert.typeColor}`}>
+                                      {cert.type}
+                                    </span>
+                                  </td>
+
+                                  {/* Issue Date */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <div>
+                                      <span className="font-bold text-gray-800 text-[11px] block">{cert.issueDate}</span>
+                                      <span className="text-[10px] text-gray-400 font-medium">{cert.issueTime}</span>
+                                    </div>
+                                  </td>
+
+                                  {/* Status */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold capitalize ${
+                                      cert.status === 'issued' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                      cert.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                      'bg-rose-50 text-rose-700 border border-rose-200'
+                                    }`}>
+                                      <span className={`w-1.5 h-1.5 rounded-full ${
+                                        cert.status === 'issued' ? 'bg-emerald-600' :
+                                        cert.status === 'pending' ? 'bg-amber-500' :
+                                        'bg-rose-500'
+                                      }`}></span>
+                                      <span>{cert.status}</span>
+                                    </span>
+                                  </td>
+
+                                  {/* Actions */}
+                                  <td className="py-3.5 px-3 text-center whitespace-nowrap">
+                                    <div className="flex items-center justify-center gap-1">
+                                      <button
+                                        onClick={() => setSelectedCertModal(cert)}
+                                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        title="Preview Certificate"
+                                      >
+                                        <Eye className="w-4 h-4" />
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          alert(`Mengunduh sertifikat resmi PDF untuk ${cert.studentName}...`);
+                                        }}
+                                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        title="Download PDF"
+                                      >
+                                        <Download className="w-4 h-4" />
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          if (confirm(`Hapus / Cabut sertifikat ${cert.studentName}?`)) {
+                                            setCertificatesDataList(prev => prev.filter(c => c.id !== cert.id));
+                                          }
+                                        }}
+                                        className="p-1.5 rounded-lg hover:bg-rose-50 text-gray-400 hover:text-rose-600 transition-colors cursor-pointer"
+                                        title="Revoke / Delete"
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Certificate Statistics + Types + Recent + Quick Actions (w-full lg:w-72 xl:w-80) */}
+                <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
+                  
+                  {/* WIDGET 1: Certificate Statistics (Matching Mockup with Y-Axis and Bars) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900">Certificate Statistics</h3>
+                      <div className="relative">
+                        <select className="bg-gray-50 border border-gray-200 rounded-lg px-2 py-0.5 pr-5 text-[10px] font-bold text-gray-600 appearance-none focus:outline-none cursor-pointer">
+                          <option>Last 30 days</option>
+                          <option>Last 7 days</option>
+                          <option>This Semester</option>
+                        </select>
+                        <ChevronDown className="w-2.5 h-2.5 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* SVG Bar Chart with Y-axis scale and horizontal grid lines */}
+                    <div className="pt-1">
+                      <div className="flex gap-2 items-stretch h-36">
+                        {/* Y-Axis scale */}
+                        <div className="flex flex-col justify-between text-[9px] text-gray-400 font-semibold py-0.5 text-right w-5 shrink-0">
+                          <span>20</span>
+                          <span>15</span>
+                          <span>10</span>
+                          <span>5</span>
+                          <span>0</span>
+                        </div>
+
+                        {/* Chart Canvas */}
+                        <div className="flex-1 flex flex-col justify-between">
+                          <div className="relative flex-1 w-full flex items-end justify-between gap-1.5 pt-1 pb-1 border-b border-gray-100">
+                            {/* Gridlines background */}
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="w-full"></div>
+                            </div>
+
+                            {/* 7 Bars matching mockup */}
+                            {[
+                              { label: '1 Sep', val: 8, height: 40 },
+                              { label: '5 Sep', val: 12, height: 60 },
+                              { label: '8 Sep', val: 14, height: 70 },
+                              { label: '15 Sep', val: 11, height: 55 },
+                              { label: '20 Sep', val: 15, height: 75 },
+                              { label: '22 Sep', val: 17, height: 85 },
+                              { label: '30 Sep', val: 19, height: 95 },
+                            ].map((bar, idx) => (
+                              <div key={idx} className="relative flex-1 h-full flex items-end justify-center group z-10">
+                                <div
+                                  className="w-full max-w-[18px] bg-[#10B981] hover:bg-[#059669] rounded-t-sm transition-all duration-300 cursor-pointer shadow-2xs"
+                                  style={{ height: `${bar.height}%` }}
+                                  title={`${bar.label}: ${bar.val} certificates`}
+                                ></div>
+                                {/* Hover tooltip value */}
+                                <div className="absolute -top-5 hidden group-hover:flex items-center justify-center bg-gray-900 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap z-20 pointer-events-none">
+                                  {bar.val}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* X-Axis labels matching mockup */}
+                          <div className="flex justify-between pt-1 text-[9px] text-gray-400 font-medium px-1">
+                            <span>1 Sep</span>
+                            <span>8 Sep</span>
+                            <span>15 Sep</span>
+                            <span>22 Sep</span>
+                            <span>30 Sep</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WIDGET 2: Certificate Types (Donut Chart SVG Matching Mockup) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Certificate Types</h3>
+
+                    {/* Donut Chart SVG */}
+                    <div className="flex items-center justify-center py-1">
+                      <div className="relative w-28 h-28 flex items-center justify-center">
+                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                          {/* Course Completion (50%) - Emerald */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#10B981"
+                            strokeWidth="14"
+                            strokeDasharray="119.38 238.76"
+                            strokeDashoffset="0"
+                          />
+                          {/* Quiz Certificate (21%) - Blue */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#3B82F6"
+                            strokeWidth="14"
+                            strokeDasharray="50.14 238.76"
+                            strokeDashoffset="-119.38"
+                          />
+                          {/* Assignment Certificate (17%) - Amber */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#F59E0B"
+                            strokeWidth="14"
+                            strokeDasharray="40.59 238.76"
+                            strokeDashoffset="-169.52"
+                          />
+                          {/* Custom Certificate (12%) - Purple */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#8B5CF6"
+                            strokeWidth="14"
+                            strokeDasharray="28.65 238.76"
+                            strokeDashoffset="-210.11"
+                          />
+                        </svg>
+
+                        {/* Center text */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                          <span className="text-base font-black text-gray-900 leading-none">48</span>
+                          <span className="text-[9px] font-bold text-gray-400 mt-0.5">Total</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Breakdown legend */}
+                    <div className="space-y-1.5 pt-1 text-xs">
+                      {[
+                        { label: 'Course Completion', count: '24 (50%)', dotColor: 'bg-emerald-500' },
+                        { label: 'Quiz Certificate', count: '10 (21%)', dotColor: 'bg-blue-500' },
+                        { label: 'Assignment Certificate', count: '8 (17%)', dotColor: 'bg-amber-500' },
+                        { label: 'Custom Certificate', count: '6 (12%)', dotColor: 'bg-purple-500' },
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between text-[11px]">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full ${item.dotColor}`}></span>
+                            <span className="text-gray-600 font-medium">{item.label}</span>
+                          </div>
+                          <span className="font-extrabold text-gray-800">{item.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 3: Recent Certificates */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Recent Certificates</h3>
+                      <button 
+                        onClick={() => setCertTabFilter('issued')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {recentCertificatesList.map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between gap-2.5 text-xs">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            {item.avatar ? (
+                              <img
+                                src={item.avatar}
+                                alt={item.studentName}
+                                className="w-7 h-7 rounded-full object-cover shrink-0 border border-gray-100"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            <div className={`w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] items-center justify-center shrink-0 ${item.avatar ? 'hidden' : 'flex'}`}>
+                              {item.initials || item.studentName.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-gray-900 text-[11px] truncate">{item.studentName}</p>
+                              <p className="text-[10px] text-gray-400 truncate">{item.type}</p>
+                              <p className="text-[9px] text-gray-400">{item.date}</p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              setSelectedCertModal({
+                                studentName: item.studentName,
+                                className: 'Nahwu for Beginners',
+                                type: item.type,
+                                issueDate: item.date,
+                                certId: `ILM-${Date.now().toString().slice(-5)}`,
+                                template: 'Modern Islamic'
+                              });
+                            }}
+                            className="px-2.5 py-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-[10px] font-bold text-gray-700 shrink-0 cursor-pointer"
+                          >
+                            View
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 4: Quick Actions */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-2">
+                    <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider mb-2">Quick Actions</h3>
+
+                    {/* Create Certificate */}
+                    <button
+                      onClick={() => setIsCreateCertModalOpen(true)}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Plus className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Create Certificate</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Upload Template */}
+                    <button
+                      onClick={() => alert('Membuka uploader template sertifikat baru (SVG/PNG kustom)...')}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <ImageIcon className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Upload Template</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Bulk Issue */}
+                    <button
+                      onClick={() => alert('Membuka mode Bulk Issue: Terbitkan sertifikat massal untuk seluruh siswa yang lulus ujian.')}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Users className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Bulk Issue</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Certificate Settings */}
+                    <button
+                      onClick={() => alert('Membuka pengaturan sertifikat: Penandatangan digital, nomor seri otomatis, & QR verification.')}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Settings className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Certificate Settings</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
             /* ========================================================= */
             /* VIEW 6: DASHBOARD OVERVIEW CANVAS                         */
@@ -7828,6 +8764,252 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               >
                 <Edit3 className="w-3.5 h-3.5" />
                 <span>Edit Questions</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: CREATE / ISSUE CERTIFICATE MODAL                   */}
+      {/* ========================================================= */}
+      {isCreateCertModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <Award className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Issue New Certificate</h3>
+                  <p className="text-xs text-gray-500">Berikan sertifikat resmi bagi siswa berprestasi.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsCreateCertModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!newCertForm.studentName.trim()) {
+                  alert('Mohon masukkan nama siswa.');
+                  return;
+                }
+                const newCert = {
+                  id: `crt-${Date.now()}`,
+                  num: certificatesDataList.length + 1,
+                  studentName: newCertForm.studentName,
+                  email: newCertForm.studentEmail || 'student@example.com',
+                  avatar: '/images/student_aisha.jpg',
+                  className: newCertForm.className,
+                  classColor: newCertForm.className === 'Nahwu for Beginners' ? 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]' :
+                              newCertForm.className === 'Sharaf Basic' ? 'bg-[#F5EDFD] text-[#581C87] border border-[#E9D5FF]' :
+                              newCertForm.className === 'Arabic Conversation' ? 'bg-[#EAF2FD] text-[#1E3A8A] border border-[#BFDBFE]' :
+                              'bg-amber-50 text-amber-700 border border-amber-200',
+                  type: newCertForm.type,
+                  typeColor: newCertForm.type === 'Course Completion' ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' :
+                             newCertForm.type === 'Quiz Certificate' ? 'text-purple-700 bg-purple-50 border border-purple-200' :
+                             'text-amber-700 bg-amber-50 border border-amber-200',
+                  issueDate: '30 Sep 2026',
+                  issueTime: '12:00 PM',
+                  status: newCertForm.status,
+                  certId: `ILM-${Date.now().toString().slice(-6)}`
+                };
+                setCertificatesDataList(prev => [newCert, ...prev]);
+                setIsCreateCertModalOpen(false);
+                alert('Sertifikat berhasil dibuat dan diterbitkan kepada siswa!');
+              }}
+              className="space-y-4 text-xs"
+            >
+              {/* Student Name */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Student Name <span className="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  value={newCertForm.studentName}
+                  onChange={(e) => setNewCertForm({ ...newCertForm, studentName: e.target.value })}
+                  placeholder="e.g. Aisha Rahman" 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  required
+                />
+              </div>
+
+              {/* Student Email */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Student Email</label>
+                <input 
+                  type="email" 
+                  value={newCertForm.studentEmail}
+                  onChange={(e) => setNewCertForm({ ...newCertForm, studentEmail: e.target.value })}
+                  placeholder="e.g. aisha@example.com" 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              {/* Target Class & Certificate Type */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Class</label>
+                  <select 
+                    value={newCertForm.className}
+                    onChange={(e) => setNewCertForm({ ...newCertForm, className: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600 cursor-pointer"
+                  >
+                    <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                    <option value="Arabic Conversation">Arabic Conversation</option>
+                    <option value="Sharaf Basic">Sharaf Basic</option>
+                    <option value="Quran Tajweed">Quran Tajweed</option>
+                    <option value="Academic Writing">Academic Writing</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Certificate Type</label>
+                  <select 
+                    value={newCertForm.type}
+                    onChange={(e) => setNewCertForm({ ...newCertForm, type: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600 cursor-pointer"
+                  >
+                    <option value="Course Completion">Course Completion</option>
+                    <option value="Quiz Certificate">Quiz Certificate</option>
+                    <option value="Assignment Certificate">Assignment Certificate</option>
+                    <option value="Custom Certificate">Custom Certificate</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Template Selection */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Design Template</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                  {certTemplatesList.map(tpl => (
+                    <button
+                      type="button"
+                      key={tpl.id}
+                      onClick={() => setNewCertForm({ ...newCertForm, template: tpl.title })}
+                      className={`p-2 rounded-xl border text-center cursor-pointer transition-all ${
+                        newCertForm.template === tpl.title
+                          ? 'border-[#114B44] bg-[#114B44]/5 text-[#114B44] font-extrabold ring-1 ring-[#114B44]'
+                          : 'border-gray-200 hover:bg-gray-50 text-gray-700'
+                      }`}
+                    >
+                      <p className="text-[11px] truncate">{tpl.title}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateCertModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer"
+                >
+                  Issue Certificate
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: CERTIFICATE PREVIEW / VERIFICATION MODAL           */}
+      {/* ========================================================= */}
+      {selectedCertModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
+                  <Award className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Official Certificate Preview</h3>
+                  <p className="text-xs text-gray-500">ID: {selectedCertModal.certId || 'ILM-2026-PREVIEW'}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedCertModal(null)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Visual Certificate Paper */}
+            <div className="relative rounded-2xl p-8 bg-linear-to-br from-[#0A3D36] via-[#114B44] to-[#072B26] text-white shadow-xl border-4 border-amber-400/40 text-center space-y-4 overflow-hidden">
+              {/* Corner Ornaments */}
+              <div className="absolute inset-2 border border-amber-300/30 rounded-xl pointer-events-none"></div>
+              
+              <div className="flex items-center justify-between text-amber-300 text-xs font-black tracking-widest uppercase">
+                <span>★ IlmHub Academy</span>
+                <span className="text-[10px] bg-amber-400/20 text-amber-200 px-2 py-0.5 rounded-full border border-amber-400/30">Verified</span>
+              </div>
+
+              <div className="space-y-1 pt-2">
+                <h2 className="text-xl sm:text-2xl font-serif font-black tracking-wider text-amber-200 uppercase">
+                  Certificate of Achievement
+                </h2>
+                <p className="text-xs text-emerald-100/80 font-light italic">This is proudly presented to</p>
+              </div>
+
+              <div className="py-2">
+                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight underline decoration-amber-400/50 underline-offset-8">
+                  {selectedCertModal.studentName}
+                </h3>
+              </div>
+
+              <p className="text-xs text-emerald-100/90 max-w-md mx-auto leading-relaxed">
+                has successfully completed the comprehensive course and evaluation for <span className="font-black text-white">{selectedCertModal.className}</span> with excellence.
+              </p>
+
+              <div className="pt-6 flex items-end justify-between border-t border-white/10 text-xs">
+                <div className="text-left">
+                  <p className="text-[10px] text-emerald-200 font-bold">Issued on</p>
+                  <p className="font-extrabold text-white text-xs">{selectedCertModal.issueDate || '30 Sep 2026'}</p>
+                </div>
+
+                <div className="w-12 h-12 rounded-full border-2 border-amber-400/60 bg-amber-400/10 flex items-center justify-center">
+                  <Award className="w-6 h-6 text-amber-300" />
+                </div>
+
+                <div className="text-right">
+                  <p className="text-[10px] text-emerald-200 font-bold">Instructor</p>
+                  <p className="font-extrabold text-white text-xs">{teacherName}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center justify-end gap-2.5 text-xs">
+              <button
+                type="button"
+                onClick={() => setSelectedCertModal(null)}
+                className="px-4 py-2.5 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  alert(`Mengunduh berkas PDF kualitas cetak sertifikat ${selectedCertModal.studentName}...`);
+                }}
+                className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-xs cursor-pointer flex items-center gap-2"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download High-Res PDF</span>
               </button>
             </div>
           </div>
