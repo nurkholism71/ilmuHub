@@ -106,10 +106,10 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-gray-800">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-gray-800 antialiased selection:bg-[#114B44] selection:text-white">
       
-      {/* Top Header Bar */}
-      <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+      {/* Top Fixed Header Bar */}
+      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         {/* Logo */}
         <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={onBackToHome}>
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#114B44] to-[#0A302B] flex items-center justify-center shadow-xs">
@@ -140,12 +140,12 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
 
         {/* Right Actions */}
         <div className="flex items-center gap-3 shrink-0">
-          <button className="relative p-2 text-gray-500 hover:text-gray-800 rounded-full hover:bg-gray-100 transition-colors">
+          <button className="relative p-2 text-gray-500 hover:text-gray-800 rounded-full hover:bg-gray-100 transition-colors cursor-pointer">
             <MessageSquare className="w-4 h-4" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500"></span>
           </button>
 
-          <button className="relative p-2 text-gray-500 hover:text-gray-800 rounded-full hover:bg-gray-100 transition-colors">
+          <button className="relative p-2 text-gray-500 hover:text-gray-800 rounded-full hover:bg-gray-100 transition-colors cursor-pointer">
             <Bell className="w-4 h-4" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500"></span>
           </button>
@@ -171,11 +171,11 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
         </div>
       </header>
 
-      {/* Main Dashboard Layout with Left Sidebar + Expanded Main Canvas */}
-      <div className="flex-1 flex max-w-[1600px] w-full mx-auto">
+      {/* Main Dashboard Layout: Sticky Fixed Left Sidebar + Scrollable Spacious Canvas */}
+      <div className="flex-1 flex max-w-[1600px] w-full mx-auto relative">
         
-        {/* LEFT SIDEBAR */}
-        <aside className="w-56 lg:w-64 bg-white border-r border-gray-200 p-4 shrink-0 hidden md:block">
+        {/* STICKY FIXED LEFT SIDEBAR (Mentok Tidak Ikut Scroll) */}
+        <aside className="w-60 lg:w-64 bg-white border-r border-gray-200 p-4 shrink-0 hidden md:block sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto no-scrollbar select-none">
           <div className="space-y-1">
             {sidebarItems.map((item) => {
               const Icon = item.icon;
@@ -211,7 +211,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
         </aside>
 
         {/* MAIN CANVAS */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8 min-w-0 pb-16">
           
           {/* Top Greeting Header with Date */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
