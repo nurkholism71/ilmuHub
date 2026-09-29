@@ -1195,6 +1195,128 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     { studentName: 'Sara Nabilah', type: 'Course Completion', date: '15 Sep 2026', initials: 'SN' },
   ];
 
+  // Earnings View States (matching media_1790723603405.jpg)
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState('320.75');
+  const [withdrawMethod, setWithdrawMethod] = useState('paypal');
+  const [selectedTransactionModal, setSelectedTransactionModal] = useState(null);
+  const [earningsPeriod, setEarningsPeriod] = useState('Last 12 months');
+  const [revenueByClassPeriod, setRevenueByClassPeriod] = useState('Last 30 days');
+
+  const earningsOverviewData = [
+    { month: 'Jan', classRev: 45, tipsRev: 25, total: 70 },
+    { month: 'Feb', classRev: 80, tipsRev: 35, total: 115 },
+    { month: 'Mar', classRev: 98, tipsRev: 55, total: 153 },
+    { month: 'Apr', classRev: 115, tipsRev: 50, total: 165 },
+    { month: 'May', classRev: 148, tipsRev: 58, total: 206 },
+    { month: 'Jun', classRev: 172, tipsRev: 62, total: 234 },
+    { month: 'Jul', classRev: 145, tipsRev: 58, total: 203 },
+    { month: 'Aug', classRev: 175, tipsRev: 60, total: 235 },
+    { month: 'Sep', classRev: 280, tipsRev: 40.75, total: 320.75, isSelected: true },
+    { month: 'Oct', classRev: 230, tipsRev: 55, total: 285 },
+    { month: 'Nov', classRev: 245, tipsRev: 60, total: 305 },
+    { month: 'Dec', classRev: 260, tipsRev: 70, total: 330 },
+  ];
+
+  const [recentTransactionsList, setRecentTransactionsList] = useState([
+    {
+      id: 'tx-1',
+      date: '30 Sep 2026',
+      studentName: 'Aisha Rahman',
+      avatar: '/images/student_aisha.jpg',
+      item: 'Nahwu for Beginners',
+      type: 'Class Enrollment',
+      amount: '$25.00',
+      status: 'Completed',
+      invoice: 'INV-7821'
+    },
+    {
+      id: 'tx-2',
+      date: '29 Sep 2026',
+      studentName: 'Omar Hassan',
+      avatar: '/images/student_omar.jpg',
+      item: 'Sharaf Basic',
+      type: 'Class Enrollment',
+      amount: '$18.00',
+      status: 'Completed',
+      invoice: 'INV-7819'
+    },
+    {
+      id: 'tx-3',
+      date: '28 Sep 2026',
+      studentName: 'Fatimah Zahra',
+      avatar: '/images/student_fatimah.jpg',
+      item: 'Arabic Conversation',
+      type: 'Class Enrollment',
+      amount: '$20.00',
+      status: 'Completed',
+      invoice: 'INV-7815'
+    },
+    {
+      id: 'tx-4',
+      date: '27 Sep 2026',
+      studentName: 'Sara Nabilah',
+      initials: 'SN',
+      item: 'Quran Tajweed',
+      type: 'Class Enrollment',
+      amount: '$15.00',
+      status: 'Completed',
+      invoice: 'INV-7812'
+    },
+    {
+      id: 'tx-5',
+      date: '26 Sep 2026',
+      studentName: 'Ali Khan',
+      avatar: '/images/student_ali.jpg',
+      item: 'Nahwu for Beginners',
+      type: 'Class Enrollment',
+      amount: '$25.00',
+      status: 'Completed',
+      invoice: 'INV-7810'
+    },
+    {
+      id: 'tx-6',
+      date: '25 Sep 2026',
+      studentName: 'Yusuf Mansur',
+      initials: 'YM',
+      item: 'Tips from Student',
+      type: 'Tip / Donation',
+      amount: '$5.00',
+      status: 'Completed',
+      invoice: 'INV-7808'
+    },
+    {
+      id: 'tx-7',
+      date: '24 Sep 2026',
+      studentName: 'Layla Ahmad',
+      avatar: '/images/tutor_layla.jpg',
+      item: 'Academic Writing',
+      type: 'Class Enrollment',
+      amount: '$12.00',
+      status: 'Completed',
+      invoice: 'INV-7805'
+    },
+    {
+      id: 'tx-8',
+      date: '23 Sep 2026',
+      studentName: 'Hasan Ali',
+      initials: 'HA',
+      item: 'Sharaf Basic',
+      type: 'Class Enrollment',
+      amount: '$18.00',
+      status: 'Completed',
+      invoice: 'INV-7802'
+    }
+  ]);
+
+  const revenueByClassList = [
+    { title: 'Nahwu for Beginners', image: '/images/class_nahwu.jpg', amount: '$120.50', percent: 38, barColor: 'bg-emerald-600' },
+    { title: 'Sharaf Basic', image: '/images/class_sharaf.jpg', amount: '$85.75', percent: 27, barColor: 'bg-emerald-600' },
+    { title: 'Arabic Conversation', image: '/images/class_conversation.jpg', amount: '$62.30', percent: 20, barColor: 'bg-emerald-600' },
+    { title: 'Quran Tajweed', image: '/images/class_nahwu.jpg', amount: '$35.20', percent: 11, barColor: 'bg-emerald-600' },
+    { title: 'Academic Writing', image: '/images/class_conversation.jpg', amount: '$17.00', percent: 5, barColor: 'bg-emerald-600' },
+  ];
+
   // Sidebar Items matching reference image
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -6794,6 +6916,514 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
             </div>
+          ) : activeNav === 'earnings' ? (
+            /* ========================================================= */
+            /* VIEW: EARNINGS (MATCHING MOCKUP & COMPACT RIGHT SIDEBAR)  */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* TOP HEADER: Icon, Title, Subtitle, and Withdraw Earnings Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Earnings</h1>
+                    <p className="text-xs text-gray-500 font-medium">Lihat pendapatan, transaksi, dan analisis penghasilan dari kelas Anda.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => setIsWithdrawModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Withdraw Earnings</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 4 METRIC SUMMARY CARDS */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {/* Total Earnings */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Total Earnings</p>
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">$1,248.50</h3>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-0.5">↑ +12% this month</p>
+                  </div>
+                </div>
+
+                {/* This Month */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
+                    <BarChart2 className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">This Month</p>
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">$320.75</h3>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-0.5">↑ +18% from last month</p>
+                  </div>
+                </div>
+
+                {/* Total Students */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Total Students</p>
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">512</h3>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-0.5">+28 new students</p>
+                  </div>
+                </div>
+
+                {/* Active Classes */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Active Classes</p>
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">8</h3>
+                    <p className="text-[10px] text-gray-400 font-medium mt-0.5">Generating revenue</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2-COLUMN LAYOUT: Center Earnings Canvas + Right Sidebar Column */}
+              <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
+                
+                {/* CENTER CANVAS: Earnings Overview Chart + Recent Transactions Table (flex-1 min-w-0 w-full) */}
+                <div className="flex-1 min-w-0 w-full space-y-5">
+                  
+                  {/* WIDGET 1: Earnings Overview Stacked Bar Chart */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <h2 className="text-sm font-black text-gray-900">Earnings Overview</h2>
+                      </div>
+
+                      {/* Legend */}
+                      <div className="flex items-center gap-4 text-xs font-semibold">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#059669]"></span>
+                          <span className="text-gray-600 text-[11px]">Class Revenue</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#6EE7B7]"></span>
+                          <span className="text-gray-600 text-[11px]">Other Revenue (Tips, etc)</span>
+                        </div>
+                      </div>
+
+                      {/* Period selector */}
+                      <div className="relative self-start sm:self-auto">
+                        <select
+                          value={earningsPeriod}
+                          onChange={(e) => setEarningsPeriod(e.target.value)}
+                          className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none cursor-pointer"
+                        >
+                          <option value="Last 12 months">Last 12 months</option>
+                          <option value="This Year">This Year (2026)</option>
+                          <option value="Last 6 months">Last 6 months</option>
+                        </select>
+                        <ChevronDown className="w-3 h-3 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* Stacked Bar Chart Area */}
+                    <div className="pt-2">
+                      <div className="flex gap-3 items-stretch h-56">
+                        {/* Y-Axis scale */}
+                        <div className="flex flex-col justify-between text-[10px] text-gray-400 font-semibold py-1 text-right w-8 shrink-0">
+                          <span>$400</span>
+                          <span>$300</span>
+                          <span>$200</span>
+                          <span>$100</span>
+                          <span>$0</span>
+                        </div>
+
+                        {/* Chart Area */}
+                        <div className="flex-1 flex flex-col justify-between">
+                          <div className="relative flex-1 w-full flex items-end justify-between gap-2 pt-2 pb-1 border-b border-gray-100">
+                            {/* Horizontal Gridlines */}
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="w-full"></div>
+                            </div>
+
+                            {/* 12 Stacked Bars */}
+                            {earningsOverviewData.map((item, idx) => {
+                              const classHeight = (item.classRev / 400) * 100;
+                              const tipsHeight = (item.tipsRev / 400) * 100;
+                              return (
+                                <div key={idx} className="relative flex-1 h-full flex flex-col justify-end items-center group z-10">
+                                  {/* Tooltip on Sep (or on hover) */}
+                                  {item.month === 'Sep' && (
+                                    <div className="absolute -top-16 bg-white border border-gray-200 rounded-xl p-2 shadow-lg text-[10px] whitespace-nowrap z-30 pointer-events-none animate-in fade-in">
+                                      <p className="font-bold text-gray-500">Sep 2026</p>
+                                      <p className="font-black text-gray-900 text-xs">${item.total.toFixed(2)}</p>
+                                      <div className="space-y-0.5 pt-1 text-[9px]">
+                                        <div className="flex items-center gap-1.5 text-gray-600">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-[#059669]"></span>
+                                          <span>Class Revenue:</span>
+                                          <span className="font-bold">${item.classRev.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-gray-600">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-[#6EE7B7]"></span>
+                                          <span>Tips & Others:</span>
+                                          <span className="font-bold">${item.tipsRev.toFixed(2)}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Stacked Bars */}
+                                  <div className="w-full max-w-[24px] flex flex-col justify-end rounded-t-md overflow-hidden cursor-pointer shadow-2xs group-hover:opacity-90 transition-opacity">
+                                    {/* Tips / Other Revenue (Light Mint) */}
+                                    <div
+                                      className="w-full bg-[#6EE7B7] hover:bg-[#34D399] transition-all duration-300 rounded-t-md"
+                                      style={{ height: `${tipsHeight * 1.6}px` }}
+                                      title={`${item.month} Tips: $${item.tipsRev}`}
+                                    ></div>
+                                    {/* Class Revenue (Dark Emerald) */}
+                                    <div
+                                      className="w-full bg-[#059669] hover:bg-[#047857] transition-all duration-300"
+                                      style={{ height: `${classHeight * 1.6}px` }}
+                                      title={`${item.month} Class Revenue: $${item.classRev}`}
+                                    ></div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* X-Axis labels */}
+                          <div className="flex justify-between pt-1.5 text-[10px] text-gray-400 font-bold px-1">
+                            {earningsOverviewData.map((item, idx) => (
+                              <span key={idx} className={item.month === 'Sep' ? 'text-gray-900 font-black' : ''}>
+                                {item.month}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WIDGET 2: Recent Transactions Table */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+                    <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                      <h2 className="text-sm font-black text-gray-900">Recent Transactions</h2>
+                      <button
+                        onClick={() => alert('Membuka seluruh riwayat transaksi & mutasi rekening...')}
+                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-gray-200 bg-gray-50/60 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                            <th className="py-3 px-3">Date</th>
+                            <th className="py-3 px-3">Student</th>
+                            <th className="py-3 px-3">Class / Product</th>
+                            <th className="py-3 px-3">Type</th>
+                            <th className="py-3 px-3">Amount</th>
+                            <th className="py-3 px-3">Status</th>
+                            <th className="py-3 px-3">Invoice</th>
+                            <th className="py-3 px-3 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 text-xs">
+                          {recentTransactionsList.map((tx) => (
+                            <tr key={tx.id} className="hover:bg-gray-50/80 transition-colors">
+                              {/* Date */}
+                              <td className="py-3.5 px-3 font-semibold text-gray-700 whitespace-nowrap text-[11px]">
+                                {tx.date}
+                              </td>
+
+                              {/* Student */}
+                              <td className="py-3.5 px-3 min-w-[140px] whitespace-nowrap">
+                                <div className="flex items-center gap-2">
+                                  {tx.avatar ? (
+                                    <img
+                                      src={tx.avatar}
+                                      alt={tx.studentName}
+                                      className="w-7 h-7 rounded-full object-cover shrink-0 border border-gray-100"
+                                      onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                      }}
+                                    />
+                                  ) : null}
+                                  <div className={`w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] items-center justify-center shrink-0 ${tx.avatar ? 'hidden' : 'flex'}`}>
+                                    {tx.initials || tx.studentName.slice(0, 2).toUpperCase()}
+                                  </div>
+                                  <span className="font-bold text-gray-900 text-xs">{tx.studentName}</span>
+                                </div>
+                              </td>
+
+                              {/* Class / Product */}
+                              <td className="py-3.5 px-3 font-semibold text-gray-700 text-xs whitespace-nowrap">
+                                {tx.item}
+                              </td>
+
+                              {/* Type */}
+                              <td className="py-3.5 px-3 text-gray-500 text-[11px] whitespace-nowrap">
+                                {tx.type}
+                              </td>
+
+                              {/* Amount */}
+                              <td className="py-3.5 px-3 font-black text-gray-900 text-xs whitespace-nowrap">
+                                {tx.amount}
+                              </td>
+
+                              {/* Status */}
+                              <td className="py-3.5 px-3 whitespace-nowrap">
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                  <span>{tx.status}</span>
+                                </span>
+                              </td>
+
+                              {/* Invoice */}
+                              <td className="py-3.5 px-3 font-mono text-[11px] text-gray-500 whitespace-nowrap">
+                                {tx.invoice}
+                              </td>
+
+                              {/* Actions */}
+                              <td className="py-3.5 px-3 text-right whitespace-nowrap">
+                                <button
+                                  onClick={() => setSelectedTransactionModal(tx)}
+                                  className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                  title="View Invoice"
+                                >
+                                  <MoreVertical className="w-3.5 h-3.5" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Revenue by Class + Earnings Breakdown + Payout Info (w-full lg:w-72 xl:w-80) */}
+                <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
+                  
+                  {/* WIDGET 1: Revenue by Class */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900">Revenue by Class</h3>
+                      <div className="relative">
+                        <select
+                          value={revenueByClassPeriod}
+                          onChange={(e) => setRevenueByClassPeriod(e.target.value)}
+                          className="bg-gray-50 border border-gray-200 rounded-lg px-2 py-0.5 pr-5 text-[10px] font-bold text-gray-600 appearance-none focus:outline-none cursor-pointer"
+                        >
+                          <option value="Last 30 days">Last 30 days</option>
+                          <option value="Last 90 days">Last 90 days</option>
+                          <option value="This Year">This Year</option>
+                        </select>
+                        <ChevronDown className="w-2.5 h-2.5 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      {revenueByClassList.map((cls, idx) => (
+                        <div key={idx} className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-2 text-xs">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <img
+                                src={cls.image}
+                                alt={cls.title}
+                                className="w-6 h-6 rounded-md object-cover shrink-0 border border-gray-100"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                              <span className="font-bold text-gray-900 text-[11px] truncate">{cls.title}</span>
+                            </div>
+                            <span className="font-black text-emerald-800 text-[11px] shrink-0">{cls.amount}</span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                              <div
+                                className="h-full bg-emerald-600 rounded-full"
+                                style={{ width: `${cls.percent}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-[10px] font-bold text-gray-400 shrink-0">{cls.percent}%</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 2: Earnings Breakdown (Donut Chart) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Earnings Breakdown</h3>
+
+                    {/* Donut Chart SVG */}
+                    <div className="flex items-center justify-center py-1">
+                      <div className="relative w-32 h-32 flex items-center justify-center">
+                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                          {/* Class Enrollments (68%) - Emerald */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#10B981"
+                            strokeWidth="14"
+                            strokeDasharray="162.36 238.76"
+                            strokeDashoffset="0"
+                          />
+                          {/* Tips & Donations (15%) - Cyan */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#06B6D4"
+                            strokeWidth="14"
+                            strokeDasharray="35.81 238.76"
+                            strokeDashoffset="-162.36"
+                          />
+                          {/* Certificates (10%) - Blue */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#3B82F6"
+                            strokeWidth="14"
+                            strokeDasharray="23.88 238.76"
+                            strokeDashoffset="-198.17"
+                          />
+                          {/* Other (7%) - Purple */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#8B5CF6"
+                            strokeWidth="14"
+                            strokeDasharray="16.71 238.76"
+                            strokeDashoffset="-222.05"
+                          />
+                        </svg>
+
+                        {/* Center text */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                          <span className="text-sm font-black text-gray-900 leading-none">$320.75</span>
+                          <span className="text-[9px] font-bold text-gray-400 mt-0.5">This Month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Breakdown legend */}
+                    <div className="space-y-1.5 pt-1 text-xs">
+                      {[
+                        { label: 'Class Enrollments', count: '68%', dotColor: 'bg-emerald-500' },
+                        { label: 'Tips & Donations', count: '15%', dotColor: 'bg-cyan-500' },
+                        { label: 'Certificates', count: '10%', dotColor: 'bg-blue-500' },
+                        { label: 'Other', count: '7%', dotColor: 'bg-purple-500' },
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between text-[11px]">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full ${item.dotColor}`}></span>
+                            <span className="text-gray-600 font-medium">{item.label}</span>
+                          </div>
+                          <span className="font-extrabold text-gray-800">{item.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 3: Payout Information */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Payout Information</h3>
+                      <button 
+                        onClick={() => setIsWithdrawModalOpen(true)}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>Manage</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* Available Balance Box */}
+                    <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200/60 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-[#114B44] text-white flex items-center justify-center">
+                          <DollarSign className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-gray-500 uppercase">Available Balance</p>
+                          <p className="text-base font-black text-gray-900">$320.75</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsWithdrawModalOpen(true)}
+                        className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3 py-1.5 rounded-lg font-bold text-xs cursor-pointer shadow-2xs"
+                      >
+                        Withdraw
+                      </button>
+                    </div>
+
+                    {/* Stats details */}
+                    <div className="space-y-2 pt-1 text-xs">
+                      <div className="flex items-center justify-between text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-3.5 h-3.5 text-gray-400" />
+                          <span className="text-[11px]">Pending Balance</span>
+                        </div>
+                        <span className="font-black text-gray-900 text-[11px]">$48.00</span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-gray-400" />
+                          <span className="text-[11px]">Total Withdrawn</span>
+                        </div>
+                        <span className="font-black text-gray-900 text-[11px]">$880.25</span>
+                      </div>
+
+                      <div 
+                        onClick={() => alert('Membuka pengaturan akun rekening PayPal / Bank')}
+                        className="flex items-center justify-between text-gray-600 pt-1 border-t border-gray-100 cursor-pointer hover:bg-gray-50 p-1 rounded-lg"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-[10px] text-gray-400 font-bold uppercase">Payment Method</p>
+                          <p className="font-bold text-gray-800 text-[11px] truncate">PayPal (ahmed@example.com)</p>
+                        </div>
+                        <ChevronRight className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
             /* ========================================================= */
             /* VIEW 6: DASHBOARD OVERVIEW CANVAS                         */
@@ -9010,6 +9640,203 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Download High-Res PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: WITHDRAW EARNINGS MODAL                            */}
+      {/* ========================================================= */}
+      {isWithdrawModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <DollarSign className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Withdraw Earnings</h3>
+                  <p className="text-xs text-gray-500">Tarik saldo pendapatan ke rekening Anda.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsWithdrawModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert(`Permintaan penarikan dana sebesar $${withdrawAmount} berhasil diajukan! Dana akan ditransfer dalam 1x24 jam.`);
+                setIsWithdrawModalOpen(false);
+              }}
+              className="space-y-4 text-xs"
+            >
+              {/* Available balance highlight */}
+              <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-200/60 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase">Saldo Tersedia</p>
+                  <p className="text-lg font-black text-emerald-900">$320.75</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setWithdrawAmount('320.75')}
+                  className="px-2.5 py-1 bg-white border border-emerald-300 text-emerald-800 rounded-lg font-bold text-[10px] cursor-pointer hover:bg-emerald-50"
+                >
+                  Tarik Semua
+                </button>
+              </div>
+
+              {/* Amount input */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Jumlah Penarikan (USD) <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-gray-500">$</span>
+                  <input 
+                    type="number"
+                    step="0.01"
+                    min="10"
+                    max="320.75"
+                    value={withdrawAmount}
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-8 pr-4 py-2.5 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                    required
+                  />
+                </div>
+                <p className="text-[10px] text-gray-400">Minimal penarikan $10.00</p>
+              </div>
+
+              {/* Destination method */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Metode Pembayaran</label>
+                <div className="space-y-2 pt-1">
+                  {[
+                    { id: 'paypal', label: 'PayPal (ahmed@example.com)', desc: 'Instan • Biaya 0%' },
+                    { id: 'bank', label: 'Bank Transfer (BCA / Mandiri / BSI)', desc: '1-2 Hari Kerja • Biaya $1.50' },
+                    { id: 'stripe', label: 'Stripe Direct Payout', desc: 'Instan • Biaya 0%' },
+                  ].map(method => (
+                    <label
+                      key={method.id}
+                      className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${
+                        withdrawMethod === method.id
+                          ? 'border-[#114B44] bg-[#114B44]/5'
+                          : 'border-gray-200 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <input
+                          type="radio"
+                          name="payoutMethod"
+                          checked={withdrawMethod === method.id}
+                          onChange={() => setWithdrawMethod(method.id)}
+                          className="text-[#114B44] focus:ring-[#114B44]"
+                        />
+                        <div>
+                          <p className="font-bold text-gray-900 text-xs">{method.label}</p>
+                          <p className="text-[10px] text-gray-400">{method.desc}</p>
+                        </div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsWithdrawModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer"
+                >
+                  Konfirmasi Penarikan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: TRANSACTION INVOICE DETAILS MODAL                  */}
+      {/* ========================================================= */}
+      {selectedTransactionModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
+                  <DollarSign className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Rincian Transaksi</h3>
+                  <p className="text-xs text-gray-500">{selectedTransactionModal.invoice}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedTransactionModal(null)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs bg-gray-50 p-4 rounded-2xl border border-gray-100">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Tanggal Transaksi:</span>
+                <span className="font-bold text-gray-800">{selectedTransactionModal.date}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Nama Siswa:</span>
+                <span className="font-extrabold text-gray-900">{selectedTransactionModal.studentName}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Item / Kelas:</span>
+                <span className="font-bold text-gray-800">{selectedTransactionModal.item}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Jenis Transaksi:</span>
+                <span className="font-bold text-gray-800">{selectedTransactionModal.type}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Status Pembayaran:</span>
+                <span className="font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full text-[10px]">
+                  {selectedTransactionModal.status}
+                </span>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                <span className="text-gray-900 font-extrabold">Total Diterima:</span>
+                <span className="text-lg font-black text-[#114B44]">{selectedTransactionModal.amount}</span>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center justify-end gap-2.5 text-xs">
+              <button
+                type="button"
+                onClick={() => setSelectedTransactionModal(null)}
+                className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+              >
+                Tutup
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  alert(`Mengunduh struk / invoice resmi untuk ${selectedTransactionModal.invoice}`);
+                }}
+                className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer flex items-center gap-2"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Unduh Invoice</span>
               </button>
             </div>
           </div>
