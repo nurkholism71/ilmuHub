@@ -1714,6 +1714,47 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     }
   ]);
 
+  // =========================================================
+  // ANALYTICS VIEW STATES & DATA (matching media_1790724716497.jpg)
+  // =========================================================
+  const [analyticsPeriod, setAnalyticsPeriod] = useState('Last 30 days');
+  const [analyticsClassFilter, setAnalyticsClassFilter] = useState('All Classes');
+  const [analyticsContentTab, setAnalyticsContentTab] = useState('materials'); // 'materials' | 'assignments' | 'quizzes'
+  const [analyticsEarningsPeriod, setAnalyticsEarningsPeriod] = useState('Last 30 days');
+  const [hoveredGrowthIndex, setHoveredGrowthIndex] = useState(21); // Default to 22 Sep (21)
+
+  const topPerformingData = {
+    materials: [
+      { id: 1, title: 'Kuis Nahwu Dasar 1', views: '1.2K views', img: '/images/class_nahwu.jpg' },
+      { id: 2, title: 'Kuis Sharaf 1', views: '980 views', img: '/images/class_conversation.jpg' },
+      { id: 3, title: "Materi Isim, Fi'il, dan Harf", views: '842 views', img: '/images/class_nahwu.jpg' },
+      { id: 4, title: 'Percakapan Bahasa Arab', views: '730 views', img: '/images/class_conversation.jpg' },
+      { id: 5, title: 'Latihan Soal Nahwu', views: '690 views', img: '/images/class_nahwu.jpg' },
+    ],
+    assignments: [
+      { id: 1, title: "Tugas Analisis I'rab Bab Fa'il", views: '450 submissions', img: '/images/class_nahwu.jpg' },
+      { id: 2, title: 'Latihan Tashrif Lughawi', views: '410 submissions', img: '/images/class_conversation.jpg' },
+      { id: 3, title: 'Menulis Paragraf Bahasa Arab', views: '380 submissions', img: '/images/class_nahwu.jpg' },
+      { id: 4, title: 'Hafalan Matan Jurumiyyah', views: '320 submissions', img: '/images/class_conversation.jpg' },
+      { id: 5, title: 'Tugas Kaidah I\'rob Lanjutan', views: '290 submissions', img: '/images/class_nahwu.jpg' },
+    ],
+    quizzes: [
+      { id: 1, title: 'Kuis Nahwu Bab 1-3', views: '520 attempts', img: '/images/class_nahwu.jpg' },
+      { id: 2, title: 'Ujian Tengah Semester Sharaf', views: '480 attempts', img: '/images/class_conversation.jpg' },
+      { id: 3, title: 'Kuis Kosakata Percakapan', views: '410 attempts', img: '/images/class_nahwu.jpg' },
+      { id: 4, title: 'Kuis Tajweed Hukum Nun Mati', views: '390 attempts', img: '/images/class_conversation.jpg' },
+      { id: 5, title: 'Kuis Fiqih Sholat Berjamaah', views: '350 attempts', img: '/images/class_nahwu.jpg' },
+    ]
+  };
+
+  const topStudentsAnalyticsList = [
+    { id: 1, name: 'Aisha Rahman', completion: '95% completion', activities: '28 activities', avatar: '/images/student_aisha.jpg' },
+    { id: 2, name: 'Omar Hassan', completion: '92% completion', activities: '25 activities', avatar: '/images/student_omar.jpg' },
+    { id: 3, name: 'Fatimah Zahra', completion: '88% completion', activities: '22 activities', avatar: '/images/student_fatimah.jpg' },
+    { id: 4, name: 'Ali Khan', completion: '85% completion', activities: '20 activities', avatar: '/images/student_ali.jpg' },
+    { id: 5, name: 'Sara Nabilah', completion: '82% completion', activities: '18 activities', avatar: null, initials: 'SN', initialBg: 'bg-sky-100 text-sky-800' },
+  ];
+
   // Sidebar Items matching reference image
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -8991,6 +9032,877 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                     </div>
                   </div>
 
+                </div>
+
+              </div>
+
+            </div>
+          ) : activeNav === 'analytics' ? (
+            /* ========================================================= */
+            /* VIEW: ANALYTICS (MATCHING media_1790724716497.jpg)        */
+            /* ========================================================= */
+            <div className="space-y-5">
+              
+              {/* TOP HEADER: Icon, Title, Subtitle, and Timeframe Filter */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <BarChart2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Analytics</h1>
+                    <p className="text-xs text-gray-500 font-medium">Lihat statistik lengkap untuk memantau perkembangan kelas, siswa, dan performa Anda.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <div className="relative">
+                    <select
+                      value={analyticsPeriod}
+                      onChange={(e) => setAnalyticsPeriod(e.target.value)}
+                      className="bg-white border border-gray-200/90 rounded-xl pl-9 pr-8 py-2 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] shadow-2xs cursor-pointer"
+                    >
+                      <option>Last 7 days</option>
+                      <option>Last 30 days</option>
+                      <option>Last 3 months</option>
+                      <option>This Year</option>
+                      <option>All Time</option>
+                    </select>
+                    <Calendar className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {/* 6 TOP KPI STAT CARDS */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                
+                {/* 1. Total Students */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs space-y-1.5 hover:border-emerald-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                      <Users className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xl font-black text-gray-900 leading-tight">512</span>
+                    <p className="text-[11px] font-bold text-gray-600">Total Students</p>
+                    <p className="text-[10px] font-bold text-emerald-600 mt-0.5">↑ 18% from last month</p>
+                  </div>
+                </div>
+
+                {/* 2. Active Classes */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs space-y-1.5 hover:border-blue-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                      <BookOpen className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xl font-black text-gray-900 leading-tight">8</span>
+                    <p className="text-[11px] font-bold text-gray-600">Active Classes</p>
+                    <p className="text-[10px] font-bold text-emerald-600 mt-0.5">↑ 2 new classes</p>
+                  </div>
+                </div>
+
+                {/* 3. Total Assignments */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs space-y-1.5 hover:border-purple-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xl font-black text-gray-900 leading-tight">284</span>
+                    <p className="text-[11px] font-bold text-gray-600">Total Assignments</p>
+                    <p className="text-[10px] font-bold text-emerald-600 mt-0.5">↑ 24% completion</p>
+                  </div>
+                </div>
+
+                {/* 4. Total Quizzes */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs space-y-1.5 hover:border-amber-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                      <HelpCircle className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xl font-black text-gray-900 leading-tight">16</span>
+                    <p className="text-[11px] font-bold text-gray-600">Total Quizzes</p>
+                    <p className="text-[10px] font-bold text-emerald-600 mt-0.5">↑ 12% participation</p>
+                  </div>
+                </div>
+
+                {/* 5. Certificates Issued */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs space-y-1.5 hover:border-rose-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                      <Award className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xl font-black text-gray-900 leading-tight">48</span>
+                    <p className="text-[11px] font-bold text-gray-600">Certificates Issued</p>
+                    <p className="text-[10px] font-bold text-emerald-600 mt-0.5">↑ 36% from last month</p>
+                  </div>
+                </div>
+
+                {/* 6. Total Earnings */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs space-y-1.5 hover:border-emerald-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-50 text-[#114B44] flex items-center justify-center">
+                      <DollarSign className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xl font-black text-gray-900 leading-tight">$1,248.50</span>
+                    <p className="text-[11px] font-bold text-gray-600">Total Earnings</p>
+                    <p className="text-[10px] font-bold text-emerald-600 mt-0.5">↑ 12% from last month</p>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* ROW 1: 2 BIG VISUAL CHARTS (Student Growth & Class Performance) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                
+                {/* CHART 1: Student Growth (Combo Bar + Line Chart with Tooltip) */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Student Growth</h3>
+                      <p className="text-[11px] text-gray-500">Jumlah siswa baru dan total siswa aktif.</p>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-xs font-bold">
+                      <span className="flex items-center gap-1.5 text-gray-600">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-300"></span>
+                        New Students
+                      </span>
+                      <span className="flex items-center gap-1.5 text-gray-900">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#114B44]"></span>
+                        Total Students
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Visual Chart Canvas */}
+                  <div className="relative pt-4">
+                    
+                    {/* Floating Tooltip matching mockup */}
+                    <div className="absolute top-1 left-[58%] -translate-x-1/2 z-10 bg-white/95 backdrop-blur-xs border border-gray-200/80 rounded-xl p-2.5 shadow-lg text-[11px] space-y-1 pointer-events-none">
+                      <p className="text-[10px] font-bold text-gray-400">22 Sep 2026</p>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="flex items-center gap-1 text-gray-700 font-medium">
+                          <span className="w-2 h-2 rounded-full bg-[#114B44]"></span>
+                          Total Students
+                        </span>
+                        <span className="font-extrabold text-gray-900">428</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="flex items-center gap-1 text-gray-700 font-medium">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                          New Students
+                        </span>
+                        <span className="font-extrabold text-gray-900">36</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-end gap-2 h-48 w-full">
+                      {/* Y-Axis scale */}
+                      <div className="flex flex-col justify-between h-full text-[9px] font-semibold text-gray-400 pr-2 shrink-0 select-none pb-4">
+                        <span>600</span>
+                        <span>500</span>
+                        <span>400</span>
+                        <span>300</span>
+                        <span>200</span>
+                        <span>100</span>
+                        <span>0</span>
+                      </div>
+
+                      {/* Chart Area with Gridlines, Bars & SVG Line */}
+                      <div className="relative flex-1 h-full flex flex-col justify-end">
+                        
+                        {/* Background Horizontal Grid Lines */}
+                        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-200 w-full"></div>
+                        </div>
+
+                        {/* Bar Columns Container (30 Days) */}
+                        <div className="relative z-0 h-[85%] flex items-end justify-between gap-1 px-1">
+                          {[
+                            { day: 1, total: 100, newSt: 8 },
+                            { day: 2, total: 115, newSt: 12 },
+                            { day: 3, total: 130, newSt: 15 },
+                            { day: 4, total: 145, newSt: 18 },
+                            { day: 5, total: 160, newSt: 14 },
+                            { day: 6, total: 175, newSt: 20 },
+                            { day: 7, total: 190, newSt: 22 },
+                            { day: 8, total: 205, newSt: 19 },
+                            { day: 9, total: 220, newSt: 24 },
+                            { day: 10, total: 235, newSt: 25 },
+                            { day: 11, total: 250, newSt: 22 },
+                            { day: 12, total: 265, newSt: 28 },
+                            { day: 13, total: 280, newSt: 26 },
+                            { day: 14, total: 295, newSt: 30 },
+                            { day: 15, total: 310, newSt: 27 },
+                            { day: 16, total: 325, newSt: 32 },
+                            { day: 17, total: 340, newSt: 34 },
+                            { day: 18, total: 355, newSt: 30 },
+                            { day: 19, total: 375, newSt: 35 },
+                            { day: 20, total: 395, newSt: 38 },
+                            { day: 21, total: 410, newSt: 32 },
+                            { day: 22, total: 428, newSt: 36 }, // Active Tooltip Point
+                            { day: 23, total: 445, newSt: 40 },
+                            { day: 24, total: 460, newSt: 38 },
+                            { day: 25, total: 475, newSt: 42 },
+                            { day: 26, total: 485, newSt: 35 },
+                            { day: 27, total: 495, newSt: 44 },
+                            { day: 28, total: 502, newSt: 48 },
+                            { day: 29, total: 508, newSt: 52 },
+                            { day: 30, total: 512, newSt: 55 },
+                          ].map((item, idx) => (
+                            <div
+                              key={idx}
+                              className="group relative flex-1 flex flex-col items-center justify-end h-full cursor-pointer"
+                              onMouseEnter={() => setHoveredGrowthIndex(idx)}
+                            >
+                              {/* Stacked Bars (Dark emerald for new, light for base) */}
+                              <div
+                                className="w-full rounded-t-sm transition-all duration-300"
+                                style={{
+                                  height: `${(item.total / 600) * 100}%`,
+                                  backgroundColor: idx === 21 ? '#114B44' : '#A7F3D0'
+                                }}
+                              ></div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Overlay SVG Line Graph for Total Students */}
+                        <svg className="absolute inset-0 w-full h-[85%] pointer-events-none overflow-visible">
+                          <polyline
+                            fill="none"
+                            stroke="#114B44"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            points="
+                              10,135 25,130 40,125 55,120 70,115 85,110 100,105 115,100 130,95 145,90 
+                              160,85 175,80 190,75 205,70 220,65 235,60 250,55 265,50 280,45 295,40 
+                              310,36 325,32 340,28 355,25 370,22 385,19 400,16 415,14 430,12 445,10
+                            "
+                          />
+                          {/* Dot at Sep 22 */}
+                          <circle cx="325" cy="32" r="4" fill="#114B44" stroke="#ffffff" strokeWidth="2" />
+                          <circle cx="445" cy="10" r="4" fill="#114B44" stroke="#ffffff" strokeWidth="2" />
+                        </svg>
+
+                        {/* X-Axis dates */}
+                        <div className="flex justify-between text-[9px] font-semibold text-gray-400 pt-2 border-t border-gray-200">
+                          <span>1 Sep</span>
+                          <span>5 Sep</span>
+                          <span>10 Sep</span>
+                          <span>15 Sep</span>
+                          <span>20 Sep</span>
+                          <span>25 Sep</span>
+                          <span>30 Sep</span>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CHART 2: Class Performance (Paired Bar Chart: Score vs Completion) */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Class Performance</h3>
+                      <p className="text-[11px] text-gray-500">Rata-rata nilai dan tingkat penyelesaian per kelas.</p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5 text-xs font-bold">
+                        <span className="flex items-center gap-1 text-gray-700">
+                          <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                          Average Score
+                        </span>
+                        <span className="flex items-center gap-1 text-gray-700">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                          Completion Rate
+                        </span>
+                      </div>
+
+                      <div className="relative">
+                        <select
+                          value={analyticsClassFilter}
+                          onChange={(e) => setAnalyticsClassFilter(e.target.value)}
+                          className="bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1 pr-6 text-[11px] font-bold text-gray-700 appearance-none focus:outline-none cursor-pointer"
+                        >
+                          <option>All Classes</option>
+                          <option>Nahwu for Beginners</option>
+                          <option>Sharaf Basic</option>
+                          <option>Arabic Conversation</option>
+                          <option>Quran Tajweed</option>
+                          <option>Academic Writing</option>
+                        </select>
+                        <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bar Chart Area */}
+                  <div className="flex items-end gap-2 h-48 w-full pt-4">
+                    {/* Y-Axis */}
+                    <div className="flex flex-col justify-between h-full text-[9px] font-semibold text-gray-400 pr-2 shrink-0 select-none pb-6">
+                      <span>100%</span>
+                      <span>80%</span>
+                      <span>60%</span>
+                      <span>40%</span>
+                      <span>20%</span>
+                      <span>0%</span>
+                    </div>
+
+                    {/* Bars Grid */}
+                    <div className="relative flex-1 h-full flex flex-col justify-end">
+                      
+                      {/* Grid Lines */}
+                      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-200 w-full"></div>
+                      </div>
+
+                      {/* 5 Classes Paired Bars */}
+                      <div className="relative z-0 h-[80%] flex items-end justify-around gap-2 px-2">
+                        {[
+                          { title: 'Nahwu for Beginners', score: 85, completion: 78 },
+                          { title: 'Sharaf Basic', score: 78, completion: 72 },
+                          { title: 'Arabic Conversation', score: 72, completion: 68 },
+                          { title: 'Quran Tajweed', score: 90, completion: 84 },
+                          { title: 'Academic Writing', score: 68, completion: 60 },
+                        ].map((cls, idx) => (
+                          <div key={idx} className="flex flex-col items-center gap-1.5 h-full justify-end group">
+                            
+                            {/* Paired Bars Container */}
+                            <div className="flex items-end gap-1.5 h-full">
+                              {/* Blue Score Bar */}
+                              <div className="flex flex-col items-center justify-end h-full">
+                                <span className="text-[9px] font-bold text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity mb-0.5">
+                                  {cls.score}%
+                                </span>
+                                <div
+                                  className="w-4 sm:w-5 bg-blue-500 rounded-t-sm shadow-2xs hover:brightness-110 transition-all"
+                                  style={{ height: `${cls.score}%` }}
+                                ></div>
+                              </div>
+
+                              {/* Green Completion Bar */}
+                              <div className="flex flex-col items-center justify-end h-full">
+                                <span className="text-[9px] font-bold text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity mb-0.5">
+                                  {cls.completion}%
+                                </span>
+                                <div
+                                  className="w-4 sm:w-5 bg-emerald-500 rounded-t-sm shadow-2xs hover:brightness-110 transition-all"
+                                  style={{ height: `${cls.completion}%` }}
+                                ></div>
+                              </div>
+                            </div>
+
+                            {/* Class Label Below */}
+                            <span className="text-[9px] font-medium text-gray-600 text-center max-w-[70px] truncate block mt-1">
+                              {cls.title}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* ROW 2: 3 COLUMNS (Engagement Line Chart, Top Performing Content, Student Activity Donut) */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                
+                {/* 1. Engagement Multi-Line Chart */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xs font-black text-gray-900">Engagement</h3>
+                      <p className="text-[10px] text-gray-400">Aktivitas siswa di platform Anda.</p>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-[10px] font-bold">
+                      <span className="flex items-center gap-1 text-purple-800">
+                        <span className="w-2 h-2 rounded-full bg-purple-700"></span>
+                        Class Attendance
+                      </span>
+                      <span className="flex items-center gap-1 text-purple-400">
+                        <span className="w-2 h-2 rounded-full bg-purple-300"></span>
+                        Material Views
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Line Chart Visual */}
+                  <div className="flex items-end gap-2 h-36 w-full pt-2">
+                    <div className="flex flex-col justify-between h-full text-[8px] font-semibold text-gray-400 shrink-0 pb-3">
+                      <span>200</span>
+                      <span>150</span>
+                      <span>100</span>
+                      <span>50</span>
+                      <span>0</span>
+                    </div>
+
+                    <div className="relative flex-1 h-full flex flex-col justify-end">
+                      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-200 w-full"></div>
+                      </div>
+
+                      {/* SVG Line Curves */}
+                      <svg className="relative z-0 w-full h-[80%] overflow-visible">
+                        {/* Material Views (Light Purple) */}
+                        <path
+                          d="M 10,75 Q 40,78 70,60 T 130,55 T 190,45 T 250,30 T 310,40 T 360,35"
+                          fill="none"
+                          stroke="#C084FC"
+                          strokeWidth="2"
+                        />
+                        {/* Attendance (Deep Purple) */}
+                        <path
+                          d="M 10,65 Q 40,55 70,40 T 130,60 T 190,30 T 250,20 T 310,48 T 360,15"
+                          fill="none"
+                          stroke="#6D28D9"
+                          strokeWidth="2.5"
+                        />
+                        <circle cx="10" cy="65" r="3" fill="#6D28D9" />
+                        <circle cx="70" cy="40" r="3" fill="#6D28D9" />
+                        <circle cx="130" cy="60" r="3" fill="#6D28D9" />
+                        <circle cx="190" cy="30" r="3" fill="#6D28D9" />
+                        <circle cx="250" cy="20" r="3" fill="#6D28D9" />
+                        <circle cx="310" cy="48" r="3" fill="#6D28D9" />
+                        <circle cx="360" cy="15" r="3" fill="#6D28D9" />
+                      </svg>
+
+                      {/* X-Axis dates */}
+                      <div className="flex justify-between text-[8px] font-semibold text-gray-400 pt-1 border-t border-gray-200">
+                        <span>1 Sep</span>
+                        <span>5 Sep</span>
+                        <span>10 Sep</span>
+                        <span>15 Sep</span>
+                        <span>20 Sep</span>
+                        <span>25 Sep</span>
+                        <span>30 Sep</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Top Performing Content */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xs font-black text-gray-900">Top Performing Content</h3>
+                      <p className="text-[10px] text-gray-400">Materi, tugas, dan kuis yang paling diminati.</p>
+                    </div>
+                  </div>
+
+                  {/* Pills Switcher */}
+                  <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl">
+                    {[
+                      { id: 'materials', label: 'Materials' },
+                      { id: 'assignments', label: 'Assignments' },
+                      { id: 'quizzes', label: 'Quizzes' },
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setAnalyticsContentTab(tab.id)}
+                        className={`flex-1 py-1 text-[10px] font-bold rounded-lg transition-all cursor-pointer ${
+                          analyticsContentTab === tab.id
+                            ? 'bg-[#114B44] text-white shadow-2xs'
+                            : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Top Items List */}
+                  <div className="space-y-2">
+                    {(topPerformingData[analyticsContentTab] || topPerformingData.materials).map((item, idx) => (
+                      <div key={item.id} className="flex items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="font-black text-gray-400 text-xs w-3.5 shrink-0">{idx + 1}</span>
+                          <img
+                            src={item.img}
+                            alt={item.title}
+                            className="w-7 h-7 rounded-lg object-cover shrink-0 border border-gray-100"
+                            onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                          />
+                          <p className="font-bold text-gray-900 text-[11px] truncate">{item.title}</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-gray-500 shrink-0">{item.views}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3. Student Activity Donut Chart */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                  <div>
+                    <h3 className="text-xs font-black text-gray-900">Student Activity</h3>
+                    <p className="text-[10px] text-gray-400">Distribusi aktivitas siswa.</p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 pt-1">
+                    {/* Donut Ring Visual */}
+                    <div className="relative w-28 h-28 shrink-0 flex items-center justify-center">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        {/* Background ring */}
+                        <path
+                          className="text-gray-100"
+                          strokeWidth="3.8"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        {/* 1. Material Views: 42% (Blue) */}
+                        <path
+                          className="text-blue-500"
+                          strokeDasharray="42, 100"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        {/* 2. Assignment Submissions: 24% (Emerald) */}
+                        <path
+                          className="text-emerald-500"
+                          strokeDasharray="24, 100"
+                          strokeDashoffset="-42"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        {/* 3. Quiz Attempts: 18% (Amber) */}
+                        <path
+                          className="text-amber-500"
+                          strokeDasharray="18, 100"
+                          strokeDashoffset="-66"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        {/* 4. Live Class: 10% (Purple) */}
+                        <path
+                          className="text-purple-500"
+                          strokeDasharray="10, 100"
+                          strokeDashoffset="-84"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        {/* 5. Discussion: 6% (Rose) */}
+                        <path
+                          className="text-rose-400"
+                          strokeDasharray="6, 100"
+                          strokeDashoffset="-94"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                      </svg>
+                      
+                      {/* Center Label */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                        <span className="text-sm font-black text-gray-900 leading-none">1.2K</span>
+                        <span className="text-[8px] font-bold text-gray-400 mt-0.5">Total Activities</span>
+                      </div>
+                    </div>
+
+                    {/* Donut Legend */}
+                    <div className="space-y-1.5 flex-1 text-[10px]">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-gray-700 font-medium">
+                          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                          Material Views
+                        </span>
+                        <span className="font-bold text-gray-900">42%</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-gray-700 font-medium">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          Assignment Submissions
+                        </span>
+                        <span className="font-bold text-gray-900">24%</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-gray-700 font-medium">
+                          <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                          Quiz Attempts
+                        </span>
+                        <span className="font-bold text-gray-900">18%</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-gray-700 font-medium">
+                          <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                          Live Class Attendance
+                        </span>
+                        <span className="font-bold text-gray-900">10%</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-gray-700 font-medium">
+                          <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+                          Discussion Posts
+                        </span>
+                        <span className="font-bold text-gray-900">6%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* ROW 3: 3 COLUMNS (Earnings Analytics Bar Chart, Top Students, Device Usage Donut) */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                
+                {/* 1. Earnings Analytics Bar Chart */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xs font-black text-gray-900">Earnings Analytics</h3>
+                      <p className="text-[10px] text-gray-400">Pendapatan dari kelas Anda.</p>
+                    </div>
+
+                    <div className="relative">
+                      <select
+                        value={analyticsEarningsPeriod}
+                        onChange={(e) => setAnalyticsEarningsPeriod(e.target.value)}
+                        className="bg-gray-50 border border-gray-200 rounded-lg px-2 py-0.5 pr-6 text-[10px] font-bold text-gray-700 appearance-none focus:outline-none cursor-pointer"
+                      >
+                        <option>Last 30 days</option>
+                        <option>Last 7 days</option>
+                        <option>Last 3 months</option>
+                      </select>
+                      <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Daily Vertical Bars */}
+                  <div className="flex items-end gap-1.5 h-36 w-full pt-2">
+                    <div className="flex flex-col justify-between h-full text-[8px] font-semibold text-gray-400 shrink-0 pb-3">
+                      <span>$200</span>
+                      <span>$150</span>
+                      <span>$100</span>
+                      <span>$50</span>
+                      <span>$0</span>
+                    </div>
+
+                    <div className="relative flex-1 h-full flex flex-col justify-end">
+                      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-100 w-full"></div>
+                        <div className="border-b border-gray-200 w-full"></div>
+                      </div>
+
+                      {/* Daily Bars (Sep 1 to 30) */}
+                      <div className="relative z-0 h-[80%] flex items-end justify-between gap-1 px-1">
+                        {[
+                          10, 15, 25, 20, 30, 35, 28, 45, 50, 42,
+                          55, 60, 48, 65, 70, 62, 75, 80, 72, 85,
+                          90, 82, 95, 110, 105, 130, 120, 140, 135, 160
+                        ].map((val, idx) => (
+                          <div
+                            key={idx}
+                            className="group relative flex-1 flex flex-col items-center justify-end h-full"
+                          >
+                            <div
+                              className="w-full bg-[#114B44] hover:bg-emerald-600 rounded-t-xs transition-all shadow-2xs"
+                              style={{ height: `${(val / 200) * 100}%` }}
+                            ></div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex justify-between text-[8px] font-semibold text-gray-400 pt-1 border-t border-gray-200">
+                        <span>1 Sep</span>
+                        <span>5 Sep</span>
+                        <span>10 Sep</span>
+                        <span>15 Sep</span>
+                        <span>20 Sep</span>
+                        <span>25 Sep</span>
+                        <span>30 Sep</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Top Students List */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xs font-black text-gray-900">Top Students</h3>
+                      <p className="text-[10px] text-gray-400">Siswa paling aktif di kelas Anda.</p>
+                    </div>
+                    <button
+                      onClick={() => setActiveNav('students')}
+                      className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                    >
+                      <span>View All</span>
+                      <ChevronRight className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {topStudentsAnalyticsList.map((st, idx) => (
+                      <div key={st.id} className="flex items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-2 min-w-0">
+                          {/* Rank badge */}
+                          <span className={`w-4 h-4 rounded-full text-[9px] font-black flex items-center justify-center shrink-0 ${
+                            idx === 0 ? 'bg-amber-100 text-amber-800 font-black' : idx === 1 ? 'bg-gray-200 text-gray-700' : idx === 2 ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-500'
+                          }`}>
+                            {idx + 1}
+                          </span>
+
+                          {st.avatar ? (
+                            <img
+                              src={st.avatar}
+                              alt={st.name}
+                              className="w-6 h-6 rounded-full object-cover border border-gray-100 shrink-0"
+                            />
+                          ) : (
+                            <div className={`w-6 h-6 rounded-full font-black text-[9px] flex items-center justify-center shrink-0 ${st.initialBg}`}>
+                              {st.initials}
+                            </div>
+                          )}
+
+                          <p className="font-bold text-gray-900 text-[11px] truncate">{st.name}</p>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded-md">
+                            {st.completion}
+                          </span>
+                          <span className="text-[9px] text-gray-400 font-medium">
+                            {st.activities}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3. Device Usage Donut Chart */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                  <div>
+                    <h3 className="text-xs font-black text-gray-900">Device Usage</h3>
+                    <p className="text-[10px] text-gray-400">Perangkat yang digunakan siswa.</p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 pt-1">
+                    {/* Donut Visual */}
+                    <div className="relative w-28 h-28 shrink-0 flex items-center justify-center">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        <path
+                          className="text-gray-100"
+                          strokeWidth="3.8"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        {/* Mobile: 68% (Blue) */}
+                        <path
+                          className="text-blue-500"
+                          strokeDasharray="68, 100"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        {/* Desktop: 26% (Emerald) */}
+                        <path
+                          className="text-emerald-500"
+                          strokeDasharray="26, 100"
+                          strokeDashoffset="-68"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        {/* Tablet: 6% (Purple) */}
+                        <path
+                          className="text-purple-500"
+                          strokeDasharray="6, 100"
+                          strokeDashoffset="-94"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                      </svg>
+                      
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                        <span className="text-sm font-black text-gray-900 leading-none">512</span>
+                        <span className="text-[8px] font-bold text-gray-400 mt-0.5">Students</span>
+                      </div>
+                    </div>
+
+                    {/* Donut Legend */}
+                    <div className="space-y-2 flex-1 text-[11px]">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-gray-700 font-medium">
+                          <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                          Mobile
+                        </span>
+                        <span className="font-bold text-gray-900">68%</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-gray-700 font-medium">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                          Desktop
+                        </span>
+                        <span className="font-bold text-gray-900">26%</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-gray-700 font-medium">
+                          <span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                          Tablet
+                        </span>
+                        <span className="font-bold text-gray-900">6%</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
               </div>
