@@ -2023,11 +2023,11 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
               </div>
 
-              {/* Main Content Layout: Timetable Grid (Left 8/9 cols) + Right Sidebar (3/4 cols) */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+              {/* Main Content Layout: Timetable Grid (Left) + Right Compact Sidebar (w-72/w-80) */}
+              <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
                 
-                {/* CENTER / TIMETABLE CANVAS (8 or 9 Cols) */}
-                <div className="xl:col-span-8 2xl:col-span-9 space-y-6 min-w-0">
+                {/* CENTER / TIMETABLE CANVAS (Spacious & Flexible) */}
+                <div className="flex-1 min-w-0 w-full space-y-6">
                   
                   {/* Calendar View Controls Toolbar */}
                   <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/80 shadow-2xs">
@@ -2512,8 +2512,8 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
 
                 </div>
 
-                {/* RIGHT SIDEBAR COLUMN: Mini Calendar + Today's Schedule + Upcoming (3 or 4 Cols) */}
-                <div className="xl:col-span-4 2xl:col-span-3 space-y-5 shrink-0">
+                {/* RIGHT SIDEBAR COLUMN: Mini Calendar + Today's Schedule + Upcoming (Compact w-72 / w-80) */}
+                <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
                   
                   {/* WIDGET 1: Mini Interactive Calendar Picker (Matching mockup) */}
                   <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-4">
@@ -2791,11 +2791,11 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
 
               </div>
 
-              {/* Main Content Layout: Table Column (Left 8/9 cols) + Right Sidebar Column (Right 4/3 cols) */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+              {/* Main Content Layout: Table Column (Left) + Right Compact Sidebar (w-72/w-80) */}
+              <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
                 
-                {/* CENTER / TABLE CANVAS (8 or 9 Cols) */}
-                <div className="xl:col-span-8 2xl:col-span-9 space-y-4 min-w-0">
+                {/* CENTER / TABLE CANVAS (Spacious, Wide & Flexible) */}
+                <div className="flex-1 min-w-0 w-full space-y-4">
                   
                   {/* Search & Filter Toolbar */}
                   <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-gray-200/80 shadow-2xs">
@@ -3105,33 +3105,33 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
 
                 </div>
 
-                {/* RIGHT SIDEBAR COLUMN: Growth + Top Performing + Activity + Quick Actions (3 or 4 Cols) */}
-                <div className="xl:col-span-4 2xl:col-span-3 space-y-5 shrink-0">
+                {/* RIGHT SIDEBAR COLUMN: Compact, Rapi & Fixed Width (w-72 / w-80) */}
+                <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
                   
-                  {/* WIDGET 1: Student Growth (Matching mockup with SVG bar chart) */}
-                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-4">
+                  {/* WIDGET 1: Student Growth (Matching mockup with crisp visible bar chart) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-black text-gray-900">Student Growth</h3>
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Student Growth</h3>
                       <div className="relative">
                         <select 
                           value={studentGrowthRange}
                           onChange={(e) => setStudentGrowthRange(e.target.value)}
-                          className="appearance-none bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1 pr-6 text-[11px] font-bold text-gray-700 focus:outline-none cursor-pointer"
+                          className="appearance-none bg-gray-50 border border-gray-200 rounded-xl px-2 py-0.5 pr-5 text-[10px] font-bold text-gray-700 focus:outline-none cursor-pointer"
                         >
                           <option value="Last 30 days">Last 30 days</option>
                           <option value="Last 3 months">Last 3 months</option>
                           <option value="This Year">This Year</option>
                         </select>
-                        <ChevronDown className="w-3 h-3 text-gray-400 absolute right-2 top-2 pointer-events-none" />
+                        <ChevronDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1.5 pointer-events-none" />
                       </div>
                     </div>
 
-                    {/* SVG Bar Chart for Student Growth */}
-                    <div className="relative pt-2">
-                      <div className="flex items-end justify-between h-36 gap-2 border-b border-gray-200 pb-2 px-1">
+                    {/* Crisp Visible Bar Chart */}
+                    <div className="pt-2">
+                      <div className="flex items-end justify-between h-32 gap-2 border-b border-gray-200 pb-1.5 pl-5 pr-1 relative">
                         
-                        {/* Y-Axis guide labels */}
-                        <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[9px] font-bold text-gray-400 pointer-events-none">
+                        {/* Y-Axis Guide Labels */}
+                        <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[9px] font-bold text-gray-400 pointer-events-none select-none">
                           <span>30</span>
                           <span>20</span>
                           <span>10</span>
@@ -3139,55 +3139,83 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                         </div>
 
                         {/* Bar 1: 1 Sep (value 12) */}
-                        <div className="flex-1 flex flex-col items-center gap-1.5 ml-5">
-                          <div className="w-full bg-[#114B44]/80 hover:bg-[#114B44] rounded-t-lg transition-all" style={{ height: '35%' }} title="1 Sep: 12 students"></div>
-                          <span className="text-[9px] font-extrabold text-gray-400">1 Sep</span>
+                        <div className="flex-1 flex flex-col items-center justify-end h-full group">
+                          <div 
+                            className="w-full max-w-[24px] bg-[#114B44]/75 hover:bg-[#114B44] rounded-t-md transition-all cursor-pointer shadow-2xs"
+                            style={{ height: '38px' }}
+                            title="1 Sep: 12 students"
+                          />
+                          <span className="text-[9px] font-extrabold text-gray-400 mt-1.5">1 Sep</span>
                         </div>
 
                         {/* Bar 2: 8 Sep (value 16) */}
-                        <div className="flex-1 flex flex-col items-center gap-1.5">
-                          <div className="w-full bg-[#114B44]/80 hover:bg-[#114B44] rounded-t-lg transition-all" style={{ height: '48%' }} title="8 Sep: 16 students"></div>
-                          <span className="text-[9px] font-extrabold text-gray-400">8 Sep</span>
+                        <div className="flex-1 flex flex-col items-center justify-end h-full group">
+                          <div 
+                            className="w-full max-w-[24px] bg-[#114B44]/80 hover:bg-[#114B44] rounded-t-md transition-all cursor-pointer shadow-2xs"
+                            style={{ height: '52px' }}
+                            title="8 Sep: 16 students"
+                          />
+                          <span className="text-[9px] font-extrabold text-gray-400 mt-1.5">8 Sep</span>
                         </div>
 
                         {/* Bar 3: 15 Sep (value 21) */}
-                        <div className="flex-1 flex flex-col items-center gap-1.5">
-                          <div className="w-full bg-[#114B44]/80 hover:bg-[#114B44] rounded-t-lg transition-all" style={{ height: '62%' }} title="15 Sep: 21 students"></div>
-                          <span className="text-[9px] font-extrabold text-gray-400">15 Sep</span>
+                        <div className="flex-1 flex flex-col items-center justify-end h-full group">
+                          <div 
+                            className="w-full max-w-[24px] bg-[#114B44]/85 hover:bg-[#114B44] rounded-t-md transition-all cursor-pointer shadow-2xs"
+                            style={{ height: '68px' }}
+                            title="15 Sep: 21 students"
+                          />
+                          <span className="text-[9px] font-extrabold text-gray-400 mt-1.5">15 Sep</span>
                         </div>
 
                         {/* Bar 4: 22 Sep (value 26) */}
-                        <div className="flex-1 flex flex-col items-center gap-1.5">
-                          <div className="w-full bg-[#114B44]/90 hover:bg-[#114B44] rounded-t-lg transition-all" style={{ height: '78%' }} title="22 Sep: 26 students"></div>
-                          <span className="text-[9px] font-extrabold text-gray-400">22 Sep</span>
+                        <div className="flex-1 flex flex-col items-center justify-end h-full group">
+                          <div 
+                            className="w-full max-w-[24px] bg-[#114B44]/90 hover:bg-[#114B44] rounded-t-md transition-all cursor-pointer shadow-2xs"
+                            style={{ height: '86px' }}
+                            title="22 Sep: 26 students"
+                          />
+                          <span className="text-[9px] font-extrabold text-gray-400 mt-1.5">22 Sep</span>
                         </div>
 
                         {/* Bar 5: 30 Sep (value 32) */}
-                        <div className="flex-1 flex flex-col items-center gap-1.5">
-                          <div className="w-full bg-[#114B44] rounded-t-lg shadow-xs transition-all" style={{ height: '95%' }} title="30 Sep: 32 students"></div>
-                          <span className="text-[9px] font-extrabold text-gray-900">30 Sep</span>
+                        <div className="flex-1 flex flex-col items-center justify-end h-full group">
+                          <div 
+                            className="w-full max-w-[24px] bg-[#114B44] rounded-t-md transition-all cursor-pointer shadow-xs"
+                            style={{ height: '106px' }}
+                            title="30 Sep: 32 students"
+                          />
+                          <span className="text-[9px] font-black text-gray-900 mt-1.5">30 Sep</span>
                         </div>
 
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-gray-400 font-medium px-1 mt-1.5">
+                        <span>Min: 12</span>
+                        <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                          +166% Growth
+                        </span>
+                        <span className="font-black text-gray-800">32 Total</span>
                       </div>
                     </div>
                   </div>
 
                   {/* WIDGET 2: Top Performing Students (Matching mockup) */}
-                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3.5">
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-black text-gray-900">Top Performing Students</h3>
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Top Performing Students</h3>
                       <button 
                         onClick={() => alert('Daftar lengkap peringkat siswa')}
-                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
                       >
                         <span>View All</span>
                         <ArrowRight className="w-3 h-3" />
                       </button>
                     </div>
 
-                    <div className="space-y-2.5">
+                    <div className="space-y-2">
                       {topPerformingStudents.map((st) => (
-                        <div key={st.rank} className="flex items-center justify-between gap-2.5 p-1.5 rounded-xl hover:bg-gray-50 transition-colors">
+                        <div key={st.rank} className="flex items-center justify-between gap-2.5 p-1.5 rounded-xl hover:bg-gray-50 transition-colors text-xs">
                           <div className="flex items-center gap-2.5 min-w-0">
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${st.medalColor}`}>
                               {st.rank}
@@ -3210,15 +3238,15 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   </div>
 
                   {/* WIDGET 3: Student Activity (Matching mockup) */}
-                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3.5">
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-black text-gray-900">Student Activity</h3>
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Student Activity</h3>
                     </div>
 
                     <div className="flex items-center gap-1 border-b border-gray-100 pb-2">
                       <button
                         onClick={() => setStudentActivityTab('recent')}
-                        className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
                           studentActivityTab === 'recent'
                             ? 'bg-emerald-50 text-emerald-800'
                             : 'text-gray-500 hover:text-gray-900'
@@ -3228,7 +3256,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       </button>
                       <button
                         onClick={() => setStudentActivityTab('milestones')}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                           studentActivityTab === 'milestones'
                             ? 'bg-emerald-50 text-emerald-800'
                             : 'text-gray-500 hover:text-gray-900'
@@ -3238,17 +3266,17 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                       {studentActivities.map((act, i) => {
                         const Icon = act.icon;
                         return (
-                          <div key={i} className="flex items-start gap-3 text-xs">
-                            <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${act.iconBg}`}>
-                              <Icon className="w-3.5 h-3.5" />
+                          <div key={i} className="flex items-start gap-2.5 text-xs">
+                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${act.iconBg}`}>
+                              <Icon className="w-3 h-3" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-bold text-gray-900 leading-snug">{act.text}</p>
-                              <span className="text-[10px] text-gray-400 mt-0.5 block">{act.time}</span>
+                              <p className="font-bold text-gray-900 text-[11px] leading-snug truncate">{act.text}</p>
+                              <span className="text-[9px] text-gray-400 mt-0.5 block">{act.time}</span>
                             </div>
                           </div>
                         );
@@ -3257,45 +3285,45 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   </div>
 
                   {/* WIDGET 4: Quick Actions (2x2 Grid Matching Mockup) */}
-                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3">
-                    <h3 className="text-sm font-black text-gray-900">Quick Actions</h3>
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Quick Actions</h3>
                     
-                    <div className="grid grid-cols-2 gap-2.5">
+                    <div className="grid grid-cols-2 gap-2">
                       
                       {/* Invite Students */}
                       <button 
                         onClick={() => setIsInviteModalOpen(true)}
-                        className="p-3 rounded-2xl bg-sky-50/70 hover:bg-sky-100/70 border border-sky-200/70 text-left flex items-center gap-2.5 transition-all cursor-pointer group"
+                        className="p-2.5 rounded-xl bg-sky-50/70 hover:bg-sky-100/70 border border-sky-200/70 text-left flex items-center gap-2 transition-all cursor-pointer group"
                       >
-                        <Mail className="w-4 h-4 text-sky-700 group-hover:scale-110 transition-transform shrink-0" />
-                        <span className="text-xs font-bold text-sky-900">Invite Students</span>
+                        <Mail className="w-3.5 h-3.5 text-sky-700 group-hover:scale-110 transition-transform shrink-0" />
+                        <span className="text-[11px] font-bold text-sky-900 leading-tight">Invite Students</span>
                       </button>
 
                       {/* Send Announcement */}
                       <button 
                         onClick={() => setIsAnnouncementModalOpen(true)}
-                        className="p-3 rounded-2xl bg-orange-50/70 hover:bg-orange-100/70 border border-orange-200/70 text-left flex items-center gap-2.5 transition-all cursor-pointer group"
+                        className="p-2.5 rounded-xl bg-orange-50/70 hover:bg-orange-100/70 border border-orange-200/70 text-left flex items-center gap-2 transition-all cursor-pointer group"
                       >
-                        <Megaphone className="w-4 h-4 text-orange-700 group-hover:scale-110 transition-transform shrink-0" />
-                        <span className="text-xs font-bold text-orange-900">Send Announcement</span>
+                        <Megaphone className="w-3.5 h-3.5 text-orange-700 group-hover:scale-110 transition-transform shrink-0" />
+                        <span className="text-[11px] font-bold text-orange-900 leading-tight">Send Announce</span>
                       </button>
 
                       {/* Download Report */}
                       <button 
                         onClick={() => alert('Mengunduh Laporan Kehadiran & Nilai Siswa (PDF)...')}
-                        className="p-3 rounded-2xl bg-teal-50/70 hover:bg-teal-100/70 border border-teal-200/70 text-left flex items-center gap-2.5 transition-all cursor-pointer group"
+                        className="p-2.5 rounded-xl bg-teal-50/70 hover:bg-teal-100/70 border border-teal-200/70 text-left flex items-center gap-2 transition-all cursor-pointer group"
                       >
-                        <Download className="w-4 h-4 text-teal-700 group-hover:scale-110 transition-transform shrink-0" />
-                        <span className="text-xs font-bold text-teal-900">Download Report</span>
+                        <Download className="w-3.5 h-3.5 text-teal-700 group-hover:scale-110 transition-transform shrink-0" />
+                        <span className="text-[11px] font-bold text-teal-900 leading-tight">Download PDF</span>
                       </button>
 
                       {/* Message All */}
                       <button 
                         onClick={() => setActiveNav('messages')}
-                        className="p-3 rounded-2xl bg-purple-50/70 hover:bg-purple-100/70 border border-purple-200/70 text-left flex items-center gap-2.5 transition-all cursor-pointer group"
+                        className="p-2.5 rounded-xl bg-purple-50/70 hover:bg-purple-100/70 border border-purple-200/70 text-left flex items-center gap-2 transition-all cursor-pointer group"
                       >
-                        <MessageSquare className="w-4 h-4 text-purple-700 group-hover:scale-110 transition-transform shrink-0" />
-                        <span className="text-xs font-bold text-purple-900">Message All</span>
+                        <MessageSquare className="w-3.5 h-3.5 text-purple-700 group-hover:scale-110 transition-transform shrink-0" />
+                        <span className="text-[11px] font-bold text-purple-900 leading-tight">Message All</span>
                       </button>
 
                     </div>
