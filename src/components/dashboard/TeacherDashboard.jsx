@@ -469,9 +469,9 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
           {/* VIEW 1: MY CLASSES VIEW (Matching media_1790719920914.jpg) */}
           {/* ========================================================= */}
           {activeNav === 'classes' ? (
-            <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex flex-col 2xl:flex-row gap-6">
               
-              {/* LEFT / CENTER COLUMN: My Classes Catalog (2/3 width) */}
+              {/* LEFT / CENTER COLUMN: My Classes Catalog */}
               <div className="flex-1 space-y-5 min-w-0">
                 
                 {/* Header Section */}
@@ -610,221 +610,224 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                     filteredClasses.map((cls) => (
                       <div 
                         key={cls.id}
-                        className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                        className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all"
                       >
-                        {/* Left Details */}
-                        <div className="flex items-start gap-4 flex-1 min-w-0">
-                          {/* Thumbnail with Status Badge */}
-                          <div className="relative w-28 h-20 sm:w-32 sm:h-22 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-100">
-                            <img 
-                              src={cls.image} 
-                              alt={cls.title} 
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = '/images/class_nahwu.jpg';
-                              }}
-                            />
-                            
-                            {/* Badges on Thumbnail */}
-                            <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
-                              <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-md shadow-xs ${
-                                cls.status === 'ongoing' ? 'bg-[#114B44] text-white' :
-                                cls.status === 'upcoming' ? 'bg-blue-600 text-white' :
-                                cls.status === 'completed' ? 'bg-gray-700 text-white' :
-                                cls.status === 'draft' ? 'bg-amber-600 text-white' :
-                                'bg-gray-500 text-white'
-                              }`}>
-                                {cls.statusLabel}
-                              </span>
-                            </div>
-
-                            {cls.isLiveNow && (
-                              <div className="absolute top-1.5 right-1.5 bg-red-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-1 shadow-xs animate-pulse">
-                                <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-                                <span>LIVE</span>
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                          
+                          {/* Left: Thumbnail + Info */}
+                          <div className="flex items-start sm:items-center gap-4 flex-1 min-w-0">
+                            {/* Thumbnail */}
+                            <div className="relative w-28 h-20 sm:w-36 sm:h-24 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-100 shadow-2xs">
+                              <img 
+                                src={cls.image} 
+                                alt={cls.title} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = '/images/class_nahwu.jpg';
+                                }}
+                              />
+                              
+                              <div className="absolute top-2 left-2 flex items-center gap-1">
+                                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-xs ${
+                                  cls.status === 'ongoing' ? 'bg-[#114B44] text-white' :
+                                  cls.status === 'upcoming' ? 'bg-blue-600 text-white' :
+                                  cls.status === 'completed' ? 'bg-gray-700 text-white' :
+                                  cls.status === 'draft' ? 'bg-amber-600 text-white' :
+                                  'bg-gray-500 text-white'
+                                }`}>
+                                  {cls.statusLabel}
+                                </span>
                               </div>
-                            )}
-                          </div>
-
-                          {/* Info Text */}
-                          <div className="flex-1 min-w-0 space-y-1">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
-                                {cls.title}
-                              </h3>
-                              <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
-                                {cls.subject}
-                              </span>
-                            </div>
-
-                            <p className="text-xs text-gray-500 line-clamp-1 leading-relaxed">
-                              {cls.description}
-                            </p>
-
-                            {/* Metadata Row */}
-                            <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500 pt-1">
-                              <span className="flex items-center gap-1">
-                                <Users className="w-3.5 h-3.5 text-gray-400" />
-                                <span>{cls.studentsCount} students</span>
-                              </span>
 
                               {cls.isLiveNow && (
-                                <span className="flex items-center gap-1 text-red-600 font-bold">
-                                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                                  <span>Live Now</span>
+                                <div className="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-1 shadow-xs animate-pulse">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                  <span>LIVE</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex-1 min-w-0 space-y-1.5">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <h3 className="text-base font-extrabold text-gray-900 leading-tight">
+                                  {cls.title}
+                                </h3>
+                                <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
+                                  {cls.subject}
                                 </span>
-                              )}
+                              </div>
 
-                              {cls.time && (
-                                <span className="flex items-center gap-1 text-gray-500">
-                                  <Clock className="w-3.5 h-3.5 text-gray-400" />
-                                  <span>{cls.time}</span>
+                              <p className="text-xs text-gray-500 line-clamp-2 sm:line-clamp-1 leading-relaxed">
+                                {cls.description}
+                              </p>
+
+                              {/* Metadata */}
+                              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] text-gray-500 pt-0.5">
+                                <span className="flex items-center gap-1 font-medium">
+                                  <Users className="w-3.5 h-3.5 text-gray-400" />
+                                  <span>{cls.studentsCount} students</span>
                                 </span>
-                              )}
 
-                              {cls.completedDate && (
-                                <span className="text-gray-400">{cls.completedDate}</span>
-                              )}
+                                {cls.isLiveNow && (
+                                  <span className="flex items-center gap-1 text-red-600 font-bold">
+                                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                    <span>Live Now</span>
+                                  </span>
+                                )}
 
-                              {cls.archivedDate && (
-                                <span className="text-gray-400">{cls.archivedDate}</span>
-                              )}
+                                {cls.time && (
+                                  <span className="flex items-center gap-1 text-gray-500 font-medium">
+                                    <Clock className="w-3.5 h-3.5 text-gray-400" />
+                                    <span>{cls.time}</span>
+                                  </span>
+                                )}
+
+                                {cls.completedDate && (
+                                  <span className="text-gray-400 font-medium">{cls.completedDate}</span>
+                                )}
+
+                                {cls.archivedDate && (
+                                  <span className="text-gray-400 font-medium">{cls.archivedDate}</span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* Middle: Progress / Countdown Capsule if any */}
-                        <div className="shrink-0 flex md:flex-col items-center md:items-end gap-2 w-full md:w-44 border-t md:border-t-0 pt-2 md:pt-0 border-gray-100">
-                          {cls.lessonInfo && (
-                            <div className="w-full text-right space-y-1">
-                              <div className="flex items-center justify-between text-[11px] font-bold">
-                                <span className="text-gray-700">{cls.lessonInfo.lessonText}</span>
-                                <span className="text-emerald-700">{cls.lessonInfo.percent}%</span>
+                          {/* Right: Progress/Countdown + Action Buttons */}
+                          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between lg:justify-end gap-4 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-gray-100">
+                            
+                            {/* Progress info */}
+                            {cls.lessonInfo && (
+                              <div className="w-36 sm:w-40 space-y-1">
+                                <div className="flex items-center justify-between text-[11px] font-bold">
+                                  <span className="text-gray-700">{cls.lessonInfo.lessonText}</span>
+                                  <span className="text-emerald-700">{cls.lessonInfo.percent}%</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                  <div className="h-full bg-[#114B44] rounded-full" style={{ width: `${cls.lessonInfo.percent}%` }}></div>
+                                </div>
+                                <p className="text-[10px] text-gray-400 truncate">{cls.lessonInfo.subtext}</p>
                               </div>
-                              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-[#114B44] rounded-full" style={{ width: `${cls.lessonInfo.percent}%` }}></div>
+                            )}
+
+                            {cls.startsIn && (
+                              <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-xl whitespace-nowrap">
+                                <Clock className="w-3.5 h-3.5 text-blue-600" />
+                                <span>{cls.startsIn}</span>
                               </div>
-                              <p className="text-[10px] text-gray-400 truncate">{cls.lessonInfo.subtext}</p>
-                            </div>
-                          )}
+                            )}
 
-                          {cls.startsIn && (
-                            <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-xl">
-                              <Clock className="w-3.5 h-3.5 text-blue-600" />
-                              <span>{cls.startsIn}</span>
-                            </div>
-                          )}
-
-                          {cls.completionPercent && (
-                            <div className="w-full text-right space-y-1">
-                              <div className="flex items-center justify-between text-[11px] font-bold">
-                                <span className="text-gray-400">Completion</span>
-                                <span className="text-emerald-600">{cls.completionPercent}%</span>
+                            {cls.completionPercent && (
+                              <div className="w-32 space-y-1">
+                                <div className="flex items-center justify-between text-[11px] font-bold">
+                                  <span className="text-gray-400">Completion</span>
+                                  <span className="text-emerald-600">{cls.completionPercent}%</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                  <div className="h-full bg-emerald-600 rounded-full w-full"></div>
+                                </div>
                               </div>
-                              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-600 rounded-full w-full"></div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                            )}
 
-                        {/* Right: Actions */}
-                        <div className="shrink-0 flex items-center gap-2 w-full md:w-auto justify-end">
-                          {cls.primaryAction?.type === 'enter-live' && (
-                            <button
-                              onClick={() => onStartLive({
-                                title: cls.title,
-                                tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
-                                image: cls.image
-                              })}
-                              className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
-                            >
-                              <span>Enter Classroom</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
-                            </button>
-                          )}
+                            {/* Buttons */}
+                            <div className="flex items-center gap-2 shrink-0">
+                              {cls.primaryAction?.type === 'enter-live' && (
+                                <button
+                                  onClick={() => onStartLive({
+                                    title: cls.title,
+                                    tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                                    image: cls.image
+                                  })}
+                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
+                                >
+                                  <span>Enter Classroom</span>
+                                  <ArrowRight className="w-3.5 h-3.5" />
+                                </button>
+                              )}
 
-                          {cls.primaryAction?.type === 'start' && (
-                            <button
-                              onClick={() => onStartLive({
-                                title: cls.title,
-                                tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
-                                image: cls.image
-                              })}
-                              className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
-                            >
-                              Start Class
-                            </button>
-                          )}
+                              {cls.primaryAction?.type === 'start' && (
+                                <button
+                                  onClick={() => onStartLive({
+                                    title: cls.title,
+                                    tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                                    image: cls.image
+                                  })}
+                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap"
+                                >
+                                  Start Class
+                                </button>
+                              )}
 
-                          {cls.primaryAction?.type === 'publish' && (
-                            <button
-                              onClick={() => alert(`Mempublikasikan kelas: ${cls.title}`)}
-                              className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
-                            >
-                              Publish Class
-                            </button>
-                          )}
+                              {cls.primaryAction?.type === 'publish' && (
+                                <button
+                                  onClick={() => alert(`Mempublikasikan kelas: ${cls.title}`)}
+                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer whitespace-nowrap"
+                                >
+                                  Publish Class
+                                </button>
+                              )}
 
-                          {cls.primaryAction?.type === 'report' && (
-                            <button
-                              onClick={() => alert(`Laporan kelas: ${cls.title}`)}
-                              className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                            >
-                              View Report
-                            </button>
-                          )}
+                              {cls.primaryAction?.type === 'report' && (
+                                <button
+                                  onClick={() => alert(`Laporan kelas: ${cls.title}`)}
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                >
+                                  View Report
+                                </button>
+                              )}
 
-                          {cls.primaryAction?.type === 'view' && (
-                            <button
-                              onClick={() => alert(`Lihat arsip kelas: ${cls.title}`)}
-                              className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                            >
-                              View Class
-                            </button>
-                          )}
+                              {cls.primaryAction?.type === 'view' && (
+                                <button
+                                  onClick={() => alert(`Lihat arsip kelas: ${cls.title}`)}
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                >
+                                  View Class
+                                </button>
+                              )}
 
-                          {cls.secondaryAction?.type === 'clone' && (
-                            <button
-                              onClick={() => alert(`Duplikasi kelas: ${cls.title}`)}
-                              className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                            >
-                              Clone Class
-                            </button>
-                          )}
+                              {cls.secondaryAction?.type === 'clone' && (
+                                <button
+                                  onClick={() => alert(`Duplikasi kelas: ${cls.title}`)}
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                >
+                                  Clone Class
+                                </button>
+                              )}
 
-                          {cls.secondaryAction?.type === 'unarchive' && (
-                            <button
-                              onClick={() => alert(`Buka arsip kelas: ${cls.title}`)}
-                              className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                            >
-                              Unarchive
-                            </button>
-                          )}
+                              {cls.secondaryAction?.type === 'unarchive' && (
+                                <button
+                                  onClick={() => alert(`Buka arsip kelas: ${cls.title}`)}
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                >
+                                  Unarchive
+                                </button>
+                              )}
 
-                          {/* Common secondary buttons */}
-                          {!cls.secondaryAction && cls.status !== 'completed' && (
-                            <>
-                              <button 
-                                onClick={() => alert(`Lihat detail kelas: ${cls.title}`)}
-                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                              >
-                                View
+                              {!cls.secondaryAction && cls.status !== 'completed' && (
+                                <>
+                                  <button 
+                                    onClick={() => alert(`Lihat detail kelas: ${cls.title}`)}
+                                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                                  >
+                                    View
+                                  </button>
+                                  <button 
+                                    onClick={() => alert(`Edit kelas: ${cls.title}`)}
+                                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                                  >
+                                    Edit
+                                  </button>
+                                </>
+                              )}
+
+                              <button className="p-2 text-gray-400 hover:text-gray-700 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                                <MoreVertical className="w-4 h-4" />
                               </button>
-                              <button 
-                                onClick={() => alert(`Edit kelas: ${cls.title}`)}
-                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                              >
-                                Edit
-                              </button>
-                            </>
-                          )}
+                            </div>
 
-                          {/* More Options Dropdown */}
-                          <button className="p-2 text-gray-400 hover:text-gray-700 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
-                            <MoreVertical className="w-4 h-4" />
-                          </button>
+                          </div>
                         </div>
                       </div>
                     ))
