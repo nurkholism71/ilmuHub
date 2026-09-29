@@ -35,17 +35,27 @@ import {
   Sparkles,
   Clock,
   ArrowRight,
+  ArrowLeft,
   Copy,
   RotateCcw,
   Check,
   Trophy,
   ExternalLink,
   BookMarked,
-  Eye
+  Eye,
+  GripVertical,
+  Trash2,
+  Plus,
+  Image as ImageIcon,
+  Lock,
+  Unlock,
+  ShieldCheck,
+  Tag,
+  GraduationCap
 } from 'lucide-react';
 
 export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
-  const [activeNav, setActiveNav] = useState('classes'); // Default or switchable to 'classes'
+  const [activeNav, setActiveNav] = useState('create'); // 'dashboard', 'classes', 'create', etc.
   const [selectedPeriod, setSelectedPeriod] = useState('Sep 2026');
   const [classTabFilter, setClassTabFilter] = useState('all'); // all, ongoing, upcoming, completed, draft, archived
   const [subjectFilter, setSubjectFilter] = useState('All Subjects');
@@ -56,7 +66,31 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
   const teacherName = user?.name || 'Ahmed Mohamed';
   const teacherEmail = user?.email || 'ahmed.mohamed@ilmhub.com';
 
-  // Sidebar Items matching reference image media_1790719920914.jpg
+  // Create Class Wizard State (matching media_1790720686824.jpg)
+  const [createStep, setCreateStep] = useState(1);
+  const [newPointText, setNewPointText] = useState('');
+  const [createForm, setCreateForm] = useState({
+    title: 'Nahwu for Beginners',
+    subject: 'Arabic Language',
+    level: 'Beginner',
+    description: "Dasar-dasar Nahwu secara sistematis untuk pemula. Belajar mengidentifikasi jumlah ismiyah dan fi'liyah dengan mudah.",
+    thumbnail: '/images/class_nahwu.jpg',
+    learningPoints: [
+      'Memahami pengertian Nahwu dan pentingnya',
+      'Mengenal jumlah ismiyah dan fi\'liyah',
+      'Mengidentifikasi rukun dan i\'rab secara sederhana',
+      'Latihan soal dan contoh dalam kehidupan sehari-hari'
+    ],
+    pricingType: 'free', // 'free' | 'paid'
+    price: 150,
+    visibility: 'public', // 'public' | 'private'
+    studentsCount: 32,
+    totalLessons: 12,
+    durationWeeks: 4,
+    hasCertificate: true
+  });
+
+  // Sidebar Items matching reference image
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'classes', label: 'My Classes', icon: BookOpen, badge: '6' },
@@ -76,7 +110,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
   ];
 
   // Full detailed classes for "My Classes" view
-  const myClassesDetailed = [
+  const [myClassesDetailed, setMyClassesDetailed] = useState([
     {
       id: 'mc-1',
       title: 'Nahwu for Beginners',
@@ -162,9 +196,50 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
       primaryAction: { label: 'View Class', type: 'view' },
       secondaryAction: { label: 'Unarchive', type: 'unarchive' }
     }
-  ];
+  ]);
 
-  // Filter logic
+  // Handle adding learning point
+  const handleAddLearningPoint = () => {
+    if (newPointText.trim()) {
+      setCreateForm({
+        ...createForm,
+        learningPoints: [...createForm.learningPoints, newPointText.trim()]
+      });
+      setNewPointText('');
+    } else {
+      const defaultNew = `Materi lanjutan poin ke-${createForm.learningPoints.length + 1}`;
+      setCreateForm({
+        ...createForm,
+        learningPoints: [...createForm.learningPoints, defaultNew]
+      });
+    }
+  };
+
+  const handleRemoveLearningPoint = (index) => {
+    const updated = createForm.learningPoints.filter((_, i) => i !== index);
+    setCreateForm({ ...createForm, learningPoints: updated });
+  };
+
+  const handlePublishCreatedClass = () => {
+    const newClassObj = {
+      id: `mc-${Date.now()}`,
+      title: createForm.title || 'Untitled Class',
+      subject: createForm.subject,
+      description: createForm.description,
+      status: 'ongoing',
+      statusLabel: 'Ongoing',
+      studentsCount: 0,
+      time: 'Schedule pending',
+      image: createForm.thumbnail,
+      primaryAction: { label: 'Start Class', type: 'start' }
+    };
+
+    setMyClassesDetailed([newClassObj, ...myClassesDetailed]);
+    alert(`🎉 Selamat! Kelas "${createForm.title}" berhasil dibuat dan dipublikasikan!`);
+    setActiveNav('classes');
+  };
+
+  // Filter logic for My Classes
   const filteredClasses = myClassesDetailed.filter((cls) => {
     if (classTabFilter !== 'all' && cls.status !== classTabFilter) return false;
     if (subjectFilter !== 'All Subjects' && cls.subject !== subjectFilter) return false;
@@ -226,7 +301,6 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     { label: 'Average Rating', value: '4.9', change: '+0.1', icon: Star, color: 'text-purple-700', bg: 'bg-purple-50' },
   ];
 
-  // Today's scheduled classes for Dashboard Overview
   const todaysClasses = [
     {
       id: 'tc-1',
@@ -304,15 +378,13 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
           </div>
         </div>
 
-        {/* Right Actions: Notifications, Messages, Language, User Profile */}
+        {/* Right Actions */}
         <div className="flex items-center gap-3 shrink-0">
-          {/* Notifications */}
           <button className="relative p-2 text-gray-500 hover:text-gray-800 rounded-full hover:bg-gray-100 transition-colors cursor-pointer">
             <Bell className="w-4 h-4" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500"></span>
           </button>
 
-          {/* Messages */}
           <button 
             onClick={() => setActiveNav('messages')}
             className="relative p-2 text-gray-500 hover:text-gray-800 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
@@ -320,13 +392,11 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
             <MessageSquare className="w-4 h-4" />
           </button>
 
-          {/* Language Selector */}
           <button className="hidden sm:flex items-center gap-1 text-xs font-semibold text-gray-700 bg-gray-50 border border-gray-200 px-2.5 py-1.5 rounded-full hover:bg-gray-100 transition-colors cursor-pointer">
             <Globe className="w-3.5 h-3.5 text-gray-500" />
             <span>العربية</span>
           </button>
 
-          {/* User Profile Capsule */}
           <div className="flex items-center gap-2.5 pl-2 border-l border-gray-200">
             <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300">
               <img 
@@ -350,7 +420,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
       {/* Main Dashboard Layout: Fixed Locked Left Sidebar + Scrollable Spacious Canvas */}
       <div className="flex-1 flex overflow-hidden w-full max-w-[1700px] mx-auto">
         
-        {/* FIXED LOCKED LEFT SIDEBAR (Mentok Tidak Ikut Scroll) */}
+        {/* FIXED LOCKED LEFT SIDEBAR */}
         <aside className="w-60 lg:w-64 bg-white border-r border-gray-200 p-4 shrink-0 hidden md:flex flex-col justify-between h-full overflow-y-auto no-scrollbar select-none">
           
           <div className="space-y-4">
@@ -439,7 +509,6 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
               </div>
 
-              {/* Progress Bar */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-[10px] font-bold">
                   <span className="text-gray-400">Profile Strength</span>
@@ -466,12 +535,522 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
         <main className="flex-1 h-full overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 min-w-0 pb-20">
           
           {/* ========================================================= */}
-          {/* VIEW 1: MY CLASSES VIEW (Matching media_1790719920914.jpg) */}
+          {/* VIEW: CREATE A NEW CLASS (Matching media_1790720686824)  */}
           {/* ========================================================= */}
-          {activeNav === 'classes' ? (
+          {activeNav === 'create' ? (
+            <div className="space-y-6 max-w-7xl mx-auto">
+              
+              {/* Top Header with Back Arrow & 4-Step Wizard */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200/80">
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setActiveNav('classes')}
+                    className="p-2 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 shadow-2xs transition-colors cursor-pointer"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Create a New Class</h1>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Buat kelas baru untuk berbagi ilmu dengan siswa di seluruh dunia.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 4-Step Wizard Stepper */}
+                <div className="flex items-center gap-2 sm:gap-3 text-xs font-bold overflow-x-auto pb-1 sm:pb-0">
+                  {[
+                    { step: 1, label: 'Basic Info' },
+                    { step: 2, label: 'Content & Schedule' },
+                    { step: 3, label: 'Settings' },
+                    { step: 4, label: 'Publish' },
+                  ].map((s, idx) => {
+                    const isPassed = createStep > s.step;
+                    const isCurrent = createStep === s.step;
+                    return (
+                      <React.Fragment key={s.step}>
+                        <button
+                          onClick={() => setCreateStep(s.step)}
+                          className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                            isCurrent
+                              ? 'text-[#114B44] font-extrabold bg-emerald-50'
+                              : isPassed
+                              ? 'text-emerald-700 font-semibold'
+                              : 'text-gray-400 hover:text-gray-600'
+                          }`}
+                        >
+                          <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                            isCurrent
+                              ? 'bg-[#114B44] text-white'
+                              : isPassed
+                              ? 'bg-emerald-600 text-white'
+                              : 'bg-gray-200 text-gray-600'
+                          }`}>
+                            {isPassed ? '✓' : s.step}
+                          </span>
+                          <span className="whitespace-nowrap">{s.label}</span>
+                        </button>
+                        {idx < 3 && <div className="w-6 h-0.5 bg-gray-200 shrink-0"></div>}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Main Form Grid: Left 2 Cols (Form Inputs) + Right 1 Col (Class Preview & Options) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                {/* LEFT FORM CANVAS (7 or 8 Cols) */}
+                <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+                  
+                  {/* Step 1: Basic Information Card */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-5 sm:p-6 shadow-2xs space-y-5">
+                    <div>
+                      <h2 className="text-base font-extrabold text-gray-900">Basic Information</h2>
+                      <p className="text-xs text-gray-500 mt-0.5">Isi informasi dasar kelas yang akan kamu ajar.</p>
+                    </div>
+
+                    {/* Class Title */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-gray-900">
+                        Class Title <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <input 
+                          type="text" 
+                          value={createForm.title}
+                          onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })}
+                          placeholder="e.g. Nahwu for Beginners"
+                          maxLength={100}
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 font-medium">
+                          {createForm.title.length}/100
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Subject & Level Dropdowns */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Subject */}
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-bold text-gray-900">
+                          Subject <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <select 
+                            value={createForm.subject}
+                            onChange={(e) => setCreateForm({ ...createForm, subject: e.target.value })}
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-800 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="Arabic Language">📖 Arabic Language</option>
+                            <option value="Quran">📖 Quran & Tajweed</option>
+                            <option value="Islamic Studies">🕌 Islamic Studies</option>
+                            <option value="Hadith">📜 Hadith Studies</option>
+                            <option value="Fiqh">⚖️ Fiqh & Sharia</option>
+                          </select>
+                          <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+                      </div>
+
+                      {/* Level */}
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-bold text-gray-900">
+                          Level <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <select 
+                            value={createForm.level}
+                            onChange={(e) => setCreateForm({ ...createForm, level: e.target.value })}
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-800 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="Beginner">📊 Beginner</option>
+                            <option value="Intermediate">📊 Intermediate</option>
+                            <option value="Advanced">📊 Advanced</option>
+                            <option value="All Levels">📊 All Levels</option>
+                          </select>
+                          <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Short Description */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-gray-900">
+                        Short Description <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <textarea 
+                          rows={3}
+                          value={createForm.description}
+                          onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
+                          placeholder="Jelaskan ringkasan materi dan target kelas ini..."
+                          maxLength={500}
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3.5 text-xs sm:text-sm font-normal text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all resize-none"
+                        />
+                        <span className="absolute right-3 bottom-3 text-[10px] text-gray-400 font-medium">
+                          {createForm.description.length}/500
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Class Thumbnail */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-gray-900">
+                        Class Thumbnail <span className="text-red-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Live Current Image */}
+                        <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 border border-gray-200 group">
+                          <img 
+                            src={createForm.thumbnail} 
+                            alt="Class thumbnail" 
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/images/class_nahwu.jpg';
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <button 
+                              onClick={() => setCreateForm({ ...createForm, thumbnail: '/images/class_sharaf.jpg' })}
+                              className="bg-white text-gray-800 text-[10px] font-bold px-2.5 py-1 rounded-md shadow-xs cursor-pointer hover:bg-gray-100"
+                            >
+                              Ganti Foto
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Upload Box */}
+                        <div 
+                          onClick={() => setCreateForm({ ...createForm, thumbnail: '/images/class_sharaf.jpg' })}
+                          className="border-2 border-dashed border-gray-300 hover:border-[#114B44] rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer bg-[#F8FAFC] hover:bg-emerald-50/40 transition-colors"
+                        >
+                          <div className="w-9 h-9 rounded-full bg-emerald-100/70 text-[#114B44] flex items-center justify-center mb-2">
+                            <Upload className="w-4 h-4" />
+                          </div>
+                          <span className="text-xs font-bold text-gray-800">Upload Image</span>
+                          <span className="text-[10px] text-gray-400 mt-0.5">JPEG, PNG (Max 5MB)</span>
+                          <span className="text-[9px] text-gray-400">Recommended size 1280x720</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* What Will Students Learn? (Bullet Points) */}
+                    <div className="space-y-3 pt-2 border-t border-gray-100">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-900">
+                          What Will Students Learn?
+                        </label>
+                        <p className="text-[11px] text-gray-400">Tambahkan poin-poin yang akan dipelajari dalam kelas ini.</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        {createForm.learningPoints.map((point, index) => (
+                          <div 
+                            key={index}
+                            className="flex items-center gap-2.5 bg-[#F8FAFC] border border-gray-200 rounded-xl px-3 py-2.5 group hover:border-gray-300 transition-colors"
+                          >
+                            <GripVertical className="w-4 h-4 text-gray-400 shrink-0 cursor-grab" />
+                            <span className="flex-1 text-xs font-medium text-gray-800">{point}</span>
+                            <button 
+                              onClick={() => handleRemoveLearningPoint(index)}
+                              className="text-gray-400 hover:text-red-500 p-1 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add point input */}
+                      <div className="flex items-center gap-2">
+                        <input 
+                          type="text"
+                          placeholder="Ketik materi belajar baru..."
+                          value={newPointText}
+                          onChange={(e) => setNewPointText(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Enter') handleAddLearningPoint(); }}
+                          className="flex-1 bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44]"
+                        />
+                        <button 
+                          onClick={handleAddLearningPoint}
+                          className="bg-white border border-emerald-600 text-[#114B44] hover:bg-emerald-50 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add Learning Point</span>
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Wizard Step 2 / Bottom Navigation */}
+                  <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs">
+                    <button 
+                      onClick={() => setActiveNav('classes')}
+                      className="px-4 py-2 text-xs font-bold text-gray-600 hover:text-gray-900 cursor-pointer"
+                    >
+                      Batal
+                    </button>
+                    
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => alert('Draft kelas disimpan secara lokal!')}
+                        className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        Save as Draft
+                      </button>
+                      <button 
+                        onClick={handlePublishCreatedClass}
+                        className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
+                      >
+                        <span>Publish Class</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Live Class Preview & Options (4 or 5 Cols) */}
+                <div className="lg:col-span-5 xl:col-span-4 space-y-5">
+                  
+                  {/* Card 1: Live Class Preview (Matching mockup) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-extrabold text-gray-900">Class Preview</h3>
+                      <button 
+                        onClick={() => alert('Pratinjau tampilan bagi murid')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View as Student</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* Preview Card */}
+                    <div className="rounded-2xl border border-gray-200 overflow-hidden shadow-2xs bg-white">
+                      {/* Image Thumbnail */}
+                      <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
+                        <img 
+                          src={createForm.thumbnail} 
+                          alt={createForm.title} 
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/images/class_nahwu.jpg';
+                          }}
+                        />
+                        <button className="absolute top-2.5 right-2.5 bg-black/60 hover:bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-xs flex items-center gap-1 cursor-pointer">
+                          <Eye className="w-3 h-3" />
+                          <span>Preview</span>
+                        </button>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-4 space-y-3">
+                        <div>
+                          <h4 className="font-extrabold text-base text-gray-900 leading-snug">
+                            {createForm.title || 'Class Title'}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-1.5">
+                            <span className="text-[10px] font-bold text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                              <BookOpen className="w-3 h-3" />
+                              {createForm.subject}
+                            </span>
+                            <span className="text-[10px] font-bold text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                              <Edit3 className="w-3 h-3" />
+                              {createForm.level}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Tutor Row */}
+                        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shrink-0">
+                              <img src="/images/tutor_ahmed.jpg" alt={teacherName} className="w-full h-full object-cover" />
+                            </div>
+                            <div>
+                              <div className="text-xs font-bold text-gray-900 leading-tight">{teacherName}</div>
+                              <div className="text-[10px] text-gray-400">Arabic & Nahwu Tutor</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 text-[11px] font-bold text-amber-500">
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            <span>4.9</span>
+                            <span className="text-gray-400 font-normal">(1.2k)</span>
+                          </div>
+                        </div>
+
+                        {/* Description Preview */}
+                        <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">
+                          {createForm.description || 'Deskripsi singkat kelas...'}
+                        </p>
+
+                        {/* 4 Feature Badges */}
+                        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 text-[10px] text-gray-600 font-semibold">
+                          <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-gray-50">
+                            <Users className="w-3.5 h-3.5 text-gray-400" />
+                            <span>{createForm.studentsCount} students</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-gray-50">
+                            <BookOpen className="w-3.5 h-3.5 text-gray-400" />
+                            <span>{createForm.totalLessons} lessons</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-gray-50">
+                            <Clock className="w-3.5 h-3.5 text-gray-400" />
+                            <span>{createForm.durationWeeks} weeks duration</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-gray-50">
+                            <Award className="w-3.5 h-3.5 text-gray-400" />
+                            <span>Certificate included</span>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 2: Pricing Option */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-3">
+                    <div>
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Pricing</h3>
+                      <p className="text-[11px] text-gray-400 mt-0.5">Tentukan harga kelas atau buat kelas gratis.</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {/* Free Option */}
+                      <label 
+                        onClick={() => setCreateForm({ ...createForm, pricingType: 'free' })}
+                        className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                          createForm.pricingType === 'free'
+                            ? 'border-emerald-600 bg-emerald-50/50 shadow-2xs'
+                            : 'border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center text-[10px] font-bold ${
+                          createForm.pricingType === 'free'
+                            ? 'bg-[#114B44] text-white'
+                            : 'border border-gray-300'
+                        }`}>
+                          {createForm.pricingType === 'free' && '✓'}
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-gray-900">Free Class</div>
+                          <div className="text-[11px] text-gray-500 mt-0.5">Gratis untuk semua siswa.</div>
+                        </div>
+                      </label>
+
+                      {/* Paid Option */}
+                      <label 
+                        onClick={() => setCreateForm({ ...createForm, pricingType: 'paid' })}
+                        className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                          createForm.pricingType === 'paid'
+                            ? 'border-emerald-600 bg-emerald-50/50 shadow-2xs'
+                            : 'border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center text-[10px] font-bold ${
+                          createForm.pricingType === 'paid'
+                            ? 'bg-[#114B44] text-white'
+                            : 'border border-gray-300'
+                        }`}>
+                          {createForm.pricingType === 'paid' && '✓'}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-xs font-bold text-gray-900">Paid Class</div>
+                          <div className="text-[11px] text-gray-500 mt-0.5">Tentukan harga untuk kelas premium.</div>
+                          
+                          {createForm.pricingType === 'paid' && (
+                            <div className="mt-2 flex items-center gap-2">
+                              <input 
+                                type="number" 
+                                value={createForm.price}
+                                onChange={(e) => setCreateForm({ ...createForm, price: Number(e.target.value) })}
+                                className="w-28 bg-white border border-gray-300 rounded-lg px-2.5 py-1 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                              />
+                              <span className="text-xs font-bold text-gray-700">EGP</span>
+                            </div>
+                          )}
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Card 3: Class Visibility */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-3">
+                    <div>
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Class Visibility</h3>
+                      <p className="text-[11px] text-gray-400 mt-0.5">Pilih siapa yang dapat melihat dan bergabung dengan kelas ini.</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {/* Public */}
+                      <label 
+                        onClick={() => setCreateForm({ ...createForm, visibility: 'public' })}
+                        className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                          createForm.visibility === 'public'
+                            ? 'border-emerald-600 bg-emerald-50/50 shadow-2xs'
+                            : 'border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center text-[10px] font-bold ${
+                          createForm.visibility === 'public'
+                            ? 'bg-[#114B44] text-white'
+                            : 'border border-gray-300'
+                        }`}>
+                          {createForm.visibility === 'public' && '✓'}
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
+                            <Globe className="w-3.5 h-3.5 text-emerald-700" />
+                            <span>Public</span>
+                          </div>
+                          <div className="text-[11px] text-gray-500 mt-0.5">Terbuka untuk semua pengguna.</div>
+                        </div>
+                      </label>
+
+                      {/* Private */}
+                      <label 
+                        onClick={() => setCreateForm({ ...createForm, visibility: 'private' })}
+                        className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                          createForm.visibility === 'private'
+                            ? 'border-emerald-600 bg-emerald-50/50 shadow-2xs'
+                            : 'border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center text-[10px] font-bold ${
+                          createForm.visibility === 'private'
+                            ? 'bg-[#114B44] text-white'
+                            : 'border border-gray-300'
+                        }`}>
+                          {createForm.visibility === 'private' && '✓'}
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
+                            <Lock className="w-3.5 h-3.5 text-gray-500" />
+                            <span>Private</span>
+                          </div>
+                          <div className="text-[11px] text-gray-500 mt-0.5">Hanya siswa dengan link undangan.</div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          ) : activeNav === 'classes' ? (
+            /* ========================================================= */
+            /* VIEW 2: MY CLASSES VIEW                                   */
+            /* ========================================================= */
             <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
               
-              {/* LEFT / CENTER COLUMN: My Classes Catalog (Lebar, Luas & Rapi) */}
+              {/* LEFT / CENTER COLUMN: My Classes Catalog */}
               <div className="flex-1 min-w-0 w-full space-y-4">
                 
                 {/* Header Section */}
@@ -491,7 +1070,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   {/* Header Action Buttons */}
                   <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
                     <button 
-                      onClick={() => alert('Membuka form buat kelas baru')}
+                      onClick={() => setActiveNav('create')}
                       className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
                     >
                       <PlusCircle className="w-4 h-4" />
@@ -769,7 +1348,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             {cls.primaryAction?.type === 'report' && (
                               <button
                                 onClick={() => alert(`Laporan kelas: ${cls.title}`)}
-                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                               >
                                 View Report
                               </button>
@@ -778,7 +1357,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             {cls.primaryAction?.type === 'view' && (
                               <button
                                 onClick={() => alert(`Lihat arsip kelas: ${cls.title}`)}
-                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                                className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                               >
                                 View Class
                               </button>
@@ -934,7 +1513,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   <h2 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Quick Actions</h2>
                   <div className="space-y-1.5">
                     <button 
-                      onClick={() => alert('Membuka form buat kelas baru')}
+                      onClick={() => setActiveNav('create')}
                       className="w-full bg-[#F8FAFC] hover:bg-gray-100 text-gray-800 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors border border-gray-100 cursor-pointer"
                     >
                       <PlusCircle className="w-3.5 h-3.5 text-emerald-700" />
@@ -997,7 +1576,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
             </div>
           ) : (
             /* ========================================================= */
-            /* VIEW 2: DASHBOARD OVERVIEW CANVAS                         */
+            /* VIEW 3: DASHBOARD OVERVIEW CANVAS                         */
             /* ========================================================= */
             <div className="space-y-6">
               
@@ -1168,7 +1747,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   
                   <div className="space-y-2.5">
                     <button 
-                      onClick={() => alert('Membuka form buat kelas baru')}
+                      onClick={() => setActiveNav('create')}
                       className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white p-3 rounded-2xl text-xs font-bold flex items-center gap-3 transition-all cursor-pointer shadow-xs"
                     >
                       <PlusCircle className="w-4 h-4 text-emerald-300" />
@@ -1223,7 +1802,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
 
               </div>
 
-              {/* Section 2: Charts (Student Growth & Earnings Overview) */}
+              {/* Section 2: Charts */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 {/* Student Growth Chart */}
@@ -1239,10 +1818,8 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                     </button>
                   </div>
 
-                  {/* Bar Chart Visualization */}
                   <div className="pt-6">
                     <div className="relative h-48">
-                      {/* Horizontal Guide Lines */}
                       <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
                         <div className="border-b border-dashed border-gray-100 w-full"></div>
                         <div className="border-b border-dashed border-gray-100 w-full"></div>
@@ -1250,7 +1827,6 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                         <div className="border-b border-dashed border-gray-100 w-full"></div>
                       </div>
 
-                      {/* Bars */}
                       <div className="relative h-full flex items-end justify-between gap-1.5 sm:gap-3 px-1 z-10">
                         {[
                           { month: 'Jan', val: 500, height: '40%' },
@@ -1303,16 +1879,13 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                     </button>
                   </div>
 
-                  {/* Line/Area Chart Visualization */}
                   <div className="pt-6">
                     <div className="relative h-48 flex flex-col justify-between">
-                      {/* Floating Tooltip */}
                       <div className="absolute -top-3 right-4 bg-[#0F172A] text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg z-20 flex flex-col items-center">
                         <span>Sep 2026: 18,450 EGP</span>
                         <div className="w-2 h-2 bg-[#0F172A] rotate-45 -mb-1 mt-0.5"></div>
                       </div>
 
-                      {/* Horizontal Guide Lines */}
                       <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
                         <div className="border-b border-dashed border-gray-100 w-full flex justify-end pr-1 text-[9px] text-gray-300">20k</div>
                         <div className="border-b border-dashed border-gray-100 w-full flex justify-end pr-1 text-[9px] text-gray-300">15k</div>
@@ -1320,7 +1893,6 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                         <div className="border-b border-dashed border-gray-100 w-full flex justify-end pr-1 text-[9px] text-gray-300">5k</div>
                       </div>
                       
-                      {/* Stylized SVG Chart */}
                       <div className="relative flex-1 w-full flex items-end z-10">
                         <svg className="w-full h-32 overflow-visible" viewBox="0 0 500 120" preserveAspectRatio="none">
                           <defs>
