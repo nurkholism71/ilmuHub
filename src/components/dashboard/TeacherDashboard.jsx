@@ -7751,11 +7751,11 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
               </div>
 
-              {/* MAIN 3-COLUMN CHAT CANVAS */}
-              <div className="flex flex-col lg:flex-row gap-4 xl:gap-5 items-start">
+              {/* MAIN 3-COLUMN CHAT CANVAS (EXPANDED CHAT CANVAS + COMPACT RIGHT SIDEBAR) */}
+              <div className="flex flex-col lg:flex-row gap-3 xl:gap-4 items-start">
                 
-                {/* COLUMN 1: Conversation List (Left) */}
-                <div className="w-full lg:w-72 xl:w-80 bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden flex flex-col shrink-0 h-[680px]">
+                {/* COLUMN 1: Conversation List (Left - Compact & Clean) */}
+                <div className="w-full lg:w-60 xl:w-64 bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden flex flex-col shrink-0 h-[700px]">
                   <div className="p-3 border-b border-gray-100 bg-gray-50/60 flex items-center justify-between">
                     <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Conversations</span>
                     <span className="text-[10px] font-bold text-gray-400">10 Active</span>
@@ -7787,26 +7787,26 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                               // Mark as read
                               setConversationsList(prev => prev.map(c => c.id === conv.id ? { ...c, unreadCount: 0 } : c));
                             }}
-                            className={`p-3 flex items-center justify-between gap-2.5 cursor-pointer transition-colors ${
+                            className={`p-2.5 flex items-center justify-between gap-2 cursor-pointer transition-colors ${
                               isSelected
                                 ? 'bg-emerald-50/60 border-l-4 border-l-[#114B44]'
                                 : 'hover:bg-gray-50/80 border-l-4 border-l-transparent'
                             }`}
                           >
-                            <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="flex items-center gap-2 min-w-0">
                               <div className="relative shrink-0">
                                 {conv.avatar ? (
                                   <img
                                     src={conv.avatar}
                                     alt={conv.name}
-                                    className="w-10 h-10 rounded-full object-cover border border-gray-100"
+                                    className="w-9 h-9 rounded-full object-cover border border-gray-100"
                                     onError={(e) => {
                                       e.target.style.display = 'none';
                                       e.target.nextSibling.style.display = 'flex';
                                     }}
                                   />
                                 ) : null}
-                                <div className={`w-10 h-10 rounded-full font-black text-xs items-center justify-center ${conv.initialBg || 'bg-emerald-100 text-emerald-800'} ${conv.avatar ? 'hidden' : 'flex'}`}>
+                                <div className={`w-9 h-9 rounded-full font-black text-xs items-center justify-center ${conv.initialBg || 'bg-emerald-100 text-emerald-800'} ${conv.avatar ? 'hidden' : 'flex'}`}>
                                   {conv.initials || conv.name.slice(0, 2).toUpperCase()}
                                 </div>
                                 {conv.isOnline && (
@@ -7818,14 +7818,14 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                                 <p className={`text-xs truncate ${isSelected ? 'font-black text-[#114B44]' : 'font-bold text-gray-900'}`}>
                                   {conv.name}
                                 </p>
-                                <p className="text-[11px] text-gray-400 truncate mt-0.5 max-w-[140px]">
+                                <p className="text-[10px] text-gray-400 truncate mt-0.5 max-w-[125px]">
                                   {conv.lastMessage}
                                 </p>
                               </div>
                             </div>
 
                             <div className="flex flex-col items-end gap-1 shrink-0">
-                              <span className="text-[10px] text-gray-400 font-medium">{conv.time}</span>
+                              <span className="text-[9px] text-gray-400 font-medium">{conv.time}</span>
                               {conv.unreadCount > 0 && (
                                 <span className="w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center">
                                   {conv.unreadCount}
@@ -7838,24 +7838,24 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   </div>
                 </div>
 
-                {/* COLUMN 2: Active Chat Window (Middle Canvas) */}
+                {/* COLUMN 2: Active Chat Window (Expanded Middle Canvas) */}
                 {(() => {
                   const activeConv = conversationsList.find(c => c.id === activeConversationId) || conversationsList[0];
                   return (
-                    <div className="flex-1 min-w-0 w-full bg-white rounded-2xl border border-gray-200/80 shadow-2xs flex flex-col h-[680px] overflow-hidden">
+                    <div className="flex-1 min-w-0 w-full bg-white rounded-2xl border border-gray-200/80 shadow-2xs flex flex-col h-[700px] overflow-hidden">
                       
                       {/* Chat Header */}
-                      <div className="p-3.5 border-b border-gray-100 flex items-center justify-between gap-3 bg-white">
-                        <div className="flex items-center gap-3 min-w-0">
+                      <div className="p-3 border-b border-gray-100 flex items-center justify-between gap-3 bg-white">
+                        <div className="flex items-center gap-2.5 min-w-0">
                           <div className="relative shrink-0">
                             {activeConv.avatar ? (
                               <img
                                 src={activeConv.avatar}
                                 alt={activeConv.name}
-                                className="w-10 h-10 rounded-full object-cover border border-gray-100"
+                                className="w-9 h-9 rounded-full object-cover border border-gray-100"
                               />
                             ) : (
-                              <div className={`w-10 h-10 rounded-full font-black text-xs flex items-center justify-center ${activeConv.initialBg || 'bg-emerald-100 text-emerald-800'}`}>
+                              <div className={`w-9 h-9 rounded-full font-black text-xs flex items-center justify-center ${activeConv.initialBg || 'bg-emerald-100 text-emerald-800'}`}>
                                 {activeConv.initials || activeConv.name.slice(0, 2).toUpperCase()}
                               </div>
                             )}
@@ -7868,20 +7868,20 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             <div className="flex items-center gap-2">
                               <h3 className="text-sm font-black text-gray-900 truncate">{activeConv.name}</h3>
                               {activeConv.isOnline && (
-                                <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600">
+                                <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 shrink-0">
                                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                   Online
                                 </span>
                               )}
                             </div>
-                            <p className="text-[11px] text-gray-400 truncate">
-                              {activeConv.role} • {activeConv.className}
+                            <p className="text-[11px] text-gray-500 truncate font-medium">
+                              {activeConv.role} {activeConv.className ? `• ${activeConv.className}` : ''}
                             </p>
                           </div>
                         </div>
 
                         {/* Action icons */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => alert(`Memulai panggilan video dengan ${activeConv.name}...`)}
                             className="p-2 rounded-xl text-gray-500 hover:text-[#114B44] hover:bg-emerald-50 cursor-pointer transition-colors"
@@ -7905,8 +7905,8 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                         </div>
                       </div>
 
-                      {/* Message History (Scrollable) */}
-                      <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50/40">
+                      {/* Message History (Scrollable with Spacious Layout) */}
+                      <div className="flex-1 p-4 md:p-5 overflow-y-auto space-y-4 bg-gray-50/40">
                         {activeConv.messages && activeConv.messages.length > 0 ? (
                           activeConv.messages.map((msg) => {
                             const isTeacher = msg.sender === 'teacher';
@@ -7924,25 +7924,25 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                                   />
                                 )}
 
-                                <div className={`max-w-[75%] sm:max-w-[65%] space-y-2`}>
+                                <div className={`max-w-[85%] md:max-w-[75%] space-y-1.5`}>
                                   <div
-                                    className={`p-3.5 rounded-2xl text-xs space-y-2 shadow-2xs ${
+                                    className={`p-3.5 rounded-2xl text-xs space-y-2.5 shadow-2xs ${
                                       isTeacher
                                         ? 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC] rounded-tr-none'
                                         : 'bg-white text-gray-800 border border-gray-200/80 rounded-tl-none'
                                     }`}
                                   >
-                                    <p className="whitespace-pre-line leading-relaxed">{msg.text}</p>
+                                    <p className="whitespace-pre-line leading-relaxed text-xs sm:text-[13px]">{msg.text}</p>
 
                                     {/* Attachment PDF */}
                                     {msg.attachment && (
-                                      <div className="p-2.5 bg-white/90 rounded-xl border border-[#B3E5DC] flex items-center justify-between gap-3 text-xs">
-                                        <div className="flex items-center gap-2 min-w-0">
-                                          <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 font-bold text-[9px] flex items-center justify-center shrink-0">
+                                      <div className="p-2.5 bg-white rounded-xl border border-[#B3E5DC] flex items-center justify-between gap-3 text-xs shadow-2xs">
+                                        <div className="flex items-center gap-2.5 min-w-0">
+                                          <div className="w-8 h-8 rounded-lg bg-red-100 text-red-600 font-black text-[9px] flex items-center justify-center shrink-0">
                                             PDF
                                           </div>
                                           <div className="min-w-0">
-                                            <p className="font-bold text-gray-900 text-[11px] truncate">{msg.attachment.name}</p>
+                                            <p className="font-bold text-gray-900 text-xs truncate">{msg.attachment.name}</p>
                                             <p className="text-[10px] text-gray-400">{msg.attachment.size}</p>
                                           </div>
                                         </div>
@@ -7957,13 +7957,13 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
 
                                     {/* Image Attachment (I'rab Analysis Diagram) */}
                                     {msg.imageAttachment && (
-                                      <div className="rounded-xl overflow-hidden border border-[#B3E5DC] bg-white p-2 space-y-1.5">
-                                        <div className="relative rounded-lg overflow-hidden bg-emerald-950/5 border border-gray-100 p-2 text-center">
-                                          <p className="text-[10px] font-bold text-emerald-800">Contoh Analisis I'rab</p>
-                                          <p className="text-sm font-serif font-bold text-gray-900 py-1" dir="rtl">
+                                      <div className="rounded-xl overflow-hidden border border-[#B3E5DC] bg-white p-2.5 space-y-1.5">
+                                        <div className="relative rounded-lg overflow-hidden bg-emerald-950/5 border border-emerald-100 p-3 text-center">
+                                          <p className="text-[11px] font-bold text-emerald-800">Contoh Analisis I'rab</p>
+                                          <p className="text-base sm:text-lg font-serif font-bold text-gray-900 py-1.5" dir="rtl">
                                             أَوْفَى الْيَقِيْنُ أُنْسَ حَبْرٍ
                                           </p>
-                                          <div className="flex justify-around text-[9px] text-gray-500 pt-1 border-t border-gray-100">
+                                          <div className="flex justify-around text-[10px] text-gray-600 font-medium pt-1.5 border-t border-emerald-100/80">
                                             <span>فعل ماض</span>
                                             <span>فاعل مرفوع</span>
                                             <span>مفعول به</span>
@@ -8066,16 +8066,16 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   );
                 })()}
 
-                {/* COLUMN 3: Student Contact Profile (Right Sidebar) */}
+                {/* COLUMN 3: Student Contact Profile (Right Sidebar - Slim & Neat) */}
                 {(() => {
                   const activeConv = conversationsList.find(c => c.id === activeConversationId) || conversationsList[0];
                   return (
-                    <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
+                    <div className="w-full lg:w-56 xl:w-60 space-y-3 shrink-0">
                       
                       {/* WIDGET 1: Student Profile Card */}
-                      <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3 text-center relative">
-                        <button className="absolute right-3 top-3 p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer">
-                          <MoreVertical className="w-3.5 h-3.5" />
+                      <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs space-y-2.5 text-center relative">
+                        <button className="absolute right-2.5 top-2.5 p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer">
+                          <MoreVertical className="w-3 h-3" />
                         </button>
 
                         <div className="flex flex-col items-center">
@@ -8083,95 +8083,95 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                             <img
                               src={activeConv.avatar}
                               alt={activeConv.name}
-                              className="w-16 h-16 rounded-full object-cover border-2 border-emerald-500 shadow-2xs"
+                              className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500 shadow-2xs"
                             />
                           ) : (
-                            <div className={`w-16 h-16 rounded-full font-black text-xl flex items-center justify-center ${activeConv.initialBg || 'bg-emerald-100 text-emerald-800'}`}>
+                            <div className={`w-12 h-12 rounded-full font-black text-sm flex items-center justify-center ${activeConv.initialBg || 'bg-emerald-100 text-emerald-800'}`}>
                               {activeConv.initials || activeConv.name.slice(0, 2).toUpperCase()}
                             </div>
                           )}
 
-                          <h3 className="font-black text-gray-900 text-sm mt-2">{activeConv.name}</h3>
-                          <p className="text-[11px] text-gray-400">{activeConv.email || 'student@example.com'}</p>
-                          <p className="text-[10px] text-gray-500 font-semibold mt-0.5">📍 {activeConv.location || 'Cairo, Egypt'}</p>
+                          <h3 className="font-black text-gray-900 text-xs mt-1.5">{activeConv.name}</h3>
+                          <p className="text-[10px] text-gray-400 truncate max-w-[170px]">{activeConv.email || 'student@example.com'}</p>
+                          <p className="text-[9px] text-gray-500 font-semibold mt-0.5">📍 {activeConv.location || 'Cairo, Egypt'}</p>
                         </div>
 
                         {/* 3 Counter stats */}
-                        <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100 text-center">
-                          <div className="p-2 bg-gray-50 rounded-xl">
-                            <p className="text-base font-black text-gray-900 leading-none">{activeConv.stats?.classes || 12}</p>
-                            <p className="text-[9px] text-gray-400 font-bold uppercase mt-1">Classes</p>
+                        <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-gray-100 text-center">
+                          <div className="p-1.5 bg-gray-50 rounded-xl">
+                            <p className="text-xs font-black text-gray-900 leading-none">{activeConv.stats?.classes || 12}</p>
+                            <p className="text-[8px] text-gray-400 font-bold uppercase mt-0.5">Classes</p>
                           </div>
-                          <div className="p-2 bg-gray-50 rounded-xl">
-                            <p className="text-base font-black text-emerald-700 leading-none">{activeConv.stats?.avgScore || '85%'}</p>
-                            <p className="text-[9px] text-gray-400 font-bold uppercase mt-1">Avg Score</p>
+                          <div className="p-1.5 bg-gray-50 rounded-xl">
+                            <p className="text-xs font-black text-emerald-700 leading-none">{activeConv.stats?.avgScore || '85%'}</p>
+                            <p className="text-[8px] text-gray-400 font-bold uppercase mt-0.5">Score</p>
                           </div>
-                          <div className="p-2 bg-gray-50 rounded-xl">
-                            <p className="text-base font-black text-purple-700 leading-none">{activeConv.stats?.certificates || 6}</p>
-                            <p className="text-[9px] text-gray-400 font-bold uppercase mt-1">Certificates</p>
+                          <div className="p-1.5 bg-gray-50 rounded-xl">
+                            <p className="text-xs font-black text-purple-700 leading-none">{activeConv.stats?.certificates || 6}</p>
+                            <p className="text-[8px] text-gray-400 font-bold uppercase mt-0.5">Certs</p>
                           </div>
                         </div>
                       </div>
 
                       {/* WIDGET 2: Current Class */}
-                      <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-2.5">
-                        <h4 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Current Class</h4>
+                      <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs space-y-2">
+                        <h4 className="text-[10px] font-extrabold text-gray-900 uppercase tracking-wider">Current Class</h4>
                         
-                        <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
-                              <BookOpen className="w-4 h-4" />
+                        <div className="p-2 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-1.5">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                              <BookOpen className="w-3 h-3" />
                             </div>
                             <div className="min-w-0">
-                              <p className="font-bold text-gray-900 text-xs truncate">{activeConv.className}</p>
-                              <p className="text-[10px] text-gray-400">Started: 5 Sep 2026</p>
+                              <p className="font-bold text-gray-900 text-[10px] truncate">{activeConv.className}</p>
+                              <p className="text-[8px] text-gray-400">Started: Sep 2026</p>
                             </div>
                           </div>
                           <button
                             onClick={() => {
                               setActiveNav('classes');
                             }}
-                            className="px-2.5 py-1 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg text-[10px] font-bold text-gray-700 shrink-0 cursor-pointer"
+                            className="px-2 py-0.5 bg-white border border-gray-200 hover:bg-gray-50 rounded-md text-[8px] font-bold text-gray-700 shrink-0 cursor-pointer"
                           >
-                            View Class
+                            View
                           </button>
                         </div>
                       </div>
 
                       {/* WIDGET 3: Shared Files */}
-                      <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                      <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs space-y-2">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Shared Files</h4>
+                          <h4 className="text-[10px] font-extrabold text-gray-900 uppercase tracking-wider">Shared Files</h4>
                           <button
                             onClick={() => alert('Membuka seluruh file lampiran obrolan...')}
-                            className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                            className="text-[9px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
                           >
                             <span>View All</span>
-                            <ChevronRight className="w-3 h-3" />
+                            <ChevronRight className="w-2.5 h-2.5" />
                           </button>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-1.5">
                           {[
-                            { name: 'Modul Nahwu Dasar - Bab 2.pdf', meta: '2.4 MB • 10:05 AM', iconBg: 'bg-red-500', type: 'PDF' },
-                            { name: 'Latihan Soal Nahwu.docx', meta: '1.2 MB • 18 Sep', iconBg: 'bg-blue-500', type: 'DOC' },
+                            { name: 'Modul Nahwu Dasar.pdf', meta: '2.4 MB • 10:05 AM', iconBg: 'bg-red-500', type: 'PDF' },
+                            { name: 'Latihan Soal.docx', meta: '1.2 MB • 18 Sep', iconBg: 'bg-blue-500', type: 'DOC' },
                             { name: 'Penjelasan I\'rab.png', meta: '850 KB • 18 Sep', iconBg: 'bg-sky-500', type: 'PNG' },
                           ].map((file, idx) => (
-                            <div key={idx} className="flex items-center justify-between gap-2 p-1.5 rounded-xl hover:bg-gray-50 text-xs">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <div className={`w-6 h-6 rounded-md ${file.iconBg} text-white font-black text-[8px] flex items-center justify-center shrink-0`}>
+                            <div key={idx} className="flex items-center justify-between gap-1.5 p-1 rounded-lg hover:bg-gray-50 text-xs">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <div className={`w-5 h-5 rounded ${file.iconBg} text-white font-black text-[7px] flex items-center justify-center shrink-0`}>
                                   {file.type}
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="font-bold text-gray-900 text-[11px] truncate">{file.name}</p>
-                                  <p className="text-[9px] text-gray-400">{file.meta}</p>
+                                  <p className="font-bold text-gray-900 text-[10px] truncate">{file.name}</p>
+                                  <p className="text-[8px] text-gray-400">{file.meta}</p>
                                 </div>
                               </div>
                               <button
                                 onClick={() => alert(`Mengunduh ${file.name}...`)}
                                 className="p-1 text-gray-400 hover:text-gray-700 cursor-pointer"
                               >
-                                <Download className="w-3.5 h-3.5" />
+                                <Download className="w-3 h-3" />
                               </button>
                             </div>
                           ))}
@@ -8179,71 +8179,70 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       </div>
 
                       {/* WIDGET 4: Recent Activity */}
-                      <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
-                        <h4 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Recent Activity</h4>
+                      <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs space-y-2">
+                        <h4 className="text-[10px] font-extrabold text-gray-900 uppercase tracking-wider">Recent Activity</h4>
                         
-                        <div className="space-y-2.5 text-xs">
+                        <div className="space-y-1.5 text-xs">
                           {[
-                            { title: 'Submitted Assignment', sub: 'Latihan Soal Bab 1', date: '18 Sep', color: 'text-purple-600 bg-purple-50' },
+                            { title: 'Submitted Assignment', sub: 'Latihan Soal 1', date: '18 Sep', color: 'text-purple-600 bg-purple-50' },
                             { title: 'Completed Quiz', sub: 'Kuis Nahwu 1', date: '15 Sep', color: 'text-emerald-600 bg-emerald-50' },
                             { title: 'Attended Live Class', sub: 'Nahwu Session 2', date: '12 Sep', color: 'text-amber-600 bg-amber-50' },
-                            { title: 'Earned Certificate', sub: 'Nahwu Dasar', date: '10 Sep', color: 'text-blue-600 bg-blue-50' },
                           ].map((act, idx) => (
-                            <div key={idx} className="flex items-center justify-between gap-2 text-xs">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <div className={`w-6 h-6 rounded-lg ${act.color} flex items-center justify-center shrink-0`}>
-                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                            <div key={idx} className="flex items-center justify-between gap-1 text-xs">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <div className={`w-5 h-5 rounded-md ${act.color} flex items-center justify-center shrink-0`}>
+                                  <CheckCircle2 className="w-3 h-3" />
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="font-bold text-gray-900 text-[11px] truncate">{act.title}</p>
-                                  <p className="text-[9px] text-gray-400 truncate">{act.sub}</p>
+                                  <p className="font-bold text-gray-900 text-[10px] truncate">{act.title}</p>
+                                  <p className="text-[8px] text-gray-400 truncate">{act.sub}</p>
                                 </div>
                               </div>
-                              <span className="text-[10px] text-gray-400 font-medium shrink-0">{act.date}</span>
+                              <span className="text-[8px] text-gray-400 font-medium shrink-0">{act.date}</span>
                             </div>
                           ))}
                         </div>
                       </div>
 
                       {/* WIDGET 5: Quick Actions */}
-                      <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs space-y-2">
-                        <h4 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider px-1">Quick Actions</h4>
+                      <div className="bg-white rounded-2xl border border-gray-200/80 p-2.5 shadow-2xs space-y-1.5">
+                        <h4 className="text-[10px] font-extrabold text-gray-900 uppercase tracking-wider px-1">Quick Actions</h4>
                         
-                        <div className="grid grid-cols-4 gap-1.5 text-center">
+                        <div className="grid grid-cols-4 gap-1 text-center">
                           <button
                             onClick={() => alert(`Memulai Video Call dengan ${activeConv.name}`)}
-                            className="p-2 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-1 cursor-pointer transition-colors"
+                            className="p-1.5 rounded-lg bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-0.5 cursor-pointer transition-colors"
                           >
-                            <Video className="w-4 h-4 text-emerald-700" />
-                            <span className="text-[9px] font-bold">Video Call</span>
+                            <Video className="w-3.5 h-3.5 text-emerald-700" />
+                            <span className="text-[8px] font-bold">Video</span>
                           </button>
 
                           <button
                             onClick={() => alert(`Memulai Voice Call dengan ${activeConv.name}`)}
-                            className="p-2 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-1 cursor-pointer transition-colors"
+                            className="p-1.5 rounded-lg bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-0.5 cursor-pointer transition-colors"
                           >
-                            <Phone className="w-4 h-4 text-emerald-700" />
-                            <span className="text-[9px] font-bold">Voice Call</span>
+                            <Phone className="w-3.5 h-3.5 text-emerald-700" />
+                            <span className="text-[8px] font-bold">Voice</span>
                           </button>
 
                           <button
                             onClick={() => {
                               setActiveNav('schedule');
                             }}
-                            className="p-2 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-1 cursor-pointer transition-colors"
+                            className="p-1.5 rounded-lg bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-0.5 cursor-pointer transition-colors"
                           >
-                            <Calendar className="w-4 h-4 text-purple-700" />
-                            <span className="text-[9px] font-bold">Schedule</span>
+                            <Calendar className="w-3.5 h-3.5 text-purple-700" />
+                            <span className="text-[8px] font-bold">Jadwal</span>
                           </button>
 
                           <button
                             onClick={() => {
                               setActiveNav('students');
                             }}
-                            className="p-2 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-1 cursor-pointer transition-colors"
+                            className="p-1.5 rounded-lg bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-0.5 cursor-pointer transition-colors"
                           >
-                            <User className="w-4 h-4 text-sky-700" />
-                            <span className="text-[9px] font-bold">View Profile</span>
+                            <User className="w-3.5 h-3.5 text-sky-700" />
+                            <span className="text-[8px] font-bold">Profil</span>
                           </button>
                         </div>
                       </div>
