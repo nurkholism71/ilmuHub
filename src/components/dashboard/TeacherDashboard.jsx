@@ -460,13 +460,14 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                   <button
                     key={item.id}
                     onClick={() => {
-                      setActiveNav(item.id);
                       if (item.id === 'live') {
                         onStartLive({
                           title: 'Nahwu for Beginners (Live Class)',
                           tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
                           image: '/images/class_nahwu.jpg'
                         });
+                      } else {
+                        setActiveNav(item.id);
                       }
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
