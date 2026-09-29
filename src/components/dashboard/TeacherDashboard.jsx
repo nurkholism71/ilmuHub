@@ -844,6 +844,166 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     { studentName: 'Ali Khan', avatar: '/images/student_ali.jpg', assignment: 'Ringkasan Materi', time: '3 hours ago' },
   ];
 
+  // Quizzes View States (matching media_1790723029058.jpg)
+  const [quizTabFilter, setQuizTabFilter] = useState('all'); // 'all' (16) | 'drafts' (3) | 'published' (10) | 'archived' (3)
+  const [quizClassFilter, setQuizClassFilter] = useState('All Classes');
+  const [quizStatusFilter, setQuizStatusFilter] = useState('All Status');
+  const [quizQuestionTypeFilter, setQuizQuestionTypeFilter] = useState('All Question Types');
+  const [quizSearchQuery, setQuizSearchQuery] = useState('');
+  const [selectedQuizIds, setSelectedQuizIds] = useState([]);
+  const [quizPage, setQuizPage] = useState(1);
+  const [quizItemsPerPage, setQuizItemsPerPage] = useState('10 per page');
+  const [isCreateQuizModalOpen, setIsCreateQuizModalOpen] = useState(false);
+  const [selectedQuizModal, setSelectedQuizModal] = useState(null);
+
+  // New Quiz Form State
+  const [newQuizForm, setNewQuizForm] = useState({
+    title: '',
+    topic: '',
+    className: 'Nahwu for Beginners',
+    questionsCount: 20,
+    timeLimit: '15 min',
+    passingGrade: 75,
+    status: 'published'
+  });
+
+  const [quizzesDataList, setQuizzesDataList] = useState([
+    {
+      id: 'qz-1',
+      num: 1,
+      title: 'Kuis Nahwu Dasar 1',
+      topic: 'Konsep dasar isim, fi\'il, dan harf',
+      image: '/images/class_nahwu.jpg',
+      className: 'Nahwu for Beginners',
+      classColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      questions: 20,
+      timeLimit: '15 min',
+      attempts: 42,
+      avgScore: 85,
+      avgScoreColor: 'bg-emerald-600',
+      status: 'published'
+    },
+    {
+      id: 'qz-2',
+      num: 2,
+      title: 'Kuis Sharaf 1',
+      topic: 'Tashrif fi\'il madhi',
+      image: '/images/class_sharaf.jpg',
+      className: 'Sharaf Basic',
+      classColor: 'bg-[#F5EDFD] text-[#581C87] border border-[#E9D5FF]',
+      questions: 15,
+      timeLimit: '10 min',
+      attempts: 38,
+      avgScore: 78,
+      avgScoreColor: 'bg-emerald-600',
+      status: 'published'
+    },
+    {
+      id: 'qz-3',
+      num: 3,
+      title: 'Kuis Kosakata Arab',
+      topic: 'Mufradat sehari-hari',
+      image: '/images/class_conversation.jpg',
+      className: 'Arabic Conversation',
+      classColor: 'bg-[#EAF2FD] text-[#1E3A8A] border border-[#BFDBFE]',
+      questions: 25,
+      timeLimit: '20 min',
+      attempts: 51,
+      avgScore: 72,
+      avgScoreColor: 'bg-emerald-600',
+      status: 'published'
+    },
+    {
+      id: 'qz-4',
+      num: 4,
+      title: 'Kuis Teks Arab',
+      topic: 'Pemahaman bacaan',
+      image: '/images/class_sharaf.jpg',
+      className: 'Sharaf Basic',
+      classColor: 'bg-[#F5EDFD] text-[#581C87] border border-[#E9D5FF]',
+      questions: 20,
+      timeLimit: '15 min',
+      attempts: 36,
+      avgScore: 68,
+      avgScoreColor: 'bg-amber-500',
+      status: 'published'
+    },
+    {
+      id: 'qz-5',
+      num: 5,
+      title: 'Kuis Hafalan',
+      topic: 'Surat pendek',
+      image: '/images/class_nahwu.jpg',
+      className: 'Nahwu for Beginners',
+      classColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      questions: 10,
+      timeLimit: '10 min',
+      attempts: 28,
+      avgScore: 90,
+      avgScoreColor: 'bg-emerald-600',
+      status: 'published'
+    },
+    {
+      id: 'qz-6',
+      num: 6,
+      title: 'Kuis Bab 1',
+      topic: 'Review materi minggu 1',
+      image: '/images/class_conversation.jpg',
+      className: 'Academic Writing',
+      classColor: 'bg-amber-50 text-amber-700 border border-amber-200',
+      questions: 30,
+      timeLimit: '25 min',
+      attempts: 24,
+      avgScore: 64,
+      avgScoreColor: 'bg-amber-500',
+      status: 'scheduled'
+    },
+    {
+      id: 'qz-7',
+      num: 7,
+      title: 'Kuis Diskusi',
+      topic: 'Pemahaman konsep',
+      image: '/images/class_nahwu.jpg',
+      className: 'Arabic Conversation',
+      classColor: 'bg-[#EAF2FD] text-[#1E3A8A] border border-[#BFDBFE]',
+      questions: 15,
+      timeLimit: '15 min',
+      attempts: 18,
+      avgScore: 56,
+      avgScoreColor: 'bg-rose-500',
+      status: 'draft'
+    },
+    {
+      id: 'qz-8',
+      num: 8,
+      title: 'Kuis Akhir Modul',
+      topic: 'Evaluasi keseluruhan',
+      image: '/images/class_nahwu.jpg',
+      className: 'Nahwu for Beginners',
+      classColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      questions: 40,
+      timeLimit: '30 min',
+      attempts: 5,
+      avgScore: null,
+      avgScoreColor: 'bg-gray-300',
+      status: 'draft'
+    }
+  ]);
+
+  const upcomingQuizzesList = [
+    { dateNum: '25', month: 'Sep', title: 'Kuis Bab 1', className: 'Nahwu for Beginners', timeLeft: '2 days left', isUrgent: true },
+    { dateNum: '28', month: 'Sep', title: 'Kuis Kosakata Arab', className: 'Arabic Conversation', timeLeft: '5 days left' },
+    { dateNum: '1', month: 'Oct', title: 'Kuis Teks Arab', className: 'Sharaf Basic', timeLeft: '8 days left' },
+    { dateNum: '5', month: 'Oct', title: 'Kuis Akhir Modul', className: 'Nahwu for Beginners', timeLeft: '12 days left' },
+  ];
+
+  const recentQuizAttemptsList = [
+    { studentName: 'Aisha Rahman', quizTitle: 'Kuis Nahwu Dasar 1', score: '92%', scoreBadge: 'bg-emerald-100 text-emerald-800', time: '10 minutes ago', avatar: '/images/student_aisha.jpg' },
+    { studentName: 'Omar Hassan', quizTitle: 'Kuis Sharaf 1', score: '76%', scoreBadge: 'bg-amber-100 text-amber-800', time: '25 minutes ago', avatar: '/images/student_omar.jpg' },
+    { studentName: 'Fatimah Zahra', quizTitle: 'Kuis Kosakata Arab', score: '88%', scoreBadge: 'bg-emerald-100 text-emerald-800', time: '1 hour ago', avatar: '/images/student_fatimah.jpg' },
+    { studentName: 'Ali Khan', quizTitle: 'Kuis Teks Arab', score: '60%', scoreBadge: 'bg-amber-100 text-amber-800', time: '2 hours ago', avatar: '/images/student_ali.jpg' },
+  ];
+
   // Sidebar Items matching reference image
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -4979,6 +5139,697 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
             </div>
+          ) : activeNav === 'quizzes' ? (
+            /* ========================================================= */
+            /* VIEW: QUIZZES (MATCHING MOCKUP & COMPACT RIGHT SIDEBAR)   */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* TOP HEADER: Icon, Title, Subtitle, and + Create Quiz Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <HelpCircle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Quizzes</h1>
+                    <p className="text-xs text-gray-500 font-medium">Buat, kelola, dan analisis kuis untuk menguji pemahaman siswa.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => setIsCreateQuizModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Create Quiz</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* TABS FILTER (Matching Mockup with count pills) */}
+              <div className="flex items-center gap-2 border-b border-gray-200/80 pb-px overflow-x-auto no-scrollbar">
+                {[
+                  { id: 'all', label: 'All Quizzes', count: 16 },
+                  { id: 'drafts', label: 'Drafts', count: 3 },
+                  { id: 'published', label: 'Published', count: 10 },
+                  { id: 'archived', label: 'Archived', count: 3 },
+                ].map((tab) => {
+                  const isActive = quizTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setQuizTabFilter(tab.id)}
+                      className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-bold transition-all border-b-2 whitespace-nowrap cursor-pointer ${
+                        isActive
+                          ? 'border-[#114B44] text-[#114B44]'
+                          : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
+                        isActive ? 'bg-[#114B44] text-white' : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {tab.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 4 METRIC SUMMARY CARDS */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {/* Total Quizzes */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+                    <List className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-black text-gray-900 leading-tight">16</h3>
+                      <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded">Total Quizzes</span>
+                    </div>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-0.5">+2 this month</p>
+                  </div>
+                </div>
+
+                {/* Total Attempts */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-black text-gray-900 leading-tight">284</h3>
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded">Total Attempts</span>
+                    </div>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-0.5">+18% from last month</p>
+                  </div>
+                </div>
+
+                {/* Average Score */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                    <Star className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-black text-gray-900 leading-tight">78%</h3>
+                      <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">Average Score</span>
+                    </div>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-0.5">+6% improvement</p>
+                  </div>
+                </div>
+
+                {/* Average Time */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-black text-gray-900 leading-tight">12 min</h3>
+                      <span className="text-[10px] font-bold text-sky-700 bg-sky-50 px-1.5 py-0.2 rounded">Average Time</span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 font-medium mt-0.5">per attempt</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CONTROLS TOOLBAR: Class Dropdown, Status Dropdown, Question Types Dropdown, Search bar */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {/* Class Filter */}
+                  <div className="relative">
+                    <select
+                      value={quizClassFilter}
+                      onChange={(e) => setQuizClassFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Classes">All Classes</option>
+                      <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                      <option value="Arabic Conversation">Arabic Conversation</option>
+                      <option value="Sharaf Basic">Sharaf Basic</option>
+                      <option value="Academic Writing">Academic Writing</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Status Filter */}
+                  <div className="relative">
+                    <select
+                      value={quizStatusFilter}
+                      onChange={(e) => setQuizStatusFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Status">All Status</option>
+                      <option value="published">Published</option>
+                      <option value="scheduled">Scheduled</option>
+                      <option value="draft">Draft</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Question Types Filter */}
+                  <div className="relative">
+                    <select
+                      value={quizQuestionTypeFilter}
+                      onChange={(e) => setQuizQuestionTypeFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Question Types">All Question Types</option>
+                      <option value="Multiple Choice">Multiple Choice</option>
+                      <option value="True/False">True/False</option>
+                      <option value="Fill in the Blank">Fill in the Blank</option>
+                      <option value="Short Answer">Short Answer</option>
+                      <option value="Matching">Matching</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  {/* Search bar */}
+                  <div className="relative flex-1 md:w-64">
+                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={quizSearchQuery}
+                      onChange={(e) => setQuizSearchQuery(e.target.value)}
+                      placeholder="Search quizzes..."
+                      className="w-full bg-gray-50/80 border border-gray-200/80 rounded-xl pl-8 pr-3 py-1.5 text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 2-COLUMN LAYOUT: Center Quizzes Table Canvas + Right Sidebar Column */}
+              <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
+                
+                {/* CENTER CANVAS: Quizzes Table (flex-1 min-w-0 w-full) */}
+                <div className="flex-1 min-w-0 w-full space-y-4">
+                  
+                  {/* Table Container */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-gray-200 bg-gray-50/60 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                            <th className="py-3 px-3 w-10">
+                              <input
+                                type="checkbox"
+                                checked={selectedQuizIds.length > 0 && selectedQuizIds.length === quizzesDataList.length}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedQuizIds(quizzesDataList.map(q => q.id));
+                                  } else {
+                                    setSelectedQuizIds([]);
+                                  }
+                                }}
+                                className="rounded border-gray-300 text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                              />
+                            </th>
+                            <th className="py-3 px-2 w-8 text-center">#</th>
+                            <th className="py-3 px-3">Title</th>
+                            <th className="py-3 px-3">Class</th>
+                            <th className="py-3 px-3 text-center">Questions</th>
+                            <th className="py-3 px-3 text-center">Time Limit</th>
+                            <th className="py-3 px-3 text-center">Attempts</th>
+                            <th className="py-3 px-3">Average Score</th>
+                            <th className="py-3 px-3 text-center">Status</th>
+                            <th className="py-3 px-3 text-center">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 text-xs">
+                          {quizzesDataList
+                            .filter(item => {
+                              if (quizTabFilter === 'drafts') return item.status === 'draft';
+                              if (quizTabFilter === 'published') return item.status === 'published';
+                              if (quizTabFilter === 'archived') return item.status === 'archived';
+                              return true;
+                            })
+                            .filter(item => {
+                              if (quizClassFilter !== 'All Classes' && item.className !== quizClassFilter) return false;
+                              if (quizStatusFilter !== 'All Status' && item.status !== quizStatusFilter.toLowerCase()) return false;
+                              if (quizSearchQuery) {
+                                const q = quizSearchQuery.toLowerCase();
+                                return (
+                                  item.title.toLowerCase().includes(q) ||
+                                  item.topic.toLowerCase().includes(q) ||
+                                  item.className.toLowerCase().includes(q)
+                                );
+                              }
+                              return true;
+                            })
+                            .map((quiz) => {
+                              const isSelected = selectedQuizIds.includes(quiz.id);
+                              return (
+                                <tr
+                                  key={quiz.id}
+                                  className={`hover:bg-gray-50/80 transition-colors ${
+                                    isSelected ? 'bg-emerald-50/30' : ''
+                                  }`}
+                                >
+                                  {/* Checkbox */}
+                                  <td className="py-3.5 px-3">
+                                    <input
+                                      type="checkbox"
+                                      checked={isSelected}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setSelectedQuizIds(prev => [...prev, quiz.id]);
+                                        } else {
+                                          setSelectedQuizIds(prev => prev.filter(id => id !== quiz.id));
+                                        }
+                                      }}
+                                      className="rounded border-gray-300 text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Index # */}
+                                  <td className="py-3.5 px-2 text-center text-gray-400 font-bold text-[11px]">
+                                    {quiz.num}
+                                  </td>
+
+                                  {/* Title & Topic */}
+                                  <td className="py-3.5 px-3 min-w-[200px]">
+                                    <div 
+                                      onClick={() => setSelectedQuizModal(quiz)}
+                                      className="flex items-center gap-3 cursor-pointer group"
+                                    >
+                                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                        <img 
+                                          src={quiz.image} 
+                                          alt={quiz.title} 
+                                          className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
+                                          onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                          }}
+                                        />
+                                        <div className="w-full h-full bg-emerald-50 text-emerald-800 font-black text-xs hidden items-center justify-center">
+                                          {quiz.title.slice(0, 2).toUpperCase()}
+                                        </div>
+                                      </div>
+                                      <div className="min-w-0">
+                                        <p className="font-bold text-gray-900 group-hover:text-[#114B44] transition-colors text-xs truncate">
+                                          {quiz.title}
+                                        </p>
+                                        <p className="text-[11px] text-gray-400 truncate max-w-[180px]">
+                                          {quiz.topic}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Class */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold border ${quiz.classColor}`}>
+                                      {quiz.className}
+                                    </span>
+                                  </td>
+
+                                  {/* Questions */}
+                                  <td className="py-3.5 px-3 text-center font-bold text-gray-700 text-[11px] whitespace-nowrap">
+                                    {quiz.questions}
+                                  </td>
+
+                                  {/* Time Limit */}
+                                  <td className="py-3.5 px-3 text-center font-bold text-gray-700 text-[11px] whitespace-nowrap">
+                                    {quiz.timeLimit}
+                                  </td>
+
+                                  {/* Attempts */}
+                                  <td className="py-3.5 px-3 text-center font-bold text-gray-700 text-[11px] whitespace-nowrap">
+                                    {quiz.attempts}
+                                  </td>
+
+                                  {/* Average Score */}
+                                  <td className="py-3.5 px-3 min-w-[120px]">
+                                    {quiz.avgScore !== null ? (
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-16 bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                          <div
+                                            className={`h-full rounded-full ${quiz.avgScoreColor}`}
+                                            style={{ width: `${quiz.avgScore}%` }}
+                                          ></div>
+                                        </div>
+                                        <span className="font-black text-gray-700 text-[11px]">{quiz.avgScore}%</span>
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-400 font-bold text-xs">-</span>
+                                    )}
+                                  </td>
+
+                                  {/* Status */}
+                                  <td className="py-3.5 px-3 text-center whitespace-nowrap">
+                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold capitalize ${
+                                      quiz.status === 'published' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                      quiz.status === 'scheduled' ? 'bg-sky-50 text-sky-700 border border-sky-200' :
+                                      'bg-gray-100 text-gray-600 border border-gray-200'
+                                    }`}>
+                                      {quiz.status}
+                                    </span>
+                                  </td>
+
+                                  {/* Actions */}
+                                  <td className="py-3.5 px-3 text-center whitespace-nowrap">
+                                    <div className="flex items-center justify-center gap-1">
+                                      <button
+                                        onClick={() => setSelectedQuizModal(quiz)}
+                                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        title="View Details"
+                                      >
+                                        <Eye className="w-4 h-4" />
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          const newTitle = prompt('Edit Judul Kuis:', quiz.title);
+                                          if (newTitle) {
+                                            setQuizzesDataList(prev => prev.map(q => q.id === quiz.id ? { ...q, title: newTitle } : q));
+                                          }
+                                        }}
+                                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        title="Edit Quiz"
+                                      >
+                                        <Edit3 className="w-4 h-4" />
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          if (confirm(`Hapus kuis "${quiz.title}"?`)) {
+                                            setQuizzesDataList(prev => prev.filter(q => q.id !== quiz.id));
+                                          }
+                                        }}
+                                        className="p-1.5 rounded-lg hover:bg-rose-50 text-gray-400 hover:text-rose-600 transition-colors cursor-pointer"
+                                        title="Delete Quiz"
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Table Footer / Pagination Matching Mockup */}
+                    <div className="p-3.5 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                      <span className="text-gray-500 font-medium">Showing 1-8 of 16 quizzes</span>
+
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => setQuizPage(Math.max(1, quizPage - 1))}
+                          disabled={quizPage === 1}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-40 cursor-pointer"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setQuizPage(1)}
+                          className={`w-7 h-7 rounded-lg font-bold text-xs cursor-pointer ${
+                            quizPage === 1 ? 'bg-[#114B44] text-white' : 'border border-gray-200 text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          1
+                        </button>
+                        <button
+                          onClick={() => setQuizPage(2)}
+                          className={`w-7 h-7 rounded-lg font-bold text-xs cursor-pointer ${
+                            quizPage === 2 ? 'bg-[#114B44] text-white' : 'border border-gray-200 text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          2
+                        </button>
+                        <button
+                          onClick={() => setQuizPage(3)}
+                          className={`w-7 h-7 rounded-lg font-bold text-xs cursor-pointer ${
+                            quizPage === 3 ? 'bg-[#114B44] text-white' : 'border border-gray-200 text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          3
+                        </button>
+                        <button
+                          onClick={() => setQuizPage(Math.min(3, quizPage + 1))}
+                          disabled={quizPage === 3}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-40 cursor-pointer"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="relative">
+                        <select
+                          value={quizItemsPerPage}
+                          onChange={(e) => setQuizItemsPerPage(e.target.value)}
+                          className="bg-gray-50/80 border border-gray-200 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none cursor-pointer"
+                        >
+                          <option value="10 per page">10 per page</option>
+                          <option value="20 per page">20 per page</option>
+                          <option value="50 per page">50 per page</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Quiz Performance + Question Types + Upcoming Quizzes + Recent Attempts (w-full lg:w-72 xl:w-80) */}
+                <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
+                  
+                  {/* WIDGET 1: Quiz Performance (Bar Chart SVG Matching Mockup) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900">Quiz Performance</h3>
+                      <div className="relative">
+                        <select className="bg-gray-50 border border-gray-200 rounded-lg px-2 py-0.5 pr-5 text-[10px] font-bold text-gray-600 appearance-none focus:outline-none cursor-pointer">
+                          <option>Last 30 days</option>
+                          <option>Last 7 days</option>
+                          <option>This Semester</option>
+                        </select>
+                        <ChevronDown className="w-2.5 h-2.5 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* Bar Chart SVG */}
+                    <div className="pt-2">
+                      <div className="h-28 flex items-end justify-between gap-2 px-2 border-b border-gray-100 pb-1">
+                        {[
+                          { label: '1 Sep', val: 18, height: '45%' },
+                          { label: '8 Sep', val: 25, height: '62%' },
+                          { label: '15 Sep', val: 28, height: '70%' },
+                          { label: '22 Sep', val: 32, height: '80%' },
+                          { label: '30 Sep', val: 40, height: '100%' },
+                        ].map((bar, idx) => (
+                          <div key={idx} className="flex-1 flex flex-col items-center gap-1 group">
+                            <span className="text-[9px] font-bold text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">{bar.val}</span>
+                            <div className="w-full bg-emerald-50 rounded-t-md h-full flex items-end overflow-hidden">
+                              <div
+                                className="w-full bg-[#10B981] hover:bg-[#059669] rounded-t-md transition-all duration-500 cursor-pointer"
+                                style={{ height: bar.height }}
+                                title={`${bar.label}: ${bar.val} attempts`}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {/* X Axis Labels */}
+                      <div className="flex justify-between px-2 pt-1 text-[9px] text-gray-400 font-medium">
+                        <span>1 Sep</span>
+                        <span>8 Sep</span>
+                        <span>15 Sep</span>
+                        <span>22 Sep</span>
+                        <span>30 Sep</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WIDGET 2: Question Types (Donut Chart SVG Matching Mockup) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Question Types</h3>
+
+                    {/* Donut Chart SVG */}
+                    <div className="flex items-center justify-center py-1">
+                      <div className="relative w-28 h-28 flex items-center justify-center">
+                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                          {/* Multiple Choice (50%) - Blue */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#3B82F6"
+                            strokeWidth="14"
+                            strokeDasharray="119.38 238.76"
+                            strokeDashoffset="0"
+                          />
+                          {/* True/False (20%) - Green */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#10B981"
+                            strokeWidth="14"
+                            strokeDasharray="47.75 238.76"
+                            strokeDashoffset="-119.38"
+                          />
+                          {/* Fill in the Blank (15%) - Amber */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#F59E0B"
+                            strokeWidth="14"
+                            strokeDasharray="35.81 238.76"
+                            strokeDashoffset="-167.13"
+                          />
+                          {/* Short Answer (10%) - Purple */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#8B5CF6"
+                            strokeWidth="14"
+                            strokeDasharray="23.88 238.76"
+                            strokeDashoffset="-202.94"
+                          />
+                          {/* Matching (5%) - Pink */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#EC4899"
+                            strokeWidth="14"
+                            strokeDasharray="11.94 238.76"
+                            strokeDashoffset="-226.82"
+                          />
+                        </svg>
+
+                        {/* Center text */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                          <span className="text-base font-black text-gray-900 leading-none">120</span>
+                          <span className="text-[9px] font-bold text-gray-400 mt-0.5">Questions</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Breakdown legend */}
+                    <div className="space-y-1.5 pt-1 text-xs">
+                      {[
+                        { label: 'Multiple Choice', count: '60 (50%)', dotColor: 'bg-blue-500' },
+                        { label: 'True/False', count: '24 (20%)', dotColor: 'bg-emerald-500' },
+                        { label: 'Fill in the Blank', count: '18 (15%)', dotColor: 'bg-amber-500' },
+                        { label: 'Short Answer', count: '12 (10%)', dotColor: 'bg-purple-500' },
+                        { label: 'Matching', count: '6 (5%)', dotColor: 'bg-pink-500' },
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between text-[11px]">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full ${item.dotColor}`}></span>
+                            <span className="text-gray-600 font-medium">{item.label}</span>
+                          </div>
+                          <span className="font-extrabold text-gray-800">{item.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 3: Upcoming Quizzes */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Upcoming Quizzes</h3>
+                      <button 
+                        onClick={() => setQuizTabFilter('all')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {upcomingQuizzesList.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between gap-2 text-xs"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 flex flex-col items-center justify-center shrink-0">
+                              <span className="text-xs font-black text-gray-900 leading-none">{item.dateNum}</span>
+                              <span className="text-[9px] font-bold text-gray-400 uppercase leading-none mt-0.5">{item.month}</span>
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-gray-900 text-[11px] truncate">{item.title}</p>
+                              <p className="text-[10px] text-gray-400 truncate">{item.className}</p>
+                            </div>
+                          </div>
+                          <span className={`text-[10px] font-bold shrink-0 ${
+                            item.isUrgent ? 'text-rose-600' : 'text-amber-600'
+                          }`}>
+                            {item.timeLeft}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 4: Recent Attempts */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Recent Attempts</h3>
+                      <button 
+                        onClick={() => alert('Membuka seluruh riwayat pengerjaan kuis siswa...')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {recentQuizAttemptsList.map((sub, idx) => (
+                        <div key={idx} className="flex items-center justify-between gap-2.5 text-xs">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <img
+                              src={sub.avatar}
+                              alt={sub.studentName}
+                              className="w-7 h-7 rounded-full object-cover shrink-0 border border-gray-100"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                            <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] items-center justify-center hidden shrink-0">
+                              {sub.studentName.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-gray-900 text-[11px] truncate">{sub.studentName}</p>
+                              <p className="text-[10px] text-gray-400 truncate">{sub.quizTitle}</p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end shrink-0">
+                            <span className={`text-[10px] font-black px-1.5 py-0.2 rounded ${sub.scoreBadge}`}>
+                              {sub.score}
+                            </span>
+                            <span className="text-[9px] text-gray-400 font-medium mt-0.5">{sub.time}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
             /* ========================================================= */
             /* VIEW 6: DASHBOARD OVERVIEW CANVAS                         */
@@ -6666,6 +7517,289 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               >
                 <ClipboardCheck className="w-3.5 h-3.5" />
                 <span>Grade Submissions</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: CREATE QUIZ MODAL                                  */}
+      {/* ========================================================= */}
+      {isCreateQuizModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center">
+                  <HelpCircle className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Create New Quiz</h3>
+                  <p className="text-xs text-gray-500">Buat kuis interaktif baru untuk siswa.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsCreateQuizModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!newQuizForm.title.trim()) {
+                  alert('Mohon masukkan judul kuis.');
+                  return;
+                }
+                const newQuiz = {
+                  id: `qz-${Date.now()}`,
+                  num: quizzesDataList.length + 1,
+                  title: newQuizForm.title,
+                  topic: newQuizForm.topic || 'Ujian evaluasi materi',
+                  image: '/images/class_nahwu.jpg',
+                  className: newQuizForm.className,
+                  classColor: newQuizForm.className === 'Nahwu for Beginners' ? 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]' :
+                              newQuizForm.className === 'Sharaf Basic' ? 'bg-[#F5EDFD] text-[#581C87] border border-[#E9D5FF]' :
+                              newQuizForm.className === 'Arabic Conversation' ? 'bg-[#EAF2FD] text-[#1E3A8A] border border-[#BFDBFE]' :
+                              'bg-amber-50 text-amber-700 border border-amber-200',
+                  questions: parseInt(newQuizForm.questionsCount) || 20,
+                  timeLimit: newQuizForm.timeLimit || '15 min',
+                  attempts: 0,
+                  avgScore: null,
+                  avgScoreColor: 'bg-gray-300',
+                  status: newQuizForm.status
+                };
+                setQuizzesDataList(prev => [newQuiz, ...prev]);
+                setIsCreateQuizModalOpen(false);
+                setNewQuizForm({
+                  title: '',
+                  topic: '',
+                  className: 'Nahwu for Beginners',
+                  questionsCount: 20,
+                  timeLimit: '15 min',
+                  passingGrade: 75,
+                  status: 'published'
+                });
+                alert('Kuis baru berhasil dibuat dan siap dikerjakan siswa!');
+              }}
+              className="space-y-4 text-xs"
+            >
+              {/* Quiz Title */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Quiz Title <span className="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  value={newQuizForm.title}
+                  onChange={(e) => setNewQuizForm({ ...newQuizForm, title: e.target.value })}
+                  placeholder="e.g. Kuis Nahwu Bab Isim Mufrod" 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold text-gray-800 focus:outline-none focus:border-purple-600"
+                  required
+                />
+              </div>
+
+              {/* Topic / Subtitle */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Topic / Subtitle</label>
+                <input 
+                  type="text" 
+                  value={newQuizForm.topic}
+                  onChange={(e) => setNewQuizForm({ ...newQuizForm, topic: e.target.value })}
+                  placeholder="e.g. Konsep dasar isim, fi'il, dan harf" 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-purple-600"
+                />
+              </div>
+
+              {/* Class & Question Count */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Class</label>
+                  <select 
+                    value={newQuizForm.className}
+                    onChange={(e) => setNewQuizForm({ ...newQuizForm, className: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-purple-600 cursor-pointer"
+                  >
+                    <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                    <option value="Arabic Conversation">Arabic Conversation</option>
+                    <option value="Sharaf Basic">Sharaf Basic</option>
+                    <option value="Academic Writing">Academic Writing</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Total Questions</label>
+                  <input 
+                    type="number" 
+                    min={5}
+                    max={100}
+                    value={newQuizForm.questionsCount}
+                    onChange={(e) => setNewQuizForm({ ...newQuizForm, questionsCount: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-purple-600"
+                  />
+                </div>
+              </div>
+
+              {/* Time Limit & Passing Grade */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Time Limit</label>
+                  <select 
+                    value={newQuizForm.timeLimit}
+                    onChange={(e) => setNewQuizForm({ ...newQuizForm, timeLimit: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-purple-600 cursor-pointer"
+                  >
+                    <option value="10 min">10 minutes</option>
+                    <option value="15 min">15 minutes</option>
+                    <option value="20 min">20 minutes</option>
+                    <option value="25 min">25 minutes</option>
+                    <option value="30 min">30 minutes</option>
+                    <option value="45 min">45 minutes</option>
+                    <option value="60 min">60 minutes</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Passing Grade (%)</label>
+                  <input 
+                    type="number" 
+                    min={50}
+                    max={100}
+                    value={newQuizForm.passingGrade}
+                    onChange={(e) => setNewQuizForm({ ...newQuizForm, passingGrade: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-purple-600"
+                  />
+                </div>
+              </div>
+
+              {/* Status */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Status</label>
+                <div className="flex items-center gap-3 pt-1">
+                  {[
+                    { id: 'published', label: 'Publish' },
+                    { id: 'draft', label: 'Draft' },
+                    { id: 'scheduled', label: 'Scheduled' }
+                  ].map(st => (
+                    <label key={st.id} className="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-700">
+                      <input 
+                        type="radio" 
+                        name="quizStatusForm" 
+                        checked={newQuizForm.status === st.id}
+                        onChange={() => setNewQuizForm({ ...newQuizForm, status: st.id })}
+                        className="text-[#114B44] focus:ring-[#114B44]"
+                      />
+                      <span>{st.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateQuizModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer"
+                >
+                  Save & Publish Quiz
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: QUIZ DETAILS & ANALYTICS MODAL                     */}
+      {/* ========================================================= */}
+      {selectedQuizModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-800 flex items-center justify-center">
+                  <HelpCircle className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">{selectedQuizModal.title}</h3>
+                  <p className="text-xs text-gray-500">{selectedQuizModal.className} • {selectedQuizModal.questions} Soal</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedQuizModal(null)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                <p className="text-gray-500 font-semibold">Topik Pembahasan:</p>
+                <p className="text-gray-800 font-bold">{selectedQuizModal.topic}</p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-2.5 bg-emerald-50/60 rounded-xl border border-emerald-100">
+                  <p className="text-[10px] font-bold text-emerald-700 uppercase">Total Attempts</p>
+                  <p className="text-base font-black text-emerald-900">{selectedQuizModal.attempts}</p>
+                </div>
+                <div className="p-2.5 bg-sky-50/60 rounded-xl border border-sky-100">
+                  <p className="text-[10px] font-bold text-sky-700 uppercase">Avg Score</p>
+                  <p className="text-base font-black text-sky-900">{selectedQuizModal.avgScore !== null ? `${selectedQuizModal.avgScore}%` : 'N/A'}</p>
+                </div>
+                <div className="p-2.5 bg-amber-50/60 rounded-xl border border-amber-100">
+                  <p className="text-[10px] font-bold text-amber-700 uppercase">Time Limit</p>
+                  <p className="text-xs font-black text-amber-900 mt-1">{selectedQuizModal.timeLimit}</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <p className="font-extrabold text-gray-900 text-xs">Top Performer Attempts:</p>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-emerald-200 text-emerald-800 font-bold text-[10px] flex items-center justify-center">AR</div>
+                      <span className="font-bold text-gray-800 text-xs">Aisha Rahman</span>
+                    </div>
+                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Score: 92%</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-blue-200 text-blue-800 font-bold text-[10px] flex items-center justify-center">FZ</div>
+                      <span className="font-bold text-gray-800 text-xs">Fatimah Zahra</span>
+                    </div>
+                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Score: 88%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setSelectedQuizModal(null)}
+                className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer text-xs"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  alert(`Membuka editor bank soal untuk kuis: ${selectedQuizModal.title}`);
+                  setSelectedQuizModal(null);
+                }}
+                className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer text-xs flex items-center gap-2"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>Edit Questions</span>
               </button>
             </div>
           </div>
