@@ -1163,17 +1163,60 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                     </button>
                   </div>
 
-                  {/* Bar Chart */}
+                  {/* Visual Learning Progress Chart Canvas */}
                   <div className="pt-2">
-                    <div className="h-32 flex items-end justify-between gap-3 px-2">
-                      {[40, 65, 30, 85, 45, 95, 60, 75, 90, 70, 80].map((val, i) => (
-                        <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-                          <div 
-                            className="w-full bg-[#114B44] hover:bg-emerald-600 rounded-t-md transition-all shadow-2xs"
-                            style={{ height: `${val}%` }}
-                          ></div>
+                    <div className="flex items-end gap-2 h-44 w-full">
+                      {/* Y-Axis scale */}
+                      <div className="flex flex-col justify-between h-full text-[9px] font-bold text-gray-400 pr-1 shrink-0 pb-5 select-none">
+                        <span>100%</span>
+                        <span>75%</span>
+                        <span>50%</span>
+                        <span>25%</span>
+                        <span>0%</span>
+                      </div>
+
+                      {/* Chart Area with Gridlines & Columns */}
+                      <div className="relative flex-1 h-full flex flex-col justify-end">
+                        {/* Background Gridlines */}
+                        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40 pb-5">
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-100 w-full"></div>
+                          <div className="border-b border-gray-200 w-full"></div>
                         </div>
-                      ))}
+
+                        {/* Bars */}
+                        <div className="relative z-0 h-[82%] flex items-end justify-between gap-1.5 sm:gap-2 px-1">
+                          {[
+                            { label: '1 Sep', val: 45, hours: '1.5h' },
+                            { label: '4 Sep', val: 65, hours: '2.5h' },
+                            { label: '7 Sep', val: 35, hours: '1.2h' },
+                            { label: '10 Sep', val: 85, hours: '3.5h' },
+                            { label: '13 Sep', val: 50, hours: '2.0h' },
+                            { label: '16 Sep', val: 95, hours: '4.0h' },
+                            { label: '19 Sep', val: 70, hours: '2.8h' },
+                            { label: '22 Sep', val: 80, hours: '3.2h' },
+                            { label: '25 Sep', val: 90, hours: '3.8h', isToday: true },
+                            { label: '28 Sep', val: 60, hours: '2.4h' },
+                            { label: '30 Sep', val: 75, hours: '3.0h' },
+                          ].map((item, i) => (
+                            <div key={i} className="flex-1 h-full flex flex-col items-center justify-end group relative cursor-pointer">
+                              {/* Hover Tooltip */}
+                              <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-gray-900 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap z-10 pointer-events-none">
+                                {item.hours} ({item.val}%)
+                              </div>
+                              <div 
+                                className={`w-full rounded-t-lg transition-all duration-300 shadow-2xs ${
+                                  item.isToday ? 'bg-[#114B44] ring-2 ring-[#114B44]/20' : 'bg-[#114B44] hover:bg-emerald-600'
+                                }`}
+                                style={{ height: `${item.val}%` }}
+                              ></div>
+                              <span className="text-[9px] font-semibold text-gray-400 mt-2 truncate">{item.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -1203,18 +1246,26 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   <div className="space-y-3">
                     {recommendedCourses.map((rc) => (
                       <div key={rc.id} className="flex items-center justify-between gap-3 p-2 hover:bg-gray-50 rounded-xl transition-colors">
-                        <div className="flex items-center gap-2.5">
-                          <img src={rc.avatar} alt={rc.tutor} className="w-8 h-8 rounded-full object-cover border border-gray-200" />
-                          <div>
-                            <h5 className="font-extrabold text-xs text-gray-900 line-clamp-1">{rc.title}</h5>
-                            <p className="text-[10px] text-gray-400">{rc.tutor}</p>
-                            <div className="flex items-center gap-1 text-[10px] text-gray-500">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img 
+                            src={rc.avatar} 
+                            alt={rc.tutor} 
+                            className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0" 
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = '/images/student_aisha.jpg';
+                            }}
+                          />
+                          <div className="min-w-0">
+                            <h5 className="font-extrabold text-xs text-gray-900 truncate">{rc.title}</h5>
+                            <p className="text-[10px] text-gray-400 truncate">{rc.tutor}</p>
+                            <div className="flex items-center gap-1 text-[10px] text-gray-500 mt-0.5">
                               <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
                               <span>{rc.rating} ({rc.students} students)</span>
                             </div>
                           </div>
                         </div>
-                        <span className="text-xs font-extrabold text-[#114B44]">{rc.price}</span>
+                        <span className="text-xs font-black text-[#114B44] shrink-0">{rc.price}</span>
                       </div>
                     ))}
                   </div>
