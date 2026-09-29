@@ -5615,35 +5615,63 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                       </div>
                     </div>
 
-                    {/* Bar Chart SVG */}
-                    <div className="pt-2">
-                      <div className="h-28 flex items-end justify-between gap-2 px-2 border-b border-gray-100 pb-1">
-                        {[
-                          { label: '1 Sep', val: 18, height: '45%' },
-                          { label: '8 Sep', val: 25, height: '62%' },
-                          { label: '15 Sep', val: 28, height: '70%' },
-                          { label: '22 Sep', val: 32, height: '80%' },
-                          { label: '30 Sep', val: 40, height: '100%' },
-                        ].map((bar, idx) => (
-                          <div key={idx} className="flex-1 flex flex-col items-center gap-1 group">
-                            <span className="text-[9px] font-bold text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">{bar.val}</span>
-                            <div className="w-full bg-emerald-50 rounded-t-md h-full flex items-end overflow-hidden">
-                              <div
-                                className="w-full bg-[#10B981] hover:bg-[#059669] rounded-t-md transition-all duration-500 cursor-pointer"
-                                style={{ height: bar.height }}
-                                title={`${bar.label}: ${bar.val} attempts`}
-                              ></div>
+                    {/* SVG Bar Chart with Y-axis scale and horizontal grid lines */}
+                    <div className="pt-1">
+                      <div className="flex gap-2 items-stretch h-36">
+                        {/* Y-Axis scale */}
+                        <div className="flex flex-col justify-between text-[9px] text-gray-400 font-semibold py-0.5 text-right w-5 shrink-0">
+                          <span>40</span>
+                          <span>30</span>
+                          <span>20</span>
+                          <span>10</span>
+                          <span>0</span>
+                        </div>
+
+                        {/* Chart Canvas */}
+                        <div className="flex-1 flex flex-col justify-between">
+                          <div className="relative flex-1 w-full flex items-end justify-between gap-1.5 pt-1 pb-1 border-b border-gray-100">
+                            {/* Gridlines background */}
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="border-b border-dashed border-gray-200 w-full"></div>
+                              <div className="w-full"></div>
                             </div>
+
+                            {/* 7 Bars matching mockup */}
+                            {[
+                              { label: '1 Sep', val: 16, height: 40 },
+                              { label: '5 Sep', val: 22, height: 55 },
+                              { label: '8 Sep', val: 26, height: 65 },
+                              { label: '15 Sep', val: 32, height: 80 },
+                              { label: '20 Sep', val: 28, height: 70 },
+                              { label: '22 Sep', val: 35, height: 88 },
+                              { label: '30 Sep', val: 40, height: 100 },
+                            ].map((bar, idx) => (
+                              <div key={idx} className="relative flex-1 h-full flex items-end justify-center group z-10">
+                                <div
+                                  className="w-full max-w-[18px] bg-[#10B981] hover:bg-[#059669] rounded-t-sm transition-all duration-300 cursor-pointer shadow-2xs"
+                                  style={{ height: `${bar.height}%` }}
+                                  title={`${bar.label}: ${bar.val} attempts`}
+                                ></div>
+                                {/* Hover tooltip value */}
+                                <div className="absolute -top-5 hidden group-hover:flex items-center justify-center bg-gray-900 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap z-20 pointer-events-none">
+                                  {bar.val}
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                      {/* X Axis Labels */}
-                      <div className="flex justify-between px-2 pt-1 text-[9px] text-gray-400 font-medium">
-                        <span>1 Sep</span>
-                        <span>8 Sep</span>
-                        <span>15 Sep</span>
-                        <span>22 Sep</span>
-                        <span>30 Sep</span>
+
+                          {/* X-Axis labels matching mockup */}
+                          <div className="flex justify-between pt-1 text-[9px] text-gray-400 font-medium px-1">
+                            <span>1 Sep</span>
+                            <span>8 Sep</span>
+                            <span>15 Sep</span>
+                            <span>22 Sep</span>
+                            <span>30 Sep</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
