@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import SubjectCategories from './components/SubjectCategories';
@@ -22,9 +22,27 @@ import AdminDashboard from './components/dashboard/AdminDashboard';
 import ClassModal from './components/ClassModal';
 import TutorModal from './components/TutorModal';
 import AuthModal from './components/AuthModal';
+import { supabase, isSupabaseConfigured, isAdminEmail, signOutUser } from './lib/supabaseClient';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState('universities'); // Default tab
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('ilmhub_user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const [currentTab, setCurrentTab] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('ilmhub_user');
+      return savedUser ? 'dashboard' : 'universities';
+    } catch (e) {
+      return 'universities';
+    }
+  });
+
   const [previousTab, setPreviousTab] = useState('universities');
   const [selectedSubject, setSelectedSubject] = useState('nahwu');
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,7 +55,47 @@ export default function App() {
     avatar: '/images/tutor_ahmed.jpg'
   });
   const [authModal, setAuthModal] = useState({ open: false, mode: 'login' });
-  const [currentUser, setCurrentUser] = useState(null);
+
+  // Sync and persist Supabase Auth session on reload
+  useEffect(() => {
+    if (isSupabaseConfigured) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          const role = isAdminEmail(session.user.email) 
+            ? 'admin' 
+            : (session.user.user_metadata?.role || 'student');
+          const userObj = {
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.user_metadata?.full_name || (role === 'admin' ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+            role: role,
+            avatar: session.user.user_metadata?.avatar_url || (role === 'teacher' ? '/images/tutor_ahmed.jpg' : '/images/student_omar.jpg'),
+          };
+          setCurrentUser(userObj);
+          localStorage.setItem('ilmhub_user', JSON.stringify(userObj));
+        }
+      });
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          const role = isAdminEmail(session.user.email) 
+            ? 'admin' 
+            : (session.user.user_metadata?.role || 'student');
+          const userObj = {
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.user_metadata?.full_name || (role === 'admin' ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+            role: role,
+            avatar: session.user.user_metadata?.avatar_url || (role === 'teacher' ? '/images/tutor_ahmed.jpg' : '/images/student_omar.jpg'),
+          };
+          setCurrentUser(userObj);
+          localStorage.setItem('ilmhub_user', JSON.stringify(userObj));
+        }
+      });
+
+      return () => subscription.unsubscribe();
+    }
+  }, []);
 
   const handleJoinLive = (course) => {
     if (course) {
@@ -61,13 +119,18 @@ export default function App() {
 
   const handleLoginSuccess = (userData) => {
     setCurrentUser(userData);
+    localStorage.setItem('ilmhub_user', JSON.stringify(userData));
     // Direct user straight to their personalized dashboard according to role!
     setCurrentTab('dashboard');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await signOutUser();
+    } catch (e) {}
     setCurrentUser(null);
+    localStorage.removeItem('ilmhub_user');
     setCurrentTab('home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
