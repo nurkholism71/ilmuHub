@@ -18,6 +18,7 @@ import {
   Bell, 
   ChevronDown, 
   ChevronRight, 
+  ChevronLeft,
   Upload, 
   Radio, 
   ArrowUpRight, 
@@ -51,11 +52,15 @@ import {
   Unlock,
   ShieldCheck,
   Tag,
-  GraduationCap
+  GraduationCap,
+  List,
+  Ban,
+  RefreshCw,
+  X
 } from 'lucide-react';
 
 export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
-  const [activeNav, setActiveNav] = useState('create'); // 'dashboard', 'classes', 'create', etc.
+  const [activeNav, setActiveNav] = useState('schedule'); // 'dashboard', 'classes', 'create', 'schedule'
   const [selectedPeriod, setSelectedPeriod] = useState('Sep 2026');
   const [classTabFilter, setClassTabFilter] = useState('all'); // all, ongoing, upcoming, completed, draft, archived
   const [subjectFilter, setSubjectFilter] = useState('All Subjects');
@@ -89,6 +94,244 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     durationWeeks: 4,
     hasCertificate: true
   });
+
+  // Schedule View States (matching media_1790721133363.jpg)
+  const [scheduleViewMode, setScheduleViewMode] = useState('calendar'); // 'calendar' | 'list'
+  const [scheduleFilterRange, setScheduleFilterRange] = useState('week'); // 'today' | 'week' | 'month'
+  const [selectedScheduleDay, setSelectedScheduleDay] = useState(23);
+  const [scheduleTimezone, setScheduleTimezone] = useState('(GMT+2) Cairo, Egypt');
+  const [scheduleDuration, setScheduleDuration] = useState('90 minutes');
+  const [scheduleBuffer, setScheduleBuffer] = useState('15 minutes');
+  const [allowBooking, setAllowBooking] = useState(true);
+  const [sendReminder, setSendReminder] = useState(true);
+  const [reminderTiming, setReminderTiming] = useState('1 hour before');
+  const [availabilityDays, setAvailabilityDays] = useState([
+    { day: 'Monday', hours: '08:00 - 21:00', enabled: true },
+    { day: 'Tuesday', hours: '08:00 - 21:00', enabled: true },
+    { day: 'Wednesday', hours: '08:00 - 21:00', enabled: true },
+    { day: 'Thursday', hours: '08:00 - 21:00', enabled: true },
+    { day: 'Friday', hours: '08:00 - 21:00', enabled: true },
+    { day: 'Saturday', hours: '10:00 - 20:00', enabled: true },
+    { day: 'Sunday', hours: 'Not Available', enabled: false },
+  ]);
+  const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false);
+  const [isRecurringModalOpen, setIsRecurringModalOpen] = useState(false);
+  const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
+  const [selectedScheduleEvent, setSelectedScheduleEvent] = useState(null);
+
+  // New Schedule Form state
+  const [newScheduleForm, setNewScheduleForm] = useState({
+    courseTitle: 'Nahwu for Beginners',
+    day: 'wed',
+    date: '2026-09-23',
+    startTime: '09:00',
+    endTime: '10:30',
+    type: 'Live Class',
+    colorTheme: 'emerald',
+    studentsCount: 32
+  });
+
+  const weekDays = [
+    { id: 'mon', dayName: 'Mon', date: '21 Sep', dayNum: 21, isToday: false },
+    { id: 'tue', dayName: 'Tue', date: '22 Sep', dayNum: 22, isToday: false },
+    { id: 'wed', dayName: 'Wed', date: '23 Sep', dayNum: 23, isToday: true },
+    { id: 'thu', dayName: 'Thu', date: '24 Sep', dayNum: 24, isToday: false },
+    { id: 'fri', dayName: 'Fri', date: '25 Sep', dayNum: 25, isToday: false },
+    { id: 'sat', dayName: 'Sat', date: '26 Sep', dayNum: 26, isToday: false },
+    { id: 'sun', dayName: 'Sun', date: '27 Sep', dayNum: 27, isToday: false },
+  ];
+
+  const timeHours = [
+    '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
+    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
+  ];
+
+  const [scheduleEventsList, setScheduleEventsList] = useState([
+    // Nahwu for Beginners (Mon, Wed, Fri 09:00 - 10:30)
+    {
+      id: 'ev-1',
+      day: 'mon',
+      title: 'Nahwu for Beginners',
+      time: '09:00 - 10:30',
+      type: 'Live Class',
+      hourSlot: '09:00',
+      colorTheme: 'emerald',
+      studentsCount: 32,
+      image: '/images/class_nahwu.jpg'
+    },
+    {
+      id: 'ev-2',
+      day: 'wed',
+      title: 'Nahwu for Beginners',
+      time: '09:00 - 10:30',
+      type: 'Live Class',
+      hourSlot: '09:00',
+      colorTheme: 'emerald',
+      studentsCount: 32,
+      image: '/images/class_nahwu.jpg'
+    },
+    {
+      id: 'ev-3',
+      day: 'fri',
+      title: 'Nahwu for Beginners',
+      time: '09:00 - 10:30',
+      type: 'Live Class',
+      hourSlot: '09:00',
+      colorTheme: 'emerald',
+      studentsCount: 28,
+      image: '/images/class_nahwu.jpg'
+    },
+    // Arabic Conversation (Tue, Thu, Sat 10:00 - 11:30)
+    {
+      id: 'ev-4',
+      day: 'tue',
+      title: 'Arabic Conversation',
+      time: '10:00 - 11:30',
+      type: 'Live Class',
+      hourSlot: '10:00',
+      colorTheme: 'blue',
+      studentsCount: 32,
+      image: '/images/class_conversation.jpg'
+    },
+    {
+      id: 'ev-5',
+      day: 'thu',
+      title: 'Arabic Conversation',
+      time: '10:00 - 11:30',
+      type: 'Live Class',
+      hourSlot: '10:00',
+      colorTheme: 'blue',
+      studentsCount: 30,
+      image: '/images/class_conversation.jpg'
+    },
+    {
+      id: 'ev-6',
+      day: 'sat',
+      title: 'Arabic Conversation',
+      time: '10:00 - 11:30',
+      type: 'Live Class',
+      hourSlot: '10:00',
+      colorTheme: 'blue',
+      studentsCount: 32,
+      image: '/images/class_conversation.jpg'
+    },
+    // Sharaf Basic (Mon, Wed, Fri 13:00 - 14:30)
+    {
+      id: 'ev-7',
+      day: 'mon',
+      title: 'Sharaf Basic',
+      time: '13:00 - 14:30',
+      type: 'Live Class',
+      hourSlot: '13:00',
+      colorTheme: 'purple',
+      studentsCount: 28,
+      image: '/images/class_sharaf.jpg'
+    },
+    {
+      id: 'ev-8',
+      day: 'wed',
+      title: 'Sharaf Basic',
+      time: '13:00 - 14:30',
+      type: 'Live Class',
+      hourSlot: '13:00',
+      colorTheme: 'purple',
+      studentsCount: 28,
+      image: '/images/class_sharaf.jpg'
+    },
+    {
+      id: 'ev-9',
+      day: 'fri',
+      title: 'Sharaf Basic',
+      time: '13:00 - 14:30',
+      type: 'Live Class',
+      hourSlot: '13:00',
+      colorTheme: 'purple',
+      studentsCount: 28,
+      image: '/images/class_sharaf.jpg'
+    },
+    // Academic Writing (Tue, Thu 16:00 - 17:30)
+    {
+      id: 'ev-10',
+      day: 'tue',
+      title: 'Academic Writing',
+      time: '16:00 - 17:30',
+      type: 'Live Class',
+      hourSlot: '16:00',
+      colorTheme: 'amber',
+      studentsCount: 18,
+      image: '/images/class_balaghah.jpg'
+    },
+    {
+      id: 'ev-11',
+      day: 'thu',
+      title: 'Academic Writing',
+      time: '16:00 - 17:30',
+      type: 'Live Class',
+      hourSlot: '16:00',
+      colorTheme: 'amber',
+      studentsCount: 18,
+      image: '/images/class_balaghah.jpg'
+    },
+    // Quran Tajweed (Mon, Wed, Sat 19:00 - 20:30)
+    {
+      id: 'ev-12',
+      day: 'mon',
+      title: 'Quran Tajweed',
+      time: '19:00 - 20:30',
+      type: 'Live Class',
+      hourSlot: '19:00',
+      colorTheme: 'indigo',
+      studentsCount: 24,
+      image: '/images/class_tajweed.jpg'
+    },
+    {
+      id: 'ev-13',
+      day: 'wed',
+      title: 'Quran Tajweed',
+      time: '19:00 - 20:30',
+      type: 'Live Class',
+      hourSlot: '19:00',
+      colorTheme: 'indigo',
+      studentsCount: 24,
+      image: '/images/class_tajweed.jpg'
+    },
+    {
+      id: 'ev-14',
+      day: 'sat',
+      title: 'Quran Tajweed',
+      time: '19:00 - 20:30',
+      type: 'Live Class',
+      hourSlot: '19:00',
+      colorTheme: 'indigo',
+      studentsCount: 24,
+      image: '/images/class_tajweed.jpg'
+    }
+  ]);
+
+  const upcomingScheduleList = [
+    { dateDay: '24', dateMonth: 'Sep', title: 'Arabic Conversation', time: '10:00 - 11:30', students: 32, image: '/images/class_conversation.jpg' },
+    { dateDay: '25', dateMonth: 'Sep', title: 'Nahwu for Beginners', time: '09:00 - 10:30', students: 28, image: '/images/class_nahwu.jpg' },
+    { dateDay: '25', dateMonth: 'Sep', title: 'Sharaf Basic', time: '13:00 - 14:30', students: 28, image: '/images/class_sharaf.jpg' },
+    { dateDay: '26', dateMonth: 'Sep', title: 'Academic Writing', time: '16:00 - 17:30', students: 18, image: '/images/class_balaghah.jpg' },
+    { dateDay: '27', dateMonth: 'Sep', title: 'Quran Tajweed', time: '19:00 - 20:30', students: 24, image: '/images/class_tajweed.jpg' }
+  ];
+
+  const getEventStyle = (theme) => {
+    switch (theme) {
+      case 'emerald':
+        return 'bg-[#E8F8F5] border-[#B3E5DC] text-[#0A3D36] hover:bg-[#D8F3ED]';
+      case 'blue':
+        return 'bg-[#EAF2FD] border-[#BFDBFE] text-[#1E3A8A] hover:bg-[#D8E8FC]';
+      case 'purple':
+        return 'bg-[#F5EDFD] border-[#E9D5FF] text-[#581C87] hover:bg-[#EDE0FB]';
+      case 'amber':
+        return 'bg-[#FEF7E6] border-[#FDE68A] text-[#78350F] hover:bg-[#FEEFC7]';
+      case 'indigo':
+        return 'bg-[#EEF2FF] border-[#C7D2FE] text-[#312E81] hover:bg-[#E0E7FF]';
+      default:
+        return 'bg-gray-50 border-gray-200 text-gray-800';
+    }
+  };
 
   // Sidebar Items matching reference image
   const sidebarItems = [
@@ -1575,9 +1818,699 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
             </div>
+          ) : activeNav === 'schedule' ? (
+            /* ========================================================= */
+            /* VIEW 3: SCHEDULE ROOM (Matching media_1790721133363.jpg)  */
+            /* ========================================================= */
+            <div className="space-y-6 max-w-[1600px] mx-auto">
+              
+              {/* Header: Title + Recurring Schedule + Add Schedule */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-[#114B44] text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Calendar className="w-5 h-5 text-emerald-300" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-black text-gray-900 tracking-tight">Schedule</h1>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Atur jadwal kelas, kelola sesi, dan lihat semua aktivitas mengajar kamu.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 self-start sm:self-center">
+                  <button 
+                    onClick={() => setIsRecurringModalOpen(true)}
+                    className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-2xs transition-colors cursor-pointer active:scale-95"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-gray-500" />
+                    <span>Recurring Schedule</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsAddScheduleModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <Plus className="w-4 h-4 text-emerald-300" />
+                    <span>Add Schedule</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-white/80" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Main Content Layout: Timetable Grid (Left 8/9 cols) + Right Sidebar (3/4 cols) */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+                
+                {/* CENTER / TIMETABLE CANVAS (8 or 9 Cols) */}
+                <div className="xl:col-span-8 2xl:col-span-9 space-y-6 min-w-0">
+                  
+                  {/* Calendar View Controls Toolbar */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/80 shadow-2xs">
+                    
+                    {/* Left: View Tabs + Presets */}
+                    <div className="flex items-center flex-wrap gap-2">
+                      <div className="flex items-center bg-gray-100/80 p-1 rounded-xl">
+                        <button
+                          onClick={() => setScheduleViewMode('calendar')}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                            scheduleViewMode === 'calendar'
+                              ? 'bg-white text-[#114B44] shadow-2xs'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-emerald-700" />
+                          <span>Calendar View</span>
+                        </button>
+
+                        <button
+                          onClick={() => setScheduleViewMode('list')}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                            scheduleViewMode === 'list'
+                              ? 'bg-white text-[#114B44] shadow-2xs'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          <List className="w-3.5 h-3.5 text-gray-500" />
+                          <span>List View</span>
+                        </button>
+                      </div>
+
+                      <div className="h-4 w-px bg-gray-200 hidden sm:block mx-1"></div>
+
+                      <div className="flex items-center gap-1">
+                        {['Today', 'This Week', 'This Month'].map((range) => {
+                          const key = range.toLowerCase().replace(' ', '-');
+                          const isSelected = (range === 'This Week' && scheduleFilterRange === 'week') ||
+                                            (range === 'Today' && scheduleFilterRange === 'today') ||
+                                            (range === 'This Month' && scheduleFilterRange === 'month');
+                          return (
+                            <button
+                              key={range}
+                              onClick={() => {
+                                if (range === 'Today') setScheduleFilterRange('today');
+                                else if (range === 'This Week') setScheduleFilterRange('week');
+                                else setScheduleFilterRange('month');
+                              }}
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                isSelected
+                                  ? 'bg-white border border-gray-300 text-gray-900 shadow-2xs font-extrabold'
+                                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                              }`}
+                            >
+                              {range}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Right: Month Navigation + Week Dropdown */}
+                    <div className="flex items-center gap-2 ml-auto">
+                      <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl px-1 py-0.5">
+                        <button 
+                          onClick={() => alert('Bulan sebelumnya')}
+                          className="p-1 text-gray-500 hover:text-gray-800 rounded-lg hover:bg-gray-200/60 cursor-pointer"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="text-xs font-extrabold text-gray-800 px-2">Sep 2026</span>
+                        <button 
+                          onClick={() => alert('Bulan berikutnya')}
+                          className="p-1 text-gray-500 hover:text-gray-800 rounded-lg hover:bg-gray-200/60 cursor-pointer"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="relative">
+                        <select 
+                          className="appearance-none bg-white border border-gray-200 rounded-xl px-3 py-1.5 pr-7 text-xs font-bold text-gray-700 shadow-2xs focus:outline-none focus:border-emerald-600 cursor-pointer"
+                          defaultValue="Week"
+                        >
+                          <option value="Week">Week</option>
+                          <option value="Day">Day</option>
+                          <option value="Month">Month</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-2.5 pointer-events-none" />
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* WEEKLY TIMETABLE GRID (Exact match to media_1790721133363.jpg) */}
+                  {scheduleViewMode === 'calendar' ? (
+                    <div className="bg-white rounded-3xl border border-gray-200/80 shadow-xs overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="w-full min-w-[760px] border-collapse text-left">
+                          
+                          {/* Table Header: Day Columns */}
+                          <thead>
+                            <tr className="bg-[#F8FAFC] border-b border-gray-200 text-center">
+                              <th className="w-16 sm:w-20 p-3 text-[11px] font-bold text-gray-400 border-r border-gray-200/80">
+                                <Clock className="w-3.5 h-3.5 mx-auto text-gray-400" />
+                              </th>
+                              {weekDays.map((d) => (
+                                <th 
+                                  key={d.id} 
+                                  className={`p-3 text-center border-r border-gray-200/80 last:border-r-0 transition-colors ${
+                                    d.isToday ? 'bg-emerald-50/70 border-b-2 border-b-emerald-600' : ''
+                                  }`}
+                                >
+                                  <span className={`block text-xs ${d.isToday ? 'font-black text-[#114B44]' : 'font-extrabold text-gray-700'}`}>
+                                    {d.dayName}
+                                  </span>
+                                  <span className={`block text-[11px] ${d.isToday ? 'font-black text-[#114B44]' : 'text-gray-400 font-medium'}`}>
+                                    {d.date}
+                                  </span>
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+
+                          {/* Table Body: 08:00 to 21:00 Slots */}
+                          <tbody>
+                            {timeHours.map((hour, rowIdx) => (
+                              <tr key={hour} className="border-b border-gray-100 hover:bg-gray-50/40 transition-colors group">
+                                
+                                {/* Time Column */}
+                                <td className="p-2 sm:p-3 text-[11px] font-bold text-gray-400 text-center align-top border-r border-gray-100 bg-[#FBFBF9]/40 w-16 sm:w-20 select-none">
+                                  {hour}
+                                </td>
+
+                                {/* 7 Day Columns */}
+                                {weekDays.map((day) => {
+                                  const matchingEvents = scheduleEventsList.filter(
+                                    (ev) => ev.day === day.id && ev.hourSlot === hour
+                                  );
+
+                                  return (
+                                    <td 
+                                      key={day.id} 
+                                      className={`p-1.5 align-top border-r border-gray-100 last:border-r-0 h-16 sm:h-20 relative transition-colors ${
+                                        day.isToday ? 'bg-emerald-50/20' : ''
+                                      }`}
+                                    >
+                                      {matchingEvents.length > 0 ? (
+                                        matchingEvents.map((ev) => (
+                                          <div
+                                            key={ev.id}
+                                            onClick={() => setSelectedScheduleEvent(ev)}
+                                            className={`p-2 sm:p-2.5 rounded-xl border text-left cursor-pointer transition-all duration-200 hover:shadow-xs active:scale-[0.98] ${getEventStyle(
+                                              ev.colorTheme
+                                            )}`}
+                                          >
+                                            <div className="font-extrabold text-[11px] sm:text-xs leading-tight line-clamp-1">
+                                              {ev.title}
+                                            </div>
+                                            <div className="text-[10px] opacity-80 mt-0.5 font-medium flex items-center gap-1">
+                                              <span>{ev.time}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1 text-[9px] font-extrabold mt-1.5">
+                                              <Video className="w-2.5 h-2.5 shrink-0" />
+                                              <span>{ev.type}</span>
+                                            </div>
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <button
+                                          onClick={() => {
+                                            setNewScheduleForm(prev => ({ ...prev, day: day.id, startTime: hour }));
+                                            setIsAddScheduleModalOpen(true);
+                                          }}
+                                          className="w-full h-full rounded-lg opacity-0 group-hover:opacity-100 hover:bg-emerald-50/60 flex items-center justify-center text-emerald-600 transition-all cursor-pointer"
+                                          title={`Tambah jadwal di ${day.dayName} ${hour}`}
+                                        >
+                                          <Plus className="w-3.5 h-3.5 opacity-40 hover:opacity-100" />
+                                        </button>
+                                      )}
+                                    </td>
+                                  );
+                                })}
+
+                              </tr>
+                            ))}
+                          </tbody>
+
+                        </table>
+                      </div>
+                    </div>
+                  ) : (
+                    /* LIST VIEW MODE */
+                    <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3">
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                        <h3 className="font-extrabold text-sm text-gray-900">List of All Scheduled Sessions (September 2026)</h3>
+                        <span className="text-xs text-gray-500">{scheduleEventsList.length} total sessions</span>
+                      </div>
+
+                      <div className="divide-y divide-gray-100">
+                        {scheduleEventsList.map((ev) => {
+                          const matchingDay = weekDays.find(d => d.id === ev.day);
+                          return (
+                            <div key={ev.id} className="py-3 flex items-center justify-between gap-4 hover:bg-gray-50 px-2 rounded-xl transition-colors">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-12 text-center p-1.5 rounded-xl bg-gray-100 font-bold text-xs text-gray-800 shrink-0">
+                                  <span className="block text-[10px] text-gray-500 uppercase">{matchingDay?.dayName}</span>
+                                  <span>{matchingDay?.date.split(' ')[0]}</span>
+                                </div>
+                                <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                  <img src={ev.image} alt={ev.title} className="w-full h-full object-cover" />
+                                </div>
+                                <div className="min-w-0">
+                                  <h4 className="font-extrabold text-xs text-gray-900 truncate">{ev.title}</h4>
+                                  <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-0.5">
+                                    <span className="text-emerald-700 font-bold">{ev.time}</span>
+                                    <span>•</span>
+                                    <span>{ev.studentsCount} Students</span>
+                                    <span>•</span>
+                                    <span className="text-red-500 font-semibold">{ev.type}</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 shrink-0">
+                                <button
+                                  onClick={() => onStartLive({
+                                    title: ev.title,
+                                    tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                                    image: ev.image
+                                  })}
+                                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                                >
+                                  <Radio className="w-3 h-3 animate-pulse" />
+                                  <span>Start Live</span>
+                                </button>
+                                <button 
+                                  onClick={() => setSelectedScheduleEvent(ev)}
+                                  className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                                >
+                                  Details
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* BOTTOM 3-CARD SETTINGS & AVAILABILITY GRID (Exact match to media_1790721133363.jpg) */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    
+                    {/* CARD 1: Schedule Settings */}
+                    <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-4">
+                      <h3 className="text-sm font-black text-gray-900 tracking-tight">Schedule Settings</h3>
+                      
+                      <div className="space-y-3">
+                        {/* Time Zone */}
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1.5 text-xs text-gray-600 font-medium">
+                            <Globe className="w-3.5 h-3.5 text-gray-400" />
+                            <span>Time Zone</span>
+                          </div>
+                          <div className="relative">
+                            <select 
+                              value={scheduleTimezone}
+                              onChange={(e) => setScheduleTimezone(e.target.value)}
+                              className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:border-emerald-600 cursor-pointer"
+                            >
+                              <option value="(GMT+2) Cairo, Egypt">(GMT+2) Cairo, Egypt</option>
+                              <option value="(GMT+3) Riyadh, Saudi Arabia">(GMT+3) Riyadh, Saudi Arabia</option>
+                              <option value="(GMT+7) Jakarta, Indonesia">(GMT+7) Jakarta, Indonesia</option>
+                              <option value="(GMT+0) London, UK">(GMT+0) London, UK</option>
+                              <option value="(GMT-4) New York, USA">(GMT-4) New York, USA</option>
+                            </select>
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-2.5 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Default Class Duration */}
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1.5 text-xs text-gray-600 font-medium">
+                            <Clock className="w-3.5 h-3.5 text-gray-400" />
+                            <span>Default Class Duration</span>
+                          </div>
+                          <div className="relative">
+                            <select 
+                              value={scheduleDuration}
+                              onChange={(e) => setScheduleDuration(e.target.value)}
+                              className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:border-emerald-600 cursor-pointer"
+                            >
+                              <option value="45 minutes">45 minutes</option>
+                              <option value="60 minutes">60 minutes</option>
+                              <option value="90 minutes">90 minutes</option>
+                              <option value="120 minutes">120 minutes</option>
+                            </select>
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-2.5 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Buffer Time */}
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1.5 text-xs text-gray-600 font-medium">
+                            <Layers className="w-3.5 h-3.5 text-gray-400" />
+                            <span>Buffer Time</span>
+                          </div>
+                          <div className="relative">
+                            <select 
+                              value={scheduleBuffer}
+                              onChange={(e) => setScheduleBuffer(e.target.value)}
+                              className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:border-emerald-600 cursor-pointer"
+                            >
+                              <option value="5 minutes">5 minutes</option>
+                              <option value="10 minutes">10 minutes</option>
+                              <option value="15 minutes">15 minutes</option>
+                              <option value="30 minutes">30 minutes</option>
+                            </select>
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-2.5 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Allow Students to Book Slots */}
+                        <div className="flex items-center justify-between pt-1">
+                          <div className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-gray-400" />
+                            <span>Allow Students to Book Slots</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setAllowBooking(!allowBooking)}
+                            className={`w-10 h-5.5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${
+                              allowBooking ? 'bg-[#114B44]' : 'bg-gray-300'
+                            }`}
+                          >
+                            <div className={`bg-white w-4.5 h-4.5 rounded-full shadow-md transform transition-transform ${
+                              allowBooking ? 'translate-x-4.5' : 'translate-x-0'
+                            }`} />
+                          </button>
+                        </div>
+
+                        {/* Send Reminder to Students */}
+                        <div className="flex items-center justify-between pt-1">
+                          <div className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
+                            <Bell className="w-3.5 h-3.5 text-gray-400" />
+                            <span>Send Reminder to Students</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={reminderTiming}
+                              onChange={(e) => setReminderTiming(e.target.value)}
+                              className="bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 text-[11px] font-bold text-gray-700 focus:outline-none"
+                            >
+                              <option value="30 mins before">30 mins before</option>
+                              <option value="1 hour before">1 hour before</option>
+                              <option value="24 hours before">24 hours before</option>
+                            </select>
+                            <button
+                              type="button"
+                              onClick={() => setSendReminder(!sendReminder)}
+                              className={`w-10 h-5.5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${
+                                sendReminder ? 'bg-[#114B44]' : 'bg-gray-300'
+                              }`}
+                            >
+                              <div className={`bg-white w-4.5 h-4.5 rounded-full shadow-md transform transition-transform ${
+                                sendReminder ? 'translate-x-4.5' : 'translate-x-0'
+                              }`} />
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    {/* CARD 2: Quick Actions */}
+                    <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3">
+                      <h3 className="text-sm font-black text-gray-900 tracking-tight">Quick Actions</h3>
+                      
+                      <div className="space-y-2.5">
+                        
+                        {/* Add Single Class */}
+                        <button
+                          onClick={() => setIsAddScheduleModalOpen(true)}
+                          className="w-full text-left p-2.5 rounded-2xl hover:bg-emerald-50/50 border border-transparent hover:border-emerald-200/60 flex items-center gap-3 transition-all cursor-pointer group"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <Plus className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="block text-xs font-bold text-gray-900 group-hover:text-emerald-800">Add Single Class</span>
+                            <span className="block text-[10px] text-gray-400">Buat satu jadwal kelas</span>
+                          </div>
+                        </button>
+
+                        {/* Add Recurring Class */}
+                        <button
+                          onClick={() => setIsRecurringModalOpen(true)}
+                          className="w-full text-left p-2.5 rounded-2xl hover:bg-sky-50/50 border border-transparent hover:border-sky-200/60 flex items-center gap-3 transition-all cursor-pointer group"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-700 border border-sky-200/80 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <RotateCcw className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="block text-xs font-bold text-gray-900 group-hover:text-sky-800">Add Recurring Class</span>
+                            <span className="block text-[10px] text-gray-400">Jadwal otomatis mingguan</span>
+                          </div>
+                        </button>
+
+                        {/* Block Time */}
+                        <button
+                          onClick={() => alert('Waktu telah ditandai Tidak Tersedia (Blocked).')}
+                          className="w-full text-left p-2.5 rounded-2xl hover:bg-rose-50/50 border border-transparent hover:border-rose-200/60 flex items-center gap-3 transition-all cursor-pointer group"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 border border-rose-200/80 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <Ban className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="block text-xs font-bold text-gray-900 group-hover:text-rose-800">Block Time</span>
+                            <span className="block text-[10px] text-gray-400">Tandai waktu tidak tersedia</span>
+                          </div>
+                        </button>
+
+                        {/* Sync with Calendar */}
+                        <button
+                          onClick={() => alert('Menghubungkan ke Google Calendar & iCal sync...')}
+                          className="w-full text-left p-2.5 rounded-2xl hover:bg-purple-50/50 border border-transparent hover:border-purple-200/60 flex items-center gap-3 transition-all cursor-pointer group"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-700 border border-purple-200/80 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <Calendar className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="block text-xs font-bold text-gray-900 group-hover:text-purple-800">Sync with Calendar</span>
+                            <span className="block text-[10px] text-gray-400">Hubungkan Google Calendar</span>
+                          </div>
+                        </button>
+
+                      </div>
+                    </div>
+
+                    {/* CARD 3: Your Availability */}
+                    <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-black text-gray-900 tracking-tight">Your Availability</h3>
+                        <button 
+                          onClick={() => setIsAvailabilityModalOpen(true)}
+                          className="text-xs font-bold text-[#114B44] hover:underline cursor-pointer"
+                        >
+                          Edit
+                        </button>
+                      </div>
+
+                      <div className="divide-y divide-gray-100">
+                        {availabilityDays.map((item, idx) => (
+                          <div key={idx} className="py-2 flex items-center justify-between text-xs">
+                            <span className="font-bold text-gray-700">{item.day}</span>
+                            <div className="flex items-center gap-2.5">
+                              <span className={`text-[11px] font-semibold ${item.enabled ? 'text-gray-500' : 'text-gray-400 italic'}`}>
+                                {item.hours}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setAvailabilityDays(prev => 
+                                    prev.map((d, i) => i === idx ? { ...d, enabled: !d.enabled } : d)
+                                  );
+                                }}
+                                className={`w-8 h-4.5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${
+                                  item.enabled ? 'bg-[#114B44]' : 'bg-gray-300'
+                                }`}
+                              >
+                                <div className={`bg-white w-3.5 h-3.5 rounded-full shadow-md transform transition-transform ${
+                                  item.enabled ? 'translate-x-3.5' : 'translate-x-0'
+                                }`} />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Mini Calendar + Today's Schedule + Upcoming (3 or 4 Cols) */}
+                <div className="xl:col-span-4 2xl:col-span-3 space-y-5 shrink-0">
+                  
+                  {/* WIDGET 1: Mini Interactive Calendar Picker (Matching mockup) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-gray-900">September 2026</h3>
+                      <div className="flex items-center gap-1">
+                        <button className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors cursor-pointer">
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <button className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 transition-colors cursor-pointer">
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Days of Week Header */}
+                    <div className="grid grid-cols-7 text-center text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                      <span>Sun</span>
+                      <span>Mon</span>
+                      <span>Tue</span>
+                      <span>Wed</span>
+                      <span>Thu</span>
+                      <span>Fri</span>
+                      <span>Sat</span>
+                    </div>
+
+                    {/* Calendar Number Matrix */}
+                    <div className="grid grid-cols-7 text-center text-xs font-bold gap-y-1">
+                      {/* Prev month days (30, 31) */}
+                      <span className="py-1 text-gray-300">30</span>
+                      <span className="py-1 text-gray-300">31</span>
+                      
+                      {/* September days 1 to 30 */}
+                      {[...Array(30)].map((_, i) => {
+                        const dayNum = i + 1;
+                        const isSelected = selectedScheduleDay === dayNum;
+                        return (
+                          <button
+                            key={dayNum}
+                            onClick={() => setSelectedScheduleDay(dayNum)}
+                            className={`w-7 h-7 mx-auto flex items-center justify-center rounded-full text-xs font-extrabold transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#114B44] text-white shadow-xs font-black'
+                                : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                          >
+                            {dayNum}
+                          </button>
+                        );
+                      })}
+
+                      {/* Next month days */}
+                      <span className="py-1 text-gray-300">1</span>
+                      <span className="py-1 text-gray-300">2</span>
+                    </div>
+                  </div>
+
+                  {/* WIDGET 2: Today's Schedule (Matching mockup with Start buttons) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-gray-900">Today's Schedule</h3>
+                      <button 
+                        onClick={() => setScheduleFilterRange('today')}
+                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {[
+                        { timeStart: '09:00', timeEnd: '10:30', title: 'Nahwu for Beginners', students: 32, image: '/images/class_nahwu.jpg' },
+                        { timeStart: '13:00', timeEnd: '14:30', title: 'Sharaf Basic', students: 28, image: '/images/class_sharaf.jpg' },
+                        { timeStart: '19:00', timeEnd: '20:30', title: 'Quran Tajweed', students: 24, image: '/images/class_tajweed.jpg' }
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between gap-2.5 p-2 rounded-2xl hover:bg-gray-50 transition-colors">
+                          <div className="text-center bg-gray-50 p-1.5 rounded-xl border border-gray-100 shrink-0 w-12">
+                            <span className="block font-black text-gray-900 text-[10px] leading-tight">{item.timeStart}</span>
+                            <span className="block text-[8px] text-gray-400 leading-tight">{item.timeEnd}</span>
+                          </div>
+                          <div className="w-9 h-9 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-200">
+                            <img 
+                              src={item.image} 
+                              alt={item.title} 
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/images/class_nahwu.jpg';
+                              }}
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-extrabold text-gray-900 text-xs truncate">{item.title}</h4>
+                            <p className="text-[10px] text-gray-500 truncate mt-0.5">
+                              <span className="text-red-500 font-bold">Live Class</span> • {item.students} students
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => onStartLive({
+                              title: item.title,
+                              tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                              image: item.image
+                            })}
+                            className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 shrink-0"
+                          >
+                            Start
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 3: Upcoming Schedule (Matching mockup with Join buttons) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-gray-900">Upcoming Schedule</h3>
+                      <button 
+                        onClick={() => setScheduleFilterRange('week')}
+                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {upcomingScheduleList.map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between gap-2.5 p-2 rounded-2xl hover:bg-gray-50 transition-colors">
+                          <div className="text-center bg-gray-50 p-1.5 rounded-xl border border-gray-100 shrink-0 w-11">
+                            <span className="block font-black text-gray-900 text-xs leading-tight">{item.dateDay}</span>
+                            <span className="block text-[9px] text-gray-400 leading-tight uppercase font-bold">{item.dateMonth}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-extrabold text-gray-900 text-xs truncate">{item.title}</h4>
+                            <p className="text-[10px] text-gray-500 truncate mt-0.5">
+                              {item.time} • {item.students} students
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => onStartLive({
+                              title: item.title,
+                              tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                              image: item.image
+                            })}
+                            className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors shadow-2xs cursor-pointer active:scale-95 shrink-0"
+                          >
+                            Join
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
             /* ========================================================= */
-            /* VIEW 3: DASHBOARD OVERVIEW CANVAS                         */
+            /* VIEW 4: DASHBOARD OVERVIEW CANVAS                         */
             /* ========================================================= */
             <div className="space-y-6">
               
@@ -1995,6 +2928,375 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
 
         </main>
       </div>
+
+      {/* ========================================================= */}
+      {/* MODAL 1: ADD SCHEDULE MODAL                               */}
+      {/* ========================================================= */}
+      {isAddScheduleModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                  <CalendarPlus className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Add New Class Schedule</h3>
+                  <p className="text-xs text-gray-500">Tentukan jadwal kelas langsung untuk siswa.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsAddScheduleModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                const newEv = {
+                  id: `ev-${Date.now()}`,
+                  day: newScheduleForm.day,
+                  title: newScheduleForm.courseTitle,
+                  time: `${newScheduleForm.startTime} - ${newScheduleForm.endTime}`,
+                  type: newScheduleForm.type,
+                  hourSlot: newScheduleForm.startTime.split(':')[0] + ':00',
+                  colorTheme: newScheduleForm.colorTheme,
+                  studentsCount: newScheduleForm.studentsCount,
+                  image: '/images/class_nahwu.jpg'
+                };
+                setScheduleEventsList(prev => [...prev, newEv]);
+                setIsAddScheduleModalOpen(false);
+                alert(`Jadwal baru "${newScheduleForm.courseTitle}" berhasil ditambahkan!`);
+              }}
+              className="space-y-4"
+            >
+              <div className="space-y-1">
+                <label className="text-xs font-extrabold text-gray-700">Class Name</label>
+                <select 
+                  value={newScheduleForm.courseTitle}
+                  onChange={(e) => {
+                    const title = e.target.value;
+                    let theme = 'emerald';
+                    if (title.includes('Arabic')) theme = 'blue';
+                    else if (title.includes('Sharaf')) theme = 'purple';
+                    else if (title.includes('Writing') || title.includes('Balaghah')) theme = 'amber';
+                    else if (title.includes('Tajweed') || title.includes('Quran')) theme = 'indigo';
+                    setNewScheduleForm(prev => ({ ...prev, courseTitle: title, colorTheme: theme }));
+                  }}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                >
+                  <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                  <option value="Arabic Conversation">Arabic Conversation</option>
+                  <option value="Sharaf Basic">Sharaf Basic</option>
+                  <option value="Academic Writing">Academic Writing</option>
+                  <option value="Quran Tajweed">Quran Tajweed</option>
+                  <option value="Balaghah & Ushul Fiqh">Balaghah & Ushul Fiqh</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-extrabold text-gray-700">Day</label>
+                  <select 
+                    value={newScheduleForm.day}
+                    onChange={(e) => setNewScheduleForm(prev => ({ ...prev, day: e.target.value }))}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  >
+                    <option value="mon">Monday (21 Sep)</option>
+                    <option value="tue">Tuesday (22 Sep)</option>
+                    <option value="wed">Wednesday (23 Sep)</option>
+                    <option value="thu">Thursday (24 Sep)</option>
+                    <option value="fri">Friday (25 Sep)</option>
+                    <option value="sat">Saturday (26 Sep)</option>
+                    <option value="sun">Sunday (27 Sep)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-extrabold text-gray-700">Room Type</label>
+                  <select 
+                    value={newScheduleForm.type}
+                    onChange={(e) => setNewScheduleForm(prev => ({ ...prev, type: e.target.value }))}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  >
+                    <option value="Live Class">Live Interactive Whiteboard</option>
+                    <option value="Webinar">Live Lecture / Webinar</option>
+                    <option value="Q&A Session">Live Q&A Consultation</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-extrabold text-gray-700">Start Time</label>
+                  <select 
+                    value={newScheduleForm.startTime}
+                    onChange={(e) => {
+                      const st = e.target.value;
+                      const hr = parseInt(st.split(':')[0]);
+                      const endHr = (hr + 1).toString().padStart(2, '0') + ':30';
+                      setNewScheduleForm(prev => ({ ...prev, startTime: st, endTime: endHr }));
+                    }}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  >
+                    {timeHours.map(th => (
+                      <option key={th} value={th}>{th}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-extrabold text-gray-700">End Time</label>
+                  <input 
+                    type="text"
+                    value={newScheduleForm.endTime}
+                    onChange={(e) => setNewScheduleForm(prev => ({ ...prev, endTime: e.target.value }))}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsAddScheduleModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 text-xs font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold shadow-xs cursor-pointer active:scale-95"
+                >
+                  Save Schedule
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 2: RECURRING SCHEDULE MODAL                         */}
+      {/* ========================================================= */}
+      {isRecurringModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center">
+                  <RotateCcw className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Recurring Schedule Setup</h3>
+                  <p className="text-xs text-gray-500">Jadwalkan kelas berulang otomatis setiap minggu.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsRecurringModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Pilih Kelas</label>
+                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800">
+                  <option>Nahwu for Beginners (Senin, Rabu, Jumat)</option>
+                  <option>Arabic Conversation (Selasa, Kamis, Sabtu)</option>
+                  <option>Sharaf Basic (Senin, Rabu, Jumat)</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="font-extrabold text-gray-700">Repeat On Days</label>
+                <div className="flex items-center gap-2">
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (
+                    <label key={i} className="flex-1 text-center border border-gray-200 rounded-xl py-2 cursor-pointer hover:bg-emerald-50 hover:border-emerald-300 font-bold transition-colors has-checked:bg-[#114B44] has-checked:text-white has-checked:border-[#114B44]">
+                      <input type="checkbox" defaultChecked={i === 0 || i === 2 || i === 4} className="sr-only" />
+                      <span>{day}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Class Time</label>
+                  <input type="text" defaultValue="09:00 - 10:30" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800" />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Duration (Weeks)</label>
+                  <select defaultValue="4 weeks" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800">
+                    <option value="4 weeks">4 Weeks (1 Month)</option>
+                    <option value="8 weeks">8 Weeks (2 Months)</option>
+                    <option value="12 weeks">12 Weeks (1 Semester)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsRecurringModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setIsRecurringModalOpen(false);
+                    alert('Jadwal mingguan recurring berhasil diperbarui!');
+                  }}
+                  className="px-5 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold shadow-xs cursor-pointer active:scale-95"
+                >
+                  Save Recurring Schedule
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 3: EVENT DETAILS & QUICK LAUNCH                     */}
+      {/* ========================================================= */}
+      {selectedScheduleEvent && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-start justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                  <img src={selectedScheduleEvent.image} alt={selectedScheduleEvent.title} className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900 leading-tight">{selectedScheduleEvent.title}</h3>
+                  <div className="flex items-center gap-1.5 text-xs text-red-600 font-bold mt-0.5">
+                    <Video className="w-3 h-3" />
+                    <span>{selectedScheduleEvent.type}</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedScheduleEvent(null)}
+                className="p-1.5 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs bg-gray-50 p-4 rounded-2xl border border-gray-100">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Day & Date:</span>
+                <span className="font-extrabold text-gray-800 uppercase">{selectedScheduleEvent.day} (September 2026)</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Scheduled Time:</span>
+                <span className="font-extrabold text-emerald-700">{selectedScheduleEvent.time}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Enrolled Students:</span>
+                <span className="font-extrabold text-gray-800">{selectedScheduleEvent.studentsCount} Students</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Tutor:</span>
+                <span className="font-extrabold text-gray-800">{teacherName}</span>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedScheduleEvent(null);
+                  onStartLive({
+                    title: selectedScheduleEvent.title,
+                    tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                    image: selectedScheduleEvent.image
+                  });
+                }}
+                className="flex-1 bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              >
+                <Radio className="w-4 h-4 animate-pulse" />
+                <span>Enter Live Classroom</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setScheduleEventsList(prev => prev.filter(e => e.id !== selectedScheduleEvent.id));
+                  setSelectedScheduleEvent(null);
+                }}
+                className="p-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors cursor-pointer"
+                title="Hapus sesi ini"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 4: EDIT AVAILABILITY                                */}
+      {/* ========================================================= */}
+      {isAvailabilityModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div>
+                <h3 className="text-base font-black text-gray-900">Edit Teaching Availability</h3>
+                <p className="text-xs text-gray-500">Sesuaikan rentang jam kerja mingguan kamu.</p>
+              </div>
+              <button 
+                onClick={() => setIsAvailabilityModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+              {availabilityDays.map((item, idx) => (
+                <div key={idx} className="p-3 rounded-2xl bg-gray-50 border border-gray-200/80 flex items-center justify-between gap-3 text-xs">
+                  <div className="w-24 font-bold text-gray-900">{item.day}</div>
+                  <input 
+                    type="text"
+                    value={item.hours}
+                    onChange={(e) => {
+                      const newHours = e.target.value;
+                      setAvailabilityDays(prev => prev.map((d, i) => i === idx ? { ...d, hours: newHours } : d));
+                    }}
+                    className="flex-1 bg-white border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-gray-800"
+                  />
+                  <input 
+                    type="checkbox"
+                    checked={item.enabled}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setAvailabilityDays(prev => prev.map((d, i) => i === idx ? { ...d, enabled: checked } : d));
+                    }}
+                    className="w-4 h-4 text-emerald-600 rounded cursor-pointer"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2">
+              <button
+                onClick={() => setIsAvailabilityModalOpen(false)}
+                className="px-5 py-2 rounded-xl bg-[#114B44] text-white text-xs font-bold cursor-pointer"
+              >
+                Save Availability
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
