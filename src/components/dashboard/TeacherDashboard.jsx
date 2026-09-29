@@ -62,16 +62,19 @@ import {
   Megaphone,
   UserMinus,
   UserCheck,
-  MoreHorizontal,
   FolderPlus,
   CloudUpload,
   Play,
   Link2,
-  HardDrive
+  HardDrive,
+  ClipboardCheck,
+  CheckSquare,
+  FolderOpen,
+  CalendarDays
 } from 'lucide-react';
 
 export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
-  const [activeNav, setActiveNav] = useState('materials'); // 'dashboard', 'classes', 'create', 'schedule', 'students', 'materials'
+  const [activeNav, setActiveNav] = useState('assignments'); // 'dashboard', 'classes', 'create', 'schedule', 'students', 'materials', 'assignments'
   const [selectedPeriod, setSelectedPeriod] = useState('Sep 2026');
   const [classTabFilter, setClassTabFilter] = useState('all'); // all, ongoing, upcoming, completed, draft, archived
   const [subjectFilter, setSubjectFilter] = useState('All Subjects');
@@ -684,6 +687,159 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     { rank: 3, title: 'Ringkasan Kaidah Nahwu', type: 'PDF', views: '930 views', iconColor: 'text-orange-500', iconBg: 'bg-orange-50' },
     { rank: 4, title: 'Pengantar Ilmu Nahwu', type: 'Video', views: '856 views', image: '/images/class_nahwu.jpg' },
     { rank: 5, title: 'Pembahasan Latihan Soal', type: 'Video', views: '720 views', image: '/images/class_sharaf.jpg' },
+  ];
+
+  // Assignments View States (matching media_1790722499906.jpg)
+  const [assignmentTabFilter, setAssignmentTabFilter] = useState('all'); // 'all' (12) | 'drafts' (2) | 'scheduled' (3) | 'published' (7) | 'archived' (1)
+  const [assignmentClassFilter, setAssignmentClassFilter] = useState('All Classes');
+  const [assignmentStatusFilter, setAssignmentStatusFilter] = useState('All Status');
+  const [assignmentTypeFilter, setAssignmentTypeFilter] = useState('All Types');
+  const [assignmentSearchQuery, setAssignmentSearchQuery] = useState('');
+  const [selectedAssignmentIds, setSelectedAssignmentIds] = useState([]);
+  const [assignmentViewMode, setAssignmentViewMode] = useState('list'); // 'list' | 'calendar'
+  const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState(false);
+  const [selectedAssignmentModal, setSelectedAssignmentModal] = useState(null);
+
+  // New Assignment Form State
+  const [newAssignmentForm, setNewAssignmentForm] = useState({
+    title: '',
+    description: '',
+    className: 'Nahwu for Beginners',
+    type: 'Exercise',
+    dueDate: '2026-10-15',
+    dueTime: '23:59',
+    totalPoints: 100,
+    status: 'published'
+  });
+
+  const [assignmentsDataList, setAssignmentsDataList] = useState([
+    {
+      id: 'asg-1',
+      title: 'Latihan Nahwu Dasar 1',
+      description: 'Identifikasi jumlah ismiyah dan fi\'liyah',
+      className: 'Nahwu for Beginners',
+      type: 'Exercise',
+      typeColor: 'bg-sky-50 text-sky-700 border-sky-200',
+      dueDate: '25 Sep 2026',
+      dueTime: '23:59',
+      submittedCount: 28,
+      totalCount: 32,
+      progressPercent: 88,
+      status: 'published',
+      daysLeft: '2 days left'
+    },
+    {
+      id: 'asg-2',
+      title: 'Analisis Teks Arab',
+      description: 'Tentukan i\'rab pada teks...',
+      className: 'Sharaf Basic',
+      type: 'Essay',
+      typeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+      dueDate: '28 Sep 2026',
+      dueTime: '23:59',
+      submittedCount: 24,
+      totalCount: 28,
+      progressPercent: 86,
+      status: 'published',
+      daysLeft: '5 days left'
+    },
+    {
+      id: 'asg-3',
+      title: 'Hafalan Mufradat',
+      description: 'Kumpulkan video hafalan 10 kata',
+      className: 'Arabic Conversation',
+      type: 'Video',
+      typeColor: 'bg-purple-50 text-purple-700 border-purple-200',
+      dueDate: '30 Sep 2026',
+      dueTime: '23:59',
+      submittedCount: 20,
+      totalCount: 30,
+      progressPercent: 67,
+      status: 'published',
+      daysLeft: '7 days left'
+    },
+    {
+      id: 'asg-4',
+      title: 'Tugas Kuis Bab 1',
+      description: 'Pilihan ganda 20 soal',
+      className: 'Nahwu for Beginners',
+      type: 'Quiz',
+      typeColor: 'bg-rose-50 text-rose-700 border-rose-200',
+      dueDate: '5 Oct 2026',
+      dueTime: '23:59',
+      submittedCount: 32,
+      totalCount: 32,
+      progressPercent: 100,
+      status: 'published',
+      daysLeft: '12 days left'
+    },
+    {
+      id: 'asg-5',
+      title: 'Ringkasan Materi',
+      description: 'Buat ringkasan 2 halaman',
+      className: 'Sharaf Basic',
+      type: 'Document',
+      typeColor: 'bg-sky-50 text-sky-700 border-sky-200',
+      dueDate: '8 Oct 2026',
+      dueTime: '23:59',
+      submittedCount: 18,
+      totalCount: 28,
+      progressPercent: 64,
+      status: 'published',
+      daysLeft: '15 days left'
+    },
+    {
+      id: 'asg-6',
+      title: 'Proyek Mini',
+      description: 'Analisis teks pendek',
+      className: 'Academic Writing',
+      type: 'Project',
+      typeColor: 'bg-purple-50 text-purple-700 border-purple-200',
+      dueDate: '12 Oct 2026',
+      dueTime: '23:59',
+      submittedCount: 12,
+      totalCount: 24,
+      progressPercent: 50,
+      status: 'published',
+      daysLeft: '19 days left'
+    },
+    {
+      id: 'asg-7',
+      title: 'Latihan Soal 2',
+      description: 'Pembahasan dengan contoh',
+      className: 'Nahwu for Beginners',
+      type: 'Exercise',
+      typeColor: 'bg-sky-50 text-sky-700 border-sky-200',
+      dueDate: '15 Oct 2026',
+      dueTime: '23:59',
+      submittedCount: 6,
+      totalCount: 32,
+      progressPercent: 19,
+      status: 'draft',
+      daysLeft: '22 days left'
+    },
+    {
+      id: 'asg-8',
+      title: 'Tugas Diskusi',
+      description: 'Berikan pendapat tentang topik',
+      className: 'Arabic Conversation',
+      type: 'Discussion',
+      typeColor: 'bg-purple-50 text-purple-700 border-purple-200',
+      dueDate: '20 Oct 2026',
+      dueTime: '23:59',
+      submittedCount: 0,
+      totalCount: 28,
+      progressPercent: 0,
+      status: 'scheduled',
+      daysLeft: '27 days left'
+    }
+  ]);
+
+  const recentSubmissionsList = [
+    { studentName: 'Aisha Rahman', avatar: '/images/student_aisha.jpg', assignment: 'Latihan Nahwu Dasar 1', time: '2 minutes ago' },
+    { studentName: 'Omar Hassan', avatar: '/images/student_omar.jpg', assignment: 'Analisis Teks Arab', time: '15 minutes ago', isNew: true },
+    { studentName: 'Fatimah Zahra', avatar: '/images/student_fatimah.jpg', assignment: 'Hafalan Mufradat', time: '1 hour ago' },
+    { studentName: 'Ali Khan', avatar: '/images/student_ali.jpg', assignment: 'Ringkasan Materi', time: '3 hours ago' },
   ];
 
   // Sidebar Items matching reference image
@@ -4107,6 +4263,720 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
             </div>
+          ) : activeNav === 'assignments' ? (
+            /* ========================================================= */
+            /* VIEW: ASSIGNMENTS (MATCHING MOCKUP & COMPACT RIGHT SIDEBAR) */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* TOP HEADER: Icon, Title, Subtitle, and + Create Assignment Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Assignments</h1>
+                    <p className="text-xs text-gray-500 font-medium">Manage, track, and grade all student assignments across your classes.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => setIsCreateAssignmentModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Create Assignment</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* TABS FILTER (Matching Mockup with count pills) */}
+              <div className="flex items-center gap-2 border-b border-gray-200/80 pb-px overflow-x-auto no-scrollbar">
+                {[
+                  { id: 'all', label: 'All Assignments', count: assignmentsDataList.length },
+                  { id: 'drafts', label: 'Drafts', count: assignmentsDataList.filter(a => a.status === 'draft').length },
+                  { id: 'scheduled', label: 'Scheduled', count: assignmentsDataList.filter(a => a.status === 'scheduled').length },
+                  { id: 'published', label: 'Published', count: assignmentsDataList.filter(a => a.status === 'published').length },
+                  { id: 'archived', label: 'Archived', count: assignmentsDataList.filter(a => a.status === 'archived').length },
+                ].map((tab) => {
+                  const isActive = assignmentTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setAssignmentTabFilter(tab.id)}
+                      className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-bold transition-all border-b-2 whitespace-nowrap cursor-pointer ${
+                        isActive
+                          ? 'border-[#114B44] text-[#114B44]'
+                          : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
+                        isActive ? 'bg-[#114B44] text-white' : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {tab.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* CONTROLS TOOLBAR: Class Dropdown, Status Dropdown, Type Dropdown, Search bar, View toggles */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3.5 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {/* Class Filter */}
+                  <div className="relative">
+                    <select
+                      value={assignmentClassFilter}
+                      onChange={(e) => setAssignmentClassFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Classes">All Classes</option>
+                      <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                      <option value="Arabic Conversation">Arabic Conversation</option>
+                      <option value="Sharaf Basic">Sharaf Basic</option>
+                      <option value="Quran Tajweed">Quran Tajweed</option>
+                      <option value="Academic Writing">Academic Writing</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Status Filter */}
+                  <div className="relative">
+                    <select
+                      value={assignmentStatusFilter}
+                      onChange={(e) => setAssignmentStatusFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Status">All Status</option>
+                      <option value="published">Published</option>
+                      <option value="draft">Draft</option>
+                      <option value="scheduled">Scheduled</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Type Filter */}
+                  <div className="relative">
+                    <select
+                      value={assignmentTypeFilter}
+                      onChange={(e) => setAssignmentTypeFilter(e.target.value)}
+                      className="bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl px-3 py-1.5 pr-8 text-xs font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#114B44] cursor-pointer transition-colors"
+                    >
+                      <option value="All Types">All Types</option>
+                      <option value="Exercise">Exercise</option>
+                      <option value="Essay">Essay</option>
+                      <option value="Video">Video</option>
+                      <option value="Quiz">Quiz</option>
+                      <option value="Document">Document</option>
+                      <option value="Project">Project</option>
+                      <option value="Discussion">Discussion</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  {/* Search bar */}
+                  <div className="relative flex-1 md:w-56">
+                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={assignmentSearchQuery}
+                      onChange={(e) => setAssignmentSearchQuery(e.target.value)}
+                      placeholder="Search assignments..."
+                      className="w-full bg-gray-50/80 border border-gray-200/80 rounded-xl pl-8 pr-3 py-1.5 text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all"
+                    />
+                  </div>
+
+                  {/* List / Calendar View Toggle */}
+                  <div className="flex items-center bg-gray-100 p-0.5 rounded-xl shrink-0">
+                    <button
+                      onClick={() => setAssignmentViewMode('list')}
+                      className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        assignmentViewMode === 'list'
+                          ? 'bg-white text-gray-900 shadow-2xs'
+                          : 'text-gray-400 hover:text-gray-700'
+                      }`}
+                      title="List View"
+                    >
+                      <List className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setAssignmentViewMode('calendar')}
+                      className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        assignmentViewMode === 'calendar'
+                          ? 'bg-white text-gray-900 shadow-2xs'
+                          : 'text-gray-400 hover:text-gray-700'
+                      }`}
+                      title="Calendar View"
+                    >
+                      <Calendar className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4 METRIC SUMMARY CARDS */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {/* Total Assignments */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Total Assignments</p>
+                    <h3 className="text-xl font-black text-gray-900 leading-tight">12</h3>
+                    <p className="text-[10px] text-gray-400 truncate">Across 4 active classes</p>
+                  </div>
+                </div>
+
+                {/* Submissions */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Submissions</p>
+                    <div className="flex items-baseline gap-1.5">
+                      <h3 className="text-xl font-black text-gray-900 leading-tight">28</h3>
+                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded">91%</span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 truncate">Average submission rate</p>
+                  </div>
+                </div>
+
+                {/* Graded */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
+                    <ClipboardCheck className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Graded</p>
+                    <div className="flex items-baseline gap-1.5">
+                      <h3 className="text-xl font-black text-gray-900 leading-tight">24</h3>
+                      <span className="text-[10px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.2 rounded">86%</span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 truncate">Graded submissions</p>
+                  </div>
+                </div>
+
+                {/* Pending Review */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Pending Review</p>
+                    <div className="flex items-baseline gap-1.5">
+                      <h3 className="text-xl font-black text-gray-900 leading-tight">4</h3>
+                      <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">14%</span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 truncate">Needs grading & feedback</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2-COLUMN LAYOUT: Center Assignments Table Canvas + Right Sidebar Column */}
+              <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
+                
+                {/* CENTER CANVAS: Assignments Table (flex-1 min-w-0 w-full) */}
+                <div className="flex-1 min-w-0 w-full space-y-4">
+                  
+                  {/* Bulk Actions Banner if selected */}
+                  {selectedAssignmentIds.length > 0 && (
+                    <div className="bg-[#114B44]/5 border border-[#114B44]/20 rounded-2xl p-3 flex items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2 text-[#114B44] font-bold">
+                        <CheckSquare className="w-4 h-4" />
+                        <span>{selectedAssignmentIds.length} assignment(s) selected</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            setAssignmentsDataList(prev => prev.map(a => selectedAssignmentIds.includes(a.id) ? { ...a, status: 'published' } : a));
+                            setSelectedAssignmentIds([]);
+                          }}
+                          className="px-3 py-1 bg-white border border-gray-200 rounded-lg font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                        >
+                          Publish
+                        </button>
+                        <button
+                          onClick={() => {
+                            setAssignmentsDataList(prev => prev.map(a => selectedAssignmentIds.includes(a.id) ? { ...a, status: 'archived' } : a));
+                            setSelectedAssignmentIds([]);
+                          }}
+                          className="px-3 py-1 bg-white border border-gray-200 rounded-lg font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                        >
+                          Archive
+                        </button>
+                        <button
+                          onClick={() => {
+                            setAssignmentsDataList(prev => prev.filter(a => !selectedAssignmentIds.includes(a.id)));
+                            setSelectedAssignmentIds([]);
+                          }}
+                          className="px-3 py-1 bg-rose-50 border border-rose-200 rounded-lg font-bold text-rose-700 hover:bg-rose-100 cursor-pointer"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Table Container */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-gray-200 bg-gray-50/60 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                            <th className="py-3 px-4 w-10">
+                              <input
+                                type="checkbox"
+                                checked={selectedAssignmentIds.length > 0 && selectedAssignmentIds.length === assignmentsDataList.length}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedAssignmentIds(assignmentsDataList.map(a => a.id));
+                                  } else {
+                                    setSelectedAssignmentIds([]);
+                                  }
+                                }}
+                                className="rounded border-gray-300 text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                              />
+                            </th>
+                            <th className="py-3 px-3">Assignment Name</th>
+                            <th className="py-3 px-3">Class</th>
+                            <th className="py-3 px-3">Type</th>
+                            <th className="py-3 px-3">Due Date</th>
+                            <th className="py-3 px-3">Submissions</th>
+                            <th className="py-3 px-3">Status</th>
+                            <th className="py-3 px-4 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 text-xs">
+                          {assignmentsDataList
+                            .filter(item => {
+                              if (assignmentTabFilter === 'drafts') return item.status === 'draft';
+                              if (assignmentTabFilter === 'scheduled') return item.status === 'scheduled';
+                              if (assignmentTabFilter === 'published') return item.status === 'published';
+                              if (assignmentTabFilter === 'archived') return item.status === 'archived';
+                              return true;
+                            })
+                            .filter(item => {
+                              if (assignmentClassFilter !== 'All Classes' && item.className !== assignmentClassFilter) return false;
+                              if (assignmentStatusFilter !== 'All Status' && item.status !== assignmentStatusFilter.toLowerCase()) return false;
+                              if (assignmentTypeFilter !== 'All Types' && item.type !== assignmentTypeFilter) return false;
+                              if (assignmentSearchQuery) {
+                                const q = assignmentSearchQuery.toLowerCase();
+                                return (
+                                  item.title.toLowerCase().includes(q) ||
+                                  item.description?.toLowerCase().includes(q) ||
+                                  item.className.toLowerCase().includes(q)
+                                );
+                              }
+                              return true;
+                            })
+                            .map((assignment) => {
+                              const isSelected = selectedAssignmentIds.includes(assignment.id);
+                              return (
+                                <tr
+                                  key={assignment.id}
+                                  className={`hover:bg-gray-50/80 transition-colors ${
+                                    isSelected ? 'bg-emerald-50/30' : ''
+                                  }`}
+                                >
+                                  {/* Checkbox */}
+                                  <td className="py-3.5 px-4">
+                                    <input
+                                      type="checkbox"
+                                      checked={isSelected}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setSelectedAssignmentIds(prev => [...prev, assignment.id]);
+                                        } else {
+                                          setSelectedAssignmentIds(prev => prev.filter(id => id !== assignment.id));
+                                        }
+                                      }}
+                                      className="rounded border-gray-300 text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Assignment Name & Description */}
+                                  <td className="py-3.5 px-3 min-w-[180px]">
+                                    <div 
+                                      onClick={() => setSelectedAssignmentModal(assignment)}
+                                      className="cursor-pointer group"
+                                    >
+                                      <p className="font-bold text-gray-900 group-hover:text-[#114B44] transition-colors">
+                                        {assignment.title}
+                                      </p>
+                                      <p className="text-[11px] text-gray-400 truncate max-w-[220px]">
+                                        {assignment.description}
+                                      </p>
+                                    </div>
+                                  </td>
+
+                                  {/* Class */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <span className="font-semibold text-gray-700 text-[11px]">
+                                      {assignment.className}
+                                    </span>
+                                  </td>
+
+                                  {/* Type */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold border ${
+                                      assignment.type === 'Exercise' ? 'bg-sky-50 text-sky-700 border-sky-200' :
+                                      assignment.type === 'Essay' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                                      assignment.type === 'Video' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                                      assignment.type === 'Quiz' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                                      assignment.type === 'Document' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                      assignment.type === 'Project' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
+                                      'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                    }`}>
+                                      {assignment.type}
+                                    </span>
+                                  </td>
+
+                                  {/* Due Date */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <div>
+                                      <span className="font-bold text-gray-800 text-[11px] block">{assignment.dueDate}</span>
+                                      <span className="text-[10px] text-gray-400 font-medium">{assignment.dueTime}</span>
+                                    </div>
+                                  </td>
+
+                                  {/* Submissions Progress */}
+                                  <td className="py-3.5 px-3 min-w-[140px]">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center justify-between text-[11px]">
+                                        <span className="font-bold text-gray-800">{assignment.submittedCount}/{assignment.totalCount}</span>
+                                        <span className="font-black text-gray-500 text-[10px]">{assignment.progressPercent}%</span>
+                                      </div>
+                                      <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                        <div
+                                          className={`h-full rounded-full transition-all duration-500 ${
+                                            assignment.progressPercent >= 80 ? 'bg-emerald-600' :
+                                            assignment.progressPercent >= 50 ? 'bg-sky-500' :
+                                            'bg-amber-400'
+                                          }`}
+                                          style={{ width: `${assignment.progressPercent}%` }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Status */}
+                                  <td className="py-3.5 px-3 whitespace-nowrap">
+                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold capitalize ${
+                                      assignment.status === 'published' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                      assignment.status === 'draft' ? 'bg-gray-100 text-gray-600 border border-gray-200' :
+                                      assignment.status === 'scheduled' ? 'bg-sky-50 text-sky-700 border border-sky-200' :
+                                      'bg-purple-50 text-purple-700 border border-purple-200'
+                                    }`}>
+                                      {assignment.status}
+                                    </span>
+                                  </td>
+
+                                  {/* Actions */}
+                                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                                    <div className="flex items-center justify-end gap-1.5">
+                                      <button
+                                        onClick={() => setSelectedAssignmentModal(assignment)}
+                                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+                                        title="View Details / Grade"
+                                      >
+                                        <Eye className="w-4 h-4" />
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          const newTitle = prompt('Edit Judul Tugas:', assignment.title);
+                                          if (newTitle) {
+                                            setAssignmentsDataList(prev => prev.map(a => a.id === assignment.id ? { ...a, title: newTitle } : a));
+                                          }
+                                        }}
+                                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+                                        title="Edit Assignment"
+                                      >
+                                        <Edit className="w-4 h-4" />
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          if (confirm(`Hapus tugas "${assignment.title}"?`)) {
+                                            setAssignmentsDataList(prev => prev.filter(a => a.id !== assignment.id));
+                                          }
+                                        }}
+                                        className="p-1.5 rounded-lg hover:bg-rose-50 text-gray-400 hover:text-rose-600 transition-colors cursor-pointer"
+                                        title="Delete Assignment"
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Assignment Statistics + Upcoming Deadlines + Recent Submissions + Quick Actions (w-full lg:w-72 xl:w-80) */}
+                <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
+                  
+                  {/* WIDGET 1: Assignment Statistics (Matching Mockup with Donut Chart) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Assignment Statistics</h3>
+                      <button 
+                        onClick={() => alert('Exporting assignment report summary...')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* Donut Chart SVG Container */}
+                    <div className="flex items-center justify-center py-2">
+                      <div className="relative w-32 h-32 flex items-center justify-center">
+                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                          {/* Background Track */}
+                          <circle cx="50" cy="50" r="38" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
+                          
+                          {/* Segment 1: On Time (71% = 169.5 / 238.76) - Emerald */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#059669"
+                            strokeWidth="12"
+                            strokeDasharray="169.5 238.76"
+                            strokeDashoffset="0"
+                            strokeLinecap="round"
+                          />
+                          
+                          {/* Segment 2: Late (14% = 33.4 / 238.76) - Amber */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#F59E0B"
+                            strokeWidth="12"
+                            strokeDasharray="33.4 238.76"
+                            strokeDashoffset="-175"
+                            strokeLinecap="round"
+                          />
+
+                          {/* Segment 3: Missing (14% = 33.4 / 238.76) - Rose */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="transparent"
+                            stroke="#EF4444"
+                            strokeWidth="12"
+                            strokeDasharray="33.4 238.76"
+                            strokeDashoffset="-213"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+
+                        {/* Center text */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                          <span className="text-xl font-black text-gray-900 leading-none">28</span>
+                          <span className="text-[10px] font-bold text-gray-400 mt-0.5">Submissions</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Legend Breakdown */}
+                    <div className="space-y-2 pt-1 border-t border-gray-100 text-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0"></span>
+                          <span className="text-gray-600 font-medium text-[11px]">On Time</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-gray-900 text-[11px]">20</span>
+                          <span className="text-[10px] font-bold text-gray-400">(71%)</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                          <span className="text-gray-600 font-medium text-[11px]">Late</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-gray-900 text-[11px]">4</span>
+                          <span className="text-[10px] font-bold text-gray-400">(14%)</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                          <span className="text-gray-600 font-medium text-[11px]">Missing</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-gray-900 text-[11px]">4</span>
+                          <span className="text-[10px] font-bold text-gray-400">(14%)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WIDGET 2: Upcoming Deadlines */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Upcoming Deadlines</h3>
+                      <button 
+                        onClick={() => setAssignmentTabFilter('all')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {assignmentsDataList.slice(0, 4).map((item) => (
+                        <div
+                          key={item.id}
+                          onClick={() => setSelectedAssignmentModal(item)}
+                          className="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all cursor-pointer text-xs"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <p className="font-bold text-gray-800 text-[11px] truncate">{item.title}</p>
+                            <p className="text-[10px] text-gray-400 font-medium">{item.dueDate}</p>
+                          </div>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                            item.daysLeft?.includes('2 days') ? 'bg-amber-50 text-amber-700' :
+                            item.daysLeft?.includes('5 days') ? 'bg-sky-50 text-sky-700' :
+                            'bg-gray-100 text-gray-600'
+                          }`}>
+                            {item.daysLeft}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 3: Recent Submissions */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Recent Submissions</h3>
+                      <button 
+                        onClick={() => alert('Opening all submissions log...')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {recentSubmissionsList.map((sub, idx) => (
+                        <div key={idx} className="flex items-center justify-between gap-2.5 text-xs">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <img
+                              src={sub.avatar}
+                              alt={sub.studentName}
+                              className="w-7 h-7 rounded-full object-cover shrink-0 border border-gray-100"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                            <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] items-center justify-center hidden shrink-0">
+                              {sub.studentName.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-gray-900 text-[11px] truncate">{sub.studentName}</p>
+                              <p className="text-[10px] text-gray-400 truncate">{sub.assignment}</p>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-gray-400 font-medium shrink-0">{sub.time}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 4: Quick Actions */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-2">
+                    <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider mb-2">Quick Actions</h3>
+
+                    {/* Create Assignment */}
+                    <button
+                      onClick={() => setIsCreateAssignmentModalOpen(true)}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Plus className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Create Assignment</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Import from Materials */}
+                    <button
+                      onClick={() => {
+                        setActiveNav('materials');
+                      }}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <FolderOpen className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Import from Materials</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Bulk Grade */}
+                    <button
+                      onClick={() => alert('Membuka mode Bulk Grade: Nilai semua tugas sekaligus dengan kriteria rubrik.')}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <CheckSquare className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Bulk Grade</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Assignment Settings */}
+                    <button
+                      onClick={() => alert('Membuka pengaturan default tugas & batas waktu submisi.')}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Sliders className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Assignment Settings</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
             /* ========================================================= */
             /* VIEW 6: DASHBOARD OVERVIEW CANVAS                         */
@@ -5512,6 +6382,288 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 title="Hapus materi ini"
               >
                 <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: CREATE ASSIGNMENT MODAL                            */}
+      {/* ========================================================= */}
+      {isCreateAssignmentModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Create New Assignment</h3>
+                  <p className="text-xs text-gray-500">Buat tugas baru untuk siswa di kelasmu.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsCreateAssignmentModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!newAssignmentForm.title.trim()) {
+                  alert('Mohon masukkan judul tugas.');
+                  return;
+                }
+                const newAsg = {
+                  id: `asg-${Date.now()}`,
+                  title: newAssignmentForm.title,
+                  description: newAssignmentForm.description || 'Kerjakan tugas sesuai instruksi guru.',
+                  className: newAssignmentForm.className,
+                  type: newAssignmentForm.type,
+                  typeColor: newAssignmentForm.type === 'Exercise' ? 'bg-sky-50 text-sky-700 border-sky-200' :
+                             newAssignmentForm.type === 'Essay' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                             newAssignmentForm.type === 'Video' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                             newAssignmentForm.type === 'Quiz' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                             'bg-emerald-50 text-emerald-700 border-emerald-200',
+                  dueDate: newAssignmentForm.dueDate || '30 Oct 2026',
+                  dueTime: newAssignmentForm.dueTime || '23:59',
+                  submittedCount: 0,
+                  totalCount: 32,
+                  progressPercent: 0,
+                  status: newAssignmentForm.status,
+                  daysLeft: '30 days left'
+                };
+                setAssignmentsDataList(prev => [newAsg, ...prev]);
+                setIsCreateAssignmentModalOpen(false);
+                setNewAssignmentForm({
+                  title: '',
+                  description: '',
+                  className: 'Nahwu for Beginners',
+                  type: 'Exercise',
+                  dueDate: '2026-10-15',
+                  dueTime: '23:59',
+                  totalPoints: 100,
+                  status: 'published'
+                });
+                alert('Tugas baru berhasil dibuat dan dipublikasikan!');
+              }}
+              className="space-y-4 text-xs"
+            >
+              {/* Assignment Title */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Assignment Title <span className="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  value={newAssignmentForm.title}
+                  onChange={(e) => setNewAssignmentForm({ ...newAssignmentForm, title: e.target.value })}
+                  placeholder="e.g. Latihan Nahwu Bab Isim Mufrod" 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  required
+                />
+              </div>
+
+              {/* Instructions / Description */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Instructions / Description</label>
+                <textarea 
+                  rows={3} 
+                  value={newAssignmentForm.description}
+                  onChange={(e) => setNewAssignmentForm({ ...newAssignmentForm, description: e.target.value })}
+                  placeholder="Instruksi pengerjaan tugas bagi siswa..."
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 font-medium text-gray-800 resize-none focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              {/* Target Class & Type */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Class</label>
+                  <select 
+                    value={newAssignmentForm.className}
+                    onChange={(e) => setNewAssignmentForm({ ...newAssignmentForm, className: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600 cursor-pointer"
+                  >
+                    <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                    <option value="Arabic Conversation">Arabic Conversation</option>
+                    <option value="Sharaf Basic">Sharaf Basic</option>
+                    <option value="Quran Tajweed">Quran Tajweed</option>
+                    <option value="Academic Writing">Academic Writing</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Type</label>
+                  <select 
+                    value={newAssignmentForm.type}
+                    onChange={(e) => setNewAssignmentForm({ ...newAssignmentForm, type: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600 cursor-pointer"
+                  >
+                    <option value="Exercise">Exercise</option>
+                    <option value="Essay">Essay</option>
+                    <option value="Video">Video Submission</option>
+                    <option value="Quiz">Quiz</option>
+                    <option value="Document">Document</option>
+                    <option value="Project">Project</option>
+                    <option value="Discussion">Discussion</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Due Date & Time */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Due Date</label>
+                  <input 
+                    type="date" 
+                    value={newAssignmentForm.dueDate}
+                    onChange={(e) => setNewAssignmentForm({ ...newAssignmentForm, dueDate: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Due Time</label>
+                  <input 
+                    type="time" 
+                    value={newAssignmentForm.dueTime}
+                    onChange={(e) => setNewAssignmentForm({ ...newAssignmentForm, dueTime: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  />
+                </div>
+              </div>
+
+              {/* Status */}
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Status</label>
+                <div className="flex items-center gap-3 pt-1">
+                  {[
+                    { id: 'published', label: 'Publish Immediately' },
+                    { id: 'draft', label: 'Save as Draft' },
+                    { id: 'scheduled', label: 'Schedule Later' }
+                  ].map(st => (
+                    <label key={st.id} className="flex items-center gap-1.5 cursor-pointer font-semibold text-gray-700">
+                      <input 
+                        type="radio" 
+                        name="asgStatus" 
+                        checked={newAssignmentForm.status === st.id}
+                        onChange={() => setNewAssignmentForm({ ...newAssignmentForm, status: st.id })}
+                        className="text-[#114B44] focus:ring-[#114B44]"
+                      />
+                      <span>{st.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateAssignmentModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer"
+                >
+                  Create & Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL: ASSIGNMENT DETAILS & GRADING MODAL                 */}
+      {/* ========================================================= */}
+      {selectedAssignmentModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">{selectedAssignmentModal.title}</h3>
+                  <p className="text-xs text-gray-500">{selectedAssignmentModal.className} • {selectedAssignmentModal.type}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedAssignmentModal(null)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-2">
+                <p className="text-gray-500 font-semibold">Deskripsi / Petunjuk:</p>
+                <p className="text-gray-800 font-medium">{selectedAssignmentModal.description}</p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-2.5 bg-emerald-50/60 rounded-xl border border-emerald-100">
+                  <p className="text-[10px] font-bold text-emerald-700 uppercase">Submissions</p>
+                  <p className="text-base font-black text-emerald-900">{selectedAssignmentModal.submittedCount}/{selectedAssignmentModal.totalCount}</p>
+                </div>
+                <div className="p-2.5 bg-sky-50/60 rounded-xl border border-sky-100">
+                  <p className="text-[10px] font-bold text-sky-700 uppercase">Progress</p>
+                  <p className="text-base font-black text-sky-900">{selectedAssignmentModal.progressPercent}%</p>
+                </div>
+                <div className="p-2.5 bg-amber-50/60 rounded-xl border border-amber-100">
+                  <p className="text-[10px] font-bold text-amber-700 uppercase">Due Date</p>
+                  <p className="text-xs font-black text-amber-900 mt-1">{selectedAssignmentModal.dueDate}</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <p className="font-extrabold text-gray-900 text-xs">Recent Submissions in this Assignment:</p>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-emerald-200 text-emerald-800 font-bold text-[10px] flex items-center justify-center">AR</div>
+                      <span className="font-bold text-gray-800 text-xs">Aisha Rahman</span>
+                    </div>
+                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Graded: 95/100</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-blue-200 text-blue-800 font-bold text-[10px] flex items-center justify-center">OH</div>
+                      <span className="font-bold text-gray-800 text-xs">Omar Hassan</span>
+                    </div>
+                    <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Needs Review</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setSelectedAssignmentModal(null)}
+                className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer text-xs"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  alert(`Membuka antarmuka koreksi & grading untuk tugas: ${selectedAssignmentModal.title}`);
+                  setSelectedAssignmentModal(null);
+                }}
+                className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-5 py-2 rounded-xl font-bold transition-all shadow-xs cursor-pointer text-xs flex items-center gap-2"
+              >
+                <ClipboardCheck className="w-3.5 h-3.5" />
+                <span>Grade Submissions</span>
               </button>
             </div>
           </div>
