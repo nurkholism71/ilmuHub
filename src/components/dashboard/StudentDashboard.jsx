@@ -34,16 +34,19 @@ import {
   Globe,
   Sparkles,
   ExternalLink,
-  ShieldCheck
+  ShieldCheck,
+  LogOut,
+  User
 } from 'lucide-react';
 
-export default function StudentDashboard({ user, onJoinLive, onExploreCourses, onBackToHome }) {
+export default function StudentDashboard({ user, onJoinLive, onExploreCourses, onBackToHome, onLogout, onSwitchRole }) {
   const [activeNav, setActiveNav] = useState('classes'); // default to 'classes' matching user request
   const [classTabFilter, setClassTabFilter] = useState('all'); // 'all' (8) | 'in_progress' (5) | 'completed' (2) | 'upcoming' (1) | 'saved' (0)
   const [classSearchQuery, setClassSearchQuery] = useState('');
   const [classSortOrder, setClassSortOrder] = useState('Newest First');
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(25); // 25 Sep 2026 selected by default
   const [selectedCalendarMonth, setSelectedCalendarMonth] = useState('September 2026');
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const studentName = user?.name || 'Aisha Rahman';
   const studentEmail = user?.email || 'aisha@example.com';
@@ -282,23 +285,100 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
             <span>العربية</span>
           </button>
 
-          {/* User Profile Capsule on Top Right */}
-          <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shadow-2xs shrink-0">
-              <img 
-                src={studentAvatar} 
-                alt={studentName} 
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = '/images/student_aisha.jpg';
-                }}
-              />
-            </div>
-            <div className="hidden sm:block text-left">
-              <span className="block text-xs font-extrabold text-gray-900 leading-tight">{studentName}</span>
-              <span className="block text-[10px] text-gray-400 font-medium">Student</span>
-            </div>
+          {/* User Profile Capsule on Top Right with Interactive Role Switcher & Logout */}
+          <div className="relative">
+            <button
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              className="flex items-center gap-2 pl-2 border-l border-gray-200 hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shadow-2xs shrink-0">
+                <img 
+                  src={studentAvatar} 
+                  alt={studentName} 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/student_aisha.jpg';
+                  }}
+                />
+              </div>
+              <div className="hidden sm:block text-left">
+                <span className="block text-xs font-extrabold text-gray-900 leading-tight">{studentName}</span>
+                <span className="block text-[10px] text-emerald-700 font-bold uppercase tracking-wider -mt-0.5">Student</span>
+              </div>
+              <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Profile Dropdown Popup */}
+            {userMenuOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50 text-xs animate-fadeIn">
+                <div className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl mb-2 flex items-center gap-2.5 border border-emerald-100">
+                  <div className="w-9 h-9 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shrink-0">
+                    <img
+                      src={studentAvatar}
+                      alt={studentName}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.src = '/images/student_aisha.jpg'; }}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-extrabold text-xs text-gray-900 truncate">{studentName}</h4>
+                    <p className="text-[10px] text-gray-500 truncate">{studentEmail}</p>
+                    <span className="inline-block mt-0.5 text-[9px] font-black px-2 py-0.2 bg-emerald-100 text-[#114B44] rounded-full">
+                      🎓 Student Account
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  {/* Switch to Teacher Dashboard */}
+                  {onSwitchRole && (
+                    <button
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        onSwitchRole('teacher');
+                      }}
+                      className="w-full text-left p-2 rounded-xl hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <div className="w-6 h-6 rounded-lg bg-emerald-100 text-[#114B44] flex items-center justify-center shrink-0">
+                        <Users className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="truncate">Switch to Teacher Mode</span>
+                    </button>
+                  )}
+
+                  {/* Back to IlmHub Portal */}
+                  <button
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      onBackToHome();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-gray-50 text-gray-700 font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <div className="w-6 h-6 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center shrink-0">
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="truncate">Back to Public Site</span>
+                  </button>
+
+                  <div className="my-1 border-t border-gray-100"></div>
+
+                  {/* Logout */}
+                  {onLogout && (
+                    <button
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        onLogout();
+                      }}
+                      className="w-full text-left p-2 rounded-xl hover:bg-rose-50 text-rose-600 font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Log Out</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>

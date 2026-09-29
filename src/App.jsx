@@ -56,37 +56,64 @@ export default function App() {
   });
   const [authModal, setAuthModal] = useState({ open: false, mode: 'login' });
 
-  // Sync and persist Supabase Auth session on reload
+  // Sync and persist Supabase Auth session on reload without clobbering demo or chosen role
   useEffect(() => {
+    let savedUser = null;
+    try {
+      const raw = localStorage.getItem('ilmhub_user');
+      savedUser = raw ? JSON.parse(raw) : null;
+    } catch (e) {}
+
     if (isSupabaseConfigured) {
       supabase.auth.getSession().then(({ data: { session } }) => {
+        // If current session is a local demo user, do not let an old stale Supabase session overwrite it
+        if (savedUser?.isDemo) {
+          return;
+        }
+
         if (session?.user) {
           const role = isAdminEmail(session.user.email) 
             ? 'admin' 
-            : (session.user.user_metadata?.role || 'student');
+            : (savedUser?.role || session.user.user_metadata?.role || 'student');
+
           const userObj = {
             id: session.user.id,
             email: session.user.email,
-            name: session.user.user_metadata?.full_name || (role === 'admin' ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+            name: session.user.user_metadata?.full_name || savedUser?.name || (role === 'admin' ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman'),
             role: role,
-            avatar: session.user.user_metadata?.avatar_url || (role === 'teacher' ? '/images/tutor_ahmed.jpg' : '/images/student_omar.jpg'),
+            avatar: session.user.user_metadata?.avatar_url || savedUser?.avatar || (role === 'teacher' ? '/images/tutor_ahmed.jpg' : role === 'admin' ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' : '/images/student_aisha.jpg'),
+            isDemo: false
           };
           setCurrentUser(userObj);
           localStorage.setItem('ilmhub_user', JSON.stringify(userObj));
+        } else if (savedUser) {
+          setCurrentUser(savedUser);
         }
       });
 
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        let currentSaved = null;
+        try {
+          const raw = localStorage.getItem('ilmhub_user');
+          currentSaved = raw ? JSON.parse(raw) : null;
+        } catch (e) {}
+
+        if (currentSaved?.isDemo) {
+          return;
+        }
+
         if (session?.user) {
           const role = isAdminEmail(session.user.email) 
             ? 'admin' 
-            : (session.user.user_metadata?.role || 'student');
+            : (currentSaved?.role || session.user.user_metadata?.role || 'student');
+
           const userObj = {
             id: session.user.id,
             email: session.user.email,
-            name: session.user.user_metadata?.full_name || (role === 'admin' ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+            name: session.user.user_metadata?.full_name || currentSaved?.name || (role === 'admin' ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman'),
             role: role,
-            avatar: session.user.user_metadata?.avatar_url || (role === 'teacher' ? '/images/tutor_ahmed.jpg' : '/images/student_omar.jpg'),
+            avatar: session.user.user_metadata?.avatar_url || currentSaved?.avatar || (role === 'teacher' ? '/images/tutor_ahmed.jpg' : role === 'admin' ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' : '/images/student_aisha.jpg'),
+            isDemo: false
           };
           setCurrentUser(userObj);
           localStorage.setItem('ilmhub_user', JSON.stringify(userObj));
@@ -118,8 +145,17 @@ export default function App() {
   };
 
   const handleLoginSuccess = (userData) => {
-    setCurrentUser(userData);
-    localStorage.setItem('ilmhub_user', JSON.stringify(userData));
+    const role = userData?.role || 'student';
+    const userObj = {
+      id: userData?.id || `user-${role}-${Date.now()}`,
+      email: userData?.email || `${role}@ilmhub.com`,
+      role: role,
+      name: userData?.name || (role === 'admin' ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman'),
+      avatar: userData?.avatar || (role === 'teacher' ? '/images/tutor_ahmed.jpg' : role === 'admin' ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' : '/images/student_aisha.jpg'),
+      isDemo: userData?.isDemo ?? true
+    };
+    setCurrentUser(userObj);
+    localStorage.setItem('ilmhub_user', JSON.stringify(userObj));
     // Direct user straight to their personalized dashboard according to role!
     setCurrentTab('dashboard');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -172,6 +208,24 @@ export default function App() {
     );
   }
 
+  const handleSwitchRole = (newRole) => {
+    const defaultName = newRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : newRole === 'admin' ? 'Super Admin (Nur Kholis)' : 'Aisha Rahman';
+    const defaultAvatar = newRole === 'teacher' ? '/images/tutor_ahmed.jpg' : newRole === 'admin' ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' : '/images/student_aisha.jpg';
+    
+    const userObj = {
+      id: `user-${newRole}-${Date.now()}`,
+      email: `${newRole}@ilmhub.com`,
+      role: newRole,
+      name: defaultName,
+      avatar: defaultAvatar,
+      isDemo: true
+    };
+    setCurrentUser(userObj);
+    localStorage.setItem('ilmhub_user', JSON.stringify(userObj));
+    setCurrentTab('dashboard');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // If on Fullscreen Role Dashboard view (with dedicated header + left sidebar + wide canvas)
   if (currentTab === 'dashboard') {
     if (currentUser?.role === 'admin') {
@@ -180,6 +234,8 @@ export default function App() {
           user={currentUser}
           onNavigateToLive={handleJoinLive}
           onBackToHome={() => setCurrentTab('home')}
+          onLogout={handleLogout}
+          onSwitchRole={handleSwitchRole}
         />
       );
     } else if (currentUser?.role === 'teacher') {
@@ -189,6 +245,8 @@ export default function App() {
           onStartLive={handleJoinLive}
           onManageCourses={() => setCurrentTab('classes')}
           onBackToHome={() => setCurrentTab('home')}
+          onLogout={handleLogout}
+          onSwitchRole={handleSwitchRole}
         />
       );
     } else {
@@ -198,6 +256,8 @@ export default function App() {
           onJoinLive={handleJoinLive}
           onExploreCourses={() => setCurrentTab('classes')}
           onBackToHome={() => setCurrentTab('home')}
+          onLogout={handleLogout}
+          onSwitchRole={handleSwitchRole}
         />
       );
     }

@@ -36,28 +36,69 @@ export async function signInWithRole(email, password, role = 'student') {
   }
 
   const effectiveRole = isAdminEmail(email) ? 'admin' : role;
+  const isDemoCredential = 
+    email === 'student@ilmhub.com' || 
+    email === 'ahmed.mohamed@ilmhub.com' || 
+    email === 'admin@ilmhub.com' ||
+    password === '••••••••••••';
 
-  if (!isSupabaseConfigured) {
-    // Mock successful authentication if Supabase is not yet connected
+  // If using demo credentials or Supabase is not configured, supply robust demo session
+  if (!isSupabaseConfigured || isDemoCredential) {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        // ignore sign out error during demo switch
+      }
+    }
     return {
       user: {
-        id: 'demo-user-' + Date.now(),
-        email,
+        id: 'demo-user-' + effectiveRole + '-' + Date.now(),
+        email: email || `${effectiveRole}@ilmhub.com`,
         user_metadata: { 
           role: effectiveRole, 
-          full_name: effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk' 
+          full_name: effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman',
+          avatar_url: effectiveRole === 'admin' 
+            ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+            : effectiveRole === 'teacher' 
+            ? '/images/tutor_ahmed.jpg' 
+            : '/images/student_aisha.jpg',
+          isDemo: true
         }
       },
       error: null
     };
   }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-  return { user: data?.user, session: data?.session, error };
+    if (error) {
+      return { user: null, error };
+    }
+
+    // Ensure user metadata has role synced
+    if (data?.user) {
+      if (data.user.user_metadata?.role !== effectiveRole) {
+        try {
+          await supabase.auth.updateUser({
+            data: { role: effectiveRole }
+          });
+          data.user.user_metadata = {
+            ...data.user.user_metadata,
+            role: effectiveRole
+          };
+        } catch (e) {}
+      }
+    }
+
+    return { user: data?.user, session: data?.session, error: null };
+  } catch (err) {
+    return { user: null, error: err };
+  }
 }
 
 export async function signUpWithRole(email, password, fullName, role = 'student') {
@@ -67,11 +108,13 @@ export async function signUpWithRole(email, password, fullName, role = 'student'
   if (!isSupabaseConfigured) {
     return {
       user: {
-        id: 'demo-user-' + Date.now(),
+        id: 'demo-user-' + effectiveRole + '-' + Date.now(),
         email,
         user_metadata: { 
           role: effectiveRole, 
-          full_name: effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : fullName 
+          full_name: effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : (fullName || (effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman')),
+          avatar_url: effectiveRole === 'teacher' ? '/images/tutor_ahmed.jpg' : '/images/student_aisha.jpg',
+          isDemo: true
         }
       },
       error: null
@@ -83,8 +126,9 @@ export async function signUpWithRole(email, password, fullName, role = 'student'
     password,
     options: {
       data: {
-        full_name: effectiveRole === 'admin' ? (fullName || 'Super Admin (Nur Kholis)') : fullName,
+        full_name: effectiveRole === 'admin' ? (fullName || 'Super Admin (Nur Kholis)') : (fullName || (effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman')),
         role: effectiveRole,
+        avatar_url: effectiveRole === 'teacher' ? '/images/tutor_ahmed.jpg' : '/images/student_aisha.jpg'
       }
     }
   });
@@ -94,5 +138,9 @@ export async function signUpWithRole(email, password, fullName, role = 'student'
 
 export async function signOutUser() {
   if (!isSupabaseConfigured) return { error: null };
-  return await supabase.auth.signOut();
+  try {
+    return await supabase.auth.signOut();
+  } catch (e) {
+    return { error: null };
+  }
 }

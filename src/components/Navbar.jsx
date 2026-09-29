@@ -293,11 +293,13 @@ export default function Navbar({
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shrink-0">
                   <img
                     src={
-                      currentUser.role === 'teacher' 
-                        ? '/images/tutor_ahmed.jpg' 
-                        : currentUser.role === 'admin' 
-                        ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' 
-                        : '/images/student_omar.jpg'
+                      currentUser.avatar || (
+                        currentUser.role === 'teacher' 
+                          ? '/images/tutor_ahmed.jpg' 
+                          : currentUser.role === 'admin' 
+                          ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' 
+                          : '/images/student_aisha.jpg'
+                      )
                     }
                     alt={currentUser.name}
                     className="w-full h-full object-cover"
@@ -327,11 +329,13 @@ export default function Navbar({
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shrink-0">
                       <img
                         src={
-                          currentUser.role === 'teacher' 
-                            ? '/images/tutor_ahmed.jpg' 
-                            : currentUser.role === 'admin' 
-                            ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' 
-                            : '/images/student_omar.jpg'
+                          currentUser.avatar || (
+                            currentUser.role === 'teacher' 
+                              ? '/images/tutor_ahmed.jpg' 
+                              : currentUser.role === 'admin' 
+                              ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' 
+                              : '/images/student_aisha.jpg'
+                          )
                         }
                         alt={currentUser.name}
                         className="w-full h-full object-cover"

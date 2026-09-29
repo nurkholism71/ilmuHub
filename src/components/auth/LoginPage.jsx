@@ -97,7 +97,8 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
 
     if (authMode === 'signup') {
       try {
-        const { user, error } = await signUpWithRole(email, password, fullName || (role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'), role);
+        const defaultName = role === 'teacher' ? 'Ustadz Ahmed Mohamed' : role === 'admin' ? 'Super Admin (Nur Kholis)' : 'Aisha Rahman';
+        const { user, error } = await signUpWithRole(email, password, fullName || defaultName, role);
         if (error) {
           setErrorMessage(error.message || 'Gagal mendaftar. Silakan coba lagi.');
           setIsLoading(false);
@@ -106,19 +107,26 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
 
         setIsLoading(false);
         setSuccessMessage('Akun berhasil dibuat! Mengalihkan...');
+        const effectiveRole = isAdminEmail(email) ? 'admin' : role;
         setTimeout(() => {
           onLoginSuccess({
-            role: isAdminEmail(email) ? 'admin' : role,
+            id: user?.id,
+            role: effectiveRole,
             email: user?.email || email,
-            name: fullName || (isAdminEmail(email) ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+            name: fullName || (effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman'),
+            avatar: effectiveRole === 'teacher' ? '/images/tutor_ahmed.jpg' : effectiveRole === 'admin' ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' : '/images/student_aisha.jpg',
+            isDemo: user?.user_metadata?.isDemo ?? false
           });
         }, 800);
       } catch (err) {
         setIsLoading(false);
+        const effectiveRole = isAdminEmail(email) ? 'admin' : role;
         onLoginSuccess({
-          role: isAdminEmail(email) ? 'admin' : role,
+          role: effectiveRole,
           email,
-          name: fullName || (isAdminEmail(email) ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk'),
+          name: fullName || (effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman'),
+          avatar: effectiveRole === 'teacher' ? '/images/tutor_ahmed.jpg' : effectiveRole === 'admin' ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' : '/images/student_aisha.jpg',
+          isDemo: true
         });
       }
       return;
@@ -134,17 +142,24 @@ export default function LoginPage({ onLoginSuccess, onBackToHome, initialRole = 
       }
 
       setIsLoading(false);
+      const effectiveRole = isAdminEmail(email) ? 'admin' : role;
       onLoginSuccess({
-        role: isAdminEmail(email) ? 'admin' : role,
+        id: user?.id,
+        role: effectiveRole,
         email: user?.email || email,
-        name: isAdminEmail(email) ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk',
+        name: user?.user_metadata?.full_name || (effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman'),
+        avatar: user?.user_metadata?.avatar_url || (effectiveRole === 'teacher' ? '/images/tutor_ahmed.jpg' : effectiveRole === 'admin' ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' : '/images/student_aisha.jpg'),
+        isDemo: user?.user_metadata?.isDemo ?? true
       });
     } catch (err) {
       setIsLoading(false);
+      const effectiveRole = isAdminEmail(email) ? 'admin' : role;
       onLoginSuccess({
-        role: isAdminEmail(email) ? 'admin' : role,
+        role: effectiveRole,
         email,
-        name: isAdminEmail(email) ? 'Super Admin (Nur Kholis)' : role === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Omar Farouk',
+        name: effectiveRole === 'admin' ? 'Super Admin (Nur Kholis)' : effectiveRole === 'teacher' ? 'Ustadz Ahmed Mohamed' : 'Aisha Rahman',
+        avatar: effectiveRole === 'teacher' ? '/images/tutor_ahmed.jpg' : effectiveRole === 'admin' ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' : '/images/student_aisha.jpg',
+        isDemo: true
       });
     }
   };

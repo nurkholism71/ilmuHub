@@ -88,7 +88,7 @@ import {
   MapPin
 } from 'lucide-react';
 
-export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
+export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome, onLogout, onSwitchRole }) {
   const [activeNav, setActiveNav] = useState('assignments'); // 'dashboard', 'classes', 'create', 'schedule', 'students', 'materials', 'assignments'
   const [selectedPeriod, setSelectedPeriod] = useState('Sep 2026');
   const [classTabFilter, setClassTabFilter] = useState('all'); // all, ongoing, upcoming, completed, draft, archived
@@ -96,6 +96,7 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
   const [statusFilter, setStatusFilter] = useState('All Status');
   const [sortBy, setSortBy] = useState('Newest');
   const [searchQuery, setSearchQuery] = useState('');
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const teacherName = user?.name || 'Ahmed Mohamed';
   const teacherEmail = user?.email || 'ahmed.mohamed@ilmhub.com';
@@ -2103,22 +2104,99 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
             <span>العربية</span>
           </button>
 
-          <div className="flex items-center gap-2.5 pl-2 border-l border-gray-200">
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300">
-              <img 
-                src="/images/tutor_ahmed.jpg" 
-                alt={teacherName} 
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80';
-                }}
-              />
-            </div>
-            <div className="hidden sm:block text-left">
-              <span className="block text-xs font-bold text-gray-900 leading-tight">{teacherName}</span>
-              <span className="block text-[10px] text-emerald-700 font-semibold uppercase tracking-wider">Teacher</span>
-            </div>
+          {/* User Profile Capsule with Interactive Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              className="flex items-center gap-2.5 pl-2 border-l border-gray-200 hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300">
+                <img 
+                  src="/images/tutor_ahmed.jpg" 
+                  alt={teacherName} 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80';
+                  }}
+                />
+              </div>
+              <div className="hidden sm:block text-left">
+                <span className="block text-xs font-bold text-gray-900 leading-tight">{teacherName}</span>
+                <span className="block text-[10px] text-emerald-700 font-semibold uppercase tracking-wider">Teacher</span>
+              </div>
+              <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Profile Dropdown Popup */}
+            {userMenuOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50 text-xs animate-fadeIn">
+                <div className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl mb-2 flex items-center gap-2.5 border border-emerald-100">
+                  <div className="w-9 h-9 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shrink-0">
+                    <img
+                      src="/images/tutor_ahmed.jpg"
+                      alt={teacherName}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-extrabold text-xs text-gray-900 truncate">{teacherName}</h4>
+                    <p className="text-[10px] text-gray-500 truncate">{teacherEmail}</p>
+                    <span className="inline-block mt-0.5 text-[9px] font-black px-2 py-0.2 bg-emerald-100 text-[#114B44] rounded-full">
+                      👨‍🏫 Teacher / Tutor
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  {/* Switch to Student Dashboard */}
+                  {onSwitchRole && (
+                    <button
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        onSwitchRole('student');
+                      }}
+                      className="w-full text-left p-2 rounded-xl hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <div className="w-6 h-6 rounded-lg bg-emerald-100 text-[#114B44] flex items-center justify-center shrink-0">
+                        <GraduationCap className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="truncate">Switch to Student Mode</span>
+                    </button>
+                  )}
+
+                  {/* Back to Public Site */}
+                  <button
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      onBackToHome();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-gray-50 text-gray-700 font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <div className="w-6 h-6 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center shrink-0">
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="truncate">Back to Public Site</span>
+                  </button>
+
+                  <div className="my-1 border-t border-gray-100"></div>
+
+                  {/* Logout */}
+                  {onLogout && (
+                    <button
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        onLogout();
+                      }}
+                      className="w-full text-left p-2 rounded-xl hover:bg-rose-50 text-rose-600 font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Log Out</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
