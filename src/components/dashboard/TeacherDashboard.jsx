@@ -62,11 +62,16 @@ import {
   Megaphone,
   UserMinus,
   UserCheck,
-  MoreHorizontal
+  MoreHorizontal,
+  FolderPlus,
+  CloudUpload,
+  Play,
+  Link2,
+  HardDrive
 } from 'lucide-react';
 
 export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
-  const [activeNav, setActiveNav] = useState('students'); // 'dashboard', 'classes', 'create', 'schedule', 'students'
+  const [activeNav, setActiveNav] = useState('materials'); // 'dashboard', 'classes', 'create', 'schedule', 'students', 'materials'
   const [selectedPeriod, setSelectedPeriod] = useState('Sep 2026');
   const [classTabFilter, setClassTabFilter] = useState('all'); // all, ongoing, upcoming, completed, draft, archived
   const [subjectFilter, setSubjectFilter] = useState('All Subjects');
@@ -497,6 +502,189 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     if (className.includes('Writing') || className.includes('Balaghah')) return 'bg-[#FEF7E6] text-[#78350F] border border-[#FDE68A]';
     return 'bg-gray-100 text-gray-700 border border-gray-200';
   };
+
+  // Materials View States (matching media_1790722178619.jpg)
+  const [materialTabFilter, setMaterialTabFilter] = useState('all'); // 'all' (48) | 'documents' (18) | 'videos' (12) | 'presentations' (8) | 'links' (6) | 'others' (4)
+  const [materialClassFilter, setMaterialClassFilter] = useState('All Classes');
+  const [materialTopicFilter, setMaterialTopicFilter] = useState('All Topics');
+  const [materialSortBy, setMaterialSortBy] = useState('Newest');
+  const [materialSearchQuery, setMaterialSearchQuery] = useState('');
+  const [isUploadMaterialModalOpen, setIsUploadMaterialModalOpen] = useState(false);
+  const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
+  const [selectedMaterialPreview, setSelectedMaterialPreview] = useState(null);
+
+  // New Material Form
+  const [newMaterialForm, setNewMaterialForm] = useState({
+    title: '',
+    category: 'documents',
+    fileType: 'PDF',
+    className: 'Nahwu for Beginners',
+    topic: 'Pendahuluan',
+    fileSize: '2.5 MB'
+  });
+
+  const [materialsDataList, setMaterialsDataList] = useState([
+    {
+      id: 'mat-1',
+      title: 'Modul Nahwu Dasar',
+      category: 'documents',
+      fileType: 'PDF',
+      meta: '20 halaman',
+      fileSize: '2.4 MB',
+      className: 'Nahwu for Beginners',
+      topic: 'Pendahuluan',
+      tagType: 'Module',
+      views: '1.2K views',
+      viewsNum: '1.2K',
+      timeAgo: '2 weeks ago',
+      date: '20 Sep 2026',
+      coverType: 'pdf',
+      iconColor: 'text-red-500',
+      tagColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      extraTagColor: 'bg-gray-100 text-gray-700'
+    },
+    {
+      id: 'mat-2',
+      title: 'Pengantar Ilmu Nahwu',
+      category: 'videos',
+      fileType: 'Video',
+      meta: 'MP4',
+      duration: '32:15',
+      className: 'Nahwu for Beginners',
+      topic: 'Dasar-dasar Nahwu',
+      tagType: 'Lecture',
+      views: '856 views',
+      viewsNum: '856',
+      timeAgo: '1 week ago',
+      date: '18 Sep 2026',
+      coverType: 'video',
+      coverImage: '/images/class_nahwu.jpg',
+      tagColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      extraTagColor: 'bg-purple-100 text-purple-700'
+    },
+    {
+      id: 'mat-3',
+      title: 'PPT: Isim, Fi\'il, dan Harf',
+      category: 'presentations',
+      fileType: 'PPT',
+      meta: 'PPTX • 35 slides',
+      fileSize: '5.1 MB',
+      className: 'Sharaf Basic',
+      topic: 'Jenis Kata',
+      tagType: 'Presentation',
+      views: '640 views',
+      viewsNum: '640',
+      timeAgo: '3 weeks ago',
+      date: '15 Sep 2026',
+      coverType: 'ppt',
+      iconColor: 'text-orange-500',
+      tagColor: 'bg-[#F5EDFD] text-[#581C87] border border-[#E9D5FF]',
+      extraTagColor: 'bg-purple-100 text-purple-700'
+    },
+    {
+      id: 'mat-4',
+      title: 'Latihan Soal Nahwu 1',
+      category: 'documents',
+      fileType: 'Document',
+      meta: 'Word • 15 halaman',
+      fileSize: '1.8 MB',
+      className: 'Nahwu for Beginners',
+      topic: 'Latihan',
+      tagType: 'Exercise',
+      views: '1.1K views',
+      viewsNum: '1.1K',
+      timeAgo: '5 days ago',
+      date: '12 Sep 2026',
+      coverType: 'docx',
+      iconColor: 'text-blue-500',
+      tagColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      extraTagColor: 'bg-sky-100 text-sky-700'
+    },
+    {
+      id: 'mat-5',
+      title: 'Pembahasan Latihan Soal',
+      category: 'videos',
+      fileType: 'Video',
+      meta: 'MP4',
+      duration: '28:40',
+      className: 'Nahwu for Beginners',
+      topic: 'Latihan',
+      tagType: 'Discussion',
+      views: '720 views',
+      viewsNum: '720',
+      timeAgo: '3 days ago',
+      date: '10 Sep 2026',
+      coverType: 'video',
+      coverImage: '/images/class_sharaf.jpg',
+      tagColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      extraTagColor: 'bg-purple-100 text-purple-700'
+    },
+    {
+      id: 'mat-6',
+      title: 'Ringkasan Kaidah Nahwu',
+      category: 'documents',
+      fileType: 'PDF',
+      meta: 'PDF • 12 halaman',
+      fileSize: '1.5 MB',
+      className: 'Nahwu for Beginners',
+      topic: 'Kaidah Utama',
+      tagType: 'Summary',
+      views: '930 views',
+      viewsNum: '930',
+      timeAgo: '1 week ago',
+      date: '08 Sep 2026',
+      coverType: 'pdf',
+      iconColor: 'text-red-500',
+      tagColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+      extraTagColor: 'bg-purple-100 text-purple-700'
+    },
+    {
+      id: 'mat-7',
+      title: 'Link Referensi Online',
+      category: 'links',
+      fileType: 'Link',
+      meta: 'External Resource',
+      url: 'https://al-maktaba.org/nahwu',
+      className: 'General',
+      topic: 'Referensi Tambahan',
+      tagType: 'Reference',
+      views: '430 views',
+      viewsNum: '430',
+      timeAgo: '2 weeks ago',
+      date: '05 Sep 2026',
+      coverType: 'link',
+      iconColor: 'text-sky-600',
+      tagColor: 'bg-gray-100 text-gray-700',
+      extraTagColor: 'bg-gray-100 text-gray-700'
+    },
+    {
+      id: 'mat-8',
+      title: 'Praktik Membaca Teks Arab',
+      category: 'videos',
+      fileType: 'Video',
+      meta: 'MP4',
+      duration: '45:20',
+      className: 'Arabic Conversation',
+      topic: 'Qira\'ah',
+      tagType: 'Practice',
+      views: '680 views',
+      viewsNum: '680',
+      timeAgo: '1 week ago',
+      date: '03 Sep 2026',
+      coverType: 'video',
+      coverImage: '/images/class_conversation.jpg',
+      tagColor: 'bg-[#EAF2FD] text-[#1E3A8A] border border-[#BFDBFE]',
+      extraTagColor: 'bg-purple-100 text-purple-700'
+    }
+  ]);
+
+  const popularMaterialsList = [
+    { rank: 1, title: 'Modul Nahwu Dasar', type: 'PDF', views: '1.2K views', iconColor: 'text-red-500', iconBg: 'bg-red-50' },
+    { rank: 2, title: 'Latihan Soal Nahwu 1', type: 'DOCX', views: '1.1K views', iconColor: 'text-blue-500', iconBg: 'bg-blue-50' },
+    { rank: 3, title: 'Ringkasan Kaidah Nahwu', type: 'PDF', views: '930 views', iconColor: 'text-orange-500', iconBg: 'bg-orange-50' },
+    { rank: 4, title: 'Pengantar Ilmu Nahwu', type: 'Video', views: '856 views', image: '/images/class_nahwu.jpg' },
+    { rank: 5, title: 'Pembahasan Latihan Soal', type: 'Video', views: '720 views', image: '/images/class_sharaf.jpg' },
+  ];
 
   // Sidebar Items matching reference image
   const sidebarItems = [
@@ -3334,9 +3522,594 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
             </div>
+          ) : activeNav === 'materials' ? (
+            /* ========================================================= */
+            /* VIEW 5: MATERIALS ROOM (Matching media_1790722178619.jpg) */
+            /* ========================================================= */
+            <div className="space-y-6 max-w-[1600px] mx-auto">
+              
+              {/* Header: Title + Upload Material */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-[#114B44] text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Folder className="w-5 h-5 text-emerald-300" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-black text-gray-900 tracking-tight">Materials</h1>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Kelola semua materi pembelajaran untuk kelasmu. Upload, atur, dan bagikan ke siswa.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 self-start sm:self-center">
+                  <button 
+                    onClick={() => setIsUploadMaterialModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <Plus className="w-4 h-4 text-emerald-300" />
+                    <span>Upload Material</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-white/80" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Category Filter Tabs: All Materials (48) | Documents (18) | Videos (12) | Presentations (8) | Links (6) | Others (4) */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+                {[
+                  { id: 'all', label: 'All Materials (48)' },
+                  { id: 'documents', label: 'Documents (18)' },
+                  { id: 'videos', label: 'Videos (12)' },
+                  { id: 'presentations', label: 'Presentations (8)' },
+                  { id: 'links', label: 'Links (6)' },
+                  { id: 'others', label: 'Others (4)' },
+                ].map((tab) => {
+                  const isActive = materialTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setMaterialTabFilter(tab.id)}
+                      className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-600 border border-gray-200/80'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Main Content Layout: Material Catalog (Left) + Right Compact Sidebar (w-72/w-80) */}
+              <div className="flex flex-col lg:flex-row gap-5 xl:gap-6 items-start">
+                
+                {/* CENTER / MATERIAL CATALOG CANVAS (Spacious & Flexible) */}
+                <div className="flex-1 min-w-0 w-full space-y-5">
+                  
+                  {/* Search & Filter Toolbar */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-gray-200/80 shadow-2xs">
+                    
+                    {/* Search input */}
+                    <div className="relative flex-1 min-w-[200px]">
+                      <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                      <input 
+                        type="text"
+                        value={materialSearchQuery}
+                        onChange={(e) => setMaterialSearchQuery(e.target.value)}
+                        placeholder="Search materials..."
+                        className="w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-9.5 pr-4 py-2 text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-emerald-600"
+                      />
+                    </div>
+
+                    {/* Filter Dropdowns */}
+                    <div className="flex items-center flex-wrap gap-2">
+                      
+                      {/* All Classes */}
+                      <div className="relative">
+                        <select
+                          value={materialClassFilter}
+                          onChange={(e) => setMaterialClassFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-bold text-gray-700 shadow-2xs focus:outline-none focus:border-emerald-600 cursor-pointer"
+                        >
+                          <option value="All Classes">All Classes</option>
+                          <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                          <option value="Sharaf Basic">Sharaf Basic</option>
+                          <option value="Quran Tajweed">Quran Tajweed</option>
+                          <option value="Arabic Conversation">Arabic Conversation</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-3 pointer-events-none" />
+                      </div>
+
+                      {/* All Topics */}
+                      <div className="relative">
+                        <select
+                          value={materialTopicFilter}
+                          onChange={(e) => setMaterialTopicFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-bold text-gray-700 shadow-2xs focus:outline-none focus:border-emerald-600 cursor-pointer"
+                        >
+                          <option value="All Topics">All Topics</option>
+                          <option value="Pendahuluan">Pendahuluan</option>
+                          <option value="Dasar-dasar Nahwu">Dasar-dasar Nahwu</option>
+                          <option value="Jenis Kata">Jenis Kata</option>
+                          <option value="Latihan">Latihan</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-3 pointer-events-none" />
+                      </div>
+
+                      {/* Sort: Newest */}
+                      <div className="relative">
+                        <select
+                          value={materialSortBy}
+                          onChange={(e) => setMaterialSortBy(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-bold text-gray-700 shadow-2xs focus:outline-none focus:border-emerald-600 cursor-pointer"
+                        >
+                          <option value="Newest">Sort: Newest</option>
+                          <option value="Most Viewed">Most Viewed</option>
+                          <option value="Title A-Z">Title A-Z</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-3 pointer-events-none" />
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  {/* GRID OF 8 MATERIAL CARDS (2 rows x 4 cards matching mockup) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                    {materialsDataList
+                      .filter(m => {
+                        if (materialTabFilter === 'documents') return m.category === 'documents';
+                        if (materialTabFilter === 'videos') return m.category === 'videos';
+                        if (materialTabFilter === 'presentations') return m.category === 'presentations';
+                        if (materialTabFilter === 'links') return m.category === 'links';
+                        if (materialTabFilter === 'others') return m.category === 'others';
+                        return true;
+                      })
+                      .filter(m => {
+                        if (materialClassFilter !== 'All Classes') return m.className === materialClassFilter;
+                        return true;
+                      })
+                      .filter(m => {
+                        if (materialTopicFilter !== 'All Topics') return m.topic === materialTopicFilter;
+                        return true;
+                      })
+                      .filter(m => {
+                        if (materialSearchQuery) {
+                          return m.title.toLowerCase().includes(materialSearchQuery.toLowerCase());
+                        }
+                        return true;
+                      })
+                      .map((mat) => (
+                        <div 
+                          key={mat.id}
+                          className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between group"
+                        >
+                          {/* Top: Thumbnail Cover Area */}
+                          <div>
+                            <div 
+                              onClick={() => setSelectedMaterialPreview(mat)}
+                              className="h-32 rounded-xl bg-gray-50 flex items-center justify-center relative overflow-hidden border border-gray-100 cursor-pointer select-none"
+                            >
+                              {/* PDF Cover Mockup */}
+                              {mat.coverType === 'pdf' && (
+                                <div className="flex flex-col items-center justify-center p-3 text-center">
+                                  <div className="w-10 h-12 rounded-lg bg-white border border-red-200 shadow-2xs flex flex-col items-center justify-center group-hover:scale-105 transition-transform">
+                                    <div className="w-6 h-1 bg-red-400 rounded-full mb-1"></div>
+                                    <span className="text-[10px] font-black text-red-600 tracking-wider">PDF</span>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Video Cover Mockup */}
+                              {mat.coverType === 'video' && (
+                                <div className="w-full h-full relative">
+                                  <img 
+                                    src={mat.coverImage || '/images/class_nahwu.jpg'} 
+                                    alt={mat.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src = '/images/class_nahwu.jpg';
+                                    }}
+                                  />
+                                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                    <div className="w-9 h-9 rounded-full bg-white/90 shadow-md flex items-center justify-center text-gray-900 group-hover:scale-110 transition-transform">
+                                      <Play className="w-4 h-4 fill-gray-900 ml-0.5" />
+                                    </div>
+                                  </div>
+                                  {mat.duration && (
+                                    <div className="absolute bottom-2 right-2 bg-black/75 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md">
+                                      {mat.duration}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* PPT Cover Mockup */}
+                              {mat.coverType === 'ppt' && (
+                                <div className="flex flex-col items-center justify-center p-3 text-center bg-gradient-to-br from-amber-50 to-orange-50 w-full h-full">
+                                  <div className="w-10 h-12 rounded-lg bg-white border border-orange-200 shadow-2xs flex flex-col items-center justify-center group-hover:scale-105 transition-transform">
+                                    <div className="w-6 h-1 bg-orange-400 rounded-full mb-1"></div>
+                                    <span className="text-[10px] font-black text-orange-600 tracking-wider">PPT</span>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* DOCX Cover Mockup */}
+                              {mat.coverType === 'docx' && (
+                                <div className="flex flex-col items-center justify-center p-3 text-center bg-gradient-to-br from-sky-50 to-blue-50 w-full h-full">
+                                  <div className="w-10 h-12 rounded-lg bg-white border border-blue-200 shadow-2xs flex flex-col items-center justify-center group-hover:scale-105 transition-transform">
+                                    <div className="w-6 h-1 bg-blue-400 rounded-full mb-1"></div>
+                                    <span className="text-[9px] font-black text-blue-600 tracking-wider">DOCX</span>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Link Cover Mockup */}
+                              {mat.coverType === 'link' && (
+                                <div className="flex flex-col items-center justify-center p-3 text-center bg-gradient-to-br from-slate-50 to-blue-50 w-full h-full">
+                                  <div className="w-11 h-11 rounded-full bg-white border border-sky-200 shadow-2xs flex items-center justify-center text-sky-600 group-hover:scale-110 transition-transform">
+                                    <Link2 className="w-5 h-5" />
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* File Size Badge (for files) */}
+                              {mat.fileSize && (
+                                <span className="absolute bottom-2 right-2 bg-gray-900/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-2xs">
+                                  {mat.fileSize}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Title & Metadata */}
+                            <div className="mt-2.5">
+                              <h4 
+                                onClick={() => setSelectedMaterialPreview(mat)}
+                                className="font-extrabold text-xs text-gray-900 truncate leading-tight hover:text-emerald-700 cursor-pointer"
+                                title={mat.title}
+                              >
+                                {mat.title}
+                              </h4>
+                              <p className="text-[10px] text-gray-400 mt-0.5 truncate">
+                                {mat.fileType} • {mat.meta}
+                              </p>
+
+                              {/* Tags Row */}
+                              <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md truncate max-w-[120px] ${mat.tagColor}`}>
+                                  {mat.className}
+                                </span>
+                                <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md ${mat.extraTagColor}`}>
+                                  {mat.tagType}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Bottom Footer: Views & 3-Dots */}
+                          <div className="pt-2.5 mt-2.5 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400">
+                            <span>{mat.views} • {mat.timeAgo}</span>
+                            <button 
+                              onClick={() => setSelectedMaterialPreview(mat)}
+                              className="p-1 text-gray-400 hover:text-gray-700 rounded-md hover:bg-gray-100 cursor-pointer"
+                            >
+                              <MoreVertical className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                        </div>
+                      ))}
+                  </div>
+
+                  {/* MATERIAL LIST TABLE (Matching mockup below the card grid) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-gray-900">Material List</h3>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-gray-200 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                            <th className="py-2.5 pr-2 w-8">#</th>
+                            <th className="py-2.5 px-3">Title</th>
+                            <th className="py-2.5 px-3">Type</th>
+                            <th className="py-2.5 px-3">Class</th>
+                            <th className="py-2.5 px-3">Topic</th>
+                            <th className="py-2.5 px-3">Views</th>
+                            <th className="py-2.5 px-3">Date</th>
+                            <th className="py-2.5 pl-2 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {materialsDataList.slice(0, 5).map((m, idx) => (
+                            <tr key={m.id} className="hover:bg-gray-50/80 transition-colors">
+                              <td className="py-3 pr-2 text-gray-400 font-bold">{idx + 1}</td>
+                              
+                              <td className="py-3 px-3">
+                                <div className="flex items-center gap-2.5">
+                                  {m.coverType === 'pdf' ? (
+                                    <div className="w-6 h-6 rounded-md bg-red-50 text-red-600 flex items-center justify-center font-black text-[9px] shrink-0 border border-red-200">
+                                      PDF
+                                    </div>
+                                  ) : m.coverType === 'video' ? (
+                                    <div className="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-200">
+                                      <Play className="w-3 h-3 fill-purple-600" />
+                                    </div>
+                                  ) : m.coverType === 'ppt' ? (
+                                    <div className="w-6 h-6 rounded-md bg-orange-50 text-orange-600 flex items-center justify-center font-black text-[9px] shrink-0 border border-orange-200">
+                                      PPT
+                                    </div>
+                                  ) : (
+                                    <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center font-black text-[9px] shrink-0 border border-blue-200">
+                                      DOC
+                                    </div>
+                                  )}
+                                  <span className="font-extrabold text-xs text-gray-900 truncate max-w-[180px] sm:max-w-none">{m.title}</span>
+                                </div>
+                              </td>
+
+                              <td className="py-3 px-3 font-semibold text-gray-600">{m.fileType}</td>
+                              
+                              <td className="py-3 px-3">
+                                <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${m.tagColor}`}>
+                                  {m.className}
+                                </span>
+                              </td>
+
+                              <td className="py-3 px-3 font-medium text-gray-500">{m.topic}</td>
+                              <td className="py-3 px-3 font-bold text-gray-800">{m.viewsNum}</td>
+                              <td className="py-3 px-3 text-gray-400 text-[11px]">{m.date}</td>
+                              
+                              <td className="py-3 pl-2 text-right">
+                                <button 
+                                  onClick={() => setSelectedMaterialPreview(m)}
+                                  className="p-1 text-gray-400 hover:text-gray-700 rounded-md hover:bg-gray-100 cursor-pointer"
+                                >
+                                  <MoreVertical className="w-3.5 h-3.5" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Storage Usage + Materials by Type + Popular + Actions (w-72/w-80) */}
+                <div className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0">
+                  
+                  {/* WIDGET 1: Storage Usage (Matching mockup) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Storage Usage</h3>
+                      <span className="text-xs font-black text-emerald-700">24%</span>
+                    </div>
+
+                    <p className="text-[11px] text-gray-500">2.4 GB of 10 GB used</p>
+
+                    {/* Segmented Progress Bar */}
+                    <div className="w-full bg-gray-100 rounded-full h-2 flex overflow-hidden">
+                      <div className="bg-emerald-600 h-full" style={{ width: '50%' }} title="Documents: 1.2 GB"></div>
+                      <div className="bg-sky-500 h-full" style={{ width: '33%' }} title="Videos: 800 MB"></div>
+                      <div className="bg-amber-400 h-full" style={{ width: '12%' }} title="Presentations: 280 MB"></div>
+                      <div className="bg-purple-400 h-full" style={{ width: '5%' }} title="Others: 120 MB"></div>
+                    </div>
+
+                    {/* Breakdown legend */}
+                    <div className="space-y-1.5 pt-1 text-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+                          <span className="text-gray-600 font-medium text-[11px]">Documents</span>
+                        </div>
+                        <span className="font-extrabold text-gray-900 text-[11px]">1.2 GB</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-sky-500"></span>
+                          <span className="text-gray-600 font-medium text-[11px]">Videos</span>
+                        </div>
+                        <span className="font-extrabold text-gray-900 text-[11px]">800 MB</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                          <span className="text-gray-600 font-medium text-[11px]">Presentations</span>
+                        </div>
+                        <span className="font-extrabold text-gray-900 text-[11px]">280 MB</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-purple-400"></span>
+                          <span className="text-gray-600 font-medium text-[11px]">Others</span>
+                        </div>
+                        <span className="font-extrabold text-gray-900 text-[11px]">120 MB</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WIDGET 2: Materials by Type (SVG Donut Chart matching mockup) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Materials by Type</h3>
+
+                    {/* Donut Chart and Legend */}
+                    <div className="flex items-center gap-4 pt-1">
+                      
+                      {/* SVG Donut */}
+                      <div className="relative w-24 h-24 shrink-0 flex items-center justify-center">
+                        <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                          {/* Background ring */}
+                          <circle cx="18" cy="18" r="14" fill="none" stroke="#f1f5f9" strokeWidth="4"></circle>
+                          {/* Segment 1: Documents 38% */}
+                          <circle cx="18" cy="18" r="14" fill="none" stroke="#3b82f6" strokeWidth="4" strokeDasharray="33.4 88" strokeDashoffset="0"></circle>
+                          {/* Segment 2: Videos 25% */}
+                          <circle cx="18" cy="18" r="14" fill="none" stroke="#10b981" strokeWidth="4" strokeDasharray="22 88" strokeDashoffset="-33.4"></circle>
+                          {/* Segment 3: Presentations 17% */}
+                          <circle cx="18" cy="18" r="14" fill="none" stroke="#f59e0b" strokeWidth="4" strokeDasharray="15 88" strokeDashoffset="-55.4"></circle>
+                          {/* Segment 4: Links 12% */}
+                          <circle cx="18" cy="18" r="14" fill="none" stroke="#8b5cf6" strokeWidth="4" strokeDasharray="10.5 88" strokeDashoffset="-70.4"></circle>
+                          {/* Segment 5: Others 8% */}
+                          <circle cx="18" cy="18" r="14" fill="none" stroke="#94a3b8" strokeWidth="4" strokeDasharray="7.1 88" strokeDashoffset="-80.9"></circle>
+                        </svg>
+                        <div className="absolute flex flex-col items-center justify-center text-center">
+                          <span className="text-sm font-black text-gray-900 leading-none">48</span>
+                          <span className="text-[8px] text-gray-400 font-bold uppercase">Total</span>
+                        </div>
+                      </div>
+
+                      {/* Legend */}
+                      <div className="space-y-1 text-[10px] font-semibold flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1.5 text-gray-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Documents
+                          </span>
+                          <span className="text-gray-400">18 (38%)</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1.5 text-gray-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Videos
+                          </span>
+                          <span className="text-gray-400">12 (25%)</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1.5 text-gray-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Presentations
+                          </span>
+                          <span className="text-gray-400">8 (17%)</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1.5 text-gray-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500"></span> Links
+                          </span>
+                          <span className="text-gray-400">6 (12%)</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1.5 text-gray-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Others
+                          </span>
+                          <span className="text-gray-400">4 (8%)</span>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {/* WIDGET 3: Popular Materials (Matching mockup) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">Popular Materials</h3>
+                      <button 
+                        onClick={() => setMaterialSortBy('Most Viewed')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {popularMaterialsList.map((item) => (
+                        <div key={item.rank} className="flex items-center justify-between gap-2.5 p-1.5 rounded-xl hover:bg-gray-50 transition-colors text-xs">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span className="text-[10px] font-black text-gray-400 w-3">{item.rank}</span>
+                            {item.image ? (
+                              <div className="w-7 h-7 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                              </div>
+                            ) : (
+                              <div className={`w-7 h-7 rounded-lg font-black text-[9px] flex items-center justify-center shrink-0 border border-gray-200 ${item.iconBg} ${item.iconColor}`}>
+                                {item.type}
+                              </div>
+                            )}
+                            <span className="font-extrabold text-xs text-gray-900 truncate">{item.title}</span>
+                          </div>
+                          <span className="font-bold text-[10px] text-gray-500 shrink-0">{item.views}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 4: Quick Actions (Clickable items with right chevron matching mockup) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-2">
+                    <h3 className="text-xs font-extrabold text-gray-900 uppercase tracking-wider mb-2">Quick Actions</h3>
+
+                    {/* Upload Material */}
+                    <button
+                      onClick={() => setIsUploadMaterialModalOpen(true)}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <CloudUpload className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Upload Material</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Create Folder */}
+                    <button
+                      onClick={() => setIsCreateFolderModalOpen(true)}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <FolderPlus className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Create Folder</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Create Quiz from Material */}
+                    <button
+                      onClick={() => alert('Membuka Generator Kuis otomatis dari materi PDF / Video ini!')}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <HelpCircle className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Create Quiz from Material</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                    {/* Share with Students */}
+                    <button
+                      onClick={() => {
+                        navigator.clipboard?.writeText('https://ilmhub.com/materials/nahwu-dasar-folder');
+                        alert('Link koleksi materi disalin ke clipboard!');
+                      }}
+                      className="w-full p-2.5 rounded-xl hover:bg-emerald-50/60 border border-gray-100 hover:border-emerald-200 flex items-center justify-between text-xs font-bold text-gray-800 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Link2 className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="group-hover:text-emerald-900">Share with Students</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-700" />
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
             /* ========================================================= */
-            /* VIEW 5: DASHBOARD OVERVIEW CANVAS                         */
+            /* VIEW 6: DASHBOARD OVERVIEW CANVAS                         */
             /* ========================================================= */
             <div className="space-y-6">
               
@@ -4461,6 +5234,282 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 }}
                 className="p-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors cursor-pointer"
                 title="Hapus siswa dari kelas"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 9: UPLOAD NEW MATERIAL                              */}
+      {/* ========================================================= */}
+      {isUploadMaterialModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                  <CloudUpload className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Upload Learning Material</h3>
+                  <p className="text-xs text-gray-500">Unggah berkas PDF, video MP4, PPT, atau link materi.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsUploadMaterialModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!newMaterialForm.title) return;
+                const newMat = {
+                  id: `mat-${Date.now()}`,
+                  title: newMaterialForm.title,
+                  category: newMaterialForm.category,
+                  fileType: newMaterialForm.fileType,
+                  meta: newMaterialForm.fileType === 'PDF' ? 'PDF • 10 halaman' : newMaterialForm.fileType === 'Video' ? 'Video • MP4' : 'Dokumen',
+                  fileSize: newMaterialForm.fileSize || '2.5 MB',
+                  className: newMaterialForm.className,
+                  topic: newMaterialForm.topic,
+                  tagType: 'Material',
+                  views: '0 views',
+                  viewsNum: '0',
+                  timeAgo: 'Just now',
+                  date: 'Today',
+                  coverType: newMaterialForm.category === 'videos' ? 'video' : newMaterialForm.category === 'presentations' ? 'ppt' : newMaterialForm.category === 'links' ? 'link' : 'pdf',
+                  iconColor: 'text-emerald-700',
+                  tagColor: 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]',
+                  extraTagColor: 'bg-gray-100 text-gray-700'
+                };
+                setMaterialsDataList(prev => [newMat, ...prev]);
+                setIsUploadMaterialModalOpen(false);
+                setNewMaterialForm({ title: '', category: 'documents', fileType: 'PDF', className: 'Nahwu for Beginners', topic: 'Pendahuluan', fileSize: '2.5 MB' });
+                alert(`Materi "${newMaterialForm.title}" berhasil diunggah!`);
+              }}
+              className="space-y-4 text-xs"
+            >
+              {/* Dropzone mockup */}
+              <div className="border-2 border-dashed border-emerald-300 bg-emerald-50/40 rounded-2xl p-5 text-center cursor-pointer hover:bg-emerald-50/70 transition-colors">
+                <CloudUpload className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+                <p className="font-extrabold text-gray-800 text-xs">Drag & drop berkas PDF, MP4, atau PPT di sini</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">Maksimal ukuran file 100 MB</p>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Material Title</label>
+                <input 
+                  type="text"
+                  required
+                  value={newMaterialForm.title}
+                  onChange={(e) => setNewMaterialForm(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Contoh: Modul Nahwu Lanjutan Bab Fa'il"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Material Category</label>
+                  <select 
+                    value={newMaterialForm.category}
+                    onChange={(e) => {
+                      const cat = e.target.value;
+                      let fType = 'PDF';
+                      if (cat === 'videos') fType = 'Video';
+                      else if (cat === 'presentations') fType = 'PPT';
+                      else if (cat === 'links') fType = 'Link';
+                      setNewMaterialForm(prev => ({ ...prev, category: cat, fileType: fType }));
+                    }}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  >
+                    <option value="documents">Document (PDF / Word)</option>
+                    <option value="videos">Video (MP4 / WebM)</option>
+                    <option value="presentations">Presentation (PPTX / Slides)</option>
+                    <option value="links">External Link</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-extrabold text-gray-700">Assign to Class</label>
+                  <select 
+                    value={newMaterialForm.className}
+                    onChange={(e) => setNewMaterialForm(prev => ({ ...prev, className: e.target.value }))}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                  >
+                    <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                    <option value="Sharaf Basic">Sharaf Basic</option>
+                    <option value="Quran Tajweed">Quran Tajweed</option>
+                    <option value="Arabic Conversation">Arabic Conversation</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Topic / Chapter</label>
+                <input 
+                  type="text"
+                  value={newMaterialForm.topic}
+                  onChange={(e) => setNewMaterialForm(prev => ({ ...prev, topic: e.target.value }))}
+                  placeholder="Contoh: Bab 2 - Pembagian Kalimat"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsUploadMaterialModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold shadow-xs cursor-pointer active:scale-95"
+                >
+                  Publish Material
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 10: CREATE FOLDER MODAL                             */}
+      {/* ========================================================= */}
+      {isCreateFolderModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                  <FolderPlus className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Create Material Folder</h3>
+                  <p className="text-xs text-gray-500">Kelompokkan materi berdasarkan modul atau semester.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsCreateFolderModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Folder Name</label>
+                <input 
+                  type="text" 
+                  defaultValue="Modul Nahwu Semester 1"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Pilih Kelas</label>
+                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800">
+                  <option>Nahwu for Beginners</option>
+                  <option>Sharaf Basic</option>
+                  <option>Arabic Conversation</option>
+                </select>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  onClick={() => setIsCreateFolderModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setIsCreateFolderModalOpen(false);
+                    alert('Folder materi baru berhasil dibuat!');
+                  }}
+                  className="px-5 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold shadow-xs cursor-pointer active:scale-95"
+                >
+                  Create Folder
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 11: MATERIAL PREVIEW & DETAILS                      */}
+      {/* ========================================================= */}
+      {selectedMaterialPreview && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-start justify-between pb-3 border-b border-gray-100">
+              <div>
+                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md ${selectedMaterialPreview.tagColor}`}>
+                  {selectedMaterialPreview.className}
+                </span>
+                <h3 className="text-base font-black text-gray-900 leading-tight mt-1.5">{selectedMaterialPreview.title}</h3>
+                <p className="text-xs text-gray-400 mt-0.5">{selectedMaterialPreview.fileType} • {selectedMaterialPreview.meta}</p>
+              </div>
+              <button 
+                onClick={() => setSelectedMaterialPreview(null)}
+                className="p-1.5 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs bg-gray-50 p-4 rounded-2xl border border-gray-100">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Topic:</span>
+                <span className="font-extrabold text-gray-800">{selectedMaterialPreview.topic}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Total Views:</span>
+                <span className="font-extrabold text-emerald-800">{selectedMaterialPreview.views}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Uploaded Date:</span>
+                <span className="font-bold text-gray-700">{selectedMaterialPreview.date} ({selectedMaterialPreview.timeAgo})</span>
+              </div>
+              {selectedMaterialPreview.fileSize && (
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500">File Size:</span>
+                  <span className="font-bold text-gray-700">{selectedMaterialPreview.fileSize}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-2 flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  alert(`Membuka & mengunduh materi: ${selectedMaterialPreview.title}`);
+                }}
+                className="flex-1 bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              >
+                <Download className="w-4 h-4" />
+                <span>Open / Download Material</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMaterialsDataList(prev => prev.filter(m => m.id !== selectedMaterialPreview.id));
+                  setSelectedMaterialPreview(null);
+                }}
+                className="p-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors cursor-pointer"
+                title="Hapus materi ini"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
