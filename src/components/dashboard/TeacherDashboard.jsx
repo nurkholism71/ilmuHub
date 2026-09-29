@@ -56,11 +56,17 @@ import {
   List,
   Ban,
   RefreshCw,
-  X
+  X,
+  Download,
+  Mail,
+  Megaphone,
+  UserMinus,
+  UserCheck,
+  MoreHorizontal
 } from 'lucide-react';
 
 export default function TeacherDashboard({ user, onStartLive, onManageCourses, onBackToHome }) {
-  const [activeNav, setActiveNav] = useState('schedule'); // 'dashboard', 'classes', 'create', 'schedule'
+  const [activeNav, setActiveNav] = useState('students'); // 'dashboard', 'classes', 'create', 'schedule', 'students'
   const [selectedPeriod, setSelectedPeriod] = useState('Sep 2026');
   const [classTabFilter, setClassTabFilter] = useState('all'); // all, ongoing, upcoming, completed, draft, archived
   const [subjectFilter, setSubjectFilter] = useState('All Subjects');
@@ -331,6 +337,165 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
       default:
         return 'bg-gray-50 border-gray-200 text-gray-800';
     }
+  };
+
+  // Students View States (matching media_1790721537116.jpg)
+  const [studentTabFilter, setStudentTabFilter] = useState('all'); // 'all' (32) | 'active' (28) | 'inactive' (4) | 'invited' (2)
+  const [studentClassFilter, setStudentClassFilter] = useState('All Classes');
+  const [studentStatusFilter, setStudentStatusFilter] = useState('All Status');
+  const [studentSortBy, setStudentSortBy] = useState('Newest');
+  const [studentSearchQuery, setStudentSearchQuery] = useState('');
+  const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+  const [studentPage, setStudentPage] = useState(1);
+  const [studentGrowthRange, setStudentGrowthRange] = useState('Last 30 days');
+  const [studentActivityTab, setStudentActivityTab] = useState('recent'); // 'recent' | 'milestones'
+  const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isAnnouncementModalOpen, setIsAnnouncementModalOpen] = useState(false);
+  const [selectedStudentModal, setSelectedStudentModal] = useState(null);
+
+  // New Student Form State
+  const [newStudentForm, setNewStudentForm] = useState({
+    name: '',
+    email: '',
+    className: 'Nahwu for Beginners',
+    status: 'active'
+  });
+
+  const [studentsList, setStudentsList] = useState([
+    {
+      id: 'st-1',
+      name: 'Fatimah Zahra',
+      email: 'fatimah@example.com',
+      avatar: '/images/student_fatimah.jpg',
+      className: 'Nahwu for Beginners',
+      progress: 85,
+      lastActivity: 'Today 10:24 AM',
+      status: 'active'
+    },
+    {
+      id: 'st-2',
+      name: 'Omar Hassan',
+      email: 'omar@example.com',
+      avatar: '/images/student_omar.jpg',
+      className: 'Sharaf Basic',
+      progress: 72,
+      lastActivity: 'Today 09:18 AM',
+      status: 'active'
+    },
+    {
+      id: 'st-3',
+      name: 'Ali Khan',
+      email: 'ali@example.com',
+      avatar: '/images/student_ali.jpg',
+      className: 'Quran Tajweed',
+      progress: 60,
+      lastActivity: 'Yesterday 07:45 PM',
+      status: 'active'
+    },
+    {
+      id: 'st-4',
+      name: 'Aisha Rahman',
+      email: 'aisha@example.com',
+      avatar: '/images/student_aisha.jpg',
+      className: 'Arabic Conversation',
+      progress: 90,
+      lastActivity: 'Today 11:02 AM',
+      status: 'active'
+    },
+    {
+      id: 'st-5',
+      name: 'Yusuf Mansur',
+      email: 'yusuf@example.com',
+      avatar: null,
+      initials: 'YM',
+      initialBg: 'bg-[#C6ECE5] text-[#0A4D42]',
+      className: 'Nahwu for Beginners',
+      progress: 40,
+      lastActivity: '2 days ago 20 Sep 2026',
+      status: 'active'
+    },
+    {
+      id: 'st-6',
+      name: 'Sara Nabilah',
+      email: 'sara@example.com',
+      avatar: null,
+      initials: 'SN',
+      initialBg: 'bg-gray-200 text-gray-700',
+      className: 'Academic Writing',
+      progress: 75,
+      lastActivity: 'Today 09:11 AM',
+      status: 'active'
+    },
+    {
+      id: 'st-7',
+      name: 'Hasan Ali',
+      email: 'hasan@example.com',
+      avatar: '/images/tutor_khalid.jpg',
+      className: 'Sharaf Basic',
+      progress: 20,
+      lastActivity: '3 days ago 19 Sep 2026',
+      status: 'inactive'
+    },
+    {
+      id: 'st-8',
+      name: 'Layla Ahmad',
+      email: 'layla@example.com',
+      avatar: '/images/tutor_layla.jpg',
+      className: 'Arabic Conversation',
+      progress: 0,
+      lastActivity: '1 week ago 15 Sep 2026',
+      status: 'inactive'
+    },
+    {
+      id: 'st-9',
+      name: 'Muhammad Arif',
+      email: 'arif@example.com',
+      avatar: null,
+      initials: 'MA',
+      initialBg: 'bg-[#E5D7FA] text-[#4C1D95]',
+      className: 'Quran Tajweed',
+      progress: 100,
+      lastActivity: 'Today 08:30 AM',
+      status: 'active'
+    },
+    {
+      id: 'st-10',
+      name: 'Dina Salsabila',
+      email: 'dina@example.com',
+      avatar: null,
+      initials: 'DN',
+      initialBg: 'bg-[#CCE1FD] text-[#1E3A8A]',
+      className: 'Nahwu for Beginners',
+      progress: 55,
+      lastActivity: 'Yesterday 07:12 PM',
+      status: 'active'
+    }
+  ]);
+
+  const topPerformingStudents = [
+    { rank: 1, name: 'Aisha Rahman', avatar: '/images/student_aisha.jpg', score: '95%', medalColor: 'bg-amber-400 text-white' },
+    { rank: 2, name: 'Fatimah Zahra', avatar: '/images/student_fatimah.jpg', score: '90%', medalColor: 'bg-sky-400 text-white' },
+    { rank: 3, name: 'Omar Hassan', avatar: '/images/student_omar.jpg', score: '88%', medalColor: 'bg-orange-400 text-white' },
+    { rank: 4, name: 'Sara Nabilah', initials: 'SN', score: '85%', medalColor: 'bg-gray-300 text-gray-700' },
+    { rank: 5, name: 'Ali Khan', avatar: '/images/student_ali.jpg', score: '82%', medalColor: 'bg-gray-300 text-gray-700' },
+  ];
+
+  const studentActivities = [
+    { icon: BookOpen, iconBg: 'bg-emerald-100 text-emerald-700', text: 'Fatimah Zahra completed Lesson 4', time: '10 minutes ago' },
+    { icon: FileText, iconBg: 'bg-blue-100 text-blue-700', text: 'Omar Hassan submitted assignment', time: '2 hours ago' },
+    { icon: Users, iconBg: 'bg-sky-100 text-sky-700', text: 'Ali Khan joined the class', time: '3 hours ago' },
+    { icon: Trophy, iconBg: 'bg-amber-100 text-amber-700', text: 'Aisha Rahman scored 95% on quiz', time: '5 hours ago' },
+    { icon: Video, iconBg: 'bg-purple-100 text-purple-700', text: 'Yusuf Mansur watched live class', time: '1 day ago' },
+  ];
+
+  const getClassBadgeStyle = (className) => {
+    if (className.includes('Nahwu')) return 'bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC]';
+    if (className.includes('Sharaf')) return 'bg-[#F5EDFD] text-[#581C87] border border-[#E9D5FF]';
+    if (className.includes('Quran') || className.includes('Tajweed')) return 'bg-[#EEF2FF] text-[#312E81] border border-[#C7D2FE]';
+    if (className.includes('Arabic') || className.includes('Conversation')) return 'bg-[#EAF2FD] text-[#1E3A8A] border border-[#BFDBFE]';
+    if (className.includes('Writing') || className.includes('Balaghah')) return 'bg-[#FEF7E6] text-[#78350F] border border-[#FDE68A]';
+    return 'bg-gray-100 text-gray-700 border border-gray-200';
   };
 
   // Sidebar Items matching reference image
@@ -2508,9 +2673,642 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
               </div>
 
             </div>
+          ) : activeNav === 'students' ? (
+            /* ========================================================= */
+            /* VIEW 4: STUDENTS ROOM (Matching media_1790721537116.jpg)  */
+            /* ========================================================= */
+            <div className="space-y-6 max-w-[1600px] mx-auto">
+              
+              {/* Header: Title + Export + Add Student */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-[#114B44] text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Users className="w-5 h-5 text-emerald-300" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-black text-gray-900 tracking-tight">Students</h1>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Kelola semua siswa di kelasmu. Lihat progres, kehadiran, nilai, dan aktivitas mereka.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 self-start sm:self-center">
+                  <button 
+                    onClick={() => alert('Mengekspor data 32 siswa ke file CSV / Excel...')}
+                    className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-2xs transition-colors cursor-pointer active:scale-95"
+                  >
+                    <Download className="w-3.5 h-3.5 text-gray-500" />
+                    <span>Export</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsAddStudentModalOpen(true)}
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer active:scale-95"
+                  >
+                    <Plus className="w-4 h-4 text-emerald-300" />
+                    <span>Add Student</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-white/80" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter Tabs: All Students (32) | Active (28) | Inactive (4) | Invited (2) */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+                {[
+                  { id: 'all', label: 'All Students (32)' },
+                  { id: 'active', label: 'Active (28)' },
+                  { id: 'inactive', label: 'Inactive (4)' },
+                  { id: 'invited', label: 'Invited (2)' },
+                ].map((tab) => {
+                  const isActive = studentTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setStudentTabFilter(tab.id)}
+                      className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-600 border border-gray-200/80'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 4 Metric Summary Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* Metric 1: Total Students */}
+                <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#E8F8F5] text-[#0A3D36] border border-[#B3E5DC] flex items-center justify-center shrink-0">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="block text-2xl font-black text-gray-900 leading-none">32</span>
+                    <span className="block text-xs font-bold text-gray-500 mt-1">Total Students</span>
+                    <span className="block text-[11px] font-extrabold text-emerald-700 mt-0.5">+5 this month</span>
+                  </div>
+                </div>
+
+                {/* Metric 2: Active Students */}
+                <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="block text-2xl font-black text-gray-900 leading-none">28</span>
+                    <span className="block text-xs font-bold text-gray-500 mt-1">Active Students</span>
+                    <span className="block text-[11px] font-extrabold text-emerald-700 mt-0.5">88%</span>
+                  </div>
+                </div>
+
+                {/* Metric 3: Inactive Students */}
+                <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-700 border border-rose-200 flex items-center justify-center shrink-0">
+                    <UserMinus className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="block text-2xl font-black text-gray-900 leading-none">4</span>
+                    <span className="block text-xs font-bold text-gray-500 mt-1">Inactive Students</span>
+                    <span className="block text-[11px] font-extrabold text-rose-600 mt-0.5">12%</span>
+                  </div>
+                </div>
+
+                {/* Metric 4: Average Rating */}
+                <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0">
+                    <Star className="w-6 h-6 fill-amber-400" />
+                  </div>
+                  <div>
+                    <span className="block text-2xl font-black text-gray-900 leading-none">4.9</span>
+                    <span className="block text-xs font-bold text-gray-500 mt-1">Average Rating</span>
+                    <span className="block text-[11px] font-medium text-gray-400 mt-0.5">(120 reviews)</span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Main Content Layout: Table Column (Left 8/9 cols) + Right Sidebar Column (Right 4/3 cols) */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+                
+                {/* CENTER / TABLE CANVAS (8 or 9 Cols) */}
+                <div className="xl:col-span-8 2xl:col-span-9 space-y-4 min-w-0">
+                  
+                  {/* Search & Filter Toolbar */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-gray-200/80 shadow-2xs">
+                    
+                    {/* Search input */}
+                    <div className="relative flex-1 min-w-[220px]">
+                      <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                      <input 
+                        type="text"
+                        value={studentSearchQuery}
+                        onChange={(e) => setStudentSearchQuery(e.target.value)}
+                        placeholder="Search students by name or email..."
+                        className="w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-9.5 pr-4 py-2 text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-emerald-600"
+                      />
+                    </div>
+
+                    {/* Filter Dropdowns */}
+                    <div className="flex items-center flex-wrap gap-2">
+                      
+                      {/* All Classes */}
+                      <div className="relative">
+                        <select
+                          value={studentClassFilter}
+                          onChange={(e) => setStudentClassFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-bold text-gray-700 shadow-2xs focus:outline-none focus:border-emerald-600 cursor-pointer"
+                        >
+                          <option value="All Classes">All Classes</option>
+                          <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                          <option value="Sharaf Basic">Sharaf Basic</option>
+                          <option value="Quran Tajweed">Quran Tajweed</option>
+                          <option value="Arabic Conversation">Arabic Conversation</option>
+                          <option value="Academic Writing">Academic Writing</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-3 pointer-events-none" />
+                      </div>
+
+                      {/* All Status */}
+                      <div className="relative">
+                        <select
+                          value={studentStatusFilter}
+                          onChange={(e) => setStudentStatusFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-bold text-gray-700 shadow-2xs focus:outline-none focus:border-emerald-600 cursor-pointer"
+                        >
+                          <option value="All Status">All Status</option>
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-3 pointer-events-none" />
+                      </div>
+
+                      {/* Sort by: Newest */}
+                      <div className="relative">
+                        <select
+                          value={studentSortBy}
+                          onChange={(e) => setStudentSortBy(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 rounded-xl px-3 py-2 pr-7 text-xs font-bold text-gray-700 shadow-2xs focus:outline-none focus:border-emerald-600 cursor-pointer"
+                        >
+                          <option value="Newest">Sort by: Newest</option>
+                          <option value="Highest Progress">Highest Progress</option>
+                          <option value="Lowest Progress">Lowest Progress</option>
+                          <option value="Name A-Z">Name A-Z</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-3 pointer-events-none" />
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  {/* STUDENTS DATA TABLE (Exact match to media_1790721537116.jpg) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 shadow-xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[780px] text-left border-collapse">
+                        
+                        {/* Table Header */}
+                        <thead>
+                          <tr className="bg-[#F8FAFC] border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-wider">
+                            <th className="w-10 p-3.5 text-center">
+                              <input 
+                                type="checkbox" 
+                                checked={selectedStudentIds.length === studentsList.length && studentsList.length > 0}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedStudentIds(studentsList.map(s => s.id));
+                                  } else {
+                                    setSelectedStudentIds([]);
+                                  }
+                                }}
+                                className="w-4 h-4 rounded text-emerald-700 focus:ring-emerald-600 cursor-pointer"
+                              />
+                            </th>
+                            <th className="p-3.5">Student</th>
+                            <th className="p-3.5">Classes</th>
+                            <th className="p-3.5">Progress</th>
+                            <th className="p-3.5">Last Activity</th>
+                            <th className="p-3.5">Status</th>
+                            <th className="p-3.5 text-center">Actions</th>
+                          </tr>
+                        </thead>
+
+                        {/* Table Body */}
+                        <tbody className="divide-y divide-gray-100 text-xs">
+                          {studentsList
+                            .filter(s => {
+                              if (studentTabFilter === 'active') return s.status === 'active';
+                              if (studentTabFilter === 'inactive') return s.status === 'inactive';
+                              if (studentTabFilter === 'invited') return false;
+                              return true;
+                            })
+                            .filter(s => {
+                              if (studentClassFilter !== 'All Classes') return s.className === studentClassFilter;
+                              return true;
+                            })
+                            .filter(s => {
+                              if (studentStatusFilter === 'Active') return s.status === 'active';
+                              if (studentStatusFilter === 'Inactive') return s.status === 'inactive';
+                              return true;
+                            })
+                            .filter(s => {
+                              if (studentSearchQuery) {
+                                const q = studentSearchQuery.toLowerCase();
+                                return s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q);
+                              }
+                              return true;
+                            })
+                            .map((student) => {
+                              const isChecked = selectedStudentIds.includes(student.id);
+                              return (
+                                <tr key={student.id} className="hover:bg-gray-50/80 transition-colors">
+                                  
+                                  {/* Checkbox */}
+                                  <td className="p-3.5 text-center">
+                                    <input 
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setSelectedStudentIds(prev => [...prev, student.id]);
+                                        } else {
+                                          setSelectedStudentIds(prev => prev.filter(id => id !== student.id));
+                                        }
+                                      }}
+                                      className="w-4 h-4 rounded text-emerald-700 focus:ring-emerald-600 cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Student (Avatar + Name + Email) */}
+                                  <td className="p-3.5">
+                                    <div className="flex items-center gap-3">
+                                      {student.avatar ? (
+                                        <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                          <img 
+                                            src={student.avatar} 
+                                            alt={student.name} 
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                              e.target.onerror = null;
+                                              e.target.src = '/images/student_fatimah.jpg';
+                                            }}
+                                          />
+                                        </div>
+                                      ) : (
+                                        <div className={`w-9 h-9 rounded-full font-black text-xs flex items-center justify-center shrink-0 ${student.initialBg || 'bg-gray-100 text-gray-700'}`}>
+                                          {student.initials}
+                                        </div>
+                                      )}
+                                      <div className="min-w-0">
+                                        <h4 className="font-extrabold text-gray-900 text-xs truncate leading-tight">{student.name}</h4>
+                                        <p className="text-[11px] text-gray-400 truncate mt-0.5">{student.email}</p>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Classes Badge */}
+                                  <td className="p-3.5">
+                                    <span className={`inline-block px-2.5 py-1 rounded-lg text-[11px] font-bold ${getClassBadgeStyle(student.className)}`}>
+                                      {student.className}
+                                    </span>
+                                  </td>
+
+                                  {/* Progress */}
+                                  <td className="p-3.5">
+                                    <div className="flex items-center gap-2.5">
+                                      <div className="w-16 sm:w-20 bg-gray-100 rounded-full h-2 overflow-hidden">
+                                        <div 
+                                          className={`h-full rounded-full transition-all ${
+                                            student.progress === 0 
+                                              ? 'bg-transparent' 
+                                              : student.progress < 30 
+                                              ? 'bg-red-500' 
+                                              : 'bg-[#114B44]'
+                                          }`}
+                                          style={{ width: `${student.progress}%` }}
+                                        />
+                                      </div>
+                                      <span className="font-extrabold text-[11px] text-gray-700 min-w-8">
+                                        {student.progress}%
+                                      </span>
+                                    </div>
+                                  </td>
+
+                                  {/* Last Activity */}
+                                  <td className="p-3.5">
+                                    <div className="text-[11px] leading-tight">
+                                      <span className="block font-bold text-gray-800">{student.lastActivity.split(' ')[0]}</span>
+                                      <span className="block text-gray-400">{student.lastActivity.split(' ').slice(1).join(' ')}</span>
+                                    </div>
+                                  </td>
+
+                                  {/* Status */}
+                                  <td className="p-3.5">
+                                    {student.status === 'active' ? (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                        <span>Active</span>
+                                      </span>
+                                    ) : (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                        <span>Inactive</span>
+                                      </span>
+                                    )}
+                                  </td>
+
+                                  {/* Actions */}
+                                  <td className="p-3.5 text-center">
+                                    <div className="flex items-center justify-center gap-1">
+                                      <button 
+                                        onClick={() => setActiveNav('messages')}
+                                        className="p-1.5 text-gray-500 hover:text-emerald-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                                        title={`Kirim pesan ke ${student.name}`}
+                                      >
+                                        <MessageSquare className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button 
+                                        onClick={() => setSelectedStudentModal(student)}
+                                        className="p-1.5 text-gray-500 hover:text-emerald-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                                        title={`Lihat analisis performa ${student.name}`}
+                                      >
+                                        <BarChart2 className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button 
+                                        onClick={() => alert(`Aksi lainnya untuk ${student.name}`)}
+                                        className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                                      >
+                                        <MoreHorizontal className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+
+                      </table>
+                    </div>
+
+                    {/* Pagination Footer */}
+                    <div className="p-4 bg-white border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                      <span className="text-gray-500 font-medium">
+                        Showing 1–10 of 32 students
+                      </span>
+
+                      <div className="flex items-center gap-1">
+                        <button 
+                          onClick={() => setStudentPage(Math.max(1, studentPage - 1))}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 cursor-pointer"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        
+                        {[1, 2, 3, 4].map((p) => (
+                          <button
+                            key={p}
+                            onClick={() => setStudentPage(p)}
+                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                              studentPage === p
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : 'border border-gray-200 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            {p}
+                          </button>
+                        ))}
+
+                        <button 
+                          onClick={() => setStudentPage(Math.min(4, studentPage + 1))}
+                          className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 cursor-pointer"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="relative">
+                        <select className="appearance-none bg-white border border-gray-200 rounded-xl px-3 py-1.5 pr-7 text-xs font-bold text-gray-700 shadow-2xs focus:outline-none cursor-pointer">
+                          <option>10 per page</option>
+                          <option>25 per page</option>
+                          <option>50 per page</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-2.5 pointer-events-none" />
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Growth + Top Performing + Activity + Quick Actions (3 or 4 Cols) */}
+                <div className="xl:col-span-4 2xl:col-span-3 space-y-5 shrink-0">
+                  
+                  {/* WIDGET 1: Student Growth (Matching mockup with SVG bar chart) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-gray-900">Student Growth</h3>
+                      <div className="relative">
+                        <select 
+                          value={studentGrowthRange}
+                          onChange={(e) => setStudentGrowthRange(e.target.value)}
+                          className="appearance-none bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1 pr-6 text-[11px] font-bold text-gray-700 focus:outline-none cursor-pointer"
+                        >
+                          <option value="Last 30 days">Last 30 days</option>
+                          <option value="Last 3 months">Last 3 months</option>
+                          <option value="This Year">This Year</option>
+                        </select>
+                        <ChevronDown className="w-3 h-3 text-gray-400 absolute right-2 top-2 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* SVG Bar Chart for Student Growth */}
+                    <div className="relative pt-2">
+                      <div className="flex items-end justify-between h-36 gap-2 border-b border-gray-200 pb-2 px-1">
+                        
+                        {/* Y-Axis guide labels */}
+                        <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[9px] font-bold text-gray-400 pointer-events-none">
+                          <span>30</span>
+                          <span>20</span>
+                          <span>10</span>
+                          <span>0</span>
+                        </div>
+
+                        {/* Bar 1: 1 Sep (value 12) */}
+                        <div className="flex-1 flex flex-col items-center gap-1.5 ml-5">
+                          <div className="w-full bg-[#114B44]/80 hover:bg-[#114B44] rounded-t-lg transition-all" style={{ height: '35%' }} title="1 Sep: 12 students"></div>
+                          <span className="text-[9px] font-extrabold text-gray-400">1 Sep</span>
+                        </div>
+
+                        {/* Bar 2: 8 Sep (value 16) */}
+                        <div className="flex-1 flex flex-col items-center gap-1.5">
+                          <div className="w-full bg-[#114B44]/80 hover:bg-[#114B44] rounded-t-lg transition-all" style={{ height: '48%' }} title="8 Sep: 16 students"></div>
+                          <span className="text-[9px] font-extrabold text-gray-400">8 Sep</span>
+                        </div>
+
+                        {/* Bar 3: 15 Sep (value 21) */}
+                        <div className="flex-1 flex flex-col items-center gap-1.5">
+                          <div className="w-full bg-[#114B44]/80 hover:bg-[#114B44] rounded-t-lg transition-all" style={{ height: '62%' }} title="15 Sep: 21 students"></div>
+                          <span className="text-[9px] font-extrabold text-gray-400">15 Sep</span>
+                        </div>
+
+                        {/* Bar 4: 22 Sep (value 26) */}
+                        <div className="flex-1 flex flex-col items-center gap-1.5">
+                          <div className="w-full bg-[#114B44]/90 hover:bg-[#114B44] rounded-t-lg transition-all" style={{ height: '78%' }} title="22 Sep: 26 students"></div>
+                          <span className="text-[9px] font-extrabold text-gray-400">22 Sep</span>
+                        </div>
+
+                        {/* Bar 5: 30 Sep (value 32) */}
+                        <div className="flex-1 flex flex-col items-center gap-1.5">
+                          <div className="w-full bg-[#114B44] rounded-t-lg shadow-xs transition-all" style={{ height: '95%' }} title="30 Sep: 32 students"></div>
+                          <span className="text-[9px] font-extrabold text-gray-900">30 Sep</span>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WIDGET 2: Top Performing Students (Matching mockup) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-gray-900">Top Performing Students</h3>
+                      <button 
+                        onClick={() => alert('Daftar lengkap peringkat siswa')}
+                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {topPerformingStudents.map((st) => (
+                        <div key={st.rank} className="flex items-center justify-between gap-2.5 p-1.5 rounded-xl hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${st.medalColor}`}>
+                              {st.rank}
+                            </div>
+                            {st.avatar ? (
+                              <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                <img src={st.avatar} alt={st.name} className="w-full h-full object-cover" />
+                              </div>
+                            ) : (
+                              <div className="w-7 h-7 rounded-full bg-gray-200 text-gray-700 font-bold text-[10px] flex items-center justify-center shrink-0">
+                                {st.initials}
+                              </div>
+                            )}
+                            <span className="font-extrabold text-xs text-gray-900 truncate">{st.name}</span>
+                          </div>
+                          <span className="font-black text-xs text-emerald-700 shrink-0">{st.score}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 3: Student Activity (Matching mockup) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-gray-900">Student Activity</h3>
+                    </div>
+
+                    <div className="flex items-center gap-1 border-b border-gray-100 pb-2">
+                      <button
+                        onClick={() => setStudentActivityTab('recent')}
+                        className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
+                          studentActivityTab === 'recent'
+                            ? 'bg-emerald-50 text-emerald-800'
+                            : 'text-gray-500 hover:text-gray-900'
+                        }`}
+                      >
+                        Recent Activity
+                      </button>
+                      <button
+                        onClick={() => setStudentActivityTab('milestones')}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          studentActivityTab === 'milestones'
+                            ? 'bg-emerald-50 text-emerald-800'
+                            : 'text-gray-500 hover:text-gray-900'
+                        }`}
+                      >
+                        Milestones
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {studentActivities.map((act, i) => {
+                        const Icon = act.icon;
+                        return (
+                          <div key={i} className="flex items-start gap-3 text-xs">
+                            <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${act.iconBg}`}>
+                              <Icon className="w-3.5 h-3.5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-bold text-gray-900 leading-snug">{act.text}</p>
+                              <span className="text-[10px] text-gray-400 mt-0.5 block">{act.time}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* WIDGET 4: Quick Actions (2x2 Grid Matching Mockup) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/80 p-5 shadow-xs space-y-3">
+                    <h3 className="text-sm font-black text-gray-900">Quick Actions</h3>
+                    
+                    <div className="grid grid-cols-2 gap-2.5">
+                      
+                      {/* Invite Students */}
+                      <button 
+                        onClick={() => setIsInviteModalOpen(true)}
+                        className="p-3 rounded-2xl bg-sky-50/70 hover:bg-sky-100/70 border border-sky-200/70 text-left flex items-center gap-2.5 transition-all cursor-pointer group"
+                      >
+                        <Mail className="w-4 h-4 text-sky-700 group-hover:scale-110 transition-transform shrink-0" />
+                        <span className="text-xs font-bold text-sky-900">Invite Students</span>
+                      </button>
+
+                      {/* Send Announcement */}
+                      <button 
+                        onClick={() => setIsAnnouncementModalOpen(true)}
+                        className="p-3 rounded-2xl bg-orange-50/70 hover:bg-orange-100/70 border border-orange-200/70 text-left flex items-center gap-2.5 transition-all cursor-pointer group"
+                      >
+                        <Megaphone className="w-4 h-4 text-orange-700 group-hover:scale-110 transition-transform shrink-0" />
+                        <span className="text-xs font-bold text-orange-900">Send Announcement</span>
+                      </button>
+
+                      {/* Download Report */}
+                      <button 
+                        onClick={() => alert('Mengunduh Laporan Kehadiran & Nilai Siswa (PDF)...')}
+                        className="p-3 rounded-2xl bg-teal-50/70 hover:bg-teal-100/70 border border-teal-200/70 text-left flex items-center gap-2.5 transition-all cursor-pointer group"
+                      >
+                        <Download className="w-4 h-4 text-teal-700 group-hover:scale-110 transition-transform shrink-0" />
+                        <span className="text-xs font-bold text-teal-900">Download Report</span>
+                      </button>
+
+                      {/* Message All */}
+                      <button 
+                        onClick={() => setActiveNav('messages')}
+                        className="p-3 rounded-2xl bg-purple-50/70 hover:bg-purple-100/70 border border-purple-200/70 text-left flex items-center gap-2.5 transition-all cursor-pointer group"
+                      >
+                        <MessageSquare className="w-4 h-4 text-purple-700 group-hover:scale-110 transition-transform shrink-0" />
+                        <span className="text-xs font-bold text-purple-900">Message All</span>
+                      </button>
+
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
           ) : (
             /* ========================================================= */
-            /* VIEW 4: DASHBOARD OVERVIEW CANVAS                         */
+            /* VIEW 5: DASHBOARD OVERVIEW CANVAS                         */
             /* ========================================================= */
             <div className="space-y-6">
               
@@ -3292,6 +4090,351 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 className="px-5 py-2 rounded-xl bg-[#114B44] text-white text-xs font-bold cursor-pointer"
               >
                 Save Availability
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 5: ADD NEW STUDENT                                  */}
+      {/* ========================================================= */}
+      {isAddStudentModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Add New Student</h3>
+                  <p className="text-xs text-gray-500">Daftarkan siswa secara manual ke kelasmu.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsAddStudentModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!newStudentForm.name || !newStudentForm.email) return;
+                const initials = newStudentForm.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const newSt = {
+                  id: `st-${Date.now()}`,
+                  name: newStudentForm.name,
+                  email: newStudentForm.email,
+                  avatar: null,
+                  initials: initials || 'ST',
+                  initialBg: 'bg-emerald-100 text-emerald-800',
+                  className: newStudentForm.className,
+                  progress: 0,
+                  lastActivity: 'Just added',
+                  status: newStudentForm.status
+                };
+                setStudentsList(prev => [newSt, ...prev]);
+                setIsAddStudentModalOpen(false);
+                setNewStudentForm({ name: '', email: '', className: 'Nahwu for Beginners', status: 'active' });
+                alert(`Siswa ${newStudentForm.name} berhasil didaftarkan ke kelas!`);
+              }}
+              className="space-y-4 text-xs"
+            >
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Student Full Name</label>
+                <input 
+                  type="text"
+                  required
+                  value={newStudentForm.name}
+                  onChange={(e) => setNewStudentForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Contoh: Bilal Abdillah"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Email Address</label>
+                <input 
+                  type="email"
+                  required
+                  value={newStudentForm.email}
+                  onChange={(e) => setNewStudentForm(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="bilal@example.com"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Assign to Class</label>
+                <select 
+                  value={newStudentForm.className}
+                  onChange={(e) => setNewStudentForm(prev => ({ ...prev, className: e.target.value }))}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                >
+                  <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                  <option value="Sharaf Basic">Sharaf Basic</option>
+                  <option value="Quran Tajweed">Quran Tajweed</option>
+                  <option value="Arabic Conversation">Arabic Conversation</option>
+                  <option value="Academic Writing">Academic Writing</option>
+                </select>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsAddStudentModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold shadow-xs cursor-pointer active:scale-95"
+                >
+                  Add Student
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 6: INVITE STUDENTS MODAL                            */}
+      {/* ========================================================= */}
+      {isInviteModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Invite Students</h3>
+                  <p className="text-xs text-gray-500">Kirim undangan via email atau bagikan link pendaftaran.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsInviteModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Pilih Kelas</label>
+                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800">
+                  <option>Nahwu for Beginners</option>
+                  <option>Sharaf Basic</option>
+                  <option>Arabic Conversation</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Emails (Pisahkan dengan koma)</label>
+                <textarea 
+                  rows={3} 
+                  placeholder="student1@email.com, student2@email.com" 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 font-medium text-gray-800 resize-none focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-extrabold text-gray-700">Atau Bagikan Link Undangan Langsung</label>
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="text" 
+                    readOnly 
+                    value="https://ilmhub.com/join/class-nahwu-9283" 
+                    className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-[11px] font-mono text-gray-600"
+                  />
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard?.writeText('https://ilmhub.com/join/class-nahwu-9283');
+                      alert('Link pendaftaran disalin ke clipboard!');
+                    }}
+                    className="p-2 bg-[#114B44] text-white rounded-xl hover:bg-[#0D3B35] cursor-pointer"
+                    title="Salin Link"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  onClick={() => setIsInviteModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setIsInviteModalOpen(false);
+                    alert('Undangan berhasil dikirimkan via email!');
+                  }}
+                  className="px-5 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold shadow-xs cursor-pointer active:scale-95"
+                >
+                  Send Invitations
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 7: SEND ANNOUNCEMENT MODAL                          */}
+      {/* ========================================================= */}
+      {isAnnouncementModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center">
+                  <Megaphone className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900">Send Announcement</h3>
+                  <p className="text-xs text-gray-500">Siarkan pengumuman penting ke semua siswa.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsAnnouncementModalOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Target Siswa</label>
+                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800">
+                  <option>Semua Siswa Terdaftar (32 Siswa)</option>
+                  <option>Nahwu for Beginners (12 Siswa)</option>
+                  <option>Sharaf Basic (8 Siswa)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Judul Pengumuman</label>
+                <input 
+                  type="text" 
+                  defaultValue="Jadwal Tambahan Sesi Live Q&A Nahwu Pekan Ini" 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-gray-800 focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-extrabold text-gray-700">Isi Pesan Pengumuman</label>
+                <textarea 
+                  rows={4} 
+                  defaultValue="Assalamu'alaikum teman-teman, jangan lupa hari Rabu pukul 09:00 kita akan mengadakan sesi bedah kitab Jurumiyah lanjutan. Siapkan pertanyaan kalian ya!"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 font-medium text-gray-800 resize-none focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <button
+                  onClick={() => setIsAnnouncementModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setIsAnnouncementModalOpen(false);
+                    alert('Pengumuman berhasil disiarkan ke siswa!');
+                  }}
+                  className="px-5 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white font-bold shadow-xs cursor-pointer active:scale-95"
+                >
+                  Broadcast Announcement
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL 8: STUDENT DETAILS & ANALYTICS                      */}
+      {/* ========================================================= */}
+      {selectedStudentModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-start justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                {selectedStudentModal.avatar ? (
+                  <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                    <img src={selectedStudentModal.avatar} alt={selectedStudentModal.name} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className={`w-12 h-12 rounded-2xl font-black text-sm flex items-center justify-center shrink-0 ${selectedStudentModal.initialBg}`}>
+                    {selectedStudentModal.initials}
+                  </div>
+                )}
+                <div>
+                  <h3 className="text-base font-black text-gray-900 leading-tight">{selectedStudentModal.name}</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">{selectedStudentModal.email}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedStudentModal(null)}
+                className="p-1.5 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs bg-gray-50 p-4 rounded-2xl border border-gray-100">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Enrolled Class:</span>
+                <span className="font-extrabold text-emerald-800">{selectedStudentModal.className}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Course Progress:</span>
+                <span className="font-extrabold text-[#114B44]">{selectedStudentModal.progress}% Completed</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Last Activity:</span>
+                <span className="font-bold text-gray-700">{selectedStudentModal.lastActivity}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">Account Status:</span>
+                <span className="font-bold text-emerald-700 uppercase tracking-wider">{selectedStudentModal.status}</span>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedStudentModal(null);
+                  setActiveNav('messages');
+                }}
+                className="flex-1 bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>Send Direct Message</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStudentsList(prev => prev.filter(s => s.id !== selectedStudentModal.id));
+                  setSelectedStudentModal(null);
+                }}
+                className="p-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors cursor-pointer"
+                title="Hapus siswa dari kelas"
+              >
+                <Trash2 className="w-4 h-4" />
               </button>
             </div>
           </div>
