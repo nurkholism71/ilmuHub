@@ -1119,37 +1119,38 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
 
                 </div>
 
-                {/* RIGHT SIDEBAR WIDGETS (3 Cols) */}
-                <div className="xl:col-span-3 space-y-6">
+                {/* RIGHT SIDEBAR WIDGETS (Compact & Clean Matching media_1790726478349.jpg) */}
+                <div className="xl:col-span-3 space-y-4">
                   
                   {/* 1. Popular Topics Card */}
-                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
-                    <div className="flex items-center justify-between">
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-2.5">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
                       <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Popular Topics</h3>
                       <button 
                         onClick={() => setBrowseCategory('all')}
-                        className="text-[11px] font-bold text-[#114B44] hover:underline"
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5"
                       >
-                        View All
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
                       </button>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       {popularTopicsList.map((topic) => (
                         <button
                           key={topic.id}
                           onClick={() => setBrowseCategory(topic.category)}
-                          className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group text-left"
+                          className="w-full flex items-center justify-between py-1 px-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group text-left"
                         >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <span className="w-7 h-7 rounded-lg bg-gray-50 group-hover:bg-emerald-50 border border-gray-100 flex items-center justify-center text-xs shrink-0 transition-colors">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="w-6 h-6 rounded-md bg-gray-50 group-hover:bg-emerald-50 border border-gray-100 flex items-center justify-center text-[11px] shrink-0 transition-colors">
                               {topic.icon}
                             </span>
-                            <span className="text-xs font-bold text-gray-800 group-hover:text-[#114B44] transition-colors truncate">
+                            <span className="text-[11px] font-bold text-gray-700 group-hover:text-[#114B44] transition-colors truncate">
                               {topic.label}
                             </span>
                           </div>
-                          <span className="text-[10px] font-semibold text-gray-400 shrink-0">
+                          <span className="text-[9px] font-semibold text-gray-400 shrink-0">
                             {topic.count}
                           </span>
                         </button>
@@ -1158,19 +1159,19 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   </div>
 
                   {/* 2. Class Levels Card */}
-                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-2.5">
                     <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Class Levels</h3>
                     
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-1.5">
                       {['All Levels', 'Beginner', 'Intermediate', 'Advanced'].map((lvl) => {
                         const isSelected = browseLevelFilter === lvl;
                         return (
                           <button
                             key={lvl}
                             onClick={() => setBrowseLevelFilter(lvl)}
-                            className={`py-2 px-3 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
+                            className={`py-1.5 px-2 rounded-xl text-[11px] font-bold text-center transition-all cursor-pointer ${
                               isSelected
-                                ? 'bg-emerald-50 text-[#114B44] border-2 border-emerald-600 shadow-2xs'
+                                ? 'bg-emerald-50/80 text-[#114B44] border-1.5 border-emerald-600 shadow-2xs'
                                 : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
                             }`}
                           >
@@ -1182,10 +1183,10 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   </div>
 
                   {/* 3. Class Type Card */}
-                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-2.5">
                     <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Class Type</h3>
                     
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-1.5">
                       {[
                         { id: 'All Types', label: 'All Types', icon: MessageSquare, color: 'text-emerald-700' },
                         { id: 'Live Classes', label: 'Live Classes', icon: Video, color: 'text-rose-500' },
@@ -1200,14 +1201,14 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                           <button
                             key={t.id}
                             onClick={() => setBrowseTypeFilter(t.id)}
-                            className={`p-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer text-left ${
+                            className={`py-1.5 px-2 rounded-xl text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer text-left ${
                               isSelected
-                                ? 'bg-emerald-50 text-[#114B44] border-2 border-emerald-600 shadow-2xs'
+                                ? 'bg-emerald-50/80 text-[#114B44] border-1.5 border-emerald-600 shadow-2xs'
                                 : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
                             }`}
                           >
                             <Icon className={`w-3.5 h-3.5 ${t.color} shrink-0`} />
-                            <span className="text-[11px] truncate leading-tight">{t.label}</span>
+                            <span className="truncate leading-tight">{t.label}</span>
                           </button>
                         );
                       })}
@@ -1215,21 +1216,22 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   </div>
 
                   {/* 4. Top Teachers Card */}
-                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
-                    <div className="flex items-center justify-between">
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-2.5">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
                       <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Top Teachers</h3>
                       <button 
                         onClick={() => setActiveNav('browse')}
-                        className="text-[11px] font-bold text-[#114B44] hover:underline"
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5"
                       >
-                        View All
+                        <span>View All</span>
+                        <ChevronRight className="w-3 h-3" />
                       </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                       {topTeachersList.map((tch) => (
-                        <div key={tch.id} className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 border border-emerald-300 shrink-0">
+                        <div key={tch.id} className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 border border-emerald-300 shadow-2xs shrink-0">
                             <img 
                               src={tch.avatar} 
                               alt={tch.name}
@@ -1238,14 +1240,14 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                             />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="font-bold text-xs text-gray-900 truncate leading-tight">{tch.name}</h4>
-                            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 mt-0.5">
+                            <h4 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">{tch.name}</h4>
+                            <div className="flex items-center gap-1 text-[9px] text-gray-500 font-medium mt-0.5">
                               <span className="font-bold text-amber-500 flex items-center gap-0.5">
                                 ⭐ {tch.rating}
                               </span>
                               <span className="text-gray-400">({tch.reviews})</span>
                               <span className="text-gray-300">•</span>
-                              <span>{tch.students} students</span>
+                              <span className="truncate">👥 {tch.students} students</span>
                             </div>
                           </div>
                         </div>
