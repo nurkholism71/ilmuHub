@@ -253,6 +253,17 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [reconcileScanLastRun, setReconcileScanLastRun] = useState('Hari ini, 01:15 WIB (100% Match)');
   const [selectedDiscrepancyForFix, setSelectedDiscrepancyForFix] = useState(null);
 
+  // Invoices, Coupons, and Fraud Shield States
+  const [selectedInvoiceForDetail, setSelectedInvoiceForDetail] = useState(null);
+  const [isCreateCouponModalOpen, setIsCreateCouponModalOpen] = useState(false);
+  const [couponSearchQuery, setCouponSearchQuery] = useState('');
+  const [newCouponCode, setNewCouponCode] = useState('');
+  const [newCouponDiscount, setNewCouponDiscount] = useState('15%');
+  const [newCouponMinSpend, setNewCouponMinSpend] = useState('Rp 200.000');
+  const [newCouponMaxUses, setNewCouponMaxUses] = useState(500);
+  const [selectedFraudAlertForAction, setSelectedFraudAlertForAction] = useState(null);
+  const [isFraudActionModalOpen, setIsFraudActionModalOpen] = useState(false);
+
   // =========================================================
   // HEALTH CHECK STATES
   // =========================================================
@@ -1389,6 +1400,147 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
       discrepancyCount: 0,
       status: 'Reconciled',
       auditedBy: 'Sentinel Auto-Audit'
+    }
+  ];
+
+  const paymentInvoicesList = [
+    {
+      id: 'INV-2026-09-9081',
+      orderId: 'ORDER-20260923-9081',
+      studentName: 'Ahmad Fauzi',
+      studentEmail: 'ahmad.fauzi@example.com',
+      classTitle: 'Mastering Tajweed & Tahsin Al-Quran',
+      teacherName: 'Ustadz Abdullah Said, Lc',
+      baseAmount: 405405,
+      taxPPN11: 44595,
+      totalAmount: 450000,
+      fakturPajakNo: '010.000-26.90182901',
+      issueDate: '23 Sep 2026',
+      status: 'Paid & Issued',
+      downloadUrl: '#'
+    },
+    {
+      id: 'INV-2026-09-9082',
+      orderId: 'ORDER-20260923-9082',
+      studentName: 'Siti Nurhaliza',
+      studentEmail: 'siti.nurhaliza@example.com',
+      classTitle: 'Bahasa Arab Pemula: Kitab Al-Ajurrumiyyah',
+      teacherName: 'Ustadzah Maryam Jamilah, M.Pd',
+      baseAmount: 315315,
+      taxPPN11: 34685,
+      totalAmount: 350000,
+      fakturPajakNo: '010.000-26.90182902',
+      issueDate: '23 Sep 2026',
+      status: 'Paid & Issued',
+      downloadUrl: '#'
+    },
+    {
+      id: 'INV-2026-09-9083',
+      orderId: 'ORDER-20260923-9083',
+      studentName: 'Rian Pratama',
+      studentEmail: 'rian.pratama@example.com',
+      classTitle: 'Fiqih Muamalah Kontemporer & Fintech Syariah',
+      teacherName: 'Dr. Erwandi Tarmizi, MA',
+      baseAmount: 675675,
+      taxPPN11: 74325,
+      totalAmount: 750000,
+      fakturPajakNo: 'Draft (Awaiting Payment)',
+      issueDate: '23 Sep 2026',
+      status: 'Unpaid Draft',
+      downloadUrl: '#'
+    },
+    {
+      id: 'INV-2026-09-9084',
+      orderId: 'ORDER-20260923-9084',
+      studentName: 'Fatimah Az-Zahra',
+      studentEmail: 'fatimah.zahra@example.com',
+      classTitle: 'Hafalan Juz 30 & Tajwid Terpadu',
+      teacherName: 'Syekh Dr. Abdul Karim',
+      baseAmount: 540540,
+      taxPPN11: 59460,
+      totalAmount: 600000,
+      fakturPajakNo: '010.000-26.90182903',
+      issueDate: '23 Sep 2026',
+      status: 'Paid & Issued',
+      downloadUrl: '#'
+    }
+  ];
+
+  const paymentCouponsList = [
+    {
+      id: 'CP-01',
+      code: 'ILMHUBBERKAH',
+      type: 'Percentage',
+      discount: '20% OFF',
+      minSpend: 'Rp 300.000',
+      maxUses: 500,
+      usedCount: 342,
+      validUntil: '31 Des 2026',
+      status: 'Active',
+      description: 'Diskon perayaan tahun ajaran baru IlmHub'
+    },
+    {
+      id: 'CP-02',
+      code: 'SANTRIBALI50',
+      type: 'Fixed Nominal',
+      discount: 'Rp 50.000 OFF',
+      minSpend: 'Rp 250.000',
+      maxUses: 200,
+      usedCount: 198,
+      validUntil: '15 Okt 2026',
+      status: 'Active',
+      description: 'Potongan khusus santri regional Bali & NTB'
+    },
+    {
+      id: 'CP-03',
+      code: 'TAJWIDPRO10',
+      type: 'Percentage',
+      discount: '10% OFF',
+      minSpend: 'Rp 150.000',
+      maxUses: 1000,
+      usedCount: 812,
+      validUntil: '30 Nov 2026',
+      status: 'Active',
+      description: 'Voucher promosi kelas Tahsin & Tajwid Al-Quran'
+    },
+    {
+      id: 'CP-04',
+      code: 'EARLYBIRDTAHSIN',
+      type: 'Fixed Nominal',
+      discount: 'Rp 100.000 OFF',
+      minSpend: 'Rp 400.000',
+      maxUses: 100,
+      usedCount: 100,
+      validUntil: '20 Sep 2026',
+      status: 'Expired',
+      description: 'Kuota early bird pendaftaran batch 4'
+    }
+  ];
+
+  const paymentFraudAlertsList = [
+    {
+      id: 'FR-901',
+      orderId: 'ORDER-20260923-9084',
+      riskScore: 92,
+      riskLevel: 'High Risk',
+      trigger: 'Card Velocity Spike (5 cards tested from same IP)',
+      ipAddress: '185.220.101.5 (Tor Exit Node / VPN)',
+      paymentDetails: 'Visa 4819 • Exp 12/28',
+      actionTaken: 'Blocked by 3DS Shield & IP Flagged',
+      timestamp: '23 Sep 2026, 14:05',
+      status: 'Blocked'
+    },
+    {
+      id: 'FR-902',
+      orderId: 'ORDER-20260921-8812',
+      riskScore: 45,
+      riskLevel: 'Medium Risk',
+      trigger: 'Geo-IP Distance Mismatch (ID card vs EG IP)',
+      ipAddress: '156.204.18.91 (Cairo, Egypt)',
+      paymentDetails: 'Mastercard 9901 (BCA Syariah)',
+      actionTaken: 'OTP Challenge Passed by Student (Allowed)',
+      timestamp: '21 Sep 2026, 11:20',
+      status: 'Resolved'
     }
   ];
 
@@ -15347,6 +15499,9 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       { id: 'transactions', label: 'All Transactions', count: paymentTransactionsList.length, icon: DollarSign },
                       { id: 'disbursements', label: 'Teacher Payouts & Iris', count: paymentPayoutsList.length, icon: Send },
                       { id: 'reconciliation', label: 'Financial Reconciliation', count: paymentReconciliationList.length, icon: FileCheck },
+                      { id: 'invoices', label: 'Invoices & E-Faktur PPN', count: paymentInvoicesList.length, icon: FileText },
+                      { id: 'coupons', label: 'Coupons & Promo Engine', count: paymentCouponsList.length, icon: Tag },
+                      { id: 'fraud', label: 'Fraud Shield & Risk', count: paymentFraudAlertsList.length, icon: Shield },
                       { id: 'webhooks', label: 'Webhook Logs & Retries', count: paymentWebhookLogsList.length, icon: Terminal },
                       { id: 'refunds', label: 'Refund Management', count: paymentRefundRequestsList.length, icon: RotateCcw },
                       { id: 'channels', label: 'Payment Channels & Fees', count: paymentChannelsList.length, icon: CreditCard },
@@ -15811,6 +15966,316 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                                   <td className="py-3.5 px-4 text-center whitespace-nowrap text-gray-500 text-[10px]">
                                     {rec.auditedBy}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 8. TAB: INVOICES & E-FAKTUR TAX COMPLIANCE */}
+                  {paymentsActiveTab === 'invoices' && (
+                    <div className="space-y-5">
+                      {/* Top Invoices & Tax KPI */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                            <span>Total Invoices Terbit</span>
+                            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                              <FileText className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <div className="text-2xl font-black text-gray-900">1,482 Dokumen</div>
+                          <div className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>100% Faktur Pajak Terbit</span>
+                          </div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                            <span>PPN 11% Terkumpul</span>
+                            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                              <DollarSign className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <div className="text-2xl font-black text-emerald-700">Rp 84.265.000</div>
+                          <div className="text-[11px] text-gray-500 font-medium">Bulan berjalan (Sep 2026)</div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                            <span>Status Integrasi E-Faktur</span>
+                            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                              <ShieldCheck className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <div className="text-2xl font-black text-gray-900">DJP Live Rail</div>
+                          <div className="text-[11px] text-purple-700 font-bold">Sertifikat Digital Aktif</div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                            <span>Export SPT Masa PPN</span>
+                            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                              <Download className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <div className="text-2xl font-black text-gray-900">Form 1111</div>
+                          <div className="text-[11px] text-amber-700 font-bold">CSV Siap Diunggah ke DJP</div>
+                        </div>
+                      </div>
+
+                      {/* Invoices Table */}
+                      <div className="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden p-4 space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-[#114B44]" />
+                            <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider">Daftar Invoice & E-Faktur Resmi Santri</h3>
+                          </div>
+                          <button
+                            onClick={() => alert('Export file CSV skema impor E-Faktur DJP berhasil diunduh!')}
+                            className="px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            <span>Export CSV E-Faktur</span>
+                          </button>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr className="border-b border-gray-100 text-[10px] font-black uppercase tracking-wider text-gray-400 bg-gray-50/50">
+                                <th className="py-3 px-4">No. Invoice & Tanggal</th>
+                                <th className="py-3 px-4">Nama Santri & Kursus</th>
+                                <th className="py-3 px-4 text-right">Dasar Pengenaan Pajak (DPP)</th>
+                                <th className="py-3 px-4 text-right">PPN 11%</th>
+                                <th className="py-3 px-4 text-right">Total Invoice</th>
+                                <th className="py-3 px-4">Nomor Seri Faktur Pajak (NSFP)</th>
+                                <th className="py-3 px-4 text-center">Status</th>
+                                <th className="py-3 px-4 text-center">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 text-[11px]">
+                              {paymentInvoicesList.map((inv) => (
+                                <tr key={inv.id} className="hover:bg-gray-50/70 transition-colors">
+                                  <td className="py-3.5 px-4 whitespace-nowrap">
+                                    <div className="font-mono font-black text-gray-900">{inv.id}</div>
+                                    <div className="text-[10px] text-gray-400">{inv.issueDate} • {inv.orderId}</div>
+                                  </td>
+
+                                  <td className="py-3.5 px-4">
+                                    <div className="font-bold text-gray-900">{inv.studentName}</div>
+                                    <div className="text-[10px] text-gray-400 truncate max-w-[200px]">{inv.classTitle}</div>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-right font-mono text-gray-700">
+                                    Rp {inv.baseAmount.toLocaleString('id-ID')}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-right font-mono font-bold text-emerald-700">
+                                    Rp {inv.taxPPN11.toLocaleString('id-ID')}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-right font-mono font-black text-gray-900">
+                                    Rp {inv.totalAmount.toLocaleString('id-ID')}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 font-mono text-[10px] text-gray-600">
+                                    {inv.fakturPajakNo}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-center">
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                                      inv.status.includes('Paid') ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                                    }`}>
+                                      {inv.status}
+                                    </span>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-center">
+                                    <button
+                                      onClick={() => setSelectedInvoiceForDetail(inv)}
+                                      className="px-3 py-1.5 bg-[#114B44]/10 hover:bg-[#114B44]/20 text-[#114B44] rounded-xl font-bold transition-colors cursor-pointer"
+                                    >
+                                      Preview PDF
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 9. TAB: COUPONS & PROMO DISCOUNT ENGINE */}
+                  {paymentsActiveTab === 'coupons' && (
+                    <div className="space-y-5">
+                      <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="space-y-0.5">
+                          <h3 className="text-sm font-black text-gray-900">Coupon & Promo Codes Studio</h3>
+                          <p className="text-xs text-gray-500">Kelola voucher diskon, potongan harga spesial santri, dan batasan kuota promosi</p>
+                        </div>
+
+                        <button
+                          onClick={() => setIsCreateCouponModalOpen(true)}
+                          className="px-4 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shrink-0"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>Buat Kode Promo Baru</span>
+                        </button>
+                      </div>
+
+                      {/* Coupons Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {paymentCouponsList.map((cp) => {
+                          const isActive = cp.status === 'Active';
+                          const usagePercent = Math.min(100, Math.round((cp.usedCount / cp.maxUses) * 100));
+
+                          return (
+                            <div key={cp.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-2xs space-y-3.5 flex flex-col justify-between">
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                                    isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'
+                                  }`}>
+                                    {cp.status}
+                                  </span>
+                                  <span className="text-[11px] text-gray-400 font-medium">{cp.type}</span>
+                                </div>
+
+                                <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-center select-all">
+                                  <div className="font-mono font-black text-base text-[#114B44] tracking-wider">{cp.code}</div>
+                                  <div className="text-xs font-black text-emerald-800 mt-0.5">{cp.discount}</div>
+                                </div>
+
+                                <p className="text-[11px] text-gray-600 leading-relaxed min-h-[32px]">{cp.description}</p>
+                              </div>
+
+                              <div className="space-y-2 pt-3 border-t border-gray-100 text-xs">
+                                <div className="flex justify-between text-gray-500 text-[11px]">
+                                  <span>Min. Belanja:</span>
+                                  <strong className="text-gray-900">{cp.minSpend}</strong>
+                                </div>
+
+                                <div className="space-y-1">
+                                  <div className="flex justify-between text-[11px] text-gray-500">
+                                    <span>Kuota Terpakai:</span>
+                                    <strong className="text-gray-900">{cp.usedCount} / {cp.maxUses} ({usagePercent}%)</strong>
+                                  </div>
+                                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div className="h-full bg-[#114B44] rounded-full" style={{ width: `${usagePercent}%` }}></div>
+                                  </div>
+                                </div>
+
+                                <div className="text-[10px] text-gray-400 text-right pt-1">
+                                  Berlaku s/d: <strong className="text-gray-700">{cp.validUntil}</strong>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 10. TAB: FRAUD SHIELD & DISPUTES */}
+                  {paymentsActiveTab === 'fraud' && (
+                    <div className="space-y-5">
+                      {/* Fraud Sentinel Status Card */}
+                      <div className="bg-slate-900 text-white rounded-2xl p-5 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <Shield className="w-4 h-4 text-emerald-400" />
+                            <h3 className="text-sm font-black text-white">Midtrans 3D-Secure & Fraud Detection Sentinel (FDS)</h3>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">
+                              Shield Active (Level 3 Strict)
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-300">
+                            Pencegahan otomatis carding, velocity fraud, TOR exit node spoofing, dan mitigasi sengketa chargeback bank.
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-3 shrink-0 text-xs">
+                          <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700 text-center">
+                            <span className="text-[10px] text-slate-400 block">Chargeback Rate</span>
+                            <span className="text-sm font-black text-emerald-400 font-mono">0.01%</span>
+                          </div>
+                          <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700 text-center">
+                            <span className="text-[10px] text-slate-400 block">Blocked Attacks (30d)</span>
+                            <span className="text-sm font-black text-amber-400 font-mono">24 Cards</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Fraud Incidents Table */}
+                      <div className="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden p-4 space-y-4">
+                        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                          <div className="flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4 text-rose-600" />
+                            <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider">Log Peringatan Fraud & Mitigasi Risiko</h3>
+                          </div>
+                          <span className="text-[11px] text-gray-400">{paymentFraudAlertsList.length} Incidents</span>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr className="border-b border-gray-100 text-[10px] font-black uppercase tracking-wider text-gray-400 bg-gray-50/50">
+                                <th className="py-3 px-4">Alert ID & Waktu</th>
+                                <th className="py-3 px-4">Order ID & Kartu</th>
+                                <th className="py-3 px-4">Risk Score</th>
+                                <th className="py-3 px-4">Pemicu Peringatan (Trigger Rule)</th>
+                                <th className="py-3 px-4">IP Asal & Jaringan</th>
+                                <th className="py-3 px-4">Tindakan Sistem</th>
+                                <th className="py-3 px-4 text-center">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 text-[11px]">
+                              {paymentFraudAlertsList.map((fr) => (
+                                <tr key={fr.id} className="hover:bg-gray-50/70 transition-colors">
+                                  <td className="py-3.5 px-4 whitespace-nowrap">
+                                    <div className="font-mono font-black text-gray-900">{fr.id}</div>
+                                    <div className="text-[10px] text-gray-400">{fr.timestamp}</div>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 whitespace-nowrap">
+                                    <div className="font-mono font-bold text-gray-900">{fr.orderId}</div>
+                                    <div className="text-[10px] text-gray-500">{fr.paymentDetails}</div>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 whitespace-nowrap">
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                                      fr.riskScore > 70 ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'
+                                    }`}>
+                                      Score {fr.riskScore} ({fr.riskLevel})
+                                    </span>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-gray-800 font-medium max-w-[220px]">
+                                    {fr.trigger}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 font-mono text-[10px] text-gray-600">
+                                    {fr.ipAddress}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-gray-800 font-bold text-[11px]">
+                                    {fr.actionTaken}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-black ${
+                                      fr.status === 'Blocked' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'
+                                    }`}>
+                                      {fr.status}
+                                    </span>
                                   </td>
                                 </tr>
                               ))}
@@ -32114,6 +32579,219 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Eksekusi Batch Bulk Transfer</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 20. Modal Invoice & Faktur Pajak Official Preview */}
+          {selectedInvoiceForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-2xl rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200 border border-gray-100 max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Salinan Resmi Invoice & Faktur Pajak</h3>
+                      <p className="text-xs text-gray-500">{selectedInvoiceForDetail.id} • {selectedInvoiceForDetail.issueDate}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedInvoiceForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                {/* Invoice Document Layout */}
+                <div className="p-6 bg-[#FAF9F6] rounded-2xl border border-gray-200 space-y-4 text-xs font-sans">
+                  {/* Letterhead */}
+                  <div className="flex items-start justify-between border-b border-gray-200 pb-4">
+                    <div>
+                      <div className="text-lg font-black text-[#114B44]">PT ILMHUB EDUKASI NUSANTARA</div>
+                      <div className="text-[11px] text-gray-500">NPWP: 01.902.192.4-012.000 (PKP Terdaftar DJP)</div>
+                      <div className="text-[11px] text-gray-500">Jl. KH. Hasyim Asy'ari No. 88, Jakarta Pusat</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-base font-black text-gray-900 font-mono">INVOICE RESMI</div>
+                      <div className="text-[11px] text-emerald-700 font-bold">STATUS: {selectedInvoiceForDetail.status}</div>
+                      <div className="text-[10px] text-gray-400 font-mono mt-0.5">Ref: {selectedInvoiceForDetail.orderId}</div>
+                    </div>
+                  </div>
+
+                  {/* Customer Info */}
+                  <div className="grid grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <span className="text-gray-400 block text-[10px] uppercase font-bold">Ditujukan Kepada (Santri):</span>
+                      <div className="font-bold text-gray-900">{selectedInvoiceForDetail.studentName}</div>
+                      <div className="text-gray-500 text-[11px]">{selectedInvoiceForDetail.studentEmail}</div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-gray-400 block text-[10px] uppercase font-bold">Nomor Seri Faktur Pajak:</span>
+                      <div className="font-mono font-bold text-gray-900 text-xs">{selectedInvoiceForDetail.fakturPajakNo}</div>
+                      <div className="text-gray-500 text-[11px]">Tarif PPN UU HPP: 11%</div>
+                    </div>
+                  </div>
+
+                  {/* Item Table */}
+                  <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-gray-50 text-[10px] font-black uppercase text-gray-400 border-b border-gray-200">
+                        <tr>
+                          <th className="p-3">Deskripsi Kursus / Pelatihan</th>
+                          <th className="p-3">Pengajar</th>
+                          <th className="p-3 text-right">Harga DPP</th>
+                          <th className="p-3 text-right">PPN (11%)</th>
+                          <th className="p-3 text-right">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        <tr>
+                          <td className="p-3 font-bold text-gray-900">{selectedInvoiceForDetail.classTitle}</td>
+                          <td className="p-3 text-gray-600">{selectedInvoiceForDetail.teacherName}</td>
+                          <td className="p-3 text-right font-mono">Rp {selectedInvoiceForDetail.baseAmount.toLocaleString('id-ID')}</td>
+                          <td className="p-3 text-right font-mono text-emerald-700">Rp {selectedInvoiceForDetail.taxPPN11.toLocaleString('id-ID')}</td>
+                          <td className="p-3 text-right font-mono font-black text-gray-900">Rp {selectedInvoiceForDetail.totalAmount.toLocaleString('id-ID')}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Total & Verification Bar */}
+                  <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-5 h-5 text-emerald-700" />
+                      <span className="text-[11px] text-emerald-900 font-bold">Faktur Pajak Elektronik Sah Ditandatangani Secara Digital</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[10px] text-emerald-800 block font-bold">Total Pembayaran Lunas</span>
+                      <span className="text-base font-black text-emerald-950 font-mono">Rp {selectedInvoiceForDetail.totalAmount.toLocaleString('id-ID')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 text-xs font-bold">
+                  <button onClick={() => setSelectedInvoiceForDetail(null)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl cursor-pointer">
+                    Tutup
+                  </button>
+                  <button
+                    onClick={() => {
+                      alert(`File PDF resmi ${selectedInvoiceForDetail.id} & Faktur Pajak Elektronik berhasil diunduh!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl cursor-pointer shadow-xs flex items-center gap-1.5"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download PDF Invoice & E-Faktur</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 21. Modal Create New Coupon Code */}
+          {isCreateCouponModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200 border border-gray-100">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-black">
+                      <Tag className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Buat Kode Promo & Voucher Baru</h3>
+                      <p className="text-xs text-gray-500">Diskon pendaftaran kelas santri</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsCreateCouponModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <label className="block text-gray-700 font-bold mb-1">Kode Voucher (Kapital)</label>
+                    <input
+                      type="text"
+                      value={newCouponCode}
+                      onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
+                      placeholder="Contoh: RAMADHANBERKAH25"
+                      className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold text-gray-900 outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-gray-700 font-bold mb-1">Tipe Diskon</label>
+                      <select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-bold text-gray-800 outline-none focus:border-[#114B44]">
+                        <option>Persentase (%)</option>
+                        <option>Nominal Tetap (Rp)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-bold mb-1">Nilai Potongan</label>
+                      <input
+                        type="text"
+                        value={newCouponDiscount}
+                        onChange={(e) => setNewCouponDiscount(e.target.value)}
+                        placeholder="Contoh: 15% atau 50000"
+                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-bold text-gray-800 outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-gray-700 font-bold mb-1">Min. Pembelian</label>
+                      <input
+                        type="text"
+                        value={newCouponMinSpend}
+                        onChange={(e) => setNewCouponMinSpend(e.target.value)}
+                        placeholder="Rp 200.000"
+                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-medium text-gray-800 outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-bold mb-1">Maks. Kuota Penggunaan</label>
+                      <input
+                        type="number"
+                        value={newCouponMaxUses}
+                        onChange={(e) => setNewCouponMaxUses(Number(e.target.value))}
+                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-bold text-gray-800 outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 text-xs font-bold">
+                  <button onClick={() => setIsCreateCouponModalOpen(false)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl cursor-pointer">
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!newCouponCode) {
+                        alert('Silakan masukkan kode voucher!');
+                        return;
+                      }
+                      const newCp = {
+                        id: `CP-0${paymentCouponsList.length + 1}`,
+                        code: newCouponCode,
+                        type: newCouponDiscount.includes('%') ? 'Percentage' : 'Fixed Nominal',
+                        discount: newCouponDiscount.includes('%') ? newCouponDiscount + ' OFF' : `Rp ${Number(newCouponDiscount.replace(/\D/g, '')).toLocaleString('id-ID')} OFF`,
+                        minSpend: newCouponMinSpend,
+                        maxUses: newCouponMaxUses,
+                        usedCount: 0,
+                        validUntil: '31 Des 2026',
+                        status: 'Active',
+                        description: 'Voucher promosi kelas baru yang dibuat oleh admin'
+                      };
+                      paymentCouponsList.unshift(newCp);
+                      alert(`Kode Promo [${newCouponCode}] berhasil diterbitkan dan langsung aktif untuk checkout santri!`);
+                      setIsCreateCouponModalOpen(false);
+                      setNewCouponCode('');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl cursor-pointer shadow-xs flex items-center gap-1.5"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Terbitkan Kode Promo</span>
                   </button>
                 </div>
               </div>
