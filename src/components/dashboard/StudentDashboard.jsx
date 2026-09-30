@@ -51,7 +51,9 @@ import {
   Wallet,
   CreditCard,
   TrendingUp,
-  ArrowUpRight
+  ArrowUpRight,
+  Target,
+  Activity
 } from 'lucide-react';
 
 export default function StudentDashboard({ user, onJoinLive, onExploreCourses, onBackToHome, onLogout, onSwitchRole }) {
@@ -118,6 +120,13 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
   const [withdrawAmountInput, setWithdrawAmountInput] = useState('86.50');
   const [selectedWithdrawMethod, setSelectedWithdrawMethod] = useState('PayPal');
+
+  // Analytics View States (matching media_1790729030239.jpg)
+  const [analyticsDateRange, setAnalyticsDateRange] = useState('1 Sep 2026 - 30 Sep 2026');
+  const [analyticsQuizFilter, setAnalyticsQuizFilter] = useState('All Quizzes');
+  const [analyticsAssignmentFilter, setAnalyticsAssignmentFilter] = useState('All Assignments');
+  const [isAnalyticsDateModalOpen, setIsAnalyticsDateModalOpen] = useState(false);
+  const [analyticsHoveredDay, setAnalyticsHoveredDay] = useState(15); // Day 15 active tooltip matching screenshot
 
   // Browse Classes View States (matching media_1790726478349.jpg)
   const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
@@ -1695,6 +1704,152 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
       rewards: '1 reward',
       amount: '$8.50',
       image: '/images/class_nahwu.jpg'
+    }
+  ];
+
+  // Analytics Datasets (matching media_1790729030239.jpg)
+  const analyticsDailyActivity = [
+    { day: 1, label: 'Sep 1', videoMin: 55, assignMin: 35, quizMin: 20, liveMin: 15, totalStr: '2h 05m', videoStr: '55m', assignStr: '35m', quizStr: '20m', liveStr: '15m' },
+    { day: 2, label: 'Sep 2', videoMin: 30, assignMin: 15, quizMin: 0, liveMin: 0, totalStr: '45m', videoStr: '30m', assignStr: '15m', quizStr: '0m', liveStr: '0m' },
+    { day: 3, label: 'Sep 3', videoMin: 20, assignMin: 15, quizMin: 0, liveMin: 0, totalStr: '35m', videoStr: '20m', assignStr: '15m', quizStr: '0m', liveStr: '0m' },
+    { day: 4, label: 'Sep 4', videoMin: 25, assignMin: 0, quizMin: 0, liveMin: 0, totalStr: '25m', videoStr: '25m', assignStr: '0m', quizStr: '0m', liveStr: '0m' },
+    { day: 5, label: 'Sep 5', videoMin: 40, assignMin: 20, quizMin: 10, liveMin: 0, totalStr: '1h 10m', videoStr: '40m', assignStr: '20m', quizStr: '10m', liveStr: '0m' },
+    { day: 6, label: 'Sep 6', videoMin: 65, assignMin: 35, quizMin: 25, liveMin: 20, totalStr: '2h 25m', videoStr: '1h 05m', assignStr: '35m', quizStr: '25m', liveStr: '20m' },
+    { day: 7, label: 'Sep 7', videoMin: 50, assignMin: 30, quizMin: 15, liveMin: 0, totalStr: '1h 35m', videoStr: '50m', assignStr: '30m', quizStr: '15m', liveStr: '0m' },
+    { day: 8, label: 'Sep 8', videoMin: 45, assignMin: 20, quizMin: 10, liveMin: 0, totalStr: '1h 15m', videoStr: '45m', assignStr: '20m', quizStr: '10m', liveStr: '0m' },
+    { day: 9, label: 'Sep 9', videoMin: 55, assignMin: 30, quizMin: 20, liveMin: 0, totalStr: '1h 45m', videoStr: '55m', assignStr: '30m', quizStr: '20m', liveStr: '0m' },
+    { day: 10, label: 'Sep 10', videoMin: 70, assignMin: 40, quizMin: 20, liveMin: 15, totalStr: '2h 25m', videoStr: '1h 10m', assignStr: '40m', quizStr: '20m', liveStr: '15m' },
+    { day: 11, label: 'Sep 11', videoMin: 95, assignMin: 55, quizMin: 30, liveMin: 20, totalStr: '3h 20m', videoStr: '1h 35m', assignStr: '55m', quizStr: '30m', liveStr: '20m' },
+    { day: 12, label: 'Sep 12', videoMin: 65, assignMin: 40, quizMin: 25, liveMin: 0, totalStr: '2h 10m', videoStr: '1h 05m', assignStr: '40m', quizStr: '25m', liveStr: '0m' },
+    { day: 13, label: 'Sep 13', videoMin: 45, assignMin: 30, quizMin: 20, liveMin: 0, totalStr: '1h 35m', videoStr: '45m', assignStr: '30m', quizStr: '20m', liveStr: '0m' },
+    { day: 14, label: 'Sep 14', videoMin: 35, assignMin: 20, quizMin: 10, liveMin: 0, totalStr: '1h 05m', videoStr: '35m', assignStr: '20m', quizStr: '10m', liveStr: '0m' },
+    { day: 15, label: 'Sep 15', videoMin: 80, assignMin: 36, quizMin: 24, liveMin: 16, totalStr: '2h 36m', videoStr: '1h 20m', assignStr: '36m', quizStr: '24m', liveStr: '16m', isHighlighted: true },
+    { day: 16, label: 'Sep 16', videoMin: 30, assignMin: 15, quizMin: 0, liveMin: 0, totalStr: '45m', videoStr: '30m', assignStr: '15m', quizStr: '0m', liveStr: '0m' },
+    { day: 17, label: 'Sep 17', videoMin: 25, assignMin: 0, quizMin: 10, liveMin: 0, totalStr: '35m', videoStr: '25m', assignStr: '0m', quizStr: '10m', liveStr: '0m' },
+    { day: 18, label: 'Sep 18', videoMin: 30, assignMin: 15, quizMin: 0, liveMin: 0, totalStr: '45m', videoStr: '30m', assignStr: '15m', quizStr: '0m', liveStr: '0m' },
+    { day: 19, label: 'Sep 19', videoMin: 20, assignMin: 10, quizMin: 0, liveMin: 0, totalStr: '30m', videoStr: '20m', assignStr: '10m', quizStr: '0m', liveStr: '0m' },
+    { day: 20, label: 'Sep 20', videoMin: 30, assignMin: 15, quizMin: 0, liveMin: 0, totalStr: '45m', videoStr: '30m', assignStr: '15m', quizStr: '0m', liveStr: '0m' },
+    { day: 21, label: 'Sep 21', videoMin: 40, assignMin: 15, quizMin: 10, liveMin: 0, totalStr: '1h 05m', videoStr: '40m', assignStr: '15m', quizStr: '10m', liveStr: '0m' },
+    { day: 22, label: 'Sep 22', videoMin: 35, assignMin: 15, quizMin: 10, liveMin: 0, totalStr: '1h 00m', videoStr: '35m', assignStr: '15m', quizStr: '10m', liveStr: '0m' },
+    { day: 23, label: 'Sep 23', videoMin: 45, assignMin: 20, quizMin: 15, liveMin: 0, totalStr: '1h 20m', videoStr: '45m', assignStr: '20m', quizStr: '15m', liveStr: '0m' },
+    { day: 24, label: 'Sep 24', videoMin: 55, assignMin: 30, quizMin: 15, liveMin: 10, totalStr: '1h 50m', videoStr: '55m', assignStr: '30m', quizStr: '15m', liveStr: '10m' },
+    { day: 25, label: 'Sep 25', videoMin: 65, assignMin: 35, quizMin: 15, liveMin: 15, totalStr: '2h 10m', videoStr: '1h 05m', assignStr: '35m', quizStr: '15m', liveStr: '15m' },
+    { day: 26, label: 'Sep 26', videoMin: 45, assignMin: 25, quizMin: 15, liveMin: 5, totalStr: '1h 30m', videoStr: '45m', assignStr: '25m', quizStr: '15m', liveStr: '5m' },
+    { day: 27, label: 'Sep 27', videoMin: 40, assignMin: 25, quizMin: 15, liveMin: 5, totalStr: '1h 25m', videoStr: '40m', assignStr: '25m', quizStr: '15m', liveStr: '5m' },
+    { day: 28, label: 'Sep 28', videoMin: 30, assignMin: 15, quizMin: 10, liveMin: 0, totalStr: '55m', videoStr: '30m', assignStr: '15m', quizStr: '10m', liveStr: '0m' },
+    { day: 29, label: 'Sep 29', videoMin: 40, assignMin: 20, quizMin: 10, liveMin: 0, totalStr: '1h 10m', videoStr: '40m', assignStr: '20m', quizStr: '10m', liveStr: '0m' },
+    { day: 30, label: 'Sep 30', videoMin: 65, assignMin: 35, quizMin: 15, liveMin: 15, totalStr: '2h 10m', videoStr: '1h 05m', assignStr: '35m', quizStr: '15m', liveStr: '15m' },
+  ];
+
+  const analyticsLearningTimeTypes = [
+    { id: 'video', label: 'Video Lessons', time: '12h 20m', pct: 50, color: 'text-emerald-600', dotBg: 'bg-emerald-500', barColor: 'bg-emerald-500' },
+    { id: 'assignments', label: 'Assignments', time: '6h 10m', pct: 25, color: 'text-blue-600', dotBg: 'bg-blue-500', barColor: 'bg-blue-500' },
+    { id: 'quizzes', label: 'Quizzes', time: '4h 15m', pct: 17, color: 'text-purple-600', dotBg: 'bg-purple-500', barColor: 'bg-purple-500' },
+    { id: 'live', label: 'Live Classes', time: '1h 51m', pct: 8, color: 'text-amber-600', dotBg: 'bg-amber-500', barColor: 'bg-amber-500' },
+  ];
+
+  const analyticsSubjectPerformance = [
+    { id: 'subj-1', subject: 'Arabic Conversation', score: 92, color: 'bg-[#114B44]', textColor: 'text-gray-900' },
+    { id: 'subj-2', subject: 'Islamic History', score: 88, color: 'bg-emerald-500', textColor: 'text-gray-900' },
+    { id: 'subj-3', subject: 'Academic Writing', score: 75, color: 'bg-blue-500', textColor: 'text-gray-900' },
+    { id: 'subj-4', subject: 'Environmental Management', score: 68, color: 'bg-amber-500', textColor: 'text-gray-900' },
+    { id: 'subj-5', subject: 'Data Analysis', score: 62, color: 'bg-purple-500', textColor: 'text-gray-900' },
+  ];
+
+  const analyticsClassEngagement = [
+    {
+      id: 'ce-1',
+      title: 'Nahwu for Beginners',
+      image: '/images/class_nahwu.jpg',
+      lessonsCurrent: 18,
+      lessonsTotal: 20,
+      lessonsPct: 90,
+      assignmentsCurrent: 4,
+      assignmentsTotal: 5,
+      assignmentsPct: 80,
+      quizScore: '85%',
+      participation: 'High',
+      participationBg: 'bg-emerald-100 text-emerald-800'
+    },
+    {
+      id: 'ce-2',
+      title: 'Arabic Conversation',
+      image: '/images/class_conversation.jpg',
+      lessonsCurrent: 15,
+      lessonsTotal: 18,
+      lessonsPct: 83,
+      assignmentsCurrent: 5,
+      assignmentsTotal: 6,
+      assignmentsPct: 83,
+      quizScore: '92%',
+      participation: 'High',
+      participationBg: 'bg-emerald-100 text-emerald-800'
+    },
+    {
+      id: 'ce-3',
+      title: 'Academic Writing',
+      image: '/images/login_lms_desk_bg.jpg',
+      lessonsCurrent: 12,
+      lessonsTotal: 15,
+      lessonsPct: 80,
+      assignmentsCurrent: 3,
+      assignmentsTotal: 4,
+      assignmentsPct: 75,
+      quizScore: '78%',
+      participation: 'Medium',
+      participationBg: 'bg-amber-100 text-amber-800'
+    },
+    {
+      id: 'ce-4',
+      title: 'Islamic History',
+      image: '/images/class_nahwu.jpg',
+      lessonsCurrent: 14,
+      lessonsTotal: 16,
+      lessonsPct: 87,
+      assignmentsCurrent: 4,
+      assignmentsTotal: 5,
+      assignmentsPct: 80,
+      quizScore: '88%',
+      participation: 'High',
+      participationBg: 'bg-emerald-100 text-emerald-800'
+    }
+  ];
+
+  const analyticsRecentActivities = [
+    {
+      id: 'act-1',
+      title: 'Watched lesson: Introduction to Nahwu',
+      time: '2 hours ago',
+      icon: Play,
+      iconBg: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-2',
+      title: 'Submitted assignment: Bab 2 Exercise',
+      time: '5 hours ago',
+      icon: FileText,
+      iconBg: 'bg-blue-100 text-blue-700'
+    },
+    {
+      id: 'act-3',
+      title: 'Completed quiz: Arabic Vocabulary',
+      time: '1 day ago',
+      icon: HelpCircle,
+      iconBg: 'bg-purple-100 text-purple-700'
+    },
+    {
+      id: 'act-4',
+      title: 'Attended live class: Q&A Session',
+      time: '2 days ago',
+      icon: Video,
+      iconBg: 'bg-amber-100 text-amber-700'
+    },
+    {
+      id: 'act-5',
+      title: 'Earned certificate: Islamic History',
+      time: '3 days ago',
+      icon: Award,
+      iconBg: 'bg-emerald-100 text-emerald-700'
     }
   ];
 
@@ -6292,6 +6447,773 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   </div>
                 </div>
               )}
+
+            </div>
+          ) : activeNav === 'analytics' ? (
+            /* ========================================================= */
+            /* VIEW: ANALYTICS ROOM (MATCHING media_1790729030239.jpg)   */
+            /* ========================================================= */
+            <div className="space-y-5 animate-fadeIn">
+              
+              {/* 1. TOP HEADER BAR */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#114B44] text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Activity className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Analytics</h1>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      Get insights into your learning progress, performance, and activity.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Date Range Dropdown Selector */}
+                <div className="relative">
+                  <button
+                    onClick={() => setIsAnalyticsDateModalOpen(!isAnalyticsDateModalOpen)}
+                    className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200/90 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                  >
+                    <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                    <span>{analyticsDateRange}</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                  </button>
+
+                  {/* Dropdown Options */}
+                  {isAnalyticsDateModalOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-30 text-xs animate-fadeIn space-y-1">
+                      {[
+                        '1 Sep 2026 - 30 Sep 2026',
+                        '1 Aug 2026 - 31 Aug 2026',
+                        'Last 30 Days',
+                        'Last 3 Months',
+                        'Year to Date (2026)',
+                        'All Time'
+                      ].map((range) => (
+                        <button
+                          key={range}
+                          onClick={() => {
+                            setAnalyticsDateRange(range);
+                            setIsAnalyticsDateModalOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-colors flex items-center justify-between cursor-pointer ${
+                            analyticsDateRange === range
+                              ? 'bg-[#114B44] text-white'
+                              : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                        >
+                          <span>{range}</span>
+                          {analyticsDateRange === range && <Check className="w-3.5 h-3.5 text-white" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 2. TOP 4 KPI STATS CARDS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* 1: Total Learning Time */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                    <GraduationCap className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-400 block">Total Learning Time</span>
+                    <span className="text-xl font-black text-gray-900 leading-tight">24h 36m</span>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 mt-0.5">
+                      <TrendingUp className="w-3 h-3" />
+                      <span>18% from last month</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2: Classes Completed */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-400 block">Classes Completed</span>
+                    <span className="text-xl font-black text-gray-900 leading-tight">6</span>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 mt-0.5">
+                      <TrendingUp className="w-3 h-3" />
+                      <span>200% from last month</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3: Average Quiz Score */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                    <Target className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-400 block">Average Quiz Score</span>
+                    <span className="text-xl font-black text-gray-900 leading-tight">75%</span>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 mt-0.5">
+                      <TrendingUp className="w-3 h-3" />
+                      <span>12% from last month</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4: Total Activities */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                    <BarChart2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-400 block">Total Activities</span>
+                    <span className="text-xl font-black text-gray-900 leading-tight">42</span>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 mt-0.5">
+                      <TrendingUp className="w-3 h-3" />
+                      <span>35% from last month</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* 3. MAIN TWO-COLUMN DASHBOARD CANVAS */}
+              <div className="flex flex-col lg:flex-row gap-5 items-start">
+                
+                {/* LEFT CANVAS (70% WIDTH): Charts & Tables */}
+                <div className="flex-1 min-w-0 space-y-5 w-full">
+                  
+                  {/* SECTION 1: Learning Activity Stacked Bar Chart */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <h3 className="font-extrabold text-base text-gray-900 tracking-tight">Learning Activity</h3>
+                        <p className="text-xs text-gray-400 mt-0.5">Your study time and activity over the selected period.</p>
+                      </div>
+
+                      {/* Legend */}
+                      <div className="flex items-center gap-3 sm:gap-4 text-xs font-bold text-gray-600 flex-wrap">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                          <span className="text-[11px]">Video Lessons</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                          <span className="text-[11px]">Assignments</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                          <span className="text-[11px]">Quizzes</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                          <span className="text-[11px]">Live Classes</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stacked Bar Chart Canvas */}
+                    <div className="pt-2">
+                      <div className="flex items-end gap-2 h-56 w-full">
+                        {/* Y-Axis Scale (0h to 4h) */}
+                        <div className="flex flex-col justify-between h-full text-[10px] font-bold text-gray-400 pr-1 shrink-0 pb-6 select-none">
+                          <span>4h</span>
+                          <span>3h</span>
+                          <span>2h</span>
+                          <span>1h</span>
+                          <span>0h</span>
+                        </div>
+
+                        {/* Chart Area with Gridlines & Stacked Columns */}
+                        <div className="relative flex-1 h-full flex flex-col justify-end">
+                          {/* Horizontal Background Gridlines */}
+                          <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40 pb-6">
+                            <div className="border-b border-gray-200 w-full"></div>
+                            <div className="border-b border-gray-100 w-full"></div>
+                            <div className="border-b border-gray-100 w-full"></div>
+                            <div className="border-b border-gray-100 w-full"></div>
+                            <div className="border-b border-gray-200 w-full"></div>
+                          </div>
+
+                          {/* 30 Daily Stacked Bars */}
+                          <div className="relative z-0 h-[80%] flex items-end justify-between gap-1 sm:gap-1.5 px-0.5">
+                            {analyticsDailyActivity.map((item) => {
+                              const totalMin = item.videoMin + item.assignMin + item.quizMin + item.liveMin;
+                              const barHeightPct = Math.min(100, Math.max(8, (totalMin / 240) * 100)); // scale out of 4h (240 min)
+                              const isSelected = analyticsHoveredDay === item.day;
+
+                              return (
+                                <div
+                                  key={item.day}
+                                  onMouseEnter={() => setAnalyticsHoveredDay(item.day)}
+                                  className="flex-1 h-full flex flex-col items-center justify-end relative cursor-pointer group"
+                                >
+                                  {/* Interactive Floating Tooltip (matching screenshot design) */}
+                                  {isSelected && (
+                                    <div className="absolute -top-32 sm:-top-28 z-30 bg-white/95 backdrop-blur-md rounded-xl p-2.5 shadow-xl border border-gray-200 text-[10px] w-40 pointer-events-none animate-fadeIn">
+                                      <div className="flex items-center justify-between pb-1 mb-1 border-b border-gray-100">
+                                        <span className="font-extrabold text-gray-900">{item.label}</span>
+                                        <span className="font-black text-[#114B44]">Total: {item.totalStr}</span>
+                                      </div>
+                                      <div className="space-y-0.5">
+                                        <div className="flex items-center justify-between">
+                                          <div className="flex items-center gap-1 text-gray-600">
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                            <span>Video Lessons</span>
+                                          </div>
+                                          <span className="font-bold text-gray-800">{item.videoStr}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                          <div className="flex items-center gap-1 text-gray-600">
+                                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                            <span>Assignments</span>
+                                          </div>
+                                          <span className="font-bold text-gray-800">{item.assignStr}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                          <div className="flex items-center gap-1 text-gray-600">
+                                            <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                                            <span>Quizzes</span>
+                                          </div>
+                                          <span className="font-bold text-gray-800">{item.quizStr}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                          <div className="flex items-center gap-1 text-gray-600">
+                                            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                                            <span>Live Classes</span>
+                                          </div>
+                                          <span className="font-bold text-gray-800">{item.liveStr}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Stacked Vertical Bar */}
+                                  <div
+                                    className={`w-full rounded-t-sm flex flex-col justify-end overflow-hidden transition-all duration-200 ${
+                                      isSelected ? 'ring-2 ring-[#114B44] ring-offset-1' : 'opacity-90 hover:opacity-100'
+                                    }`}
+                                    style={{ height: `${barHeightPct}%` }}
+                                  >
+                                    {/* Live Classes (Top Segment) */}
+                                    {item.liveMin > 0 && (
+                                      <div
+                                        className="w-full bg-amber-400"
+                                        style={{ height: `${(item.liveMin / totalMin) * 100}%` }}
+                                      ></div>
+                                    )}
+                                    {/* Quizzes (Third Segment) */}
+                                    {item.quizMin > 0 && (
+                                      <div
+                                        className="w-full bg-purple-500"
+                                        style={{ height: `${(item.quizMin / totalMin) * 100}%` }}
+                                      ></div>
+                                    )}
+                                    {/* Assignments (Second Segment) */}
+                                    {item.assignMin > 0 && (
+                                      <div
+                                        className="w-full bg-blue-500"
+                                        style={{ height: `${(item.assignMin / totalMin) * 100}%` }}
+                                      ></div>
+                                    )}
+                                    {/* Video Lessons (Bottom Segment) */}
+                                    {item.videoMin > 0 && (
+                                      <div
+                                        className="w-full bg-emerald-500"
+                                        style={{ height: `${(item.videoMin / totalMin) * 100}%` }}
+                                      ></div>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* X-Axis Labels */}
+                          <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 pt-2 px-1 border-t border-gray-200 select-none">
+                            <span>Sep 1</span>
+                            <span>Sep 5</span>
+                            <span>Sep 10</span>
+                            <span>Sep 15</span>
+                            <span>Sep 20</span>
+                            <span>Sep 25</span>
+                            <span>Sep 30</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SECTION 2: Quiz Performance & Assignment Performance Line Charts (2-Column Grid) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    
+                    {/* CARD A: Quiz Performance */}
+                    <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-extrabold text-sm text-gray-900 tracking-tight">Quiz Performance</h3>
+                          <p className="text-[11px] text-gray-400 mt-0.5">Your quiz scores over time.</p>
+                        </div>
+                        
+                        <select
+                          value={analyticsQuizFilter}
+                          onChange={(e) => setAnalyticsQuizFilter(e.target.value)}
+                          className="bg-gray-50 border border-gray-200 text-gray-700 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Quizzes">All Quizzes</option>
+                          <option value="Arabic Quizzes">Arabic Quizzes</option>
+                          <option value="History Quizzes">History Quizzes</option>
+                        </select>
+                      </div>
+
+                      {/* SVG Line Chart for Quiz */}
+                      <div className="pt-2">
+                        <div className="flex items-end gap-2 h-36 w-full">
+                          {/* Y-Axis scale */}
+                          <div className="flex flex-col justify-between h-full text-[9px] font-bold text-gray-400 pr-1 shrink-0 pb-4 select-none">
+                            <span>100%</span>
+                            <span>75%</span>
+                            <span>50%</span>
+                            <span>25%</span>
+                            <span>0%</span>
+                          </div>
+
+                          <div className="relative flex-1 h-full flex flex-col justify-end">
+                            {/* Gridlines */}
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-30 pb-4">
+                              <div className="border-b border-gray-200 w-full"></div>
+                              <div className="border-b border-gray-100 w-full"></div>
+                              <div className="border-b border-gray-100 w-full"></div>
+                              <div className="border-b border-gray-100 w-full"></div>
+                              <div className="border-b border-gray-200 w-full"></div>
+                            </div>
+
+                            {/* Line SVG */}
+                            <svg className="w-full h-[80%] overflow-visible" viewBox="0 0 300 100" preserveAspectRatio="none">
+                              <defs>
+                                <linearGradient id="quizGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
+                                  <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                                </linearGradient>
+                              </defs>
+
+                              {/* Area under curve */}
+                              <path
+                                d="M 0,55 L 25,48 L 50,52 L 80,38 L 110,36 L 140,50 L 175,25 L 200,42 L 235,18 L 260,32 L 300,20 L 300,100 L 0,100 Z"
+                                fill="url(#quizGradient)"
+                              />
+
+                              {/* Smooth Polyline */}
+                              <polyline
+                                fill="none"
+                                stroke="#10B981"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                points="0,55 25,48 50,52 80,38 110,36 140,50 175,25 200,42 235,18 260,32 300,20"
+                              />
+
+                              {/* Circular Dots */}
+                              {[
+                                { cx: 0, cy: 55, val: '55%' },
+                                { cx: 25, cy: 48, val: '58%' },
+                                { cx: 50, cy: 52, val: '52%' },
+                                { cx: 80, cy: 38, val: '68%' },
+                                { cx: 110, cy: 36, val: '70%' },
+                                { cx: 140, cy: 50, val: '56%' },
+                                { cx: 175, cy: 25, val: '82%' },
+                                { cx: 200, cy: 42, val: '65%' },
+                                { cx: 235, cy: 18, val: '88%' },
+                                { cx: 260, cy: 32, val: '74%' },
+                                { cx: 300, cy: 20, val: '85%' },
+                              ].map((pt, i) => (
+                                <circle
+                                  key={i}
+                                  cx={pt.cx}
+                                  cy={pt.cy}
+                                  r="3"
+                                  fill="#ffffff"
+                                  stroke="#10B981"
+                                  strokeWidth="2"
+                                  className="hover:scale-150 transition-transform cursor-pointer"
+                                />
+                              ))}
+                            </svg>
+
+                            {/* X-Axis */}
+                            <div className="flex items-center justify-between text-[9px] font-bold text-gray-400 pt-1 border-t border-gray-200 select-none">
+                              <span>Sep 1</span>
+                              <span>Sep 5</span>
+                              <span>Sep 10</span>
+                              <span>Sep 15</span>
+                              <span>Sep 20</span>
+                              <span>Sep 25</span>
+                              <span>Sep 30</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CARD B: Assignment Performance */}
+                    <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-extrabold text-sm text-gray-900 tracking-tight">Assignment Performance</h3>
+                          <p className="text-[11px] text-gray-400 mt-0.5">Scores for your submitted assignments.</p>
+                        </div>
+                        
+                        <select
+                          value={analyticsAssignmentFilter}
+                          onChange={(e) => setAnalyticsAssignmentFilter(e.target.value)}
+                          className="bg-gray-50 border border-gray-200 text-gray-700 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Assignments">All Assignments</option>
+                          <option value="Nahwu Assignments">Nahwu Assignments</option>
+                          <option value="Writing Essays">Writing Essays</option>
+                        </select>
+                      </div>
+
+                      {/* SVG Line Chart for Assignment */}
+                      <div className="pt-2">
+                        <div className="flex items-end gap-2 h-36 w-full">
+                          {/* Y-Axis scale */}
+                          <div className="flex flex-col justify-between h-full text-[9px] font-bold text-gray-400 pr-1 shrink-0 pb-4 select-none">
+                            <span>100%</span>
+                            <span>75%</span>
+                            <span>50%</span>
+                            <span>25%</span>
+                            <span>0%</span>
+                          </div>
+
+                          <div className="relative flex-1 h-full flex flex-col justify-end">
+                            {/* Gridlines */}
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-30 pb-4">
+                              <div className="border-b border-gray-200 w-full"></div>
+                              <div className="border-b border-gray-100 w-full"></div>
+                              <div className="border-b border-gray-100 w-full"></div>
+                              <div className="border-b border-gray-100 w-full"></div>
+                              <div className="border-b border-gray-200 w-full"></div>
+                            </div>
+
+                            {/* Line SVG */}
+                            <svg className="w-full h-[80%] overflow-visible" viewBox="0 0 300 100" preserveAspectRatio="none">
+                              <defs>
+                                <linearGradient id="assignGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.25" />
+                                  <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.0" />
+                                </linearGradient>
+                              </defs>
+
+                              {/* Area under curve */}
+                              <path
+                                d="M 0,70 L 30,55 L 65,48 L 100,42 L 130,52 L 165,38 L 195,46 L 225,28 L 260,35 L 300,24 L 300,100 L 0,100 Z"
+                                fill="url(#assignGradient)"
+                              />
+
+                              {/* Smooth Polyline */}
+                              <polyline
+                                fill="none"
+                                stroke="#3B82F6"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                points="0,70 30,55 65,48 100,42 130,52 165,38 195,46 225,28 260,35 300,24"
+                              />
+
+                              {/* Circular Dots */}
+                              {[
+                                { cx: 0, cy: 70, val: '35%' },
+                                { cx: 30, cy: 55, val: '50%' },
+                                { cx: 65, cy: 48, val: '58%' },
+                                { cx: 100, cy: 42, val: '64%' },
+                                { cx: 130, cy: 52, val: '54%' },
+                                { cx: 165, cy: 38, val: '70%' },
+                                { cx: 195, cy: 46, val: '62%' },
+                                { cx: 225, cy: 28, val: '80%' },
+                                { cx: 260, cy: 35, val: '72%' },
+                                { cx: 300, cy: 24, val: '82%' },
+                              ].map((pt, i) => (
+                                <circle
+                                  key={i}
+                                  cx={pt.cx}
+                                  cy={pt.cy}
+                                  r="3"
+                                  fill="#ffffff"
+                                  stroke="#3B82F6"
+                                  strokeWidth="2"
+                                  className="hover:scale-150 transition-transform cursor-pointer"
+                                />
+                              ))}
+                            </svg>
+
+                            {/* X-Axis */}
+                            <div className="flex items-center justify-between text-[9px] font-bold text-gray-400 pt-1 border-t border-gray-200 select-none">
+                              <span>Sep 1</span>
+                              <span>Sep 5</span>
+                              <span>Sep 10</span>
+                              <span>Sep 15</span>
+                              <span>Sep 20</span>
+                              <span>Sep 25</span>
+                              <span>Sep 30</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* SECTION 3: Class Engagement Table */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                    <div>
+                      <h3 className="font-extrabold text-base text-gray-900 tracking-tight">Class Engagement</h3>
+                      <p className="text-xs text-gray-400 mt-0.5">How you participate in each class.</p>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-wider border-b border-gray-100 pb-2">
+                            <th className="pb-2.5 font-extrabold">Class</th>
+                            <th className="pb-2.5 font-extrabold">Lessons Viewed</th>
+                            <th className="pb-2.5 font-extrabold">Assignments</th>
+                            <th className="pb-2.5 font-extrabold">Quiz Score</th>
+                            <th className="pb-2.5 font-extrabold text-right">Participation</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100/80 font-medium">
+                          {analyticsClassEngagement.map((row) => (
+                            <tr key={row.id} className="hover:bg-gray-50/70 transition-colors">
+                              {/* Class Column */}
+                              <td className="py-3 pr-3">
+                                <div className="flex items-center gap-2.5">
+                                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                    <img
+                                      src={row.image}
+                                      alt={row.title}
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                                    />
+                                  </div>
+                                  <span className="font-bold text-gray-900 truncate">{row.title}</span>
+                                </div>
+                              </td>
+
+                              {/* Lessons Viewed */}
+                              <td className="py-3 pr-3">
+                                <div className="space-y-1 w-28">
+                                  <span className="font-extrabold text-[11px] text-gray-900">
+                                    {row.lessonsCurrent} / {row.lessonsTotal}
+                                  </span>
+                                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full bg-[#114B44] rounded-full"
+                                      style={{ width: `${row.lessonsPct}%` }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Assignments */}
+                              <td className="py-3 pr-3">
+                                <div className="space-y-1 w-28">
+                                  <span className="font-extrabold text-[11px] text-gray-900">
+                                    {row.assignmentsCurrent} / {row.assignmentsTotal}
+                                  </span>
+                                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full bg-blue-500 rounded-full"
+                                      style={{ width: `${row.assignmentsPct}%` }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Quiz Score Badge */}
+                              <td className="py-3 pr-3">
+                                <span className="inline-block text-[10.5px] font-black px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                  {row.quizScore}
+                                </span>
+                              </td>
+
+                              {/* Participation Badge */}
+                              <td className="py-3 text-right">
+                                <span className={`inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-md ${row.participationBg}`}>
+                                  {row.participation}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR (30% WIDTH): Donut Chart + Subject Performance + Recent Activity */}
+                <aside className="w-full lg:w-72 xl:w-80 shrink-0 space-y-5">
+                  
+                  {/* CARD 1: Learning Time by Type (Donut Chart) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-extrabold text-sm text-gray-900 tracking-tight">Learning Time by Type</h3>
+                      <button
+                        onClick={() => alert('Melihat rincian waktu belajar lengkap...')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    {/* Donut Chart SVG Canvas */}
+                    <div className="flex flex-col items-center justify-center py-2">
+                      <div className="relative w-36 h-36 flex items-center justify-center">
+                        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                          {/* Background Ring */}
+                          <circle cx="50" cy="50" r="38" fill="none" stroke="#F1F5F9" strokeWidth="12" />
+                          
+                          {/* Segment 1: Video Lessons (50% = 119.38) */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="none"
+                            stroke="#10B981"
+                            strokeWidth="12"
+                            strokeDasharray="119.38 238.76"
+                            strokeDashoffset="0"
+                          />
+                          
+                          {/* Segment 2: Assignments (25% = 59.69) */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="none"
+                            stroke="#3B82F6"
+                            strokeWidth="12"
+                            strokeDasharray="59.69 238.76"
+                            strokeDashoffset="-119.38"
+                          />
+
+                          {/* Segment 3: Quizzes (17% = 40.59) */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="none"
+                            stroke="#8B5CF6"
+                            strokeWidth="12"
+                            strokeDasharray="40.59 238.76"
+                            strokeDashoffset="-179.07"
+                          />
+
+                          {/* Segment 4: Live Classes (8% = 19.1) */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="none"
+                            stroke="#F59E0B"
+                            strokeWidth="12"
+                            strokeDasharray="19.1 238.76"
+                            strokeDashoffset="-219.66"
+                          />
+                        </svg>
+
+                        {/* Donut Center Text */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                          <span className="text-sm font-black text-gray-900 leading-tight">24h 36m</span>
+                          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Breakdown List */}
+                    <div className="space-y-2 pt-1 border-t border-gray-100">
+                      {analyticsLearningTimeTypes.map((item) => (
+                        <div key={item.id} className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className={`w-2.5 h-2.5 rounded-full ${item.dotBg} shrink-0`}></span>
+                            <span className="font-bold text-gray-700 truncate">{item.label}</span>
+                          </div>
+                          <div className="flex items-center gap-3 shrink-0">
+                            <span className="font-extrabold text-gray-900">{item.time}</span>
+                            <span className="text-[11px] font-bold text-gray-400 w-8 text-right">{item.pct}%</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Subject Performance */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-extrabold text-sm text-gray-900 tracking-tight">Subject Performance</h3>
+                      <button
+                        onClick={() => alert('Melihat seluruh statistik mata pelajaran...')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {analyticsSubjectPerformance.map((subj) => (
+                        <div key={subj.id} className="space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-gray-800">{subj.subject}</span>
+                            <span className="font-black text-gray-900">{subj.score}%</span>
+                          </div>
+                          <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${subj.color}`}
+                              style={{ width: `${subj.score}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CARD 3: Recent Activity */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-extrabold text-sm text-gray-900 tracking-tight">Recent Activity</h3>
+                      <button
+                        onClick={() => alert('Melihat seluruh log aktivitas terbaru...')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {analyticsRecentActivities.map((act) => {
+                        const Icon = act.icon;
+                        return (
+                          <div key={act.id} className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${act.iconBg}`}>
+                              <Icon className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <h5 className="font-bold text-xs text-gray-900 truncate leading-snug">{act.title}</h5>
+                              <span className="text-[10px] text-gray-400 block">{act.time}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </aside>
+
+              </div>
 
             </div>
           ) : (
