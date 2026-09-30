@@ -42,7 +42,8 @@ import {
   Gift,
   Crown,
   Layers,
-  GraduationCap
+  GraduationCap,
+  Share2
 } from 'lucide-react';
 
 export default function StudentDashboard({ user, onJoinLive, onExploreCourses, onBackToHome, onLogout, onSwitchRole }) {
@@ -83,6 +84,16 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   const [quizSortOrder, setQuizSortOrder] = useState('Due Date');
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
+
+  // Certificates View States (matching media_1790728589304.jpg)
+  const [certificateTabFilter, setCertificateTabFilter] = useState('all'); // 'all' | 'completed' | 'in_progress' | 'not_started'
+  const [certificateSearchQuery, setCertificateSearchQuery] = useState('');
+  const [certificateClassFilter, setCertificateClassFilter] = useState('All Classes');
+  const [certificateTypeFilter, setCertificateTypeFilter] = useState('All Types');
+  const [certificateSortOrder, setCertificateSortOrder] = useState('Newest First');
+  const [selectedCertificateId, setSelectedCertificateId] = useState('cert-1');
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Browse Classes View States (matching media_1790726478349.jpg)
   const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
@@ -1137,6 +1148,118 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
       date: '5 Sep 2026',
       score: '92',
       iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-100'
+    }
+  ];
+
+  // Certificates Datasets (Matching media_1790728589304.jpg)
+  const studentCertificatesList = [
+    {
+      id: 'cert-1',
+      title: 'Nahwu for Beginners',
+      course: 'Nahwu for Beginners',
+      instructor: 'Ustadz Ahmad Fauzi',
+      completionDate: '25 September 2026',
+      shortDate: '25 Sep 2026',
+      credentialId: 'ILMHUB-2026-NB-00123',
+      certificateType: 'Course Completion',
+      status: 'completed',
+      statusBadge: '✓ Completed',
+      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      themeBorder: 'border-emerald-700',
+      accentColor: '#114B44',
+      bgTheme: 'from-emerald-50/40 via-amber-50/20 to-teal-50/40',
+      borderPattern: 'emerald',
+      grade: '95/100 (Distinction)'
+    },
+    {
+      id: 'cert-2',
+      title: 'Arabic Conversation',
+      course: 'Arabic Conversation',
+      instructor: 'Ustadz Omar Hassan',
+      completionDate: '26 September 2026',
+      shortDate: '26 Sep 2026',
+      credentialId: 'ILMHUB-2026-AC-00452',
+      certificateType: 'Course Completion',
+      status: 'completed',
+      statusBadge: '✓ Completed',
+      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      themeBorder: 'border-amber-700',
+      accentColor: '#D97706',
+      bgTheme: 'from-amber-50/40 via-orange-50/20 to-yellow-50/40',
+      borderPattern: 'amber',
+      grade: '88/100 (Pass with Merit)'
+    },
+    {
+      id: 'cert-3',
+      title: 'Academic Writing',
+      course: 'Academic Writing',
+      instructor: 'Dr. Layla Ahmad',
+      completionDate: '28 September 2026',
+      shortDate: '28 Sep 2026',
+      credentialId: 'ILMHUB-2026-AW-00891',
+      certificateType: 'Course Completion',
+      status: 'completed',
+      statusBadge: '✓ Completed',
+      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      themeBorder: 'border-yellow-800',
+      accentColor: '#B45309',
+      bgTheme: 'from-yellow-50/40 via-amber-50/20 to-stone-50/40',
+      borderPattern: 'gold',
+      grade: '92/100 (Distinction)'
+    },
+    {
+      id: 'cert-4',
+      title: 'Islamic History',
+      course: 'Islamic History',
+      instructor: 'Ustadz Ali Khan',
+      completionDate: '25 September 2026',
+      shortDate: '29 Sep 2026',
+      credentialId: 'ILMHUB-2026-IH-00340',
+      certificateType: 'Course Completion',
+      status: 'completed',
+      statusBadge: '✓ Completed',
+      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      themeBorder: 'border-sky-800',
+      accentColor: '#0369A1',
+      bgTheme: 'from-sky-50/40 via-blue-50/20 to-cyan-50/40',
+      borderPattern: 'sky',
+      grade: '100/100 (High Distinction)'
+    },
+    {
+      id: 'cert-5',
+      title: 'Environmental Management',
+      course: 'Environmental Management',
+      instructor: 'Dr. Sara Nabilah',
+      completionDate: '20 September 2026',
+      shortDate: '1 Oct 2026',
+      credentialId: 'ILMHUB-2026-EM-00712',
+      certificateType: 'Course Completion',
+      status: 'completed',
+      statusBadge: '✓ Completed',
+      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      themeBorder: 'border-emerald-800',
+      accentColor: '#059669',
+      bgTheme: 'from-emerald-50/40 via-teal-50/20 to-green-50/40',
+      borderPattern: 'forest',
+      grade: '90/100 (Distinction)'
+    },
+    {
+      id: 'cert-6',
+      title: 'Data Analysis Basics',
+      course: 'Data Analysis',
+      instructor: 'Mr. Ali Rahman',
+      completionDate: '25 September 2026',
+      shortDate: '5 Oct 2026',
+      credentialId: 'ILMHUB-2026-DA-00994',
+      certificateType: 'Course Completion',
+      status: 'completed',
+      statusBadge: '✓ Completed',
+      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      themeBorder: 'border-indigo-900',
+      accentColor: '#1E1B4B',
+      bgTheme: 'from-indigo-50/40 via-blue-50/20 to-slate-50/40',
+      borderPattern: 'navy',
+      grade: '94/100 (Distinction)'
     }
   ];
 
@@ -4018,6 +4141,588 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                         className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
                       >
                         Start Test Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          ) : activeNav === 'certificates' ? (
+            /* ========================================================= */
+            /* VIEW: CERTIFICATES ROOM (MATCHING media_1790728589304.jpg)*/
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* 1. PAGE TOP HEADER */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <Award className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Certificates</h1>
+                    <p className="text-xs text-gray-500 font-medium">View and manage your course certificates. Download, share, and showcase your achievements.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsVerifyModalOpen(true)}
+                    className="flex items-center gap-1.5 bg-white hover:bg-emerald-50/60 border border-emerald-300 text-[#114B44] px-3.5 py-2 rounded-xl text-xs font-bold shadow-2xs transition-all cursor-pointer"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>Verify Certificate</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. TAB PILLS FILTER TOOLBAR */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {[
+                  { id: 'all', label: 'All Certificates (6)' },
+                  { id: 'completed', label: 'Completed', count: 6, countColor: 'bg-emerald-100 text-emerald-800' },
+                  { id: 'in_progress', label: 'In Progress', count: 2, countColor: 'bg-blue-100 text-blue-800' },
+                  { id: 'not_started', label: 'Not Started', count: 3, countColor: 'bg-purple-100 text-purple-800' },
+                ].map((tab) => {
+                  const isActive = certificateTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setCertificateTabFilter(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/80'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      {tab.count !== undefined && (
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                          isActive ? 'bg-white/20 text-white' : tab.countColor
+                        }`}>
+                          {tab.count}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 3. SEARCH & DROPDOWN FILTERS */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
+                {/* Search Input */}
+                <div className="relative flex-1">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={certificateSearchQuery}
+                    onChange={(e) => setCertificateSearchQuery(e.target.value)}
+                    placeholder="Search certificates..."
+                    className="w-full bg-[#F8FAFC] border border-gray-200/80 rounded-xl pl-10 pr-4 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all shadow-2xs font-medium"
+                  />
+                </div>
+
+                {/* Dropdown Filters */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Classes */}
+                  <div className="relative">
+                    <select
+                      value={certificateClassFilter}
+                      onChange={(e) => setCertificateClassFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Classes">All Classes</option>
+                      <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                      <option value="Arabic Conversation">Arabic Conversation</option>
+                      <option value="Academic Writing">Academic Writing</option>
+                      <option value="Islamic History">Islamic History</option>
+                      <option value="Environmental Management">Environmental Management</option>
+                      <option value="Data Analysis Basics">Data Analysis Basics</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Types */}
+                  <div className="relative">
+                    <select
+                      value={certificateTypeFilter}
+                      onChange={(e) => setCertificateTypeFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Types">All Types</option>
+                      <option value="Course Completion">Course Completion</option>
+                      <option value="Specialization Certificate">Specialization Certificate</option>
+                      <option value="Honor Certificate">Honor Certificate</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Sort */}
+                  <div className="relative">
+                    <select
+                      value={certificateSortOrder}
+                      onChange={(e) => setCertificateSortOrder(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="Newest First">Newest First</option>
+                      <option value="Oldest First">Oldest First</option>
+                      <option value="Course Name">Course Name</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. MAIN TWO-COLUMN LAYOUT: 3x2 CERTIFICATES GRID + RIGHT DETAILS SIDEBAR */}
+              <div className="flex flex-col lg:flex-row gap-5 items-start">
+                
+                {/* LEFT CANVAS: 6 CERTIFICATES GRID */}
+                <div className="flex-1 min-w-0 w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {studentCertificatesList
+                      .filter(c => {
+                        if (certificateTabFilter === 'completed') return c.status === 'completed';
+                        if (certificateTabFilter === 'in_progress') return c.status === 'in_progress';
+                        if (certificateTabFilter === 'not_started') return c.status === 'not_started';
+                        return true;
+                      })
+                      .filter(c => {
+                        if (certificateClassFilter !== 'All Classes' && c.course !== certificateClassFilter) return false;
+                        if (certificateTypeFilter !== 'All Types' && c.certificateType !== certificateTypeFilter) return false;
+                        if (certificateSearchQuery) {
+                          const sq = certificateSearchQuery.toLowerCase();
+                          return c.title.toLowerCase().includes(sq) || c.instructor.toLowerCase().includes(sq) || c.credentialId.toLowerCase().includes(sq);
+                        }
+                        return true;
+                      })
+                      .map((cert) => {
+                        const isSelected = selectedCertificateId === cert.id;
+                        return (
+                          <div
+                            key={cert.id}
+                            onClick={() => setSelectedCertificateId(cert.id)}
+                            className={`bg-white rounded-2xl p-3 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group ${
+                              isSelected
+                                ? 'border-2 border-emerald-600 ring-2 ring-emerald-500/20 shadow-xs'
+                                : 'border border-gray-200/80 hover:border-emerald-300'
+                            }`}
+                          >
+                            {/* Visual Certificate Card Mockup */}
+                            <div className="relative aspect-[1.42/1] rounded-xl overflow-hidden bg-[#FAF8F3] border-2 border-amber-200/70 p-2.5 flex flex-col justify-between text-center select-none shadow-inner">
+                              
+                              {/* Ornate corner frame */}
+                              <div className="absolute inset-1 border border-amber-300/80 rounded-lg pointer-events-none"></div>
+
+                              {/* Top Verified Checkmark Badge if selected */}
+                              {isSelected && (
+                                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shadow-xs z-10">
+                                  ✓
+                                </div>
+                              )}
+
+                              {/* Certificate Header */}
+                              <div className="relative z-0 pt-0.5 space-y-0.5">
+                                <div className="flex items-center justify-center gap-1">
+                                  <div className="w-3.5 h-3.5 rounded bg-[#114B44] text-[#E6F4F1] flex items-center justify-center text-[7px] font-black">
+                                    ✦
+                                  </div>
+                                  <span className="text-[10px] font-black text-gray-900 tracking-wider">IlmHub</span>
+                                </div>
+                                <h4 className="text-[11px] font-black text-gray-800 tracking-tight font-serif">
+                                  Certificate of Completion
+                                </h4>
+                                <p className="text-[7.5px] text-gray-400 italic -mt-0.5">This certifies that</p>
+                              </div>
+
+                              {/* Student Name & Course */}
+                              <div className="relative z-0 py-0.5 space-y-0.5">
+                                <h3 className="text-xs font-black text-gray-900 tracking-tight font-serif text-[#114B44]">
+                                  {studentName}
+                                </h3>
+                                <p className="text-[7px] text-gray-400">has successfully completed the course</p>
+                                <p className="text-[9.5px] font-extrabold text-gray-900 leading-tight truncate px-1">
+                                  {cert.title}
+                                </p>
+                                <p className="text-[7px] text-gray-400">{cert.completionDate}</p>
+                              </div>
+
+                              {/* Certificate Footer with Signature, Gold Seal, QR code */}
+                              <div className="relative z-0 flex items-center justify-between pt-1 border-t border-amber-200/60 px-1">
+                                <div className="text-left">
+                                  <span className="font-serif italic text-[8px] font-bold text-gray-800 block -mb-0.5 truncate max-w-[50px]">
+                                    {cert.instructor.split(' ')[1] || cert.instructor}
+                                  </span>
+                                  <span className="text-[6.5px] text-gray-400 font-semibold block">Instructor</span>
+                                </div>
+
+                                {/* Golden Seal Stamp */}
+                                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 flex items-center justify-center text-[7px] text-amber-950 font-black shadow-xs border border-amber-200">
+                                  ★
+                                </div>
+
+                                {/* QR Code Stamp Mockup */}
+                                <div className="w-4 h-4 rounded bg-gray-900 p-0.5 flex flex-wrap gap-0.5 items-center justify-center">
+                                  <div className="w-1 h-1 bg-white rounded-xs"></div>
+                                  <div className="w-1 h-1 bg-white rounded-xs"></div>
+                                </div>
+                              </div>
+
+                            </div>
+
+                            {/* Card Details under thumbnail */}
+                            <div className="pt-2.5 flex items-center justify-between gap-2">
+                              <div className="min-w-0">
+                                <h3 className="font-extrabold text-xs text-gray-900 truncate group-hover:text-[#114B44] transition-colors">
+                                  {cert.title}
+                                </h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className={`text-[9px] font-bold px-2 py-0.2 rounded-full border ${cert.statusColor}`}>
+                                    {cert.statusBadge}
+                                  </span>
+                                  <span className="text-[10px] text-gray-400 font-medium flex items-center gap-1">
+                                    <Calendar className="w-2.5 h-2.5" />
+                                    <span>{cert.shortDate}</span>
+                                  </span>
+                                </div>
+                              </div>
+
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  alert(`Detail sertifikat: ${cert.title}\nCredential ID: ${cert.credentialId}`);
+                                }}
+                                className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer shrink-0"
+                              >
+                                <MoreVertical className="w-4 h-4" />
+                              </button>
+                            </div>
+
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+
+                {/* RIGHT SIDEBAR: CERTIFICATE SUMMARY + DETAILS PANE */}
+                <aside className="w-full lg:w-72 xl:w-80 shrink-0 space-y-4">
+                  
+                  {/* CARD 1: Certificate Summary (4 Stats Grid) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Certificate Summary</h3>
+                      <button
+                        onClick={() => setCertificateTabFilter('all')}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    {/* 2x2 Grid */}
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-100 flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#114B44] flex items-center justify-center shrink-0">
+                          <Award className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="block text-base font-black text-gray-900 leading-none">6</span>
+                          <span className="text-[10px] font-bold text-gray-500">Earned</span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-100 flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                          <BarChart2 className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="block text-base font-black text-gray-900 leading-none">2</span>
+                          <span className="text-[10px] font-bold text-gray-500">In Progress</span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-100 flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                          <Trophy className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="block text-base font-black text-gray-900 leading-none">3</span>
+                          <span className="text-[10px] font-bold text-gray-500">Available</span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-purple-50/70 border border-purple-100 flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                          <Star className="w-4 h-4 text-purple-700" />
+                        </div>
+                        <div>
+                          <span className="block text-base font-black text-gray-900 leading-none">9</span>
+                          <span className="text-[10px] font-bold text-gray-500">Total Classes</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Certificate Details (Viewer for Selected Certificate) */}
+                  {(() => {
+                    const selectedCert = studentCertificatesList.find(c => c.id === selectedCertificateId) || studentCertificatesList[0];
+                    return (
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3.5">
+                        <h3 className="font-extrabold text-xs text-gray-900 tracking-tight pb-1 border-b border-gray-100">
+                          Certificate Details
+                        </h3>
+
+                        {/* Certificate Big Visual Preview */}
+                        <div className="relative aspect-[1.42/1] rounded-2xl bg-[#FAF8F3] border-2 border-amber-300 p-4 text-center flex flex-col justify-between select-none shadow-xs">
+                          <div className="absolute inset-1.5 border border-amber-400/80 rounded-xl pointer-events-none"></div>
+
+                          {/* Top Header */}
+                          <div className="relative z-0 space-y-0.5">
+                            <div className="flex items-center justify-center gap-1">
+                              <div className="w-4 h-4 rounded bg-[#114B44] text-[#E6F4F1] flex items-center justify-center text-[8px] font-black">
+                                ✦
+                              </div>
+                              <span className="text-xs font-black text-gray-900 tracking-wider">IlmHub</span>
+                            </div>
+                            <h4 className="text-xs font-black text-gray-900 tracking-tight font-serif">
+                              Certificate of Completion
+                            </h4>
+                            <p className="text-[8px] text-gray-400 italic">This certifies that</p>
+                          </div>
+
+                          {/* Student & Course Name */}
+                          <div className="relative z-0 space-y-0.5 py-1">
+                            <h3 className="text-sm font-black text-[#114B44] tracking-tight font-serif">
+                              {studentName}
+                            </h3>
+                            <p className="text-[8px] text-gray-500">has successfully completed the course</p>
+                            <h4 className="text-xs font-extrabold text-gray-900 font-serif">
+                              {selectedCert.title}
+                            </h4>
+                            <p className="text-[8px] text-gray-400 font-medium">{selectedCert.completionDate}</p>
+                          </div>
+
+                          {/* Signature + Seal + QR */}
+                          <div className="relative z-0 flex items-center justify-between pt-1 border-t border-amber-200/80 px-2">
+                            <div className="text-left">
+                              <span className="font-serif italic text-[9px] font-bold text-gray-800 block -mb-0.5">
+                                {selectedCert.instructor.split(' ')[1] || selectedCert.instructor}
+                              </span>
+                              <span className="text-[7.5px] text-gray-400 font-semibold block">Instructor</span>
+                            </div>
+
+                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 flex items-center justify-center text-[9px] text-amber-950 font-black shadow-xs border border-amber-200">
+                              ★
+                            </div>
+
+                            <div className="w-5 h-5 rounded bg-gray-900 p-0.5 flex flex-wrap gap-0.5 items-center justify-center">
+                              <div className="w-1.5 h-1.5 bg-white rounded-xs"></div>
+                              <div className="w-1.5 h-1.5 bg-white rounded-xs"></div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Metadata Rows */}
+                        <div className="space-y-2 text-xs pt-1 border-t border-gray-100">
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 font-medium">Course</span>
+                            <span className="font-extrabold text-gray-900 truncate max-w-[160px]">{selectedCert.course}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 font-medium">Instructor</span>
+                            <span className="font-extrabold text-gray-900 truncate max-w-[160px]">{selectedCert.instructor}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 font-medium">Completion Date</span>
+                            <span className="font-extrabold text-gray-900">{selectedCert.completionDate}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 font-medium">Credential ID</span>
+                            <span className="font-mono text-[11px] font-bold text-gray-800">{selectedCert.credentialId}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400 font-medium">Certificate Type</span>
+                            <span className="font-extrabold text-gray-900">{selectedCert.certificateType}</span>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="space-y-2 pt-2">
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              onClick={() => alert(`Mengunduh sertifikat ${selectedCert.title} (PDF)...`)}
+                              className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              <span>Download (PDF)</span>
+                            </button>
+
+                            <button
+                              onClick={() => setIsShareModalOpen(true)}
+                              className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2.5 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                            >
+                              <Share2 className="w-3.5 h-3.5" />
+                              <span>Share</span>
+                            </button>
+                          </div>
+
+                          <button
+                            onClick={() => setIsVerifyModalOpen(true)}
+                            className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5 text-gray-500" />
+                            <span>Verify Certificate</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                </aside>
+
+              </div>
+
+              {/* VERIFY CERTIFICATE MODAL POPUP */}
+              {isVerifyModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <ShieldCheck className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">Verify Certificate</h3>
+                          <p className="text-xs text-gray-500">IlmHub Official Blockchain Verification</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsVerifyModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs cursor-pointer font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Enter Credential ID</label>
+                        <input
+                          type="text"
+                          defaultValue="ILMHUB-2026-NB-00123"
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 font-mono text-xs font-bold text-gray-900 focus:outline-none focus:border-[#114B44]"
+                        />
+                      </div>
+
+                      <div className="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-1.5">
+                        <div className="flex items-center gap-1.5 text-emerald-800 font-extrabold text-xs">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                          <span>Authentic Verified Certificate</span>
+                        </div>
+                        <p className="text-[11px] text-emerald-900 leading-relaxed">
+                          Issued to <strong>Aisha Rahman</strong> for completing <strong>Nahwu for Beginners</strong> on 25 Sep 2026.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsVerifyModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Close
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsVerifyModalOpen(false);
+                          alert('Sertifikat terverifikasi valid!');
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Verify Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SHARE CERTIFICATE MODAL POPUP */}
+              {isShareModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <Share2 className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">Share Certificate</h3>
+                          <p className="text-xs text-gray-500">Showcase your achievement to the world</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsShareModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs cursor-pointer font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Public Certificate Link</label>
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            type="text"
+                            readOnly
+                            value="https://ilmhub.org/verify/ILMHUB-2026-NB-00123"
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-[11px] font-mono font-semibold text-gray-700"
+                          />
+                          <button
+                            onClick={() => alert('Tautan sertifikat berhasil disalin ke clipboard!')}
+                            className="px-3 py-2.5 bg-[#114B44] text-white rounded-xl font-bold text-xs shrink-0 cursor-pointer shadow-xs"
+                          >
+                            Copy
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 pt-2">
+                        <button
+                          onClick={() => alert('Membuka LinkedIn Share...')}
+                          className="p-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-colors cursor-pointer border border-blue-200"
+                        >
+                          <span className="text-sm">💼</span>
+                          <span>LinkedIn</span>
+                        </button>
+                        <button
+                          onClick={() => alert('Membuka WhatsApp Share...')}
+                          className="p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-colors cursor-pointer border border-emerald-200"
+                        >
+                          <span className="text-sm">💬</span>
+                          <span>WhatsApp</span>
+                        </button>
+                        <button
+                          onClick={() => alert('Membuka Twitter/X Share...')}
+                          className="p-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-colors cursor-pointer border border-gray-300"
+                        >
+                          <span className="text-sm">🐦</span>
+                          <span>Twitter/X</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsShareModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Close
                       </button>
                     </div>
                   </div>
