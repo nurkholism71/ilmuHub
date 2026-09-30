@@ -22,31 +22,52 @@ import {
   Flame, 
   Clock, 
   CheckCircle2, 
-  Star,
-  Users,
-  Download,
-  CalendarPlus,
-  Plus,
-  Play,
-  Check,
-  Trophy,
-  MoreVertical,
-  Globe,
-  Sparkles,
-  ExternalLink,
-  ShieldCheck,
-  LogOut,
-  User
+  Star, 
+  Users, 
+  Download, 
+  CalendarPlus, 
+  Plus, 
+  Play, 
+  Check, 
+  Trophy, 
+  MoreVertical, 
+  Globe, 
+  Sparkles, 
+  ExternalLink, 
+  ShieldCheck, 
+  LogOut, 
+  User,
+  Heart,
+  Filter,
+  Gift,
+  Crown,
+  Layers,
+  GraduationCap
 } from 'lucide-react';
 
 export default function StudentDashboard({ user, onJoinLive, onExploreCourses, onBackToHome, onLogout, onSwitchRole }) {
-  const [activeNav, setActiveNav] = useState('classes'); // default to 'classes' matching user request
+  const [activeNav, setActiveNav] = useState('browse'); // default or switch to 'browse'
   const [classTabFilter, setClassTabFilter] = useState('all'); // 'all' (8) | 'in_progress' (5) | 'completed' (2) | 'upcoming' (1) | 'saved' (0)
   const [classSearchQuery, setClassSearchQuery] = useState('');
   const [classSortOrder, setClassSortOrder] = useState('Newest First');
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(25); // 25 Sep 2026 selected by default
   const [selectedCalendarMonth, setSelectedCalendarMonth] = useState('September 2026');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  // Browse Classes View States (matching media_1790726478349.jpg)
+  const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
+  const [browseSearchQuery, setBrowseSearchQuery] = useState('');
+  const [browseLevelFilter, setBrowseLevelFilter] = useState('All Levels');
+  const [browseLanguageFilter, setBrowseLanguageFilter] = useState('All Languages');
+  const [browseTypeFilter, setBrowseTypeFilter] = useState('All Types');
+  const [browseSortBy, setBrowseSortBy] = useState('Newest First');
+  const [wishlist, setWishlist] = useState(['feat-1', 'all-2']);
+
+  const toggleWishlist = (id) => {
+    setWishlist(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
 
   const studentName = user?.name || 'Aisha Rahman';
   const studentEmail = user?.email || 'aisha@example.com';
@@ -220,6 +241,238 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
       price: 'Free',
       avatar: '/images/student_fatimah.jpg',
     },
+  ];
+
+  // Browse Classes View Datasets (Matching media_1790726478349.jpg)
+  const featuredBrowseClasses = [
+    {
+      id: 'feat-1',
+      title: 'Nahwu for Beginners',
+      tutor: 'Ustadz Ahmad Fauzi',
+      image: '/images/class_nahwu.jpg',
+      badge: { text: 'Bestseller', color: 'bg-amber-400 text-amber-950' },
+      primaryTag: { label: 'Arabic', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+      levelTag: { label: 'Beginner', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+      rating: 4.9,
+      reviews: 328,
+      students: '2.1K',
+      lessons: 12,
+      duration: '3h 20m',
+      category: 'language',
+      level: 'Beginner',
+      language: 'Arabic',
+      type: 'Live Classes'
+    },
+    {
+      id: 'feat-2',
+      title: 'Sharaf Basic',
+      tutor: 'Ustadzah Fatimah Zahra',
+      image: '/images/class_conversation.jpg',
+      badge: { text: 'Popular', color: 'bg-purple-500 text-white' },
+      primaryTag: { label: 'Arabic', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+      levelTag: { label: 'Beginner', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+      rating: 4.8,
+      reviews: 214,
+      students: '1.6K',
+      lessons: 15,
+      duration: '4h 10m',
+      category: 'language',
+      level: 'Beginner',
+      language: 'Arabic',
+      type: 'Self-Paced'
+    },
+    {
+      id: 'feat-3',
+      title: 'Arabic Conversation',
+      tutor: 'Ustadz Omar Hassan',
+      image: '/images/class_nahwu.jpg',
+      badge: { text: 'New', color: 'bg-emerald-500 text-white' },
+      primaryTag: { label: 'Arabic', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+      levelTag: { label: 'Intermediate', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+      rating: 4.7,
+      reviews: 186,
+      students: '980',
+      lessons: 12,
+      duration: '3h 5m',
+      category: 'language',
+      level: 'Intermediate',
+      language: 'Arabic',
+      type: 'Live Classes'
+    },
+    {
+      id: 'feat-4',
+      title: 'Academic Writing',
+      tutor: 'Dr. Layla Ahmad',
+      image: '/images/class_conversation.jpg',
+      badge: { text: 'Trending', color: 'bg-rose-500 text-white' },
+      primaryTag: { label: 'Writing', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+      levelTag: { label: 'All Levels', color: 'bg-gray-100 text-gray-700 border-gray-200' },
+      rating: 4.6,
+      reviews: 142,
+      students: '760',
+      lessons: 14,
+      duration: '4h 30m',
+      category: 'academic',
+      level: 'All Levels',
+      language: 'English',
+      type: 'With Certificate'
+    }
+  ];
+
+  const allBrowseClassesList = [
+    {
+      id: 'all-1',
+      title: 'Islamic History',
+      tutor: 'Ustadz Ali Khan',
+      image: '/images/class_nahwu.jpg',
+      primaryTag: { label: 'History', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+      levelTag: { label: 'Beginner', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+      rating: 4.8,
+      reviews: 192,
+      students: '1.2K',
+      lessons: 10,
+      duration: '2h 40m',
+      category: 'islamic',
+      level: 'Beginner',
+      language: 'Arabic',
+      type: 'Self-Paced'
+    },
+    {
+      id: 'all-2',
+      title: "Qur'an Tajweed",
+      tutor: 'Ustadz Yusuf Rahman',
+      image: '/images/class_conversation.jpg',
+      primaryTag: { label: "Qur'an", color: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
+      levelTag: { label: 'Intermediate', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+      rating: 4.9,
+      reviews: 256,
+      students: '1.5K',
+      lessons: 16,
+      duration: '4h 20m',
+      category: 'islamic',
+      level: 'Intermediate',
+      language: 'Arabic',
+      type: 'Live Classes'
+    },
+    {
+      id: 'all-3',
+      title: 'Environmental Management',
+      tutor: 'Dr. Sara Nabilah',
+      image: '/images/hero_student.jpg',
+      primaryTag: { label: 'Science', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+      levelTag: { label: 'Intermediate', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+      rating: 4.5,
+      reviews: 98,
+      students: '540',
+      lessons: 13,
+      duration: '3h 10m',
+      category: 'academic',
+      level: 'Intermediate',
+      language: 'English',
+      type: 'With Certificate'
+    },
+    {
+      id: 'all-4',
+      title: 'Python for Data Analysis',
+      tutor: 'Mr. Ali Rahman',
+      image: '/images/login_lms_desk_bg.jpg',
+      primaryTag: { label: 'IT & Data', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+      levelTag: { label: 'Beginner', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+      rating: 4.7,
+      reviews: 176,
+      students: '1.1K',
+      lessons: 18,
+      duration: '5h 30m',
+      category: 'professional',
+      level: 'Beginner',
+      language: 'English',
+      type: 'Self-Paced'
+    },
+    {
+      id: 'all-5',
+      title: 'Personal Finance',
+      tutor: 'Dr. Tariq Mansoor',
+      image: '/images/class_conversation.jpg',
+      primaryTag: { label: 'Finance', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+      levelTag: { label: 'All Levels', color: 'bg-gray-100 text-gray-700 border-gray-200' },
+      rating: 4.8,
+      reviews: 145,
+      students: '890',
+      lessons: 8,
+      duration: '2h 15m',
+      category: 'professional',
+      level: 'All Levels',
+      language: 'English',
+      type: 'Free Classes'
+    },
+    {
+      id: 'all-6',
+      title: 'Kids Islamic Stories',
+      tutor: 'Ustadzah Maryam',
+      image: '/images/class_nahwu.jpg',
+      primaryTag: { label: 'Kids', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+      levelTag: { label: 'Beginner', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+      rating: 4.9,
+      reviews: 310,
+      students: '1.8K',
+      lessons: 20,
+      duration: '3h 45m',
+      category: 'kids',
+      level: 'Beginner',
+      language: 'Indonesian',
+      type: 'Self-Paced'
+    },
+    {
+      id: 'all-7',
+      title: 'English for Professionals',
+      tutor: 'Prof. David Miller',
+      image: '/images/class_conversation.jpg',
+      primaryTag: { label: 'Language', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+      levelTag: { label: 'Intermediate', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+      rating: 4.7,
+      reviews: 220,
+      students: '940',
+      lessons: 14,
+      duration: '4h 00m',
+      category: 'language',
+      level: 'Intermediate',
+      language: 'English',
+      type: 'Premium Classes'
+    },
+    {
+      id: 'all-8',
+      title: 'Productivity & Time Management',
+      tutor: 'Coach Zainab Bilal',
+      image: '/images/login_lms_desk_bg.jpg',
+      primaryTag: { label: 'Productivity', color: 'bg-rose-50 text-rose-700 border-rose-200' },
+      levelTag: { label: 'All Levels', color: 'bg-gray-100 text-gray-700 border-gray-200' },
+      rating: 4.8,
+      reviews: 185,
+      students: '1.3K',
+      lessons: 10,
+      duration: '2h 30m',
+      category: 'personal',
+      level: 'All Levels',
+      language: 'English',
+      type: 'With Certificate'
+    }
+  ];
+
+  const popularTopicsList = [
+    { id: 'top-1', label: "Qur'an & Tajweed", count: '48 classes', icon: '📖', iconBg: 'bg-emerald-50 text-emerald-700 border-emerald-100', category: 'islamic' },
+    { id: 'top-2', label: 'Arabic Language', count: '36 classes', icon: '🔤', iconBg: 'bg-purple-50 text-purple-700 border-purple-100', category: 'language' },
+    { id: 'top-3', label: 'Islamic History', count: '28 classes', icon: '🏛️', iconBg: 'bg-pink-50 text-pink-700 border-pink-100', category: 'islamic' },
+    { id: 'top-4', label: 'Academic Writing', count: '24 classes', icon: '✍️', iconBg: 'bg-blue-50 text-blue-700 border-blue-100', category: 'academic' },
+    { id: 'top-5', label: 'Data & Technology', count: '22 classes', icon: '💻', iconBg: 'bg-cyan-50 text-cyan-700 border-cyan-100', category: 'professional' },
+    { id: 'top-6', label: 'Personal Development', count: '20 classes', icon: '🌿', iconBg: 'bg-emerald-50 text-emerald-700 border-emerald-100', category: 'personal' },
+    { id: 'top-7', label: 'Kids & Family', count: '18 classes', icon: '👶', iconBg: 'bg-amber-50 text-amber-700 border-amber-100', category: 'kids' },
+    { id: 'top-8', label: 'Business & Finance', count: '16 classes', icon: '💼', iconBg: 'bg-rose-50 text-rose-700 border-rose-100', category: 'professional' },
+  ];
+
+  const topTeachersList = [
+    { id: 'tch-1', name: 'Ustadz Ahmad Fauzi', rating: 4.9, reviews: 328, students: '2.1K', avatar: '/images/tutor_ahmed.jpg' },
+    { id: 'tch-2', name: 'Ustadzah Fatimah Zahra', rating: 4.8, reviews: 214, students: '1.6K', avatar: '/images/student_fatimah.jpg' },
+    { id: 'tch-3', name: 'Ustadz Omar Hassan', rating: 4.7, reviews: 186, students: '980', avatar: '/images/student_ali.jpg' },
   ];
 
   return (
@@ -498,7 +751,514 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
         {/* MAIN SCROLLABLE CANVAS */}
         <main className="flex-1 h-full overflow-y-auto p-4 sm:p-6 lg:p-7 min-w-0 pb-16 space-y-6">
           
-          {activeNav === 'classes' ? (
+          {activeNav === 'browse' ? (
+            /* ========================================================= */
+            /* VIEW: BROWSE CLASSES (MATCHING media_1790726478349.jpg)   */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* 1. PAGE TOP HEADER */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Browse Classes</h1>
+                    <p className="text-xs text-gray-500 font-medium">Discover classes from expert teachers. Learn new skills, deepen your knowledge, and grow with IlmHub.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. CATEGORY FILTER PILLS */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {[
+                  { id: 'all', label: 'All Classes' },
+                  { id: 'islamic', label: 'Islamic Studies' },
+                  { id: 'language', label: 'Language' },
+                  { id: 'academic', label: 'Academic' },
+                  { id: 'professional', label: 'Professional Skills' },
+                  { id: 'personal', label: 'Personal Development' },
+                  { id: 'kids', label: 'Kids & Teens' },
+                ].map((cat) => {
+                  const isActive = browseCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setBrowseCategory(cat.id)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/80'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 3. SEARCH & DROPDOWN FILTERS TOOLBAR */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
+                {/* Search input */}
+                <div className="relative flex-1">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={browseSearchQuery}
+                    onChange={(e) => setBrowseSearchQuery(e.target.value)}
+                    placeholder="Search classes by title, teacher, or keyword..."
+                    className="w-full bg-[#F8FAFC] border border-gray-200/80 rounded-xl pl-10 pr-4 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all shadow-2xs font-medium"
+                  />
+                </div>
+
+                {/* 4 Dropdown Filters */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Levels Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={browseLevelFilter}
+                      onChange={(e) => setBrowseLevelFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Levels">All Levels</option>
+                      <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Languages Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={browseLanguageFilter}
+                      onChange={(e) => setBrowseLanguageFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Languages">All Languages</option>
+                      <option value="Arabic">Arabic</option>
+                      <option value="English">English</option>
+                      <option value="Indonesian">Indonesian</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Class Types Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={browseTypeFilter}
+                      onChange={(e) => setBrowseTypeFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Types">All Class Types</option>
+                      <option value="Live Classes">Live Classes</option>
+                      <option value="Self-Paced">Self-Paced</option>
+                      <option value="With Certificate">With Certificate</option>
+                      <option value="Free Classes">Free Classes</option>
+                      <option value="Premium Classes">Premium Classes</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Sort Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={browseSortBy}
+                      onChange={(e) => setBrowseSortBy(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="Newest First">Newest First</option>
+                      <option value="Highest Rated">Highest Rated</option>
+                      <option value="Most Popular">Most Popular</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. MAIN BROWSE LAYOUT: 2 Columns (Center Feed + Right Widgets) */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+                
+                {/* LEFT & CENTER FEED (9 Cols) */}
+                <div className="xl:col-span-9 space-y-7 min-w-0">
+                  
+                  {/* Hero Wide Banner: Deepen Your Knowledge */}
+                  <div className="relative rounded-3xl overflow-hidden min-h-[160px] p-6 sm:p-8 text-white flex flex-col justify-between shadow-md bg-gradient-to-r from-[#0F2F2B] via-[#114B44] to-[#1E3A34]">
+                    <img
+                      src="/images/login_lms_desk_bg.jpg"
+                      alt="Mosque Silhouette Banner"
+                      className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-35"
+                    />
+                    <div className="relative z-10 space-y-2 max-w-xl">
+                      <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                        Deepen Your Knowledge
+                      </h2>
+                      <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
+                        Explore Islamic knowledge, languages, academic subjects, and practical skills with expert teachers.
+                      </p>
+                    </div>
+
+                    <div className="relative z-10 pt-4">
+                      <button
+                        onClick={() => {
+                          const el = document.getElementById('featured-section');
+                          if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="inline-flex items-center gap-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-100 border border-emerald-400/40 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer backdrop-blur-xs"
+                      >
+                        <span>Explore Featured Classes</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-emerald-300" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* SECTION 1: Featured Classes */}
+                  <div id="featured-section" className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-base sm:text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                        <span>Featured Classes</span>
+                      </h2>
+                      <button 
+                        onClick={() => setBrowseCategory('all')}
+                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* 4 Cards Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {featuredBrowseClasses.map((item) => {
+                        const isLiked = wishlist.includes(item.id);
+                        return (
+                          <div 
+                            key={item.id} 
+                            className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                          >
+                            <div>
+                              {/* Thumbnail with Badge & Heart Button */}
+                              <div className="relative h-36 w-full bg-gray-100 overflow-hidden">
+                                <img 
+                                  src={item.image} 
+                                  alt={item.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                                />
+                                {/* Top Badge */}
+                                {item.badge && (
+                                  <span className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shadow-2xs ${item.badge.color}`}>
+                                    {item.badge.text}
+                                  </span>
+                                )}
+                                {/* Heart Button */}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleWishlist(item.id);
+                                  }}
+                                  className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer"
+                                >
+                                  <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-white'}`} />
+                                </button>
+                              </div>
+
+                              {/* Card Body */}
+                              <div className="p-3.5 space-y-2">
+                                <div>
+                                  <h3 className="font-extrabold text-xs text-gray-900 group-hover:text-[#114B44] transition-colors line-clamp-1">
+                                    {item.title}
+                                  </h3>
+                                  <p className="text-[11px] text-gray-500 font-medium truncate mt-0.5">
+                                    {item.tutor}
+                                  </p>
+                                </div>
+
+                                {/* Tags */}
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${item.primaryTag.color}`}>
+                                    {item.primaryTag.label}
+                                  </span>
+                                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${item.levelTag.color}`}>
+                                    {item.levelTag.label}
+                                  </span>
+                                </div>
+
+                                {/* Rating & Students */}
+                                <div className="flex items-center justify-between text-[11px] pt-1">
+                                  <div className="flex items-center gap-1 font-bold text-amber-500">
+                                    <Star className="w-3.5 h-3.5 fill-amber-400" />
+                                    <span>{item.rating}</span>
+                                    <span className="text-gray-400 font-normal text-[10px]">({item.reviews})</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 text-gray-500 text-[10px] font-medium">
+                                    <Users className="w-3 h-3 text-gray-400" />
+                                    <span>{item.students} students</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Card Footer */}
+                            <div className="px-3.5 py-2.5 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500 font-medium">
+                              <div className="flex items-center gap-1">
+                                <BookOpen className="w-3 h-3 text-gray-400" />
+                                <span>{item.lessons} lessons</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-gray-400" />
+                                <span>{item.duration}</span>
+                              </div>
+                            </div>
+
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* SECTION 2: All Classes */}
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-base sm:text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                        <span>All Classes</span>
+                      </h2>
+                      <button 
+                        onClick={() => setBrowseCategory('all')}
+                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* 8 Cards Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {allBrowseClassesList.map((item) => {
+                        const isLiked = wishlist.includes(item.id);
+                        return (
+                          <div 
+                            key={item.id} 
+                            className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                          >
+                            <div>
+                              {/* Thumbnail */}
+                              <div className="relative h-36 w-full bg-gray-100 overflow-hidden">
+                                <img 
+                                  src={item.image} 
+                                  alt={item.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                                />
+                                {/* Heart Wishlist Button */}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleWishlist(item.id);
+                                  }}
+                                  className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer"
+                                >
+                                  <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-white'}`} />
+                                </button>
+                              </div>
+
+                              {/* Body */}
+                              <div className="p-3.5 space-y-2">
+                                <div>
+                                  <h3 className="font-extrabold text-xs text-gray-900 group-hover:text-[#114B44] transition-colors line-clamp-1">
+                                    {item.title}
+                                  </h3>
+                                  <p className="text-[11px] text-gray-500 font-medium truncate mt-0.5">
+                                    {item.tutor}
+                                  </p>
+                                </div>
+
+                                {/* Tags */}
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${item.primaryTag.color}`}>
+                                    {item.primaryTag.label}
+                                  </span>
+                                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${item.levelTag.color}`}>
+                                    {item.levelTag.label}
+                                  </span>
+                                </div>
+
+                                {/* Rating & Students */}
+                                <div className="flex items-center justify-between text-[11px] pt-1">
+                                  <div className="flex items-center gap-1 font-bold text-amber-500">
+                                    <Star className="w-3.5 h-3.5 fill-amber-400" />
+                                    <span>{item.rating}</span>
+                                    <span className="text-gray-400 font-normal text-[10px]">({item.reviews})</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 text-gray-500 text-[10px] font-medium">
+                                    <Users className="w-3 h-3 text-gray-400" />
+                                    <span>{item.students} students</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="px-3.5 py-2.5 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500 font-medium">
+                              <div className="flex items-center gap-1">
+                                <BookOpen className="w-3 h-3 text-gray-400" />
+                                <span>{item.lessons} lessons</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-gray-400" />
+                                <span>{item.duration}</span>
+                              </div>
+                            </div>
+
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR WIDGETS (3 Cols) */}
+                <div className="xl:col-span-3 space-y-6">
+                  
+                  {/* 1. Popular Topics Card */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Popular Topics</h3>
+                      <button 
+                        onClick={() => setBrowseCategory('all')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline"
+                      >
+                        View All
+                      </button>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      {popularTopicsList.map((topic) => (
+                        <button
+                          key={topic.id}
+                          onClick={() => setBrowseCategory(topic.category)}
+                          className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group text-left"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span className="w-7 h-7 rounded-lg bg-gray-50 group-hover:bg-emerald-50 border border-gray-100 flex items-center justify-center text-xs shrink-0 transition-colors">
+                              {topic.icon}
+                            </span>
+                            <span className="text-xs font-bold text-gray-800 group-hover:text-[#114B44] transition-colors truncate">
+                              {topic.label}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-semibold text-gray-400 shrink-0">
+                            {topic.count}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 2. Class Levels Card */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                    <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Class Levels</h3>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      {['All Levels', 'Beginner', 'Intermediate', 'Advanced'].map((lvl) => {
+                        const isSelected = browseLevelFilter === lvl;
+                        return (
+                          <button
+                            key={lvl}
+                            onClick={() => setBrowseLevelFilter(lvl)}
+                            className={`py-2 px-3 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-emerald-50 text-[#114B44] border-2 border-emerald-600 shadow-2xs'
+                                : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
+                            }`}
+                          >
+                            {lvl}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 3. Class Type Card */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                    <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Class Type</h3>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { id: 'All Types', label: 'All Types', icon: MessageSquare, color: 'text-emerald-700' },
+                        { id: 'Live Classes', label: 'Live Classes', icon: Video, color: 'text-rose-500' },
+                        { id: 'Self-Paced', label: 'Self-Paced', icon: Play, color: 'text-blue-500' },
+                        { id: 'With Certificate', label: 'With Certificate', icon: Award, color: 'text-indigo-500' },
+                        { id: 'Free Classes', label: 'Free Classes', icon: Gift, color: 'text-emerald-600' },
+                        { id: 'Premium Classes', label: 'Premium Classes', icon: Crown, color: 'text-amber-500' },
+                      ].map((t) => {
+                        const Icon = t.icon;
+                        const isSelected = browseTypeFilter === t.id;
+                        return (
+                          <button
+                            key={t.id}
+                            onClick={() => setBrowseTypeFilter(t.id)}
+                            className={`p-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer text-left ${
+                              isSelected
+                                ? 'bg-emerald-50 text-[#114B44] border-2 border-emerald-600 shadow-2xs'
+                                : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
+                            }`}
+                          >
+                            <Icon className={`w-3.5 h-3.5 ${t.color} shrink-0`} />
+                            <span className="text-[11px] truncate leading-tight">{t.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 4. Top Teachers Card */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Top Teachers</h3>
+                      <button 
+                        onClick={() => setActiveNav('browse')}
+                        className="text-[11px] font-bold text-[#114B44] hover:underline"
+                      >
+                        View All
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {topTeachersList.map((tch) => (
+                        <div key={tch.id} className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 border border-emerald-300 shrink-0">
+                            <img 
+                              src={tch.avatar} 
+                              alt={tch.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-bold text-xs text-gray-900 truncate leading-tight">{tch.name}</h4>
+                            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 mt-0.5">
+                              <span className="font-bold text-amber-500 flex items-center gap-0.5">
+                                ⭐ {tch.rating}
+                              </span>
+                              <span className="text-gray-400">({tch.reviews})</span>
+                              <span className="text-gray-300">•</span>
+                              <span>{tch.students} students</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          ) : activeNav === 'classes' ? (
             /* ========================================================= */
             /* VIEW: MY CLASSES (MATCHING media_1790725449767.jpg)       */
             /* ========================================================= */
