@@ -3861,6 +3861,117 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   ];
 
   // =========================================================
+  // INTEGRATIONS DATASET & STATES (matching media_1790803659765.jpg)
+  // =========================================================
+  const [integrationTabFilter, setIntegrationTabFilter] = useState('all'); // 'all' | 'payment' | 'communication' | 'storage' | 'live' | 'analytics' | 'auth' | 'productivity' | 'others'
+  const [integrationSearchQuery, setIntegrationSearchQuery] = useState('');
+  const [selectedIntegrationForConfig, setSelectedIntegrationForConfig] = useState(null);
+  const [isAddIntegrationModalOpen, setIsAddIntegrationModalOpen] = useState(false);
+  const [isTestAllConnectionsModalOpen, setIsTestAllConnectionsModalOpen] = useState(false);
+  const [isApiKeysWebhooksModalOpen, setIsApiKeysWebhooksModalOpen] = useState(false);
+  const [isIntegrationDocsModalOpen, setIsIntegrationDocsModalOpen] = useState(false);
+  const [isViewAllIntegrationLogsModalOpen, setIsViewAllIntegrationLogsModalOpen] = useState(false);
+  const [testDiagnosticRunning, setTestDiagnosticRunning] = useState(false);
+
+  // Integrations Catalog Categories & Services
+  const [integrationsCatalog, setIntegrationsCatalog] = useState([
+    // 1. Payment Gateways
+    {
+      category: 'payment',
+      categoryTitle: 'Payment Gateways',
+      categorySubtitle: 'Manage online payments, subscriptions, and payouts.',
+      categoryIcon: DollarSign,
+      categoryIconColor: 'bg-emerald-100 text-emerald-600',
+      services: [
+        { id: 'stripe', name: 'Stripe', description: 'Credit cards, global payments', icon: 'S', iconBg: 'bg-[#635BFF] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'paypal', name: 'PayPal', description: 'Global payments', icon: 'P', iconBg: 'bg-[#003087] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'midtrans', name: 'Midtrans', description: 'Local payments (Indonesia)', icon: 'M', iconBg: 'bg-[#002855] text-white', isConnected: false, status: 'Not Connected', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' },
+        { id: 'razorpay', name: 'Razorpay', description: 'Asia payments', icon: 'R', iconBg: 'bg-[#0C2340] text-white', isConnected: false, status: 'Not Connected', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' }
+      ]
+    },
+    // 2. Communication & Email
+    {
+      category: 'communication',
+      categoryTitle: 'Communication & Email',
+      categorySubtitle: 'Manage email, SMS, and notification services.',
+      categoryIcon: Mail,
+      categoryIconColor: 'bg-blue-100 text-blue-600',
+      services: [
+        { id: 'sendgrid', name: 'SendGrid', description: 'Transactional email', icon: 'SG', iconBg: 'bg-[#009DD9] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'mailgun', name: 'Mailgun', description: 'Transactional email', icon: 'MG', iconBg: 'bg-[#F05336] text-white', isConnected: false, status: 'Not Connected', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' },
+        { id: 'twilio', name: 'Twilio', description: 'SMS & WhatsApp', icon: 'TW', iconBg: 'bg-[#F22F46] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'firebase-fcm', name: 'Firebase FCM', description: 'Push notifications', icon: 'FB', iconBg: 'bg-[#FFCA28] text-amber-950 font-black', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+      ]
+    },
+    // 3. Storage & Media
+    {
+      category: 'storage',
+      categoryTitle: 'Storage & Media',
+      categorySubtitle: 'Manage file storage, media CDN, and video services.',
+      categoryIcon: UploadCloud,
+      categoryIconColor: 'bg-blue-100 text-blue-600',
+      services: [
+        { id: 'supabase-storage', name: 'Supabase Storage', description: 'Media & file storage', icon: 'SB', iconBg: 'bg-[#3ECF8E] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'cloudinary', name: 'Cloudinary', description: 'Image & video management', icon: 'CD', iconBg: 'bg-[#3448C5] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'aws-s3', name: 'AWS S3', description: 'Cloud storage', icon: 'S3', iconBg: 'bg-[#FF9900] text-gray-900 font-black', isConnected: false, status: 'Not Connected', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' },
+        { id: 'cloudflare-r2', name: 'Cloudflare R2', description: 'Secure file storage', icon: 'R2', iconBg: 'bg-[#F38020] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+      ]
+    },
+    // 4. Live & Video Services
+    {
+      category: 'live',
+      categoryTitle: 'Live & Video Services',
+      categorySubtitle: 'Manage live classes, video meetings, and streaming.',
+      categoryIcon: Video,
+      categoryIconColor: 'bg-purple-100 text-purple-600',
+      services: [
+        { id: 'zoom', name: 'Zoom', description: 'Video meetings', icon: 'ZM', iconBg: 'bg-[#2D8CFF] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'google-meet', name: 'Google Meet', description: 'Video meetings', icon: 'GM', iconBg: 'bg-[#00897B] text-white', isConnected: false, status: 'Not Connected', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' },
+        { id: 'youtube-live', name: 'YouTube Live', description: 'Live streaming', icon: 'YT', iconBg: 'bg-[#FF0000] text-white', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'jitsi-meet', name: 'Jitsi Meet', description: 'Open source meetings', icon: 'JM', iconBg: 'bg-[#17A2B8] text-white', isConnected: false, status: 'Not Connected', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' }
+      ]
+    },
+    // 5. Authentication & OAuth
+    {
+      category: 'auth',
+      categoryTitle: 'Authentication & OAuth',
+      categorySubtitle: 'Manage third-party login and authentication.',
+      categoryIcon: Shield,
+      categoryIconColor: 'bg-teal-100 text-teal-600',
+      services: [
+        { id: 'google-oauth', name: 'Google OAuth', description: 'Login with Google', icon: 'G', iconBg: 'bg-white border border-gray-200 text-gray-800 shadow-xs font-black', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'apple-signin', name: 'Apple Sign In', description: 'Login with Apple', icon: '', iconBg: 'bg-black text-white font-black', isConnected: false, status: 'Not Connected', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' },
+        { id: 'facebook-login', name: 'Facebook Login', description: 'Login with Facebook', icon: 'f', iconBg: 'bg-[#1877F2] text-white font-black', isConnected: false, status: 'Not Connected', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' },
+        { id: 'github-oauth', name: 'GitHub OAuth', description: 'Login with GitHub', icon: 'GH', iconBg: 'bg-[#24292E] text-white font-black', isConnected: true, status: 'Connected', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+      ]
+    }
+  ]);
+
+  // Recent Integration Logs (matching mockup)
+  const recentIntegrationLogs = [
+    { id: 1, service: 'Stripe', action: 'Connected successfully', date: '23 Sep 2026, 10:24', status: 'success', dotColor: 'bg-emerald-500' },
+    { id: 2, service: 'SendGrid', action: 'Email test sent', date: '23 Sep 2026, 09:18', status: 'success', dotColor: 'bg-emerald-500' },
+    { id: 3, service: 'Supabase', action: 'Connected successfully', date: '22 Sep 2026, 18:42', status: 'success', dotColor: 'bg-emerald-500' },
+    { id: 4, service: 'Cloudinary', action: 'Media upload test', date: '22 Sep 2026, 16:20', status: 'success', dotColor: 'bg-emerald-500' },
+    { id: 5, service: 'Midtrans', action: 'Connection failed', date: '22 Sep 2026, 14:11', status: 'error', dotColor: 'bg-rose-500' },
+    { id: 6, service: 'Google OAuth', action: 'Connected successfully', date: '22 Sep 2026, 11:35', status: 'success', dotColor: 'bg-emerald-500' },
+    { id: 7, service: 'Zoom', action: 'Meeting webhook received', date: '21 Sep 2026, 20:12', status: 'success', dotColor: 'bg-emerald-500' },
+    { id: 8, service: 'YouTube Live', action: 'Stream key verified', date: '21 Sep 2026, 16:08', status: 'success', dotColor: 'bg-emerald-500' }
+  ];
+
+  // API Keys List
+  const [apiKeysList, setApiKeysList] = useState([
+    { id: 'key-1', name: 'Live Production API Key', key: 'ilm_prod_key_84f9...92c84a', created: '1 Sep 2026', lastUsed: '23 Sep 2026', status: 'Active' },
+    { id: 'key-2', name: 'Sandbox Staging Key', key: 'ilm_test_key_31a7...45x109', created: '15 Sep 2026', lastUsed: '22 Sep 2026', status: 'Active' }
+  ]);
+
+  // Webhooks List
+  const [webhooksList, setWebhooksList] = useState([
+    { id: 'wh-1', url: 'https://api.ilmhub.com/v1/webhooks/mayar', events: 'payment.settled, payout.disbursed', status: 'Active' },
+    { id: 'wh-2', url: 'https://api.ilmhub.com/v1/webhooks/zoom', events: 'meeting.started, meeting.ended', status: 'Active' }
+  ]);
+
+  // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
   const [vipTeachersList, setVipTeachersList] = useState([
@@ -15322,6 +15433,470 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'integrations' ? (
+            (() => {
+              // Custom Toggle Switch Component
+              const ToggleSwitch = ({ checked, onChange }) => (
+                <button
+                  type="button"
+                  onClick={() => onChange(!checked)}
+                  className={`w-8 h-4.5 flex items-center rounded-full p-0.5 transition-colors duration-200 ease-in-out cursor-pointer shrink-0 ${
+                    checked ? 'bg-[#10B981]' : 'bg-gray-300'
+                  }`}
+                >
+                  <div
+                    className={`bg-white w-3.5 h-3.5 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                      checked ? 'translate-x-3.5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              );
+
+              // Filtered catalog by tab
+              const filteredCatalog = integrationsCatalog.filter((cat) => {
+                if (integrationTabFilter === 'all') return true;
+                return cat.category === integrationTabFilter;
+              });
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  {/* 1. TOP HEADER */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-md shrink-0">
+                        <Link2 className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Integrations</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Connect and manage third-party services to extend your platform's capabilities.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Action Buttons (matching media_1790803659765.jpg) */}
+                    <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+                      <button
+                        onClick={() => setIsIntegrationDocsModalOpen(true)}
+                        className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Integration Docs</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsTestAllConnectionsModalOpen(true)}
+                        className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                      >
+                        <Activity className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Test Connection</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsAddIntegrationModalOpen(true)}
+                        className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-black shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>+ Add Integration</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. HORIZONTAL CATEGORY FILTER TABS STRIP */}
+                  <div className="bg-white rounded-2xl p-2 sm:p-2.5 border border-gray-100 shadow-xs">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap min-w-0 py-0.5">
+                      {[
+                        { id: 'all', label: 'All Integrations' },
+                        { id: 'payment', label: 'Payment' },
+                        { id: 'communication', label: 'Communication' },
+                        { id: 'storage', label: 'Storage & Media' },
+                        { id: 'live', label: 'Live & Video' },
+                        { id: 'analytics', label: 'Analytics' },
+                        { id: 'auth', label: 'Authentication' },
+                        { id: 'productivity', label: 'Productivity' },
+                        { id: 'others', label: 'Others' }
+                      ].map((tab) => {
+                        const isActive = integrationTabFilter === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={() => setIntegrationTabFilter(tab.id)}
+                            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              isActive
+                                ? 'bg-[#114B44] text-white shadow-xs font-black'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/80'
+                            }`}
+                          >
+                            {tab.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 3. TOP 4 KPI CARDS (Matching media_1790803659765.jpg) */}
+                  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
+                    {/* Card 1: Total Integrations */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <Layers className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">12</div>
+                        <div className="text-gray-500 font-bold text-xs truncate">Total Integrations</div>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Connected */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <Check className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">8</div>
+                        <div className="text-gray-500 font-bold text-xs truncate">Connected</div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Not Connected */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <AlertCircle className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">3</div>
+                        <div className="text-gray-500 font-bold text-xs truncate">Not Connected</div>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Needs Attention */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <Clock className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">1</div>
+                        <div className="text-gray-500 font-bold text-xs truncate">Needs Attention</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. MAIN 2-COLUMN GRID (8 COLS CANVAS + 4 COLS SIDEBAR) */}
+                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 min-w-0">
+                    
+                    {/* LEFT MAIN CANVAS (8 COLS) */}
+                    <div className="xl:col-span-8 space-y-5 min-w-0">
+                      
+                      {filteredCatalog.map((cat, catIdx) => {
+                        const CatIcon = cat.categoryIcon;
+                        return (
+                          <div key={catIdx} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                            {/* Section Header */}
+                            <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                              <div className={`w-8 h-8 rounded-xl ${cat.categoryIconColor} flex items-center justify-center shrink-0`}>
+                                <CatIcon className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <h3 className="text-xs font-black text-gray-900">{cat.categoryTitle}</h3>
+                                <p className="text-[11px] text-gray-500">{cat.categorySubtitle}</p>
+                              </div>
+                            </div>
+
+                            {/* 4 Services Grid in each section */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                              {cat.services.map((srv) => (
+                                <div
+                                  key={srv.id}
+                                  className="p-3.5 rounded-2xl border border-gray-200 bg-[#F8FAFC]/50 hover:bg-white hover:border-gray-300 hover:shadow-xs transition-all flex flex-col justify-between space-y-3"
+                                >
+                                  <div>
+                                    {/* Service Icon, Title, & Subtitle */}
+                                    <div className="flex items-start gap-2.5">
+                                      <div className={`w-8 h-8 rounded-xl ${srv.iconBg} flex items-center justify-center text-xs font-black shrink-0`}>
+                                        {srv.icon}
+                                      </div>
+                                      <div className="min-w-0">
+                                        <div className="font-black text-gray-900 text-xs truncate">{srv.name}</div>
+                                        <div className="text-[10px] text-gray-400 truncate mt-0.5">{srv.description}</div>
+                                      </div>
+                                    </div>
+
+                                    {/* Status Badge & Toggle Switch */}
+                                    <div className="flex items-center justify-between gap-1.5 pt-3">
+                                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold border ${
+                                        srv.isConnected
+                                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                          : 'bg-rose-50 text-rose-700 border-rose-200'
+                                      }`}>
+                                        {srv.isConnected ? 'Connected' : 'Not Connected'}
+                                      </span>
+
+                                      <div className="flex items-center gap-1.5">
+                                        <button
+                                          type="button"
+                                          onClick={() => setSelectedIntegrationForConfig(srv)}
+                                          title="Settings"
+                                          className="text-gray-400 hover:text-gray-600 p-0.5 rounded-md cursor-pointer"
+                                        >
+                                          <Settings className="w-3.5 h-3.5" />
+                                        </button>
+                                        <ToggleSwitch
+                                          checked={srv.isConnected}
+                                          onChange={(val) => {
+                                            setIntegrationsCatalog(prev => prev.map(c => ({
+                                              ...c,
+                                              services: c.services.map(s => s.id === srv.id ? { ...s, isConnected: val, status: val ? 'Connected' : 'Not Connected' } : s)
+                                            })));
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Configure Link */}
+                                  <div className="pt-2 border-t border-gray-100 flex items-center justify-center">
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedIntegrationForConfig(srv)}
+                                      className="text-[11px] font-bold text-gray-700 hover:text-[#114B44] flex items-center gap-1 transition-colors cursor-pointer"
+                                    >
+                                      <span>Configure</span>
+                                      <ArrowUpRight className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                    </div>
+
+                    {/* RIGHT SIDEBAR (4 COLS) */}
+                    <aside className="xl:col-span-4 space-y-5 min-w-0">
+                      
+                      {/* WIDGET 1: INTEGRATION STATUS (DONUT CHART) */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                        <h3 className="text-sm font-black text-gray-900">Integration Status</h3>
+
+                        <div className="flex flex-col sm:flex-row xl:flex-col items-center gap-4 pt-1">
+                          {/* Circular SVG Donut */}
+                          <div className="relative w-36 h-36 flex items-center justify-center shrink-0">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                              <circle cx="50" cy="50" r="38" stroke="#F1F5F9" strokeWidth="11" fill="transparent" />
+                              {/* Connected: 8 / 12 = 66.6% (159.2) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#10B981"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="159.2 238.76"
+                                strokeDashoffset="0"
+                              />
+                              {/* Not Connected: 3 / 12 = 25% (59.7) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#EF4444"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="59.7 238.76"
+                                strokeDashoffset="-159.2"
+                              />
+                              {/* Needs Attention: 1 / 12 = 8.3% (19.8) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#3B82F6"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="19.8 238.76"
+                                strokeDashoffset="-218.9"
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                              <span className="text-base font-black text-gray-900 leading-none">12</span>
+                              <span className="text-[10px] font-bold text-gray-400 mt-0.5">Integrations</span>
+                            </div>
+                          </div>
+
+                          {/* Legend List */}
+                          <div className="w-full space-y-2 text-xs">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span className="font-bold text-gray-700 text-[11px]">Connected</span>
+                              </div>
+                              <span className="font-black text-gray-900 text-[11px]">8</span>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                                <span className="font-bold text-gray-700 text-[11px]">Not Connected</span>
+                              </div>
+                              <span className="font-black text-gray-900 text-[11px]">3</span>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0"></span>
+                                <span className="font-bold text-gray-700 text-[11px]">Needs Attention</span>
+                              </div>
+                              <span className="font-black text-gray-900 text-[11px]">1</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* WIDGET 2: RECENT INTEGRATION LOGS */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Recent Integration Logs</h3>
+                          <button
+                            onClick={() => setIsViewAllIntegrationLogsModalOpen(true)}
+                            className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {recentIntegrationLogs.map((log) => (
+                            <div key={log.id} className="flex items-center justify-between gap-2 p-1.5 hover:bg-gray-50/80 rounded-xl transition-colors">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className={`w-2 h-2 rounded-full ${log.dotColor} shrink-0`}></span>
+                                <span className="font-black text-gray-900 text-[11px] truncate">{log.service}</span>
+                                <span className={`px-1.5 py-0.2 rounded-md text-[9px] font-bold shrink-0 ${
+                                  log.status === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                                }`}>
+                                  {log.action}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-gray-400 shrink-0">{log.date}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* WIDGET 3: API KEYS & WEBHOOKS */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center gap-2">
+                          <Key className="w-4 h-4 text-purple-600" />
+                          <h3 className="text-sm font-black text-gray-900">API Keys & Webhooks</h3>
+                        </div>
+                        <p className="text-[11px] text-gray-500">Manage API keys, webhooks, and secure access.</p>
+
+                        <div className="space-y-2 text-xs">
+                          <button
+                            onClick={() => setIsApiKeysWebhooksModalOpen(true)}
+                            className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Key className="w-3.5 h-3.5 text-gray-400" />
+                              <span className="text-[11px]">API Keys</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">View and manage API keys ›</span>
+                          </button>
+
+                          <button
+                            onClick={() => setIsApiKeysWebhooksModalOpen(true)}
+                            className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Globe className="w-3.5 h-3.5 text-gray-400" />
+                              <span className="text-[11px]">Webhook Endpoints</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">Configure and test webhooks ›</span>
+                          </button>
+
+                          <button
+                            onClick={() => alert('Fitur IP Whitelist & Firewall: Hanya IP terdaftar yang diizinkan mengakses API')}
+                            className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Shield className="w-3.5 h-3.5 text-gray-400" />
+                              <span className="text-[11px]">IP Whitelist</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">Restrict access by IP address ›</span>
+                          </button>
+
+                          <button
+                            onClick={() => alert('Pengaturan Rate Limiting: 1,000 request / menit per API key')}
+                            className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Sliders className="w-3.5 h-3.5 text-gray-400" />
+                              <span className="text-[11px]">Rate Limiting</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">Set API rate limits ›</span>
+                          </button>
+
+                          <button
+                            onClick={() => setIsViewAllIntegrationLogsModalOpen(true)}
+                            className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <FileText className="w-3.5 h-3.5 text-gray-400" />
+                              <span className="text-[11px]">Integration Logs</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400">View detailed logs ›</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* WIDGET 4: NEED HELP */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center gap-2">
+                          <HelpCircle className="w-4 h-4 text-blue-600" />
+                          <h3 className="text-sm font-black text-gray-900">Need Help?</h3>
+                        </div>
+
+                        <div className="space-y-2 text-xs">
+                          <button
+                            onClick={() => setIsIntegrationDocsModalOpen(true)}
+                            className="w-full text-left p-1.5 rounded-lg hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer flex items-center gap-2"
+                          >
+                            <span className="text-gray-400">•</span>
+                            <span className="text-[11px]">Integration Documentation</span>
+                          </button>
+                          <button
+                            onClick={() => setIsIntegrationDocsModalOpen(true)}
+                            className="w-full text-left p-1.5 rounded-lg hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer flex items-center gap-2"
+                          >
+                            <span className="text-gray-400">•</span>
+                            <span className="text-[11px]">API Reference</span>
+                          </button>
+                          <button
+                            onClick={() => alert('Pusat Bantuan: Panduan troubleshooting integrasi')}
+                            className="w-full text-left p-1.5 rounded-lg hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer flex items-center gap-2"
+                          >
+                            <span className="text-gray-400">•</span>
+                            <span className="text-[11px]">Common Issues</span>
+                          </button>
+                          <button
+                            onClick={() => alert('Hubungi Support IT: support@ilmhub.com')}
+                            className="w-full text-left p-1.5 rounded-lg hover:bg-gray-50 font-bold text-gray-700 transition-colors cursor-pointer flex items-center gap-2"
+                          >
+                            <span className="text-gray-400">•</span>
+                            <span className="text-[11px]">Contact Support</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -20685,6 +21260,408 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   >
                     Ya, Reset Pengaturan
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* INTEGRATIONS INTERACTIVE MODALS                           */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal Configure Integration Service */}
+          {selectedIntegrationForConfig && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-9 h-9 rounded-xl ${selectedIntegrationForConfig.iconBg} flex items-center justify-center font-black text-sm`}>
+                      {selectedIntegrationForConfig.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Konfigurasi {selectedIntegrationForConfig.name}</h3>
+                      <p className="text-xs text-gray-500">{selectedIntegrationForConfig.description}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedIntegrationForConfig(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div className="flex items-center justify-between p-3 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                    <div>
+                      <span className="font-extrabold text-gray-900 block">Status Koneksi</span>
+                      <span className="text-[10px] text-gray-500">Aktifkan atau nonaktifkan integrasi ini</span>
+                    </div>
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${selectedIntegrationForConfig.statusBadge}`}>
+                      {selectedIntegrationForConfig.status}
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">API Key / Publishable Key</label>
+                    <input
+                      type="password"
+                      defaultValue="ilm_pub_key_demo_51M39982410"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-mono font-medium focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">API Secret / Private Token</label>
+                    <input
+                      type="password"
+                      defaultValue="ilm_sec_key_demo_99A81498124"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-mono font-medium focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Webhook URL Endpoint</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={`https://api.ilmhub.com/v1/webhooks/${selectedIntegrationForConfig.id}`}
+                        className="w-full bg-gray-100 border border-gray-200 rounded-xl p-2.5 text-xs font-mono text-gray-600 focus:outline-none select-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => alert('Webhook URL disalin ke clipboard!')}
+                        className="px-3 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl font-bold text-xs shrink-0 cursor-pointer shadow-2xs"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Mode Lingkungan (Environment)</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        className="py-2 rounded-xl text-xs font-bold border border-[#114B44] bg-emerald-50 text-[#114B44] text-center cursor-pointer"
+                      >
+                        Live Production
+                      </button>
+                      <button
+                        type="button"
+                        className="py-2 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 text-center cursor-pointer"
+                      >
+                        Sandbox / Test Mode
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => alert(`Ping test ke server ${selectedIntegrationForConfig.name} berhasil! Response: 200 OK (38ms)`)}
+                    className="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-extrabold rounded-xl transition-colors cursor-pointer"
+                  >
+                    Test Ping
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setSelectedIntegrationForConfig(null)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer">Batal</button>
+                    <button
+                      onClick={() => {
+                        setSelectedIntegrationForConfig(null);
+                        alert(`Konfigurasi ${selectedIntegrationForConfig.name} berhasil disimpan dan token terenkripsi.`);
+                      }}
+                      className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl font-extrabold shadow-xs transition-colors cursor-pointer"
+                    >
+                      <span>Simpan Konfigurasi</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal Add New Integration */}
+          {isAddIntegrationModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Plus className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Hubungkan Integrasi Baru</h3>
+                      <p className="text-xs text-gray-500">Pilih dari katalog layanan pihak ketiga atau buat custom webhook</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsAddIntegrationModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Pilih Layanan</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]">
+                      <option>Xendit (Payment Gateway)</option>
+                      <option>WhatsApp Official API (Meta Cloud API)</option>
+                      <option>OpenAI API (AI Tutor Assistant)</option>
+                      <option>Vimeo OTT (Video Streaming Protected)</option>
+                      <option>Custom REST API Webhook</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Nama Integrasi</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: OpenAI GPT-4o Tutor Bot"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">API Key / Token</label>
+                    <input
+                      type="password"
+                      placeholder="Masukkan token API rahasia..."
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-mono focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsAddIntegrationModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsAddIntegrationModalOpen(false);
+                      alert('Integrasi baru berhasil dihubungkan ke platform!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>Hubungkan Layanan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal Test All Connections */}
+          {isTestAllConnectionsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Uji Diagnostik Koneksi Platform</h3>
+                      <p className="text-xs text-gray-500">Memeriksa latensi & status response 12 layanan</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsTestAllConnectionsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {[
+                    { name: 'Stripe Payment Gateway', status: '200 OK', latency: '42ms', isGood: true },
+                    { name: 'PayPal Commerce Platform', status: '200 OK', latency: '68ms', isGood: true },
+                    { name: 'SendGrid Email API', status: '200 OK', latency: '35ms', isGood: true },
+                    { name: 'Twilio SMS & WA Gateway', status: '200 OK', latency: '54ms', isGood: true },
+                    { name: 'Supabase PostgreSQL & Storage', status: '200 OK', latency: '21ms', isGood: true },
+                    { name: 'Zoom Video SDK', status: '200 OK', latency: '62ms', isGood: true },
+                    { name: 'YouTube Live Streaming API', status: '200 OK', latency: '49ms', isGood: true },
+                    { name: 'Google OAuth 2.0 Auth', status: '200 OK', latency: '28ms', isGood: true },
+                    { name: 'Midtrans Payment Engine', status: 'Unreachable / Inactive', latency: '-', isGood: false },
+                  ].map((diag, idx) => (
+                    <div key={idx} className="p-2.5 rounded-xl border border-gray-200 bg-[#F8FAFC] flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${diag.isGood ? 'bg-emerald-500' : 'bg-rose-500'} shrink-0`}></span>
+                        <span className="font-extrabold text-gray-900 text-[11px]">{diag.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-gray-500 text-[10px]">{diag.latency}</span>
+                        <span className={`px-2 py-0.2 rounded-md font-bold text-[9px] ${diag.isGood ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                          {diag.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
+                  <span className="text-emerald-700 font-extrabold text-[11px]">8/12 Layanan Beroperasi Normal</span>
+                  <button onClick={() => setIsTestAllConnectionsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal API Keys & Webhooks */}
+          {isApiKeysWebhooksModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Key className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">API Keys & Webhooks Manager</h3>
+                      <p className="text-xs text-gray-500">Kelola kunci akses API publik dan webhook endpoint</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsApiKeysWebhooksModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  {/* API Keys Section */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="font-black text-gray-900 uppercase text-[10px] tracking-wider">Kunci API Aktif</span>
+                      <button
+                        onClick={() => {
+                          const newKey = {
+                            id: `key-${apiKeysList.length + 1}`,
+                            name: `Custom API Key #${apiKeysList.length + 1}`,
+                            key: `ilm_prod_key_${Math.random().toString(36).substring(2, 10)}...${Math.random().toString(36).substring(2, 6)}`,
+                            created: 'Hari ini',
+                            lastUsed: 'Baru saja',
+                            status: 'Active'
+                          };
+                          setApiKeysList([...apiKeysList, newKey]);
+                          alert('API Key baru berhasil di-generate!');
+                        }}
+                        className="text-[11px] font-black text-[#114B44] hover:underline cursor-pointer"
+                      >
+                        + Generate Key Baru
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {apiKeysList.map((k) => (
+                        <div key={k.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between gap-2">
+                          <div>
+                            <div className="font-extrabold text-gray-900">{k.name}</div>
+                            <div className="font-mono text-gray-500 text-[10px]">{k.key} • Dibuat {k.created}</div>
+                          </div>
+                          <button
+                            onClick={() => alert(`API Key ${k.key} berhasil disalin ke clipboard!`)}
+                            className="px-2.5 py-1 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-[10px] font-bold rounded-lg cursor-pointer shadow-2xs"
+                          >
+                            Copy
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Webhooks Section */}
+                  <div className="space-y-2 pt-2 border-t border-gray-100">
+                    <div className="flex justify-between items-center">
+                      <span className="font-black text-gray-900 uppercase text-[10px] tracking-wider">Webhook Endpoints</span>
+                      <button
+                        onClick={() => alert('Form pendaftaran Webhook Endpoint baru dibuka')}
+                        className="text-[11px] font-black text-[#114B44] hover:underline cursor-pointer"
+                      >
+                        + Tambah Endpoint
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {webhooksList.map((wh) => (
+                        <div key={wh.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1">
+                          <div className="flex justify-between items-center">
+                            <span className="font-mono text-emerald-800 font-bold text-[11px]">{wh.url}</span>
+                            <span className="px-2 py-0.2 rounded-full text-[9px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              {wh.status}
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-gray-400 font-medium">Events: {wh.events}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsApiKeysWebhooksModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal Integration Docs */}
+          {isIntegrationDocsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Dokumentasi API & SDK Integrasi</h3>
+                      <p className="text-xs text-gray-500">Petunjuk penghubungan gateway, webhook, & OAuth</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsIntegrationDocsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs text-gray-700">
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
+                    <span className="font-black text-gray-900">Stripe Connect & Mayar Gateway</span>
+                    <p className="text-[11px] text-gray-600">Gunakan webhook secret untuk memverifikasi signature payload event <code>invoice.paid</code> dan <code>transfer.created</code>.</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
+                    <span className="font-black text-gray-900">Zoom Video WebSDK 3.x</span>
+                    <p className="text-[11px] text-gray-600">Client Secret digunakan untuk menghasilkan token JWT tanda tangan sesi kelas tatap muka real-time.</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
+                    <span className="font-black text-gray-900">Google OAuth 2.0 Client</span>
+                    <p className="text-[11px] text-gray-600">Daftarkan URI redirect resmi: <code>https://ilmhub.com/auth/callback/google</code> di Google Cloud Console.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsIntegrationDocsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Modal View All Integration Logs */}
+          {isViewAllIntegrationLogsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Log Aktivitas Integrasi Lengkap</h3>
+                      <p className="text-xs text-gray-500">Histori pertukaran data & pemanggilan webhook</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllIntegrationLogsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {recentIntegrationLogs.map((log) => (
+                    <div key={log.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`w-2.5 h-2.5 rounded-full ${log.dotColor} shrink-0`}></span>
+                        <div>
+                          <div className="font-extrabold text-gray-900">{log.service}</div>
+                          <div className="text-[10px] text-gray-400">{log.action}</div>
+                        </div>
+                      </div>
+                      <span className="font-bold text-gray-500 text-[10px]">{log.date}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllIntegrationLogsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
                 </div>
               </div>
             </div>
