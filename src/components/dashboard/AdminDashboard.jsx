@@ -2839,6 +2839,328 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [issueDescription, setIssueDescription] = useState('');
 
   // =========================================================
+  // MESSAGES DATASET (matching media_1790801870565.jpg)
+  // =========================================================
+  const [messagesList, setMessagesList] = useState([
+    {
+      id: 'msg-1',
+      name: 'Ahmad Ali',
+      email: 'ahmedali@ilmhub.com',
+      avatar: '/images/student_ali.jpg',
+      role: 'Student',
+      roleBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      lastMessage: "Assalamu'alaikum, apakah kelas Islamic History Basics masih tersedia untuk pendaftaran bulan ini?",
+      time: '10:24',
+      date: 'Today, 23 Sep 2026',
+      unreadCount: 2,
+      category: 'unread',
+      status: 'Online',
+      userId: '#STU1001',
+      joined: '12 Jan 2026',
+      totalMessagesCount: 24,
+      lastActive: 'Today, 10:24',
+      userStatus: 'Active',
+      relatedInfo: {
+        enrolledClasses: 5,
+        assignments: 12,
+        certificates: 3,
+        supportTickets: 2
+      },
+      chatHistory: [
+        {
+          id: 'ch-1',
+          sender: 'them',
+          senderName: 'Ahmad Ali',
+          time: '10:20',
+          text: "Assalamu'alaikum,\napakah kelas Islamic History Basics masih tersedia untuk pendaftaran bulan ini?",
+          card: null
+        },
+        {
+          id: 'ch-2',
+          sender: 'me',
+          senderName: 'Admin IlmHub',
+          time: '10:22',
+          text: "Wa'alaikumussalam Ahmad,\nYa, kelas tersebut masih tersedia. Anda bisa langsung mendaftar melalui halaman kelas atau saya bantu daftarkan?",
+          isDelivered: true,
+          card: null
+        },
+        {
+          id: 'ch-3',
+          sender: 'them',
+          senderName: 'Ahmad Ali',
+          time: '10:23',
+          text: "Baik, terima kasih. Apakah ada diskon untuk pelajar?",
+          card: null
+        },
+        {
+          id: 'ch-4',
+          sender: 'me',
+          senderName: 'Admin IlmHub',
+          time: '10:24',
+          text: "Untuk pelajar, kami memberikan diskon 20%.\nBerikut saya kirimkan link pendaftaran dan detailnya.",
+          isDelivered: true,
+          card: {
+            image: '/images/class_nahwu.jpg',
+            title: 'Islamic History Basics',
+            instructor: 'Dr. Ahmad Fauzi',
+            status: 'Available',
+            actionText: 'View Class Details →'
+          }
+        }
+      ]
+    },
+    {
+      id: 'msg-2',
+      name: 'Siti Aisyah',
+      email: 'siti@ilmhub.com',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Student',
+      roleBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      lastMessage: 'Terima kasih atas materinya, sangat bermanfaat!',
+      time: '09:15',
+      date: 'Today, 23 Sep 2026',
+      unreadCount: 1,
+      category: 'unread',
+      status: 'Online',
+      userId: '#STU1002',
+      joined: '08 Feb 2026',
+      totalMessagesCount: 18,
+      lastActive: 'Today, 09:15',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 4, assignments: 10, certificates: 2, supportTickets: 1 },
+      chatHistory: [
+        { id: 'ch-201', sender: 'them', senderName: 'Siti Aisyah', time: '09:15', text: 'Terima kasih atas materinya, sangat membantu memahami nahwu dan sharaf!', card: null }
+      ]
+    },
+    {
+      id: 'msg-3',
+      name: 'Omar Hassan',
+      email: 'omar@ilmhub.com',
+      avatar: '/images/student_omar.jpg',
+      role: 'Student',
+      roleBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      lastMessage: 'Could you please check my assignment?',
+      time: '08:40',
+      date: 'Today, 23 Sep 2026',
+      unreadCount: 0,
+      category: 'all',
+      status: 'Offline',
+      userId: '#STU1003',
+      joined: '15 Jan 2026',
+      totalMessagesCount: 32,
+      lastActive: '1 hour ago',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 6, assignments: 15, certificates: 4, supportTickets: 0 },
+      chatHistory: [
+        { id: 'ch-301', sender: 'them', senderName: 'Omar Hassan', time: '08:40', text: 'Could you please check my English grammar assignment submission for Week 4?', card: null }
+      ]
+    },
+    {
+      id: 'msg-4',
+      name: 'Layla Karim',
+      email: 'layla@ilmhub.com',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Teacher',
+      roleBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      lastMessage: 'Apakah ada jadwal ulang untuk kelas matematika?',
+      time: '07:32',
+      date: 'Today, 23 Sep 2026',
+      unreadCount: 0,
+      category: 'all',
+      status: 'Online',
+      userId: '#TEA2001',
+      joined: '01 Jan 2026',
+      totalMessagesCount: 45,
+      lastActive: '2 hours ago',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 8, assignments: 22, certificates: 6, supportTickets: 1 },
+      chatHistory: [
+        { id: 'ch-401', sender: 'them', senderName: 'Layla Karim', time: '07:32', text: 'Apakah ada jadwal ulang untuk sesi live matematika kalkulus hari Kamis?', card: null }
+      ]
+    },
+    {
+      id: 'msg-5',
+      name: 'Zainab Ali',
+      email: 'zainab@ilmhub.com',
+      avatar: '/images/student_maryam.jpg',
+      role: 'Support',
+      roleBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      lastMessage: 'Saya tidak bisa mengakses materi PDF modul 4...',
+      time: '06:18',
+      date: 'Today, 23 Sep 2026',
+      unreadCount: 0,
+      category: 'support',
+      status: 'Online',
+      userId: '#STU1005',
+      joined: '20 Feb 2026',
+      totalMessagesCount: 12,
+      lastActive: '3 hours ago',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 3, assignments: 6, certificates: 1, supportTickets: 3 },
+      chatHistory: [
+        { id: 'ch-501', sender: 'them', senderName: 'Zainab Ali', time: '06:18', text: 'Saya tidak bisa mengakses materi PDF modul 4, muncul pesan error otorisasi.', card: null }
+      ]
+    },
+    {
+      id: 'msg-6',
+      name: 'Fatimah Nur',
+      email: 'fatimah@ilmhub.com',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Student',
+      roleBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      lastMessage: 'Jazakumullah, kelasnya sangat bermanfaat',
+      time: 'Yesterday',
+      date: '22 Sep 2026',
+      unreadCount: 0,
+      category: 'all',
+      status: 'Offline',
+      userId: '#STU1006',
+      joined: '10 Feb 2026',
+      totalMessagesCount: 16,
+      lastActive: '1 day ago',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 4, assignments: 8, certificates: 2, supportTickets: 0 },
+      chatHistory: [
+        { id: 'ch-601', sender: 'them', senderName: 'Fatimah Nur', time: 'Yesterday', text: 'Jazakumullah khairan, kelas sirah nabawiyah kemarin sangat berkesan dan sarat hikmah.', card: null }
+      ]
+    },
+    {
+      id: 'msg-7',
+      name: 'Muhammad Khan',
+      email: 'khan@ilmhub.com',
+      avatar: '/images/student_ali.jpg',
+      role: 'Student',
+      roleBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      lastMessage: 'Apakah ada diskon untuk kelas berikutnya?',
+      time: 'Yesterday',
+      date: '22 Sep 2026',
+      unreadCount: 0,
+      category: 'all',
+      status: 'Offline',
+      userId: '#STU1007',
+      joined: '05 Mar 2026',
+      totalMessagesCount: 14,
+      lastActive: '1 day ago',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 5, assignments: 11, certificates: 3, supportTickets: 1 },
+      chatHistory: [
+        { id: 'ch-701', sender: 'them', senderName: 'Muhammad Khan', time: 'Yesterday', text: 'Apakah ada diskon atau program beasiswa untuk kelas Web Development tingkat lanjut?', card: null }
+      ]
+    },
+    {
+      id: 'msg-8',
+      name: 'Nadia Rahman',
+      email: 'nadia@ilmhub.com',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Support',
+      roleBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      lastMessage: 'Video live tidak muncul di perangkat saya',
+      time: 'Yesterday',
+      date: '22 Sep 2026',
+      unreadCount: 0,
+      category: 'support',
+      status: 'Offline',
+      userId: '#STU1008',
+      joined: '18 Feb 2026',
+      totalMessagesCount: 9,
+      lastActive: '1 day ago',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 2, assignments: 4, certificates: 1, supportTickets: 2 },
+      chatHistory: [
+        { id: 'ch-801', sender: 'them', senderName: 'Nadia Rahman', time: 'Yesterday', text: 'Video live room tidak muncul di browser iPad saya, mohon bantuannya.', card: null }
+      ]
+    },
+    {
+      id: 'msg-9',
+      name: 'Ali Reza',
+      email: 'alireza@ilmhub.com',
+      avatar: '/images/student_omar.jpg',
+      role: 'Student',
+      roleBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      lastMessage: 'Can you help me with certificate issue?',
+      time: '2 Sep',
+      date: '2 Sep 2026',
+      unreadCount: 0,
+      category: 'all',
+      status: 'Offline',
+      userId: '#STU1009',
+      joined: '12 Jan 2026',
+      totalMessagesCount: 22,
+      lastActive: '3 weeks ago',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 7, assignments: 14, certificates: 5, supportTickets: 1 },
+      chatHistory: [
+        { id: 'ch-901', sender: 'them', senderName: 'Ali Reza', time: '2 Sep', text: 'Can you please reissue my Business Basics certificate with updated student ID?', card: null }
+      ]
+    },
+    {
+      id: 'msg-10',
+      name: 'Dr. Ahmad Fauzi',
+      email: 'ahmad@ilmhub.com',
+      avatar: '/images/tutor_ahmed.jpg',
+      role: 'Teacher',
+      roleBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      lastMessage: 'Please review my course submission.',
+      time: '2 Sep',
+      date: '2 Sep 2026',
+      unreadCount: 0,
+      category: 'all',
+      status: 'Online',
+      userId: '#TEA2002',
+      joined: '01 Jan 2026',
+      totalMessagesCount: 58,
+      lastActive: 'Today',
+      userStatus: 'Active',
+      relatedInfo: { enrolledClasses: 12, assignments: 30, certificates: 8, supportTickets: 0 },
+      chatHistory: [
+        { id: 'ch-1001', sender: 'them', senderName: 'Dr. Ahmad Fauzi', time: '2 Sep', text: 'Silabus baru dan bank soal untuk kuis semester ini sudah siap direview.', card: null }
+      ]
+    }
+  ]);
+
+  const [selectedConversationId, setSelectedConversationId] = useState('msg-1');
+  const [msgTabFilter, setMsgTabFilter] = useState('all'); // 'all' (1856) | 'unread' (42) | 'support' (28) | 'archived' (120)
+  const [msgSearchQuery, setMsgSearchQuery] = useState('');
+  const [chatInputText, setChatInputText] = useState('');
+  const [isNewMessageModalOpen, setIsNewMessageModalOpen] = useState(false);
+  const [isMessageSettingsModalOpen, setIsMessageSettingsModalOpen] = useState(false);
+  const [isCreateSupportTicketModalOpen, setIsCreateSupportTicketModalOpen] = useState(false);
+  const [newMsgRecipient, setNewMsgRecipient] = useState('Ahmad Ali');
+  const [newMsgSubject, setNewMsgSubject] = useState('');
+  const [newMsgBody, setNewMsgBody] = useState('');
+
+  // Selected Active Conversation
+  const activeConversation = messagesList.find(m => m.id === selectedConversationId) || messagesList[0];
+
+  // Send message in current active chat
+  const handleSendMessage = () => {
+    if (!chatInputText.trim()) return;
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const newBubble = {
+      id: `ch-${Date.now()}`,
+      sender: 'me',
+      senderName: 'Admin IlmHub',
+      time: timeStr,
+      text: chatInputText,
+      isDelivered: true,
+      card: null
+    };
+    setMessagesList(prev => prev.map(conv => {
+      if (conv.id === activeConversation.id) {
+        return {
+          ...conv,
+          lastMessage: chatInputText,
+          time: timeStr,
+          chatHistory: [...conv.chatHistory, newBubble]
+        };
+      }
+      return conv;
+    }));
+    setChatInputText('');
+  };
+
+  // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
   const [vipTeachersList, setVipTeachersList] = useState([
@@ -10566,6 +10888,660 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'messages' ? (
+            (() => {
+              const filteredMessages = messagesList.filter(msg => {
+                if (msgTabFilter === 'unread' && msg.unreadCount === 0) return false;
+                if (msgTabFilter === 'support' && msg.category !== 'support' && msg.role !== 'Support') return false;
+                if (msgTabFilter === 'archived' && msg.category !== 'archived') return false;
+                if (msgSearchQuery.trim()) {
+                  const q = msgSearchQuery.toLowerCase();
+                  const matchName = msg.name.toLowerCase().includes(q);
+                  const matchEmail = msg.email.toLowerCase().includes(q);
+                  const matchMsg = msg.lastMessage.toLowerCase().includes(q);
+                  const matchRole = msg.role.toLowerCase().includes(q);
+                  if (!matchName && !matchEmail && !matchMsg && !matchRole) return false;
+                }
+                return true;
+              });
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* 1. TOP MESSAGES HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                        <MessageSquare className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Messages</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Manage user messages, support requests, and platform communications.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <button
+                        onClick={() => setIsMessageSettingsModalOpen(true)}
+                        className="px-3.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                      >
+                        <Settings className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Message Settings</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsNewMessageModalOpen(true)}
+                        className="px-4 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>+ New Message</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. KPI METRICS (4 CARDS) */}
+                  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
+                    
+                    {/* Card 1: Total Messages */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Total Messages</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">1,856</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 28% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                          <MessageSquare className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-blue-200 h-3 rounded-full"></div>
+                          <div className="w-1 bg-blue-300 h-5 rounded-full"></div>
+                          <div className="w-1 bg-blue-400 h-4 rounded-full"></div>
+                          <div className="w-1 bg-blue-500 h-7 rounded-full"></div>
+                          <div className="w-1 bg-blue-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Unread Messages */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Unread Messages</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">42</div>
+                        <div className="text-[10px] font-bold text-rose-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 12% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                          <MessageSquare className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-rose-200 h-2 rounded-full"></div>
+                          <div className="w-1 bg-rose-300 h-4 rounded-full"></div>
+                          <div className="w-1 bg-rose-400 h-6 rounded-full"></div>
+                          <div className="w-1 bg-rose-500 h-5 rounded-full"></div>
+                          <div className="w-1 bg-rose-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Support Requests */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Support Requests</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">28</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 35% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                          <HelpCircle className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-amber-200 h-3 rounded-full"></div>
+                          <div className="w-1 bg-amber-300 h-5 rounded-full"></div>
+                          <div className="w-1 bg-amber-400 h-4 rounded-full"></div>
+                          <div className="w-1 bg-amber-500 h-6 rounded-full"></div>
+                          <div className="w-1 bg-amber-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Resolved */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Resolved</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">1,586</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 26% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                          <CheckCircle2 className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-emerald-200 h-3 rounded-full"></div>
+                          <div className="w-1 bg-emerald-300 h-4 rounded-full"></div>
+                          <div className="w-1 bg-emerald-400 h-6 rounded-full"></div>
+                          <div className="w-1 bg-emerald-500 h-7 rounded-full"></div>
+                          <div className="w-1 bg-emerald-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 3. MAIN 3-COLUMN MESSAGES LAYOUT */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    
+                    {/* COLUMN 1: CONVERSATIONS LIST (4 COLS) */}
+                    <div className="lg:col-span-4 bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden flex flex-col min-w-0">
+                      
+                      {/* Filter Tabs on Top of List */}
+                      <div className="p-3 border-b border-gray-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                        <button
+                          onClick={() => setMsgTabFilter('all')}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                            msgTabFilter === 'all'
+                              ? 'bg-[#114B44] text-white shadow-xs'
+                              : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span>All Messages</span>
+                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                            msgTabFilter === 'all' ? 'bg-[#0D3B35] text-white' : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            1,856
+                          </span>
+                        </button>
+
+                        <button
+                          onClick={() => setMsgTabFilter('unread')}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                            msgTabFilter === 'unread'
+                              ? 'bg-[#114B44] text-white shadow-xs'
+                              : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span>Unread</span>
+                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                            msgTabFilter === 'unread' ? 'bg-[#0D3B35] text-white' : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            42
+                          </span>
+                        </button>
+
+                        <button
+                          onClick={() => setMsgTabFilter('support')}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                            msgTabFilter === 'support'
+                              ? 'bg-[#114B44] text-white shadow-xs'
+                              : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span>Support</span>
+                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                            msgTabFilter === 'support' ? 'bg-[#0D3B35] text-white' : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            28
+                          </span>
+                        </button>
+
+                        <button
+                          onClick={() => setMsgTabFilter('archived')}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                            msgTabFilter === 'archived'
+                              ? 'bg-[#114B44] text-white shadow-xs'
+                              : 'bg-white text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span>Archived</span>
+                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                            msgTabFilter === 'archived' ? 'bg-[#0D3B35] text-white' : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            120
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Search Bar */}
+                      <div className="p-3 border-b border-gray-100 flex items-center gap-2">
+                        <div className="relative flex-1">
+                          <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            placeholder="Search messages..."
+                            value={msgSearchQuery}
+                            onChange={(e) => setMsgSearchQuery(e.target.value)}
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-8 pr-3 py-1.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44]"
+                          />
+                        </div>
+                        <button 
+                          onClick={() => alert('Filter percakapan')}
+                          className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-500 cursor-pointer shadow-2xs"
+                        >
+                          <Filter className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Conversations Scrollable List */}
+                      <div className="divide-y divide-gray-100 max-h-[580px] overflow-y-auto no-scrollbar">
+                        {filteredMessages.map((conv) => {
+                          const isSelected = conv.id === selectedConversationId;
+                          return (
+                            <div
+                              key={conv.id}
+                              onClick={() => {
+                                setSelectedConversationId(conv.id);
+                                // Mark as read
+                                setMessagesList(prev => prev.map(m => m.id === conv.id ? { ...m, unreadCount: 0 } : m));
+                              }}
+                              className={`p-3.5 transition-all cursor-pointer flex items-start gap-3 relative ${
+                                isSelected
+                                  ? 'bg-emerald-50/50 border-l-4 border-[#114B44]'
+                                  : 'hover:bg-gray-50'
+                              }`}
+                            >
+                              <div className="relative shrink-0">
+                                <img
+                                  src={conv.avatar}
+                                  alt={conv.name}
+                                  className="w-9 h-9 rounded-full object-cover border border-gray-200"
+                                  onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                                />
+                                {conv.status === 'Online' && (
+                                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
+                                )}
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center justify-between gap-1">
+                                  <div className="font-extrabold text-xs text-gray-900 truncate">
+                                    {conv.name}
+                                  </div>
+                                  <span className="text-[10px] text-gray-400 font-bold shrink-0">
+                                    {conv.time}
+                                  </span>
+                                </div>
+
+                                <div className="text-[11px] text-gray-500 truncate mt-0.5">
+                                  {conv.lastMessage}
+                                </div>
+
+                                <div className="flex items-center justify-between gap-2 mt-1.5">
+                                  <span className={`px-2 py-0.2 rounded-md text-[9px] font-black border ${conv.roleBadge}`}>
+                                    {conv.role}
+                                  </span>
+                                  {conv.unreadCount > 0 && (
+                                    <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
+                                      {conv.unreadCount}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Pagination Footer */}
+                      <div className="p-3 bg-[#F8FAFC] border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-gray-500">
+                        <div>Showing <span className="font-bold text-gray-800">1 to 10</span> of 1,856</div>
+                        <div className="flex items-center gap-1">
+                          <button className="w-6 h-6 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 font-bold text-xs flex items-center justify-center cursor-pointer">&lt;</button>
+                          <button className="w-6 h-6 rounded-lg bg-[#114B44] text-white font-black text-xs flex items-center justify-center">1</button>
+                          <button className="w-6 h-6 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 font-bold text-xs flex items-center justify-center cursor-pointer">2</button>
+                          <button className="w-6 h-6 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 font-bold text-xs flex items-center justify-center cursor-pointer">3</button>
+                          <span className="px-0.5 text-gray-400">...</span>
+                          <button className="px-1 h-6 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 font-bold text-xs flex items-center justify-center cursor-pointer">186</button>
+                          <button className="w-6 h-6 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 font-bold text-xs flex items-center justify-center cursor-pointer">&gt;</button>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* COLUMN 2: ACTIVE CHAT CANVAS (5 COLS) */}
+                    <div className="lg:col-span-5 bg-white rounded-2xl border border-gray-200 shadow-xs flex flex-col h-[650px] min-w-0 overflow-hidden">
+                      
+                      {/* Chat Header */}
+                      <div className="p-3.5 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="relative shrink-0">
+                            <img
+                              src={activeConversation.avatar}
+                              alt={activeConversation.name}
+                              className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                              onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                            />
+                            {activeConversation.status === 'Online' && (
+                              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="font-black text-xs sm:text-sm text-gray-900 truncate">{activeConversation.name}</h3>
+                            <div className="text-[10px] text-gray-500 font-bold flex items-center gap-1.5">
+                              <span className="text-emerald-600">{activeConversation.status}</span>
+                              <span>•</span>
+                              <span>{activeConversation.role}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            onClick={() => alert(`Pencarian teks dalam percakapan dengan ${activeConversation.name}`)}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                          >
+                            <Search className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => alert('Opsi percakapan: Bersihkan riwayat, Blokir, atau Jadikan Tiket Bantuan')}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Chat Messages Body */}
+                      <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#F8FAFC]/50">
+                        
+                        {/* Date Separator */}
+                        <div className="flex items-center justify-center">
+                          <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-bold shadow-2xs">
+                            {activeConversation.date}
+                          </span>
+                        </div>
+
+                        {/* Bubbles */}
+                        {activeConversation.chatHistory.map((bubble) => {
+                          const isMe = bubble.sender === 'me';
+                          return (
+                            <div
+                              key={bubble.id}
+                              className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} space-y-1`}
+                            >
+                              <div
+                                className={`max-w-[85%] sm:max-w-[78%] rounded-2xl p-3 text-xs leading-relaxed shadow-2xs ${
+                                  isMe
+                                    ? 'bg-[#E6F4EA] text-[#0D3B35] rounded-tr-xs border border-emerald-200/60'
+                                    : 'bg-white text-gray-800 rounded-tl-xs border border-gray-200/80'
+                                }`}
+                              >
+                                <div className="whitespace-pre-line font-medium">
+                                  {bubble.text}
+                                </div>
+
+                                {/* Rich Embedded Course Card if present */}
+                                {bubble.card && (
+                                  <div className="mt-2.5 p-2 bg-white rounded-xl border border-emerald-200/80 shadow-2xs flex items-center gap-2.5">
+                                    <img
+                                      src={bubble.card.image}
+                                      alt={bubble.card.title}
+                                      className="w-12 h-12 rounded-lg object-cover border border-gray-100 shrink-0"
+                                      onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                                    />
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center justify-between gap-1">
+                                        <div className="font-extrabold text-gray-900 text-[11px] truncate">
+                                          {bubble.card.title}
+                                        </div>
+                                        <span className="px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 text-[9px] font-black shrink-0 border border-emerald-200">
+                                          {bubble.card.status}
+                                        </span>
+                                      </div>
+                                      <div className="text-[10px] text-gray-400 font-medium truncate">
+                                        {bubble.card.instructor}
+                                      </div>
+                                      <button
+                                        onClick={() => alert(`Membuka halaman detail kelas: ${bubble.card.title}`)}
+                                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 mt-1 cursor-pointer"
+                                      >
+                                        <span>{bubble.card.actionText}</span>
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
+
+                                <div className={`text-[9px] font-bold mt-1 flex items-center justify-end gap-1 ${
+                                  isMe ? 'text-emerald-700/80' : 'text-gray-400'
+                                }`}>
+                                  <span>{bubble.time}</span>
+                                  {isMe && <span className="text-emerald-600 font-black">✓✓</span>}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                      </div>
+
+                      {/* Chat Input Bar */}
+                      <div className="p-3 bg-white border-t border-gray-100 flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => alert('Lampirkan berkas (PDF, Gambar, atau Silabus)')}
+                          className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                          title="Lampirkan File"
+                        >
+                          <Link2 className="w-4 h-4" />
+                        </button>
+
+                        <input
+                          type="text"
+                          placeholder="Type a message..."
+                          value={chatInputText}
+                          onChange={(e) => setChatInputText(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSendMessage();
+                          }}
+                          className="flex-1 bg-[#F8FAFC] border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44]"
+                        />
+
+                        <button
+                          onClick={() => setChatInputText(prev => prev + ' 😊')}
+                          className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                          title="Emoji"
+                        >
+                          <Sparkles className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={handleSendMessage}
+                          className="p-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl shadow-xs transition-colors cursor-pointer"
+                          title="Kirim Pesan"
+                        >
+                          <ArrowUpRight className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                    </div>
+
+                    {/* COLUMN 3: USER DOSSIER & QUICK ACTIONS (3 COLS) */}
+                    <aside className="lg:col-span-3 space-y-4 min-w-0">
+                      
+                      {/* User Information Card */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">User Information</h3>
+                          <button 
+                            onClick={() => alert(`Edit informasi akun ${activeConversation.name}`)}
+                            className="text-gray-400 hover:text-gray-600 p-1 rounded-lg cursor-pointer"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* User Profile Capsule */}
+                        <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
+                          <img
+                            src={activeConversation.avatar}
+                            alt={activeConversation.name}
+                            className="w-12 h-12 rounded-xl object-cover border border-gray-200"
+                            onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                          />
+                          <div className="min-w-0">
+                            <div className="font-black text-xs sm:text-sm text-gray-900 truncate">
+                              {activeConversation.name}
+                            </div>
+                            <div className="text-[10px] text-gray-400 font-medium truncate">
+                              {activeConversation.email}
+                            </div>
+                            <span className={`inline-block mt-1 px-2 py-0.2 rounded-md text-[9px] font-black border ${activeConversation.roleBadge}`}>
+                              {activeConversation.role}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Metadata Rows */}
+                        <div className="space-y-2 text-xs">
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span className="text-gray-400 font-bold text-[11px] flex items-center gap-1.5">
+                              <User className="w-3.5 h-3.5" /> User ID
+                            </span>
+                            <span className="font-black text-gray-800 text-[11px]">{activeConversation.userId}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span className="text-gray-400 font-bold text-[11px] flex items-center gap-1.5">
+                              <Calendar className="w-3.5 h-3.5" /> Joined
+                            </span>
+                            <span className="font-bold text-gray-800 text-[11px]">{activeConversation.joined}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span className="text-gray-400 font-bold text-[11px] flex items-center gap-1.5">
+                              <MessageSquare className="w-3.5 h-3.5" /> Total Messages
+                            </span>
+                            <span className="font-black text-gray-800 text-[11px]">{activeConversation.totalMessagesCount}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span className="text-gray-400 font-bold text-[11px] flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5" /> Last Active
+                            </span>
+                            <span className="font-bold text-gray-800 text-[11px]">{activeConversation.lastActive}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span className="text-gray-400 font-bold text-[11px] flex items-center gap-1.5">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Status
+                            </span>
+                            <span className="px-2 py-0.2 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black border border-emerald-200">
+                              {activeConversation.userStatus}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Related Information */}
+                        <div className="pt-3 border-t border-gray-100 space-y-2">
+                          <h4 className="font-extrabold text-[11px] text-gray-800 uppercase tracking-wider">
+                            Related Information
+                          </h4>
+                          <div className="space-y-1.5 text-xs">
+                            <div className="flex items-center justify-between p-2 rounded-xl bg-[#F8FAFC]">
+                              <div className="flex items-center gap-2 text-gray-600">
+                                <BookOpen className="w-3.5 h-3.5 text-blue-600" />
+                                <span className="font-bold text-[11px]">Enrolled Classes</span>
+                              </div>
+                              <span className="font-black text-gray-900">{activeConversation.relatedInfo.enrolledClasses}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between p-2 rounded-xl bg-[#F8FAFC]">
+                              <div className="flex items-center gap-2 text-gray-600">
+                                <FileText className="w-3.5 h-3.5 text-amber-600" />
+                                <span className="font-bold text-[11px]">Assignments</span>
+                              </div>
+                              <span className="font-black text-gray-900">{activeConversation.relatedInfo.assignments}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between p-2 rounded-xl bg-[#F8FAFC]">
+                              <div className="flex items-center gap-2 text-gray-600">
+                                <Award className="w-3.5 h-3.5 text-purple-600" />
+                                <span className="font-bold text-[11px]">Certificates</span>
+                              </div>
+                              <span className="font-black text-gray-900">{activeConversation.relatedInfo.certificates}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between p-2 rounded-xl bg-[#F8FAFC]">
+                              <div className="flex items-center gap-2 text-gray-600">
+                                <ShieldCheck className="w-3.5 h-3.5 text-rose-600" />
+                                <span className="font-bold text-[11px]">Support Tickets</span>
+                              </div>
+                              <span className="font-black text-gray-900">{activeConversation.relatedInfo.supportTickets}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* Quick Actions Card */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-2.5">
+                        <h3 className="text-sm font-black text-gray-900">Quick Actions</h3>
+
+                        <div className="space-y-1.5 text-xs">
+                          <button
+                            onClick={() => alert(`Membuka profil lengkap santri: ${activeConversation.name}`)}
+                            className="w-full p-2.5 rounded-xl border border-gray-100 hover:bg-emerald-50/50 hover:border-emerald-200 transition-all flex items-center gap-2.5 text-gray-700 font-bold cursor-pointer text-left"
+                          >
+                            <User className="w-3.5 h-3.5 text-gray-500" />
+                            <span>View User Profile</span>
+                          </button>
+
+                          <button
+                            onClick={() => alert(`Membuka daftar kelas terdaftar ${activeConversation.name}`)}
+                            className="w-full p-2.5 rounded-xl border border-gray-100 hover:bg-emerald-50/50 hover:border-emerald-200 transition-all flex items-center gap-2.5 text-gray-700 font-bold cursor-pointer text-left"
+                          >
+                            <BookOpen className="w-3.5 h-3.5 text-gray-500" />
+                            <span>View Enrolled Classes</span>
+                          </button>
+
+                          <button
+                            onClick={() => setIsCreateSupportTicketModalOpen(true)}
+                            className="w-full p-2.5 rounded-xl border border-gray-100 hover:bg-emerald-50/50 hover:border-emerald-200 transition-all flex items-center gap-2.5 text-gray-700 font-bold cursor-pointer text-left"
+                          >
+                            <LifeBuoy className="w-3.5 h-3.5 text-gray-500" />
+                            <span>Create Support Ticket</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              if (confirm(`Apakah Anda yakin ingin memblokir sementara akun ${activeConversation.name}?`)) {
+                                alert(`Akun ${activeConversation.name} telah diblokir.`);
+                              }
+                            }}
+                            className="w-full p-2.5 rounded-xl border border-rose-100 bg-rose-50/30 hover:bg-rose-50 text-rose-700 transition-all flex items-center gap-2.5 font-bold cursor-pointer text-left"
+                          >
+                            <Ban className="w-3.5 h-3.5 text-rose-600" />
+                            <span>Block User</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setMessagesList(prev => prev.map(m => m.id === activeConversation.id ? { ...m, category: 'archived' } : m));
+                              alert(`Percakapan dengan ${activeConversation.name} berhasil diarsipkan.`);
+                            }}
+                            className="w-full p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition-all flex items-center gap-2.5 text-gray-700 font-bold cursor-pointer text-left"
+                          >
+                            <Download className="w-3.5 h-3.5 text-gray-500" />
+                            <span>Archive Conversation</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -14275,6 +15251,243 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
                   <button onClick={() => { setIsVerifyModalOpen(false); setVerificationResult(null); }} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal New Message */}
+          {isNewMessageModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-black">
+                      <MessageSquare className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Kirim Pesan Baru</h3>
+                      <p className="text-xs text-gray-500">Mulai percakapan langsung dengan santri atau pengajar</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsNewMessageModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Pilih Penerima</label>
+                    <select
+                      value={newMsgRecipient}
+                      onChange={(e) => setNewMsgRecipient(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    >
+                      <option>Ahmad Ali (Student)</option>
+                      <option>Siti Aisyah (Student)</option>
+                      <option>Omar Hassan (Student)</option>
+                      <option>Layla Karim (Teacher)</option>
+                      <option>Zainab Ali (Student)</option>
+                      <option>Fatimah Nur (Student)</option>
+                      <option>Muhammad Khan (Student)</option>
+                      <option>Nadia Rahman (Student)</option>
+                      <option>Ali Reza (Student)</option>
+                      <option>Dr. Ahmad Fauzi (Teacher)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Topik / Subjek Pesan</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Informasi Pendaftaran & Beasiswa"
+                      value={newMsgSubject}
+                      onChange={(e) => setNewMsgSubject(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Isi Pesan</label>
+                    <textarea
+                      rows={4}
+                      placeholder="Tuliskan pesan Anda kepada pengguna..."
+                      value={newMsgBody}
+                      onChange={(e) => setNewMsgBody(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsNewMessageModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (!newMsgBody.trim()) {
+                        alert('Silakan tuliskan isi pesan terlebih dahulu!');
+                        return;
+                      }
+                      const recipientClean = newMsgRecipient.split(' (')[0];
+                      const matchedConv = messagesList.find(m => m.name.toLowerCase() === recipientClean.toLowerCase());
+                      const timeStr = `${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`;
+                      
+                      if (matchedConv) {
+                        setMessagesList(prev => prev.map(m => {
+                          if (m.id === matchedConv.id) {
+                            return {
+                              ...m,
+                              lastMessage: newMsgBody,
+                              time: timeStr,
+                              chatHistory: [
+                                ...m.chatHistory,
+                                {
+                                  id: `ch-${Date.now()}`,
+                                  sender: 'me',
+                                  senderName: 'Admin IlmHub',
+                                  time: timeStr,
+                                  text: newMsgBody,
+                                  isDelivered: true,
+                                  card: null
+                                }
+                              ]
+                            };
+                          }
+                          return m;
+                        }));
+                        setSelectedConversationId(matchedConv.id);
+                      }
+                      setIsNewMessageModalOpen(false);
+                      setNewMsgSubject('');
+                      setNewMsgBody('');
+                      alert(`Pesan berhasil dikirimkan ke ${recipientClean}!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    <span>Kirim Pesan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Message Settings */}
+          {isMessageSettingsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center font-black">
+                      <Settings className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Pengaturan Pesan & Bantuan</h3>
+                      <p className="text-xs text-gray-500">Konfigurasi pesan otomatis, jam kerja, dan notifikasi</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsMessageSettingsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-gray-800">Auto-Reply Diluar Jam Kerja</div>
+                      <div className="text-[10px] text-gray-400">Kirim balasan otomatis saat admin offline</div>
+                    </div>
+                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-[#114B44] focus:ring-[#114B44] cursor-pointer" />
+                  </div>
+
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-gray-800">Notifikasi Email Masuk</div>
+                      <div className="text-[10px] text-gray-400">Kirimkan ringkasan pesan belum dibaca ke email admin</div>
+                    </div>
+                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-[#114B44] focus:ring-[#114B44] cursor-pointer" />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Pesan Balasan Otomatis</label>
+                    <textarea
+                      rows={3}
+                      defaultValue="Assalamu'alaikum, terima kasih telah menghubungi Tim Layanan IlmHub. Pesan Anda telah kami terima dan akan dibalas pada jam kerja (08:00 - 17:00 WIB)."
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsMessageSettingsModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      setIsMessageSettingsModalOpen(false);
+                      alert('Pengaturan pesan berhasil disimpan!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>Simpan Pengaturan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Create Support Ticket */}
+          {isCreateSupportTicketModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">
+                      <LifeBuoy className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Buat Tiket Bantuan (Support)</h3>
+                      <p className="text-xs text-gray-500">Konversi percakapan {activeConversation.name} menjadi tiket investigasi</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsCreateSupportTicketModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Kategori Masalah</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]">
+                      <option>Kendala Akses Materi / PDF</option>
+                      <option>Koneksi Kelas Live Zoom</option>
+                      <option>Masalah Pembayaran / Infaq</option>
+                      <option>Penerbitan Sertifikat</option>
+                      <option>Pengaduan Akun Santri</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Prioritas</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]">
+                      <option>Tinggi (Segera / Urgent)</option>
+                      <option>Sedang (Normal)</option>
+                      <option>Rendah (Pertanyaan Umum)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Catatan Tambahan untuk Tim IT / Akademik</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Tuliskan kronologi singkat kendala santri..."
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsCreateSupportTicketModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsCreateSupportTicketModalOpen(false);
+                      alert(`Tiket bantuan #TCK-${Math.floor(1000 + Math.random() * 9000)} untuk ${activeConversation.name} berhasil dibuat!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>Buat Tiket</span>
+                  </button>
                 </div>
               </div>
             </div>
