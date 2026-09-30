@@ -61,7 +61,7 @@ import {
 } from 'lucide-react';
 
 export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, onLogout, onSwitchRole }) {
-  const [activeNav, setActiveNav] = useState('teachers'); // default to 'teachers' (VIP Teacher Applications & Approvals) or 'users' / 'dashboard'
+  const [activeNav, setActiveNav] = useState('users'); // default to 'users' (matching media_1790731825631.jpg)
   const [dateRangeFilter, setDateRangeFilter] = useState('1 Sep 2026 - 30 Sep 2026');
   const [isDateRangeDropdownOpen, setIsDateRangeDropdownOpen] = useState(false);
   const [revenuePeriodFilter, setRevenuePeriodFilter] = useState('All Time');
@@ -111,11 +111,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const adminEmail = user?.email || 'admin@ilmhub.com';
   const adminAvatar = user?.avatar || '/images/tutor_ahmed.jpg';
 
-  // Navigation Items matching media_1790730977291.jpg & media_1790731145724.jpg
+  // Navigation Items matching media_1790730977291.jpg & media_1790731145724.jpg & media_1790731825631.jpg
   const adminNavItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'teachers', label: 'VIP Teachers', icon: GraduationCap, badge: '24' },
     { id: 'users', label: 'Users', icon: Users },
+    { id: 'teachers', label: 'Teachers', icon: GraduationCap, badge: '24' },
     { id: 'classes', label: 'Classes', icon: BookOpen },
     { id: 'live', label: 'Live Classrooms', icon: Video },
     { id: 'schedules', label: 'Schedules', icon: Calendar },
