@@ -9225,7 +9225,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                           title="Edit Kuis"
                                           className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
                                         >
-                                          <Edit className="w-3.5 h-3.5" />
+                                          <Edit3 className="w-3.5 h-3.5" />
                                         </button>
                                         <button
                                           onClick={() => {
