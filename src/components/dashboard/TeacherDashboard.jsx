@@ -34,6 +34,9 @@ import {
   Layers,
   Globe,
   Sparkles,
+  Crown,
+  Zap,
+  Flame,
   Clock,
   ArrowRight,
   ArrowLeft,
@@ -1797,10 +1800,285 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
     marketingUpdates: false
   });
 
+  // =========================================================
+  // MENTORSHIP & HALAKAH VIP STATES & DATA (MODEL 4 MONETIZATION)
+  // =========================================================
+  const [mentorshipTab, setMentorshipTab] = useState('subscribers'); // 'subscribers' | 'tiers' | 'feed' | 'schedule'
+  const [mentorshipSearchQuery, setMentorshipSearchQuery] = useState('');
+  const [mentorshipTierFilter, setMentorshipTierFilter] = useState('all');
+  const [isAddTierModalOpen, setIsAddTierModalOpen] = useState(false);
+  const [isNewBroadcastModalOpen, setIsNewBroadcastModalOpen] = useState(false);
+  const [isMemberDetailModalOpen, setIsMemberDetailModalOpen] = useState(false);
+  const [selectedMentorshipMember, setSelectedMentorshipMember] = useState(null);
+
+  const [newTierForm, setNewTierForm] = useState({
+    name: 'Murid VIP (Halakah Utama)',
+    price: 19,
+    billingCycle: 'Monthly',
+    maxMembers: 50,
+    badgeText: '⭐ Most Popular',
+    colorTheme: 'emerald',
+    description: 'Bimbingan intensif 2x seminggu dengan koreksi tugas rutin dan grup halakah privat.',
+    perks: [
+      'Akses seluruh modul rekaman & PDF Kitab',
+      'Live Halakah & Q&A 2x seminggu (Ahad & Rabu)',
+      'Koreksi setoran bacaan & latihan i\'rab mingguan',
+      'Badge Emas "VIP Halakah" di live classroom & forum'
+    ]
+  });
+
+  const [newBroadcastForm, setNewBroadcastForm] = useState({
+    title: '',
+    type: 'Kitab Note',
+    accessTier: 'All VIP Tiers',
+    content: '',
+    attachmentName: ''
+  });
+
+  const [mentorshipTiersList, setMentorshipTiersList] = useState([
+    {
+      id: 'tier-1',
+      name: 'Talib (Basic Member)',
+      price: 7,
+      billingCycle: 'Monthly',
+      badge: 'Basic VIP',
+      badgeBg: 'bg-blue-100 text-blue-800',
+      activeMembers: 18,
+      monthlyRevenue: 126,
+      colorBorder: 'border-blue-200',
+      iconBg: 'bg-blue-50 text-blue-700',
+      description: 'Akses materi dasar, arsip modul PDF, dan diskusi komunitas murid.',
+      perks: [
+        'Akses Community Feed & Catatan Kitab',
+        'Akses rekaman kajian audio & modul PDF',
+        'Badge Member di forum & chat murid'
+      ]
+    },
+    {
+      id: 'tier-2',
+      name: 'Murid VIP (Halakah Utama)',
+      price: 19,
+      billingCycle: 'Monthly',
+      badge: '⭐ Most Popular',
+      badgeBg: 'bg-emerald-100 text-emerald-800',
+      activeMembers: 50,
+      monthlyRevenue: 950,
+      colorBorder: 'border-emerald-300 ring-2 ring-emerald-500/20',
+      iconBg: 'bg-emerald-100 text-emerald-800',
+      description: 'Bimbingan intensif 2x seminggu dengan koreksi tugas rutin dan grup halakah privat.',
+      perks: [
+        'Semua benefit Tier 1 (Talib)',
+        'Live Halakah & Q&A 2x seminggu (Ahad & Rabu)',
+        'Koreksi setoran bacaan & latihan i\'rab mingguan',
+        'Prioritas pertanyaan di Live Classroom',
+        'Badge Emas "VIP Halakah"'
+      ]
+    },
+    {
+      id: 'tier-3',
+      name: 'Khusus 1-on-1 (Private Circle)',
+      price: 59,
+      billingCycle: 'Monthly',
+      badge: '👑 Executive Quota',
+      badgeBg: 'bg-amber-100 text-amber-800',
+      activeMembers: 6,
+      maxMembers: 10,
+      monthlyRevenue: 354,
+      colorBorder: 'border-amber-200',
+      iconBg: 'bg-amber-50 text-amber-700',
+      description: 'Bimbingan privat intensif personal 1-on-1 dengan jalur komunikasi langsung.',
+      perks: [
+        'Semua benefit Tier 2 (Murid VIP)',
+        '1x Sesi Privat 1-on-1 per bulan (60 menit)',
+        'Jalur Konsultasi Private Chat 24/7 langsung ke Ustadz',
+        'Review sanad / portfolio keilmuan berkala'
+      ]
+    }
+  ]);
+
+  const [mentorshipSubscribersList, setMentorshipSubscribersList] = useState([
+    {
+      id: 'sub-1',
+      name: 'Aisha Rahman',
+      email: 'aisha.rahman@example.com',
+      avatar: '/images/student_aisha.jpg',
+      tierId: 'tier-2',
+      tierName: 'Murid VIP ($19/mo)',
+      joinedDate: '12 Jun 2026',
+      nextRenewal: '12 Oct 2026',
+      status: 'Active',
+      autoRenew: true,
+      totalPaid: '$76.00',
+      attendanceRate: '95%',
+      location: 'Cairo, Egypt',
+      lastActive: '10 mins ago'
+    },
+    {
+      id: 'sub-2',
+      name: 'Omar Hassan',
+      email: 'omar.hassan@example.com',
+      avatar: '/images/student_omar.jpg',
+      tierId: 'tier-3',
+      tierName: 'Private Circle ($59/mo)',
+      joinedDate: '01 May 2026',
+      nextRenewal: '01 Oct 2026',
+      status: 'Active',
+      autoRenew: true,
+      totalPaid: '$295.00',
+      attendanceRate: '100%',
+      location: 'Riyadh, KSA',
+      lastActive: '2 hours ago'
+    },
+    {
+      id: 'sub-3',
+      name: 'Fatimah Zahra',
+      email: 'fatimah@example.com',
+      avatar: '/images/student_fatimah.jpg',
+      tierId: 'tier-2',
+      tierName: 'Murid VIP ($19/mo)',
+      joinedDate: '15 Jul 2026',
+      nextRenewal: '15 Oct 2026',
+      status: 'Active',
+      autoRenew: true,
+      totalPaid: '$57.00',
+      attendanceRate: '88%',
+      location: 'Jakarta, Indonesia',
+      lastActive: '1 day ago'
+    },
+    {
+      id: 'sub-4',
+      name: 'Youssef Tarek',
+      email: 'youssef@example.com',
+      avatar: '/images/student_ali.jpg',
+      tierId: 'tier-1',
+      tierName: 'Talib Basic ($7/mo)',
+      joinedDate: '20 Aug 2026',
+      nextRenewal: '20 Oct 2026',
+      status: 'Active',
+      autoRenew: true,
+      totalPaid: '$14.00',
+      attendanceRate: '80%',
+      location: 'Amman, Jordan',
+      lastActive: '3 hours ago'
+    },
+    {
+      id: 'sub-5',
+      name: 'Sara Ahmad',
+      email: 'sara@example.com',
+      avatar: '/images/student_aisha.jpg',
+      tierId: 'tier-2',
+      tierName: 'Murid VIP ($19/mo)',
+      joinedDate: '03 Sep 2026',
+      nextRenewal: '03 Oct 2026',
+      status: 'Active',
+      autoRenew: true,
+      totalPaid: '$19.00',
+      attendanceRate: '100%',
+      location: 'Kuala Lumpur, Malaysia',
+      lastActive: 'Just now'
+    },
+    {
+      id: 'sub-6',
+      name: 'Ali Mahmoud',
+      email: 'ali.m@example.com',
+      avatar: '/images/student_ali.jpg',
+      tierId: 'tier-3',
+      tierName: 'Private Circle ($59/mo)',
+      joinedDate: '10 Jul 2026',
+      nextRenewal: '10 Oct 2026',
+      status: 'Active',
+      autoRenew: true,
+      totalPaid: '$177.00',
+      attendanceRate: '92%',
+      location: 'Alexandria, Egypt',
+      lastActive: '4 hours ago'
+    }
+  ]);
+
+  const [mentorshipFeedPosts, setMentorshipFeedPosts] = useState([
+    {
+      id: 'post-1',
+      title: 'Audio Kajian Eksklusif: Mendalami Kaidah Majruratil Asma\' & Isim Ghair Munsharif',
+      author: 'Ustadz Ahmed Mohamed',
+      authorAvatar: '/images/tutor_ahmed.jpg',
+      date: '25 Sep 2026, 14:30',
+      tierLabel: 'Murid VIP & Private Circle',
+      tierBadgeColor: 'bg-emerald-100 text-emerald-800',
+      type: 'Audio Podcast & Kitab',
+      content: 'Assalamu\'alaikum warahmatullah. Untuk para penuntut ilmu di Halakah VIP, berikut kami lampirkan rekaman audio penjelasan bab Majruratil Asma\' beserta catatan kaki dari Syarah Kafiyah. Silakan disimak sebelum halakah hari Ahad.',
+      attachmentName: 'Syarah_Kafiyah_Bab_Isim.pdf (4.2 MB)',
+      likesCount: 42,
+      commentsCount: 18,
+      audioDuration: '48 mins'
+    },
+    {
+      id: 'post-2',
+      title: 'Rangkuman Sesi Halakah Pekan ke-4: Tips Membedakan Maf\'ul Mutlaq dan Maf\'ul Liajlih',
+      author: 'Ustadz Ahmed Mohamed',
+      authorAvatar: '/images/tutor_ahmed.jpg',
+      date: '22 Sep 2026, 21:00',
+      tierLabel: 'All VIP Tiers',
+      tierBadgeColor: 'bg-blue-100 text-blue-800',
+      type: 'Kitab Summary',
+      content: 'Banyak murid yang sering tertukar antara Maf\'ul Mutlaq dan Maf\'ul Liajlih. Kunci utamanya adalah melihat apakah masdhar tersebut menjelaskan sebab terjadinya perbuatan (Liajlih) atau menegaskan fi\'il (Mutlaq). Simak tabel perbandingannya di file terlampir.',
+      attachmentName: 'Matan_Jurumiyah_Ringkasan_Pekan4.pdf (2.8 MB)',
+      likesCount: 56,
+      commentsCount: 24
+    },
+    {
+      id: 'post-3',
+      title: 'Rekaman Live Q&A: Bedah Soal I\'rab Ayat Al-Qur\'an Surat Maryam',
+      author: 'Ustadz Ahmed Mohamed',
+      authorAvatar: '/images/tutor_ahmed.jpg',
+      date: '18 Sep 2026, 20:45',
+      tierLabel: 'Murid VIP & Private Circle',
+      tierBadgeColor: 'bg-emerald-100 text-emerald-800',
+      type: 'Video Replay (1h 45m)',
+      content: 'Alhamdulillah rekaman sesi live bedah i\'rab juz 16 telah siap ditonton ulang. Silakan perhatikan penjelasan saat membahas I\'rab kalimat seruan dan nida.',
+      videoDuration: '1h 45m',
+      likesCount: 68,
+      commentsCount: 31
+    }
+  ]);
+
+  const [mentorshipLiveSchedule, setMentorshipLiveSchedule] = useState([
+    {
+      id: 'mls-1',
+      day: 'Ahad',
+      time: '20:00 - 21:30 WIB',
+      title: 'Halakah Mingguan: Syarah Matan Al-Ajurrumiyyah',
+      tierAccess: 'Murid VIP & Private Circle',
+      roomCode: '#VIP-HALAKAH-1',
+      registeredCount: 56,
+      status: 'Upcoming'
+    },
+    {
+      id: 'mls-2',
+      day: 'Rabu',
+      time: '19:30 - 21:00 WIB',
+      title: 'Sesi Q&A & Setoran I\'rab Terbuka',
+      tierAccess: 'All VIP Tiers',
+      roomCode: '#VIP-QNA-2',
+      registeredCount: 68,
+      status: 'Scheduled'
+    },
+    {
+      id: 'mls-3',
+      day: 'Sabtu',
+      time: '10:00 - 11:00 WIB',
+      title: 'Sesi Bimbingan Privat 1-on-1 Personal',
+      tierAccess: 'Private Circle Only',
+      roomCode: '#PRIVATE-1ON1',
+      registeredCount: 6,
+      status: 'Limited Quota'
+    }
+  ]);
+
   // Sidebar Items matching reference image
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'classes', label: 'My Classes', icon: BookOpen, badge: '6' },
+    { id: 'mentorship', label: 'Mentorship VIP', icon: Crown, badge: 'MRR' },
     { id: 'create', label: 'Create Class', icon: PlusCircle },
     { id: 'live', label: 'Live Classroom', icon: Video, badge: 'LIVE' },
     { id: 'schedule', label: 'Schedule', icon: Calendar },
@@ -7471,6 +7749,787 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
                 </div>
 
               </div>
+
+            </div>
+          ) : activeNav === 'mentorship' ? (
+            /* ========================================================= */
+            /* VIEW: MENTORSHIP & HALAKAH VIP (MODEL 4 MONETIZATION)     */
+            /* ========================================================= */
+            <div className="space-y-6 animate-fadeIn">
+              
+              {/* 1. TOP HEADER BAR */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center shadow-md shrink-0">
+                    <Crown className="w-6 h-6 text-amber-100" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">VIP Mentorship & Halakah</h1>
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-wider border border-amber-200">
+                        MRR Center
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                      Kelola lingkaran halakah eksklusif, pelanggan bulanan (MRR), jadwal bimbingan live, dan broadcast materi VIP.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Top Action Buttons */}
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => setIsNewBroadcastModalOpen(true)}
+                    className="flex items-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                  >
+                    <Megaphone className="w-3.5 h-3.5 text-[#114B44]" />
+                    <span>Broadcast VIP Post</span>
+                  </button>
+
+                  <button
+                    onClick={() => setIsAddTierModalOpen(true)}
+                    className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Create Membership Tier</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. TOP 4 REVENUE & MEMBER KPI CARDS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* 1: Monthly Recurring Revenue (MRR) */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-400">Monthly Recurring (MRR)</span>
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                      <Crown className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-black text-gray-900 leading-tight">$1,430.00</div>
+                    <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-1">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      <span>+18.5% this month (Predictable)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2: Active VIP Subscribers */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-400">Active Subscribers</span>
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                      <Users className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-black text-gray-900 leading-tight">74 Members</div>
+                    <div className="text-[11px] font-semibold text-gray-500 mt-1">
+                      18 Basic • 50 VIP • 6 Private
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3: Retention Rate */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-400">Member Retention</span>
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-black text-gray-900 leading-tight">94.2%</div>
+                    <div className="text-[11px] font-semibold text-purple-700 mt-1">
+                      Avg. 5.8 months stay per member
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4: Next Live Halakah */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-400">Next Halakah Live</span>
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                      <Video className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-black text-gray-900 leading-tight">Ahad, 20:00 WIB</div>
+                    <div className="text-[11px] font-bold text-blue-600 mt-1">
+                      56 Members Registered
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* 3. SUB-NAV TABS SWITCHER */}
+              <div className="flex items-center gap-2 border-b border-gray-200/80 pb-2 overflow-x-auto no-scrollbar">
+                {[
+                  { id: 'subscribers', label: 'VIP Subscribers', count: mentorshipSubscribersList.length, icon: Users },
+                  { id: 'tiers', label: 'Membership Tiers & Pricing', count: mentorshipTiersList.length, icon: Crown },
+                  { id: 'feed', label: 'Exclusive Feed & Replays', count: mentorshipFeedPosts.length, icon: Lock },
+                  { id: 'schedule', label: 'Halakah Live Schedule', count: mentorshipLiveSchedule.length, icon: Calendar },
+                ].map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = mentorshipTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setMentorshipTab(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-2xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-600 border border-gray-200/70'
+                      }`}
+                    >
+                      <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                      <span>{tab.label}</span>
+                      <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+                        isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700'
+                      }`}>
+                        {tab.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 4. TAB CONTENT: SUBSCRIBERS CRM */}
+              {mentorshipTab === 'subscribers' && (
+                <div className="bg-white rounded-3xl border border-gray-200/90 p-5 sm:p-6 shadow-2xs space-y-4">
+                  {/* Search & Filter Bar */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="relative flex-1 max-w-sm">
+                      <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search subscriber by name or email..."
+                        value={mentorshipSearchQuery}
+                        onChange={(e) => setMentorshipSearchQuery(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-9 pr-4 py-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={mentorshipTierFilter}
+                        onChange={(e) => setMentorshipTierFilter(e.target.value)}
+                        className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none cursor-pointer"
+                      >
+                        <option value="all">All Tiers</option>
+                        <option value="tier-1">Talib Basic ($7/mo)</option>
+                        <option value="tier-2">Murid VIP ($19/mo)</option>
+                        <option value="tier-3">Private Circle ($59/mo)</option>
+                      </select>
+
+                      <button 
+                        onClick={() => alert('Mengekspor daftar murid langganan ke file .CSV...')}
+                        className="flex items-center gap-1 bg-white hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 shadow-2xs cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Export CSV</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Subscribers Table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-wider border-b border-gray-100 pb-2">
+                          <th className="pb-3 font-extrabold">Subscriber</th>
+                          <th className="pb-3 font-extrabold">Membership Tier</th>
+                          <th className="pb-3 font-extrabold">Next Renewal</th>
+                          <th className="pb-3 font-extrabold">Attendance</th>
+                          <th className="pb-3 font-extrabold">Total Paid</th>
+                          <th className="pb-3 font-extrabold">Status</th>
+                          <th className="pb-3 font-extrabold text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100 font-medium">
+                        {mentorshipSubscribersList
+                          .filter((sub) => {
+                            if (mentorshipTierFilter !== 'all' && sub.tierId !== mentorshipTierFilter) return false;
+                            if (mentorshipSearchQuery.trim() !== '') {
+                              const q = mentorshipSearchQuery.toLowerCase();
+                              return sub.name.toLowerCase().includes(q) || sub.email.toLowerCase().includes(q);
+                            }
+                            return true;
+                          })
+                          .map((sub) => (
+                            <tr key={sub.id} className="hover:bg-gray-50/70 transition-colors">
+                              {/* Subscriber Column */}
+                              <td className="py-3.5 pr-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-9 h-9 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300 shrink-0">
+                                    <img
+                                      src={sub.avatar}
+                                      alt={sub.name}
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => { e.target.src = '/images/student_aisha.jpg'; }}
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-extrabold text-gray-900">{sub.name}</span>
+                                      {sub.tierId === 'tier-3' && (
+                                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded-md bg-amber-100 text-amber-800">
+                                          👑 1-on-1
+                                        </span>
+                                      )}
+                                    </div>
+                                    <span className="text-[10.5px] text-gray-400 block">{sub.email}</span>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Tier Column */}
+                              <td className="py-3.5 pr-3">
+                                <span className={`inline-block text-[10.5px] font-bold px-2.5 py-1 rounded-lg border ${
+                                  sub.tierId === 'tier-3'
+                                    ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                    : sub.tierId === 'tier-2'
+                                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                    : 'bg-blue-50 text-blue-800 border-blue-200'
+                                }`}>
+                                  {sub.tierName}
+                                </span>
+                              </td>
+
+                              {/* Renewal Date */}
+                              <td className="py-3.5 pr-3">
+                                <span className="font-bold text-gray-800 block">{sub.nextRenewal}</span>
+                                <span className="text-[9.5px] text-emerald-600 font-semibold">Auto-Debit Active</span>
+                              </td>
+
+                              {/* Attendance */}
+                              <td className="py-3.5 pr-3">
+                                <div className="space-y-1 w-20">
+                                  <span className="font-extrabold text-gray-900">{sub.attendanceRate}</span>
+                                  <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div className="h-full bg-emerald-600 rounded-full" style={{ width: sub.attendanceRate }}></div>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Total Paid */}
+                              <td className="py-3.5 pr-3 font-black text-gray-900">
+                                {sub.totalPaid}
+                              </td>
+
+                              {/* Status */}
+                              <td className="py-3.5 pr-3">
+                                <span className="inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                  <span>{sub.status}</span>
+                                </span>
+                              </td>
+
+                              {/* Actions */}
+                              <td className="py-3.5 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    onClick={() => {
+                                      setSelectedMentorshipMember(sub);
+                                      setIsMemberDetailModalOpen(true);
+                                    }}
+                                    className="p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 cursor-pointer"
+                                    title="View Member Detail"
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setActiveNav('messages');
+                                    }}
+                                    className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 cursor-pointer"
+                                    title="Direct Chat"
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* 5. TAB CONTENT: PRICING TIERS GRID */}
+              {mentorshipTab === 'tiers' && (
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-extrabold text-base text-gray-900 tracking-tight">Active Membership Packages</h3>
+                      <p className="text-xs text-gray-400">Atur tarif langganan bulanan dan fasilitas bimbingan yang diterima murid.</p>
+                    </div>
+
+                    <button
+                      onClick={() => setIsAddTierModalOpen(true)}
+                      className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add New Tier</span>
+                    </button>
+                  </div>
+
+                  {/* 3 Tier Cards Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {mentorshipTiersList.map((tier) => (
+                      <div
+                        key={tier.id}
+                        className={`bg-white rounded-3xl p-6 border ${tier.colorBorder} shadow-xs flex flex-col justify-between space-y-5 relative`}
+                      >
+                        {/* Top Badge */}
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider ${tier.badgeBg}`}>
+                            {tier.badge}
+                          </span>
+                          <span className="text-xs font-black text-gray-500">
+                            {tier.activeMembers} {tier.maxMembers ? `/ ${tier.maxMembers}` : ''} Members
+                          </span>
+                        </div>
+
+                        {/* Title & Price */}
+                        <div className="space-y-2">
+                          <h4 className="font-black text-lg text-gray-900">{tier.name}</h4>
+                          <p className="text-xs text-gray-500 leading-relaxed">{tier.description}</p>
+                          
+                          <div className="pt-2 flex items-baseline gap-1">
+                            <span className="text-3xl font-black text-gray-900">${tier.price}</span>
+                            <span className="text-xs font-bold text-gray-400">/ bulan (per member)</span>
+                          </div>
+
+                          <div className="p-2.5 bg-gray-50 rounded-xl text-[11px] font-bold text-emerald-700 flex items-center justify-between">
+                            <span>Estimasi MRR:</span>
+                            <span className="text-sm font-black text-gray-900">${tier.monthlyRevenue} / bln</span>
+                          </div>
+                        </div>
+
+                        {/* Perks List */}
+                        <div className="space-y-2 pt-2 border-t border-gray-100">
+                          <span className="text-[11px] font-extrabold text-gray-700 block uppercase tracking-wider">Fasilitas Murid:</span>
+                          {tier.perks.map((perk, idx) => (
+                            <div key={idx} className="flex items-start gap-2 text-xs text-gray-600 font-medium">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                              <span>{perk}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Card Actions */}
+                        <div className="pt-3 border-t border-gray-100 flex items-center gap-2">
+                          <button
+                            onClick={() => alert(`Mengedit paket ${tier.name}...`)}
+                            className="flex-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold cursor-pointer transition-colors text-center"
+                          >
+                            Edit Pricing & Perks
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 6. TAB CONTENT: EXCLUSIVE FEED POSTS */}
+              {mentorshipTab === 'feed' && (
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-extrabold text-base text-gray-900 tracking-tight">VIP Community Feed & Replays</h3>
+                      <p className="text-xs text-gray-400">Posting catatan kitab, audio kajian privat, dan video rekaman hanya untuk member.</p>
+                    </div>
+
+                    <button
+                      onClick={() => setIsNewBroadcastModalOpen(true)}
+                      className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Create Post</span>
+                    </button>
+                  </div>
+
+                  {/* Feed List */}
+                  <div className="space-y-4">
+                    {mentorshipFeedPosts.map((post) => (
+                      <div key={post.id} className="bg-white rounded-3xl border border-gray-200/90 p-6 shadow-2xs space-y-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full overflow-hidden border border-emerald-300 shrink-0">
+                              <img src={post.authorAvatar} alt={post.author} className="w-full h-full object-cover" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-extrabold text-xs text-gray-900">{post.author}</h4>
+                                <span className={`text-[9.5px] font-black px-2 py-0.2 rounded-md ${post.tierBadgeColor}`}>
+                                  {post.tierLabel}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-gray-400">{post.date} • {post.type}</span>
+                            </div>
+                          </div>
+
+                          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 flex items-center gap-1">
+                            <Lock className="w-3 h-3 text-emerald-600" />
+                            <span>VIP Protected</span>
+                          </span>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h3 className="font-black text-sm sm:text-base text-gray-900 leading-snug">{post.title}</h3>
+                          <p className="text-xs text-gray-600 leading-relaxed">{post.content}</p>
+                        </div>
+
+                        {/* Attachment Box */}
+                        {post.attachmentName && (
+                          <div className="p-3 bg-gray-50 rounded-2xl border border-gray-200/80 flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-black text-xs shrink-0">
+                                PDF
+                              </div>
+                              <div>
+                                <span className="font-bold text-xs text-gray-900 block">{post.attachmentName}</span>
+                                <span className="text-[10px] text-gray-400">Exclusive study material for subscribers</span>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => alert(`Mengunduh ${post.attachmentName}...`)}
+                              className="px-3 py-1 bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer transition-colors shadow-2xs"
+                            >
+                              Download
+                            </button>
+                          </div>
+                        )}
+
+                        <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 font-bold">
+                          <div className="flex items-center gap-4">
+                            <button className="flex items-center gap-1.5 hover:text-emerald-700 cursor-pointer">
+                              <ThumbsUp className="w-4 h-4" />
+                              <span>{post.likesCount} Likes</span>
+                            </button>
+                            <button className="flex items-center gap-1.5 hover:text-emerald-700 cursor-pointer">
+                              <MessageCircle className="w-4 h-4" />
+                              <span>{post.commentsCount} Comments</span>
+                            </button>
+                          </div>
+
+                          <button 
+                            onClick={() => alert('Membuka detail postingan halakah VIP')}
+                            className="text-[#114B44] hover:underline cursor-pointer flex items-center gap-1"
+                          >
+                            <span>Open Discussion</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 7. TAB CONTENT: HALAKAH LIVE SCHEDULE */}
+              {mentorshipTab === 'schedule' && (
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-extrabold text-base text-gray-900 tracking-tight">Recurring Halakah Sessions</h3>
+                      <p className="text-xs text-gray-400">Jadwal live meeting mingguan yang otomatis tersinkron ke kalender member VIP.</p>
+                    </div>
+
+                    <button
+                      onClick={() => alert('Tambah jadwal sesi halakah baru')}
+                      className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add Live Session</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {mentorshipLiveSchedule.map((ses) => (
+                      <div key={ses.id} className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-4 flex flex-col justify-between">
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-black text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md">
+                              {ses.day}
+                            </span>
+                            <span className="text-[10px] font-bold text-gray-400">
+                              {ses.roomCode}
+                            </span>
+                          </div>
+
+                          <h4 className="font-black text-sm text-gray-900 leading-snug">{ses.title}</h4>
+                          <p className="text-xs font-bold text-gray-600">🕒 {ses.time}</p>
+                          <p className="text-[11px] text-gray-400">Akses: {ses.tierAccess}</p>
+                        </div>
+
+                        <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                          <span className="text-xs font-bold text-gray-500">
+                            👥 {ses.registeredCount} Murid Terdaftar
+                          </span>
+
+                          <button
+                            onClick={() => onStartLive({
+                              title: ses.title,
+                              tutor: { name: teacherName, avatar: '/images/tutor_ahmed.jpg' },
+                              image: '/images/class_nahwu.jpg'
+                            })}
+                            className="px-3.5 py-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                          >
+                            Start Live
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* MODAL: CREATE MEMBERSHIP TIER */}
+              {isAddTierModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                          <Crown className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">Create Membership Tier</h3>
+                          <p className="text-xs text-gray-500">Buat paket langganan halakah bulanan baru</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsAddTierModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Tier Name</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Halaqah Tahsin VIP"
+                          defaultValue={newTierForm.name}
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Monthly Price ($)</label>
+                          <input
+                            type="number"
+                            defaultValue={newTierForm.price}
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Max Quota (Optional)</label>
+                          <input
+                            type="number"
+                            placeholder="Unlimited if empty"
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Description</label>
+                        <textarea
+                          rows="2"
+                          defaultValue={newTierForm.description}
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44] resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsAddTierModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsAddTierModalOpen(false);
+                          alert('🎉 Paket Membership Halakah baru berhasil dibuat!');
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Save & Publish Tier
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODAL: BROADCAST VIP POST */}
+              {isNewBroadcastModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <Megaphone className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">Broadcast VIP Post</h3>
+                          <p className="text-xs text-gray-500">Kirim catatan atau rekaman ke member halakah</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsNewBroadcastModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Post Title</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Ringkasan Kitab & Soal Latihan Pekan 5"
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Post Type</label>
+                          <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer">
+                            <option value="note">Kitab Summary & Note</option>
+                            <option value="audio">Audio Podcast</option>
+                            <option value="video">Video Replay</option>
+                            <option value="assignment">Exclusive VIP Assignment</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Access Tier</label>
+                          <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer">
+                            <option value="all">All VIP Tiers</option>
+                            <option value="tier23">Murid VIP & Private Circle</option>
+                            <option value="tier3">Private Circle Only</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Content & Notes</label>
+                        <textarea
+                          rows="4"
+                          placeholder="Tulis pesan pengantar atau ringkasan kaidah di sini..."
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44] resize-none"
+                        />
+                      </div>
+
+                      <div className="p-3 bg-gray-50 border border-dashed border-gray-300 rounded-2xl text-center cursor-pointer hover:bg-gray-100">
+                        <Upload className="w-5 h-5 text-gray-400 mx-auto mb-1" />
+                        <span className="text-[11px] font-bold text-gray-700 block">Lampirkan File PDF / Audio / Video Replay</span>
+                        <span className="text-[9.5px] text-gray-400 block">Maksimal 100 MB</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsNewBroadcastModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsNewBroadcastModalOpen(false);
+                          alert('📢 Postingan VIP berhasil disebarkan ke seluruh member!');
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Publish Broadcast
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* MODAL: MEMBER DETAIL */}
+              {isMemberDetailModalOpen && selectedMentorshipMember && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                      <h3 className="font-black text-base text-gray-900">Member CRM Profile</h3>
+                      <button
+                        onClick={() => setIsMemberDetailModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="text-center space-y-2">
+                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-emerald-500 mx-auto shadow-xs">
+                        <img src={selectedMentorshipMember.avatar} alt={selectedMentorshipMember.name} className="w-full h-full object-cover" />
+                      </div>
+                      <h4 className="font-extrabold text-sm text-gray-900">{selectedMentorshipMember.name}</h4>
+                      <p className="text-xs text-gray-400">{selectedMentorshipMember.email}</p>
+                      <span className="inline-block text-xs font-black px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
+                        {selectedMentorshipMember.tierName}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-xs p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div>
+                        <span className="text-gray-400 block text-[10px] uppercase font-bold">Joined Date</span>
+                        <span className="font-extrabold text-gray-900">{selectedMentorshipMember.joinedDate}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 block text-[10px] uppercase font-bold">Next Renewal</span>
+                        <span className="font-extrabold text-emerald-700">{selectedMentorshipMember.nextRenewal}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 block text-[10px] uppercase font-bold">Attendance Rate</span>
+                        <span className="font-extrabold text-gray-900">{selectedMentorshipMember.attendanceRate}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 block text-[10px] uppercase font-bold">Total Lifetime Paid</span>
+                        <span className="font-extrabold text-gray-900">{selectedMentorshipMember.totalPaid}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsMemberDetailModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Close
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsMemberDetailModalOpen(false);
+                          setActiveNav('messages');
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Open Direct Chat
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
             </div>
           ) : activeNav === 'earnings' ? (
