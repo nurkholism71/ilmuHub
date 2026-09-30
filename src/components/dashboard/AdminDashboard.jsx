@@ -147,6 +147,32 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     status: 'Active'
   });
 
+  // =========================================================
+  // CLASSES ROOM STATES (Data Kelas, Pengajar, & Santri)
+  // =========================================================
+  const [classTabFilter, setClassTabFilter] = useState('all'); // 'all' (248) | 'active' (184) | 'upcoming' (42) | 'completed' (22)
+  const [classSearchQuery, setClassSearchQuery] = useState('');
+  const [classSubjectFilter, setClassSubjectFilter] = useState('All Subjects');
+  const [classLevelFilter, setClassLevelFilter] = useState('All Levels');
+  const [selectedClassId, setSelectedClassId] = useState('cls-1'); // Default to Nahwu for Beginners
+  const [selectedClassDetailTab, setSelectedClassDetailTab] = useState('overview'); // 'overview' | 'students' | 'syllabus' | 'grades'
+  const [selectedClassCheckboxes, setSelectedClassCheckboxes] = useState([]);
+  const [isAddClassModalOpen, setIsAddClassModalOpen] = useState(false);
+  const [isImportClassesModalOpen, setIsImportClassesModalOpen] = useState(false);
+  const [isEnrollStudentModalOpen, setIsEnrollStudentModalOpen] = useState(false);
+  const [newClass, setNewClass] = useState({
+    title: '',
+    code: '',
+    subject: 'Nahwu & Shorof',
+    level: 'Beginner',
+    instructor: 'Ust. Ahmed Mohamed',
+    schedule: 'Senin & Rabu • 19:30 WIB',
+    quota: 50,
+    price: 'Rp 299.000 / bln',
+    format: 'Live Zoom + Rekaman HD',
+    description: ''
+  });
+
   const adminName = user?.name || 'Admin';
   const adminRole = 'Super Admin';
   const adminEmail = user?.email || 'admin@ilmhub.com';
@@ -1216,6 +1242,340 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
       setSelectedStudentCheckboxes([]);
     } else {
       setSelectedStudentCheckboxes(studentsList.map(s => s.id));
+    }
+  };
+
+  // =========================================================
+  // 10 CLASSES FULL DATASET (Data Kelas, Pengajar, & Santri)
+  // =========================================================
+  const [classesList, setClassesList] = useState([
+    {
+      id: 'cls-1',
+      number: 1,
+      title: 'Nahwu for Beginners (Al-Ajurrumiyyah)',
+      code: 'CLS-NAH-101',
+      subject: 'Nahwu & Shorof',
+      level: 'Beginner',
+      image: '/images/class_nahwu.jpg',
+      instructor: {
+        name: 'Ust. Ahmed Mohamed',
+        avatar: '/images/tutor_ahmed.jpg',
+        specialty: 'Senior Arabic Grammarian',
+        email: 'ahmed.mohamed@example.com',
+        phone: '+62 812-9876-5432'
+      },
+      enrollment: 342,
+      quota: 400,
+      schedule: 'Senin & Rabu • 19:30 - 21:00 WIB',
+      format: 'Live Zoom + Rekaman HD',
+      rating: 4.9,
+      reviewsCount: 128,
+      price: 'Rp 299.000 / bln',
+      status: 'Active',
+      statusType: 'active',
+      startDate: '01 Sep 2026',
+      endDate: '30 Nov 2026',
+      totalSessions: 24,
+      completedSessions: 8,
+      description: "Kajian mendalam Matan Al-Ajurrumiyyah dari dasar kalam, tanda i'rob, hingga marfu'at dan manshubat.",
+      enrolledStudents: [
+        { id: 'std-1', name: 'Aisha Rahman', email: 'aisha.rahman@example.com', avatar: '/images/student_aisha.jpg', studentId: 'STD-2026-001', attendance: '96%', score: '95 (A)', submittedAssignments: '8/8', status: 'Active' },
+        { id: 'std-2', name: 'Omar Hassan', email: 'omar.hassan@example.com', avatar: '/images/student_omar.jpg', studentId: 'STD-2026-002', attendance: '90%', score: '88 (B+)', submittedAssignments: '7/8', status: 'Active' },
+        { id: 'std-9', name: 'Zaid Ibrahim', email: 'zaid.ibrahim@example.com', avatar: null, studentId: 'STD-2026-009', attendance: '97%', score: '93 (A)', submittedAssignments: '8/8', status: 'Active' },
+        { id: 'std-7', name: 'Hamzah Al-Farisi', email: 'hamzah.alfarisi@example.com', avatar: null, studentId: 'STD-2026-007', attendance: '88%', score: '86 (B+)', submittedAssignments: '6/8', status: 'Active' }
+      ],
+      syllabus: [
+        { module: 'Modul 1', title: "Pengantar Ilmu Nahwu & Pembagian Kalimah (Isim, Fi'il, Huruf)", status: 'Selesai' },
+        { module: 'Modul 2', title: "Tanda-tanda I'rob (Rofa', Nashob, Khofadh, Jazm)", status: 'Selesai' },
+        { module: 'Modul 3', title: "Al-Marfu'at: Fa'il, Naibul Fa'il, Mubtada & Khobar", status: 'Sedang Berjalan' },
+        { module: 'Modul 4', title: "Al-Manshubat & Al-Makhfudhat + Praktek I'rob", status: 'Mendatang' }
+      ]
+    },
+    {
+      id: 'cls-2',
+      number: 2,
+      title: 'Arabic Conversation & Muhadatsah B2',
+      code: 'CLS-CONV-201',
+      subject: 'Arabic Conversation',
+      level: 'Intermediate',
+      image: '/images/class_conversation.jpg',
+      instructor: {
+        name: 'Ustazah Siti Aisyah, M.A.',
+        avatar: '/images/student_fatimah.jpg',
+        specialty: 'Muhadatsah & Applied Linguistics',
+        email: 'siti.aisyah@example.com',
+        phone: '+62 813-2233-4455'
+      },
+      enrollment: 287,
+      quota: 300,
+      schedule: 'Selasa & Kamis • 20:00 - 21:30 WIB',
+      format: 'Live Interactive Talaqqi',
+      rating: 4.8,
+      reviewsCount: 96,
+      price: 'Rp 275.000 / bln',
+      status: 'Active',
+      statusType: 'active',
+      startDate: '05 Sep 2026',
+      endDate: '05 Des 2026',
+      totalSessions: 20,
+      completedSessions: 6,
+      description: 'Latihan percakapan bahasa Arab aktif tematik, pelafalan fushah, ungkapan idiomatik, dan debat ilmiyah.',
+      enrolledStudents: [
+        { id: 'std-1', name: 'Aisha Rahman', email: 'aisha.rahman@example.com', avatar: '/images/student_aisha.jpg', studentId: 'STD-2026-001', attendance: '94%', score: '90 (A-)', submittedAssignments: '6/6', status: 'Active' },
+        { id: 'std-2', name: 'Omar Hassan', email: 'omar.hassan@example.com', avatar: '/images/student_omar.jpg', studentId: 'STD-2026-002', attendance: '92%', score: '88 (B+)', submittedAssignments: '5/6', status: 'Active' }
+      ],
+      syllabus: [
+        { module: 'Modul 1', title: "Ta'aruf Tingkat Lanjut & Ungkapan Diplomasi", status: 'Selesai' },
+        { module: 'Modul 2', title: 'Diskusi Tema Sosial, Pendidikan, & Dakwah', status: 'Sedang Berjalan' },
+        { module: 'Modul 3', title: 'Retorika Berbicara & Presentasi Bahasa Arab', status: 'Mendatang' }
+      ]
+    },
+    {
+      id: 'cls-3',
+      number: 3,
+      title: 'Tahsin & Matn Al-Jazariyyah Bersanad',
+      code: 'CLS-TAH-301',
+      subject: 'Tahsin & Tahfidz',
+      level: 'Advanced',
+      image: '/images/class_sharaf.jpg',
+      instructor: {
+        name: 'Syaikh Yusuf Al-Qari',
+        avatar: '/images/tutor_ahmed.jpg',
+        specialty: "Qira'at & Sanad Al-Jazariyyah",
+        email: 'yusuf.alqari@example.com',
+        phone: '+62 811-3344-5566'
+      },
+      enrollment: 254,
+      quota: 250,
+      schedule: 'Sabtu & Ahad • 06:00 - 07:30 WIB',
+      format: 'Live Talaqqi 1-on-1 Turn',
+      rating: 5.0,
+      reviewsCount: 145,
+      price: 'Rp 350.000 / bln',
+      status: 'Active',
+      statusType: 'active',
+      startDate: '15 Ags 2026',
+      endDate: '15 Nov 2026',
+      totalSessions: 16,
+      completedSessions: 12,
+      description: 'Pengambilan sanad matan tajwid Al-Jazariyyah, koreksi makharijul huruf dan sifatul huruf talaqqi.',
+      enrolledStudents: [
+        { id: 'std-3', name: 'Muhammad Khan', email: 'muhammad.khan@example.com', avatar: '/images/student_ali.jpg', studentId: 'STD-2026-003', attendance: '98%', score: '98 (A+)', submittedAssignments: '12/12', status: 'Active' },
+        { id: 'std-10', name: 'Khadijah Nur', email: 'khadijah.nur@example.com', avatar: null, studentId: 'STD-2026-010', attendance: '94%', score: '92 (A-)', submittedAssignments: '11/12', status: 'Active' }
+      ],
+      syllabus: [
+        { module: 'Modul 1', title: 'Muqaddimah & Bab Makharijul Huruf', status: 'Selesai' },
+        { module: 'Modul 2', title: 'Sifatul Huruf Lazimah & Aridhah', status: 'Selesai' },
+        { module: 'Modul 3', title: 'Ahkam Nun Sakinah, Tanwin & Mad', status: 'Selesai' },
+        { module: 'Modul 4', title: 'Ikhtibar Sanad & Ujian Ijazah', status: 'Sedang Berjalan' }
+      ]
+    },
+    {
+      id: 'cls-4',
+      number: 4,
+      title: "Fiqih Syafi'i: Matan Abu Syuja' Lengkap",
+      code: 'CLS-FIQ-102',
+      subject: 'Fiqih & Usul Fiqh',
+      level: 'Intermediate',
+      image: '/images/class_tajweed.jpg',
+      instructor: {
+        name: 'Dr. Sheikh Tariq Al-Madani',
+        avatar: '/images/tutor_ahmed.jpg',
+        specialty: 'Ushul Fiqh & Fiqh Perbandingan',
+        email: 'tariq.madani@univ-islamic.org',
+        phone: '+62 812-9842-1920'
+      },
+      enrollment: 221,
+      quota: 300,
+      schedule: 'Jumat • 19:30 - 21:30 WIB',
+      format: 'Live Webinar + Q&A Fatwa',
+      rating: 4.9,
+      reviewsCount: 88,
+      price: 'Rp 199.000 / bln',
+      status: 'Active',
+      statusType: 'active',
+      startDate: '01 Jul 2026',
+      endDate: '30 Sep 2026',
+      totalSessions: 12,
+      completedSessions: 12,
+      description: "Kajian sistematis kitab Ghayah wat Taqrib karya Al-Qadhi Abu Syuja' bab Thaharah, Shalat, Zakat, Puasa, Haji.",
+      enrolledStudents: [
+        { id: 'std-4', name: 'Zahra Putri', email: 'zahra.putri@example.com', avatar: '/images/student_fatimah.jpg', studentId: 'STD-2026-004', attendance: '100%', score: '97 (A+)', submittedAssignments: '12/12', status: 'Graduated' }
+      ],
+      syllabus: [
+        { module: 'Modul 1', title: 'Kitab Thaharah & Pembagian Air', status: 'Selesai' },
+        { module: 'Modul 2', title: 'Kitab Shalat: Syarat, Rukun & Pembatal', status: 'Selesai' },
+        { module: 'Modul 3', title: 'Kitab Zakat & Puasa Ramadhan', status: 'Selesai' },
+        { module: 'Modul 4', title: 'Kitab Haji & Umrah', status: 'Selesai' }
+      ]
+    },
+    {
+      id: 'cls-5',
+      number: 5,
+      title: 'Tafsir Ayat Ahkam & Kaidah Tafsir',
+      code: 'CLS-TAF-401',
+      subject: 'Tafsir & Ulumul Quran',
+      level: 'Advanced',
+      image: '/images/class_balaghah.jpg',
+      instructor: {
+        name: 'Dr. Sheikh Tariq Al-Madani',
+        avatar: '/images/tutor_ahmed.jpg',
+        specialty: 'Tafsir & Ushul Fiqh',
+        email: 'tariq.madani@univ-islamic.org',
+        phone: '+62 812-9842-1920'
+      },
+      enrollment: 198,
+      quota: 200,
+      schedule: 'Rabu • 20:00 - 21:30 WIB',
+      format: 'Live Takhassus',
+      rating: 4.9,
+      reviewsCount: 73,
+      price: 'Rp 299.000 / bln',
+      status: 'Active',
+      statusType: 'active',
+      startDate: '01 Ags 2026',
+      endDate: '30 Okt 2026',
+      totalSessions: 14,
+      completedSessions: 9,
+      description: "Menggali istimbath hukum fiqih dari ayat-ayat Al-Qur'an dengan kaidah ushuliyyah muta'akhirin.",
+      enrolledStudents: [
+        { id: 'std-6', name: 'Maryam Abdullah', email: 'maryam.abdullah@example.com', avatar: null, studentId: 'STD-2026-006', attendance: '99%', score: '99 (A+)', submittedAssignments: '9/9', status: 'Active' }
+      ],
+      syllabus: [
+        { module: 'Modul 1', title: 'Kaidah Penafsiran Lafadz Mujmal & Mubayyan', status: 'Selesai' },
+        { module: 'Modul 2', title: 'Tafsir Ayat-Ayat Hukum Waris & Pernikahan', status: 'Sedang Berjalan' },
+        { module: 'Modul 3', title: 'Tafsir Ayat Muamalah & Riba Kontemporer', status: 'Mendatang' }
+      ]
+    },
+    {
+      id: 'cls-6',
+      number: 6,
+      title: 'Alfiyyah Ibnu Malik: Nahwu Tingkat Tinggi',
+      code: 'CLS-ALF-501',
+      subject: 'Nahwu & Shorof',
+      level: 'Advanced',
+      image: '/images/class_nahwu.jpg',
+      instructor: {
+        name: 'Ust. Ahmed Mohamed',
+        avatar: '/images/tutor_ahmed.jpg',
+        specialty: 'Senior Arabic Grammarian',
+        email: 'ahmed.mohamed@example.com',
+        phone: '+62 812-9876-5432'
+      },
+      enrollment: 180,
+      quota: 200,
+      schedule: 'Ahad • 09:00 - 11:30 WIB',
+      format: 'Live Talaqqi Syarah',
+      rating: 4.9,
+      reviewsCount: 64,
+      price: 'Rp 399.000 / bln',
+      status: 'Active',
+      statusType: 'active',
+      startDate: '01 Jun 2026',
+      endDate: '01 Des 2026',
+      totalSessions: 26,
+      completedSessions: 16,
+      description: "Mengkaji bait per bait Alfiyyah Ibnu Malik dengan Syarah Ibnu 'Aqil dan pembahasan i'rob tingkat tinggi.",
+      enrolledStudents: [
+        { id: 'std-9', name: 'Zaid Ibrahim', email: 'zaid.ibrahim@example.com', avatar: null, studentId: 'STD-2026-009', attendance: '97%', score: '95 (A)', submittedAssignments: '16/16', status: 'Active' }
+      ],
+      syllabus: [
+        { module: 'Modul 1', title: "Al-Kalam wa ma Yata'allafu Minhu", status: 'Selesai' },
+        { module: 'Modul 2', title: "Al-Mu'rab wal Mabni & Anwa'ul I'rob", status: 'Selesai' },
+        { module: 'Modul 3', title: "Al-Ibtida' & Nawasikhul Ibtida'", status: 'Sedang Berjalan' }
+      ]
+    },
+    {
+      id: 'cls-7',
+      number: 7,
+      title: "Syarah 40 Hadits Arba'in An-Nawawiyyah",
+      code: 'CLS-HAD-101',
+      subject: 'Hadits & Musthalah',
+      level: 'Intermediate',
+      image: '/images/class_conversation.jpg',
+      instructor: {
+        name: 'Ust. Ahmad Fauzi, Lc.',
+        avatar: '/images/tutor_ahmed.jpg',
+        specialty: 'Hadits & Sirah Nabawiyyah',
+        email: 'ahmad.fauzi@example.com',
+        phone: '+62 812-4455-7788'
+      },
+      enrollment: 165,
+      quota: 250,
+      schedule: 'Selasa • 19:30 - 21:00 WIB',
+      format: 'Live Streaming + Kajian',
+      rating: 4.7,
+      reviewsCount: 52,
+      price: 'Rp 175.000 / bln',
+      status: 'Active',
+      statusType: 'active',
+      startDate: '18 Ags 2026',
+      endDate: '18 Nov 2026',
+      totalSessions: 12,
+      completedSessions: 6,
+      description: 'Membedah hadits pokok agama dari niat, rukun Islam-Iman-Ihsan, hingga akhlaqul karimah.',
+      enrolledStudents: [
+        { id: 'std-7', name: 'Hamzah Al-Farisi', email: 'hamzah.alfarisi@example.com', avatar: null, studentId: 'STD-2026-007', attendance: '88%', score: '86 (B+)', submittedAssignments: '5/6', status: 'Active' }
+      ],
+      syllabus: [
+        { module: 'Modul 1', title: 'Hadits 1-10: Pondasi Aqidah & Ibadah', status: 'Selesai' },
+        { module: 'Modul 2', title: "Hadits 11-20: Wara', Akhlak & Kehalalan", status: 'Sedang Berjalan' },
+        { module: 'Modul 3', title: 'Hadits 21-42: Muamalah, Doa & Ridha Allah', status: 'Mendatang' }
+      ]
+    },
+    {
+      id: 'cls-8',
+      number: 8,
+      title: 'Khat & Seni Kaligrafi Naskhi Dasar',
+      code: 'CLS-KHT-101',
+      subject: 'Khat & Kaligrafi',
+      level: 'Beginner',
+      image: '/images/class_tajweed.jpg',
+      instructor: {
+        name: 'Ust. Bilal Mansur',
+        avatar: '/images/student_omar.jpg',
+        specialty: 'Master Calligrapher',
+        email: 'bilal.mansur@example.com',
+        phone: '+62 813-9988-7711'
+      },
+      enrollment: 95,
+      quota: 100,
+      schedule: 'Sabtu • 14:00 - 16:00 WIB',
+      format: 'Live Video Praktek Goresan',
+      rating: 4.8,
+      reviewsCount: 41,
+      price: 'Rp 150.000 / bln',
+      status: 'Upcoming',
+      statusType: 'upcoming',
+      startDate: '10 Okt 2026',
+      endDate: '10 Des 2026',
+      totalSessions: 10,
+      completedSessions: 0,
+      description: 'Belajar memegang pena kalam bambu, proporsi titik (nuqath), huruf tunggal alif-yaa, dan sambungan huruf.',
+      enrolledStudents: [
+        { id: 'std-8', name: 'Nurul Hidayah', email: 'nurul.hidayah@example.com', avatar: null, studentId: 'STD-2026-008', attendance: '100%', score: 'Menunggu Kelas', submittedAssignments: '0/10', status: 'Registered' }
+      ],
+      syllabus: [
+        { module: 'Modul 1', title: 'Pengenalan Alat Tulis, Tinta & Ukuran Pena', status: 'Mendatang' },
+        { module: 'Modul 2', title: 'Kaidah Huruf Mufradat (Alif s/d Yaa)', status: 'Mendatang' },
+        { module: 'Modul 3', title: 'Rangkaian Kata & Penulisan Bismillah', status: 'Mendatang' }
+      ]
+    }
+  ]);
+
+  const currentSelectedClass = classesList.find(c => c.id === selectedClassId) || classesList[0];
+
+  const toggleSelectClassCheckbox = (id) => {
+    setSelectedClassCheckboxes(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllClasses = () => {
+    if (selectedClassCheckboxes.length === classesList.length) {
+      setSelectedClassCheckboxes([]);
+    } else {
+      setSelectedClassCheckboxes(classesList.map(c => c.id));
     }
   };
 
@@ -4238,6 +4598,848 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
             </div>
+          ) : activeNav === 'classes' ? (
+            <div className="space-y-5 animate-fadeIn">
+              
+              {/* 1. TOP CLASSES HEADER */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shadow-xs shrink-0">
+                    <BookOpen className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight whitespace-nowrap">Classes Management</h1>
+                      <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-blue-100 text-blue-800 border border-blue-300/80 flex items-center gap-1 shrink-0">
+                        <Sparkles className="w-3 h-3 text-blue-600" />
+                        <span>248 Active Classes</span>
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                      Kelola jadwal kelas talaqqi, data pengajar ustadz/ustadzah, kurikulum modul, dan daftar santri terdaftar.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Action Buttons */}
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <button
+                    onClick={() => setIsAddClassModalOpen(true)}
+                    className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                  >
+                    <Plus className="w-4 h-4 shrink-0" />
+                    <span>Create Class</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsImportClassesModalOpen(true)}
+                    className="h-10 px-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <Download className="w-4 h-4 text-gray-500 shrink-0" />
+                    <span>Import Classes</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsExportModalOpen(true)}
+                    className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs flex items-center justify-center transition-all cursor-pointer shrink-0"
+                    title="Export Class Catalog"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. TOP 4 KPI CARDS FOR CLASSES */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* Total Classes */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <BookOpen className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Total Classes</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">248</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>18% from last month</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-blue-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-blue-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-blue-300 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Enrolled Students */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Class Enrollments</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">18,450</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>22% enrollment growth</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-emerald-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-emerald-200 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-emerald-300 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-emerald-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-emerald-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Live Sessions Completed */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                        <Video className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Live Sessions Held</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">1,420</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>98.4% On-time Rate</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-purple-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-purple-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-purple-300 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-purple-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-purple-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Average Satisfaction */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                        <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Class Rating Avg</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">4.9 <span className="text-xs font-bold text-gray-400">/ 5.0</span></div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>94% 5-Star Reviews</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-amber-100 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-amber-200 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-amber-300 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-amber-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-amber-500 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* 3. MAIN 2-COLUMN VIEW: LEFT CLASSES TABLE + RIGHT CLASS & STUDENTS DOSSIER */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                {/* 3A. LEFT 8-COLS (TABLE & FILTERS) */}
+                <div className="lg:col-span-8 space-y-4">
+                  
+                  {/* Status Pills Tabs */}
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+                    <button
+                      onClick={() => setClassTabFilter('all')}
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                        classTabFilter === 'all'
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      All Classes (248)
+                    </button>
+                    <button
+                      onClick={() => setClassTabFilter('active')}
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                        classTabFilter === 'active'
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      Active / Live (184)
+                    </button>
+                    <button
+                      onClick={() => setClassTabFilter('upcoming')}
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                        classTabFilter === 'upcoming'
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      Upcoming (42)
+                    </button>
+                    <button
+                      onClick={() => setClassTabFilter('completed')}
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                        classTabFilter === 'completed'
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      Archived / Completed (22)
+                    </button>
+                  </div>
+
+                  {/* Filter & Search Bar */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                    
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search class title, instructor name, code..."
+                        value={classSearchQuery}
+                        onChange={(e) => setClassSearchQuery(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2 bg-[#F8FAFC] border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+
+                    {/* Filter Dropdowns */}
+                    <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                      {/* Subject Filter */}
+                      <div className="relative">
+                        <select
+                          value={classSubjectFilter}
+                          onChange={(e) => setClassSubjectFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Subjects">All Subjects</option>
+                          <option value="Nahwu & Shorof">Nahwu & Shorof</option>
+                          <option value="Arabic Conversation">Arabic Conversation</option>
+                          <option value="Tahsin & Tahfidz">Tahsin & Tahfidz</option>
+                          <option value="Fiqih & Usul Fiqh">Fiqih & Usul Fiqh</option>
+                          <option value="Tafsir & Ulumul Quran">Tafsir & Ulumul Quran</option>
+                          <option value="Hadits & Musthalah">Hadits & Musthalah</option>
+                          <option value="Khat & Kaligrafi">Khat & Kaligrafi</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+
+                      {/* Level Filter */}
+                      <div className="relative">
+                        <select
+                          value={classLevelFilter}
+                          onChange={(e) => setClassLevelFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Levels">All Levels</option>
+                          <option value="Beginner">Beginner</option>
+                          <option value="Intermediate">Intermediate</option>
+                          <option value="Advanced">Advanced</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bulk Actions Banner */}
+                  {selectedClassCheckboxes.length > 0 && (
+                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs font-bold text-blue-900 animate-fadeIn">
+                      <div className="flex items-center gap-2">
+                        <CheckSquare className="w-4 h-4 text-blue-700" />
+                        <span>{selectedClassCheckboxes.length} kelas terpilih</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => alert(`Broadcast pengumuman ke ${selectedClassCheckboxes.length} kelas terpilih`)}
+                          className="px-3 py-1 bg-white border border-blue-300 rounded-lg text-blue-800 hover:bg-blue-100 cursor-pointer"
+                        >
+                          Kirim Pengumuman
+                        </button>
+                        <button
+                          onClick={() => alert(`Export data ${selectedClassCheckboxes.length} kelas terpilih`)}
+                          className="px-3 py-1 bg-[#114B44] text-white rounded-lg hover:bg-[#0D3B35] cursor-pointer"
+                        >
+                          Export Jadwal
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Table of Classes */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs min-w-[860px]">
+                        <thead>
+                          <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
+                            <th className="p-3.5 pl-4 w-8">
+                              <input
+                                type="checkbox"
+                                checked={selectedClassCheckboxes.length === classesList.length && classesList.length > 0}
+                                onChange={toggleSelectAllClasses}
+                                className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                              />
+                            </th>
+                            <th className="py-3.5 px-3">Class Title & Code</th>
+                            <th className="py-3.5 px-3">Instructor / Ustadz</th>
+                            <th className="py-3.5 px-3">Enrollment / Quota</th>
+                            <th className="py-3.5 px-3">Schedule & Format</th>
+                            <th className="py-3.5 px-3">Rating</th>
+                            <th className="py-3.5 px-3">Status</th>
+                            <th className="py-3.5 px-3 text-right pr-4">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {classesList
+                            .filter((c) => {
+                              // Tab Filter
+                              if (classTabFilter === 'active' && c.status !== 'Active') return false;
+                              if (classTabFilter === 'upcoming' && c.status !== 'Upcoming') return false;
+                              if (classTabFilter === 'completed' && c.status !== 'Completed') return false;
+
+                              // Subject Filter
+                              if (classSubjectFilter !== 'All Subjects' && c.subject !== classSubjectFilter) {
+                                return false;
+                              }
+
+                              // Level Filter
+                              if (classLevelFilter !== 'All Levels' && c.level !== classLevelFilter) {
+                                return false;
+                              }
+
+                              // Search Query
+                              if (classSearchQuery.trim()) {
+                                const q = classSearchQuery.toLowerCase();
+                                return (
+                                  c.title.toLowerCase().includes(q) ||
+                                  c.code.toLowerCase().includes(q) ||
+                                  c.instructor.name.toLowerCase().includes(q) ||
+                                  c.subject.toLowerCase().includes(q)
+                                );
+                              }
+                              return true;
+                            })
+                            .map((cls) => {
+                              const isSelectedRow = cls.id === selectedClassId;
+                              const isChecked = selectedClassCheckboxes.includes(cls.id);
+
+                              return (
+                                <tr
+                                  key={cls.id}
+                                  onClick={() => setSelectedClassId(cls.id)}
+                                  className={`hover:bg-gray-50/80 transition-colors cursor-pointer ${
+                                    isSelectedRow ? 'bg-blue-50/40 font-semibold' : ''
+                                  }`}
+                                >
+                                  {/* Checkbox */}
+                                  <td className="p-3.5 pl-4" onClick={(e) => e.stopPropagation()}>
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={() => toggleSelectClassCheckbox(cls.id)}
+                                      className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Class Title & Code */}
+                                  <td className="py-3 px-3">
+                                    <div className="flex items-center gap-3">
+                                      <img
+                                        src={cls.image}
+                                        alt={cls.title}
+                                        className="w-10 h-10 rounded-xl object-cover border border-gray-200 shrink-0"
+                                      />
+                                      <div className="min-w-0">
+                                        <div className="font-extrabold text-gray-900 text-xs hover:text-[#114B44] truncate max-w-[200px]">
+                                          {cls.title}
+                                        </div>
+                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                          <span className="text-[10px] font-mono text-gray-500 font-bold bg-gray-100 px-1.5 py-0.2 rounded">
+                                            {cls.code}
+                                          </span>
+                                          <span className="text-[10px] text-blue-700 font-bold bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200">
+                                            {cls.level}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Instructor / Ustadz */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="flex items-center gap-2">
+                                      <img
+                                        src={cls.instructor.avatar}
+                                        alt={cls.instructor.name}
+                                        className="w-7 h-7 rounded-full object-cover border border-gray-200 shrink-0"
+                                      />
+                                      <div>
+                                        <div className="font-bold text-gray-900 text-xs">{cls.instructor.name}</div>
+                                        <div className="text-[10px] text-gray-500">{cls.instructor.specialty}</div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Enrollment & Quota */}
+                                  <td className="py-3 px-3 whitespace-nowrap min-w-[130px]">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center justify-between text-[11px]">
+                                        <span className="font-black text-gray-900">{cls.enrollment} Santri</span>
+                                        <span className="text-gray-400 font-semibold">/ {cls.quota} Kuota</span>
+                                      </div>
+                                      <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                        <div
+                                          className={`h-full rounded-full ${
+                                            cls.enrollment >= cls.quota
+                                              ? 'bg-amber-500'
+                                              : 'bg-emerald-500'
+                                          }`}
+                                          style={{ width: `${Math.min(100, (cls.enrollment / cls.quota) * 100)}%` }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Schedule & Format */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="space-y-0.5">
+                                      <div className="font-bold text-gray-800 text-xs">{cls.schedule}</div>
+                                      <div className="text-[10px] text-gray-500 font-medium">{cls.format}</div>
+                                    </div>
+                                  </td>
+
+                                  {/* Rating */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="flex items-center gap-1">
+                                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />
+                                      <span className="font-black text-gray-900 text-xs">{cls.rating}</span>
+                                      <span className="text-[10px] text-gray-400 font-semibold">({cls.reviewsCount})</span>
+                                    </div>
+                                  </td>
+
+                                  {/* Status */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    {cls.status === 'Active' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        Live & Active
+                                      </span>
+                                    )}
+                                    {cls.status === 'Upcoming' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                        Upcoming
+                                      </span>
+                                    )}
+                                    {cls.status === 'Completed' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-gray-100 text-gray-700 border border-gray-200">
+                                        Archived
+                                      </span>
+                                    )}
+                                  </td>
+
+                                  {/* Actions */}
+                                  <td className="py-3 px-3 text-right pr-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex items-center justify-end gap-1.5 text-gray-400">
+                                      <button
+                                        onClick={() => setSelectedClassId(cls.id)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="View Class Dossier"
+                                      >
+                                        <Eye className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => alert(`Edit kelas ${cls.title}`)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="Edit Class Details"
+                                      >
+                                        <Edit2 className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => alert(`Opsi kelas ${cls.title}`)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="More Options"
+                                      >
+                                        <MoreHorizontal className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="p-3.5 border-t border-gray-100 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500 font-semibold">
+                      <div>
+                        Showing 1 to 8 of 248 classes
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 disabled:opacity-50 cursor-pointer">
+                          Previous
+                        </button>
+                        <button className="w-7 h-7 bg-[#114B44] text-white rounded-lg font-bold flex items-center justify-center">
+                          1
+                        </button>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          2
+                        </button>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          3
+                        </button>
+                        <span className="px-1 text-gray-400">...</span>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          31
+                        </button>
+                        <button className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 cursor-pointer">
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* 3B. RIGHT 4-COLS (CLASS DOSSIER & STUDENT ROSTER PANEL) */}
+                <aside className="lg:col-span-4 bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                  
+                  {/* Class Thumbnail & Header */}
+                  <div className="space-y-3">
+                    <div className="relative rounded-2xl overflow-hidden border border-gray-200 shadow-2xs aspect-video">
+                      <img
+                        src={currentSelectedClass.image}
+                        alt={currentSelectedClass.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-2.5 left-2.5">
+                        <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-black/70 text-white backdrop-blur-xs">
+                          {currentSelectedClass.code}
+                        </span>
+                      </div>
+                      <div className="absolute top-2.5 right-2.5">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#114B44] text-white shadow-xs">
+                          {currentSelectedClass.price}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+                          {currentSelectedClass.subject} • {currentSelectedClass.level}
+                        </span>
+                        <div className="flex items-center gap-1 text-xs">
+                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                          <span className="font-black text-gray-900">{currentSelectedClass.rating}</span>
+                        </div>
+                      </div>
+                      <h2 className="text-base font-black text-gray-900 leading-tight mt-1.5">
+                        {currentSelectedClass.title}
+                      </h2>
+                    </div>
+                  </div>
+
+                  {/* Instructor Mini Card */}
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <img
+                        src={currentSelectedClass.instructor.avatar}
+                        alt={currentSelectedClass.instructor.name}
+                        className="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <div className="font-extrabold text-gray-900 text-xs truncate">
+                          {currentSelectedClass.instructor.name}
+                        </div>
+                        <div className="text-[10px] text-gray-500 font-semibold truncate">
+                          {currentSelectedClass.instructor.specialty}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => alert(`Hubungi ustadz ${currentSelectedClass.instructor.name} via WhatsApp (${currentSelectedClass.instructor.phone})`)}
+                      className="p-1.5 bg-white border border-gray-200 hover:bg-gray-100 rounded-lg text-gray-600 shadow-2xs cursor-pointer shrink-0"
+                      title="Contact Instructor"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 text-emerald-700" />
+                    </button>
+                  </div>
+
+                  {/* 4 Detail Tabs */}
+                  <div className="flex border-b border-gray-100 text-xs font-bold text-gray-500 pt-1">
+                    <button
+                      onClick={() => setSelectedClassDetailTab('overview')}
+                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                        selectedClassDetailTab === 'overview'
+                          ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
+                          : 'hover:text-gray-900'
+                      }`}
+                    >
+                      Overview
+                    </button>
+                    <button
+                      onClick={() => setSelectedClassDetailTab('students')}
+                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                        selectedClassDetailTab === 'students'
+                          ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
+                          : 'hover:text-gray-900'
+                      }`}
+                    >
+                      Santri ({currentSelectedClass.enrolledStudents.length})
+                    </button>
+                    <button
+                      onClick={() => setSelectedClassDetailTab('syllabus')}
+                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                        selectedClassDetailTab === 'syllabus'
+                          ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
+                          : 'hover:text-gray-900'
+                      }`}
+                    >
+                      Syllabus
+                    </button>
+                    <button
+                      onClick={() => setSelectedClassDetailTab('grades')}
+                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                        selectedClassDetailTab === 'grades'
+                          ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
+                          : 'hover:text-gray-900'
+                      }`}
+                    >
+                      Stats
+                    </button>
+                  </div>
+
+                  {/* TAB 1: OVERVIEW */}
+                  {selectedClassDetailTab === 'overview' && (
+                    <div className="space-y-3 text-xs animate-fadeIn">
+                      <p className="text-gray-600 text-xs leading-relaxed">
+                        {currentSelectedClass.description}
+                      </p>
+
+                      <div className="space-y-2 pt-1 border-t border-gray-100">
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">Jadwal Pertemuan</span>
+                          <span className="font-bold">{currentSelectedClass.schedule}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">Format Kelas</span>
+                          <span className="font-bold">{currentSelectedClass.format}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">Periode Kursus</span>
+                          <span className="font-bold">{currentSelectedClass.startDate} - {currentSelectedClass.endDate}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">Progress Pertemuan</span>
+                          <span className="font-bold text-emerald-700">{currentSelectedClass.completedSessions} / {currentSelectedClass.totalSessions} Sesi Selesai</span>
+                        </div>
+                      </div>
+
+                      {/* Live Monitoring Badge */}
+                      <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="relative flex h-2.5 w-2.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
+                          </span>
+                          <span className="font-bold text-emerald-900 text-xs">Live Classroom Ready</span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (onNavigateToLive) {
+                              onNavigateToLive({
+                                title: currentSelectedClass.title,
+                                tutor: currentSelectedClass.instructor,
+                                image: currentSelectedClass.image
+                              });
+                            } else {
+                              alert(`Masuk memantau ruang kelas live ${currentSelectedClass.title}`);
+                            }
+                          }}
+                          className="px-2.5 py-1 bg-[#114B44] text-white rounded-lg font-bold text-[11px] hover:bg-[#0D3B35] cursor-pointer"
+                        >
+                          Join Monitor
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 2: ENROLLED STUDENTS */}
+                  {selectedClassDetailTab === 'students' && (
+                    <div className="space-y-3 text-xs animate-fadeIn">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-500 font-bold block">Santri Terdaftar ({currentSelectedClass.enrolledStudents.length})</span>
+                        <button
+                          onClick={() => setIsEnrollStudentModalOpen(true)}
+                          className="text-[11px] font-extrabold text-[#114B44] hover:underline cursor-pointer flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>+ Daftarkan Santri</span>
+                        </button>
+                      </div>
+
+                      <div className="space-y-2 max-h-64 overflow-y-auto no-scrollbar">
+                        {currentSelectedClass.enrolledStudents.map((st, i) => (
+                          <div key={i} className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              {st.avatar ? (
+                                <img
+                                  src={st.avatar}
+                                  alt={st.name}
+                                  className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-emerald-700 text-white font-bold flex items-center justify-center text-xs shrink-0">
+                                  {st.name.substring(0, 2).toUpperCase()}
+                                </div>
+                              )}
+                              <div className="min-w-0">
+                                <div className="font-extrabold text-gray-900 truncate text-xs">{st.name}</div>
+                                <div className="text-[10px] text-gray-400 font-mono">{st.studentId} • Tugas: {st.submittedAssignments}</div>
+                              </div>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <div className="font-black text-[#114B44] text-xs">{st.score}</div>
+                              <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">
+                                {st.attendance}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 3: SYLLABUS & MODULES */}
+                  {selectedClassDetailTab === 'syllabus' && (
+                    <div className="space-y-2.5 text-xs animate-fadeIn">
+                      <span className="text-gray-500 font-bold block">Silabus Kurikulum & Modul</span>
+                      {currentSelectedClass.syllabus.map((syl, sIdx) => (
+                        <div key={sIdx} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-black text-gray-900">{syl.module}</span>
+                            <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+                              syl.status === 'Selesai'
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : syl.status === 'Sedang Berjalan'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              {syl.status}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-gray-600 leading-snug">{syl.title}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* TAB 4: GRADES & STATS */}
+                  {selectedClassDetailTab === 'grades' && (
+                    <div className="space-y-3 text-xs animate-fadeIn">
+                      <span className="text-gray-500 font-bold block">Statistik & Kinerja Kelas</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                          <div className="text-[10px] text-gray-500 font-bold">Rata-rata Nilai</div>
+                          <div className="text-lg font-black text-gray-900 mt-0.5">92.4 <span className="text-xs text-emerald-600 font-bold">(A)</span></div>
+                        </div>
+                        <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                          <div className="text-[10px] text-gray-500 font-bold">Presensi Kehadiran</div>
+                          <div className="text-lg font-black text-emerald-700 mt-0.5">94.8%</div>
+                        </div>
+                      </div>
+
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-2">
+                        <div className="flex justify-between text-gray-600 font-medium">
+                          <span>Pengumpulan Tugas Tepat Waktu</span>
+                          <span className="font-bold text-gray-900">96.2%</span>
+                        </div>
+                        <div className="flex justify-between text-gray-600 font-medium">
+                          <span>Tingkat Kepuasan Ulasan</span>
+                          <span className="font-bold text-amber-600">4.9 / 5.0 ⭐</span>
+                        </div>
+                        <div className="flex justify-between text-gray-600 font-medium">
+                          <span>Tingkat Kelulusan Ujian</span>
+                          <span className="font-bold text-emerald-700">98.0%</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons Footer */}
+                  <div className="space-y-2 pt-3 border-t border-gray-100">
+                    {/* Primary Button: Enter Live Monitoring */}
+                    <button
+                      onClick={() => {
+                        if (onNavigateToLive) {
+                          onNavigateToLive({
+                            title: currentSelectedClass.title,
+                            tutor: currentSelectedClass.instructor,
+                            image: currentSelectedClass.image
+                          });
+                        } else {
+                          alert(`Masuk ke live classroom ${currentSelectedClass.title}`);
+                        }
+                      }}
+                      className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
+                    >
+                      <Video className="w-4 h-4 text-white" />
+                      <span>Masuk Live Classroom (Monitor)</span>
+                    </button>
+
+                    {/* Broadcast & Edit Side by Side */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => alert(`Kirim pesan broadcast ke seluruh santri di kelas ${currentSelectedClass.title}`)}
+                        className="flex items-center justify-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Broadcast</span>
+                      </button>
+
+                      <button
+                        onClick={() => alert(`Edit data kurikulum & jadwal ${currentSelectedClass.title}`)}
+                        className="flex items-center justify-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <Edit2 className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Edit Kelas</span>
+                      </button>
+                    </div>
+
+                    {/* Close / Archive Class Outline Red Button */}
+                    <button
+                      onClick={() => alert(`Status kelas ${currentSelectedClass.title} diarsipkan/ditutup.`)}
+                      className="w-full bg-rose-50/50 hover:bg-rose-100/80 text-rose-700 border border-rose-200 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Ban className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Arsipkan / Tutup Kelas</span>
+                    </button>
+                  </div>
+
+                </aside>
+
+              </div>
+
+            </div>
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -6048,6 +7250,364 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>Mulai Impor Data</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 8. CREATE / ADD CLASS MODAL */}
+          {isAddClassModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-xl w-full p-6 space-y-4 animate-fadeIn max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                      <BookOpen className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Create New Class</h3>
+                      <p className="text-xs text-gray-500">Buka ruang kelas talaqqi dan kurikulum baru</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsAddClassModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul Kelas / Kitab *</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Nahwu Dasar: Matan Al-Ajurrumiyyah"
+                      value={newClass.title}
+                      onChange={(e) => setNewClass({ ...newClass, title: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Kode Kelas</label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: CLS-NAH-102"
+                        value={newClass.code}
+                        onChange={(e) => setNewClass({ ...newClass, code: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Bidang Ilmu / Subjek</label>
+                      <select
+                        value={newClass.subject}
+                        onChange={(e) => setNewClass({ ...newClass, subject: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Nahwu & Shorof">Nahwu & Shorof</option>
+                        <option value="Arabic Conversation">Arabic Conversation</option>
+                        <option value="Tahsin & Tahfidz">Tahsin & Tahfidz</option>
+                        <option value="Fiqih & Usul Fiqh">Fiqih & Usul Fiqh</option>
+                        <option value="Tafsir & Ulumul Quran">Tafsir & Ulumul Quran</option>
+                        <option value="Hadits & Musthalah">Hadits & Musthalah</option>
+                        <option value="Khat & Kaligrafi">Khat & Kaligrafi</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Pengajar / Ustadz *</label>
+                      <select
+                        value={newClass.instructor}
+                        onChange={(e) => setNewClass({ ...newClass, instructor: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Ust. Ahmed Mohamed">Ust. Ahmed Mohamed (Nahwu & Shorof)</option>
+                        <option value="Ustazah Siti Aisyah, M.A.">Ustazah Siti Aisyah, M.A. (Muhadatsah)</option>
+                        <option value="Syaikh Yusuf Al-Qari">Syaikh Yusuf Al-Qari (Tahsin & Qiraat)</option>
+                        <option value="Dr. Sheikh Tariq Al-Madani">Dr. Sheikh Tariq Al-Madani (Fiqih & Tafsir)</option>
+                        <option value="Ust. Ahmad Fauzi, Lc.">Ust. Ahmad Fauzi, Lc. (Hadits)</option>
+                        <option value="Ust. Bilal Mansur">Ust. Bilal Mansur (Khat & Kaligrafi)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Level Jenjang</label>
+                      <select
+                        value={newClass.level}
+                        onChange={(e) => setNewClass({ ...newClass, level: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Beginner">Beginner (Pemula)</option>
+                        <option value="Intermediate">Intermediate (Menengah)</option>
+                        <option value="Advanced">Advanced (Lanjutan)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Jadwal Pertemuan</label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: Senin & Rabu • 19:30 WIB"
+                        value={newClass.schedule}
+                        onChange={(e) => setNewClass({ ...newClass, schedule: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Kapasitas Kuota Santri</label>
+                      <input
+                        type="number"
+                        placeholder="50"
+                        value={newClass.quota}
+                        onChange={(e) => setNewClass({ ...newClass, quota: Number(e.target.value) })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Biaya / Biaya Kursus</label>
+                      <input
+                        type="text"
+                        placeholder="Rp 299.000 / bln"
+                        value={newClass.price}
+                        onChange={(e) => setNewClass({ ...newClass, price: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Format Pembelajaran</label>
+                      <input
+                        type="text"
+                        placeholder="Live Zoom + Rekaman HD"
+                        value={newClass.format}
+                        onChange={(e) => setNewClass({ ...newClass, format: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Deskripsi Singkat / Target Belajar</label>
+                    <textarea
+                      rows={2}
+                      placeholder="Jelaskan silabus materi atau capaian santri setelah lulus kelas ini..."
+                      value={newClass.description}
+                      onChange={(e) => setNewClass({ ...newClass, description: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsAddClassModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!newClass.title.trim()) {
+                        alert('Silakan masukkan judul kelas.');
+                        return;
+                      }
+                      const newId = `cls-${Date.now()}`;
+                      const classObj = {
+                        id: newId,
+                        number: classesList.length + 1,
+                        title: newClass.title,
+                        code: newClass.code || `CLS-${newClass.subject.substring(0, 3).toUpperCase()}-${String(classesList.length + 1).padStart(3, '0')}`,
+                        subject: newClass.subject,
+                        level: newClass.level,
+                        image: '/images/class_nahwu.jpg',
+                        instructor: {
+                          name: newClass.instructor,
+                          avatar: '/images/tutor_ahmed.jpg',
+                          specialty: `${newClass.subject} Tutor`,
+                          email: 'instructor@ilmuhub.com',
+                          phone: '+62 812-0000-0000'
+                        },
+                        enrollment: 0,
+                        quota: newClass.quota || 50,
+                        schedule: newClass.schedule || 'Senin & Rabu • 19:30 WIB',
+                        format: newClass.format || 'Live Zoom + Rekaman HD',
+                        rating: 5.0,
+                        reviewsCount: 0,
+                        price: newClass.price || 'Rp 299.000 / bln',
+                        status: 'Active',
+                        statusType: 'active',
+                        startDate: '01 Okt 2026',
+                        endDate: '31 Des 2026',
+                        totalSessions: 16,
+                        completedSessions: 0,
+                        description: newClass.description || `Kelas intensif ${newClass.title} bersama ${newClass.instructor}.`,
+                        enrolledStudents: [],
+                        syllabus: [
+                          { module: 'Modul 1', title: 'Orientasi & Pengantar Materi', status: 'Mendatang' },
+                          { module: 'Modul 2', title: 'Pendalaman Konsep & Praktik Dasar', status: 'Mendatang' },
+                          { module: 'Modul 3', title: 'Evaluasi & Ujian Kelulusan Bersanad', status: 'Mendatang' }
+                        ]
+                      };
+                      setClassesList([classObj, ...classesList]);
+                      setSelectedClassId(newId);
+                      setIsAddClassModalOpen(false);
+                      setNewClass({
+                        title: '',
+                        code: '',
+                        subject: 'Nahwu & Shorof',
+                        level: 'Beginner',
+                        instructor: 'Ust. Ahmed Mohamed',
+                        schedule: 'Senin & Rabu • 19:30 WIB',
+                        quota: 50,
+                        price: 'Rp 299.000 / bln',
+                        format: 'Live Zoom + Rekaman HD',
+                        description: ''
+                      });
+                      alert(`Kelas baru "${classObj.title}" berhasil dibuat dan dibuka untuk pendaftaran!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Terbitkan Kelas</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 9. IMPORT CLASSES MODAL */}
+          {isImportClassesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Import Data Jadwal Kelas</h3>
+                      <p className="text-xs text-gray-500">Unggah kurikulum dan jadwal kelas massal</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsImportClassesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="p-6 border-2 border-dashed border-gray-200 rounded-2xl text-center space-y-3 bg-[#F8FAFC]">
+                  <UploadCloud className="w-10 h-10 text-gray-400 mx-auto" />
+                  <div>
+                    <span className="font-bold text-xs text-gray-700 block">Tarik & lepas file CSV / Excel di sini</span>
+                    <span className="text-[11px] text-gray-400">atau klik untuk memilih file jadwal dari komputer</span>
+                  </div>
+                  <button className="px-3 py-1.5 bg-white border border-gray-200 text-gray-700 rounded-lg text-xs font-bold shadow-2xs hover:bg-gray-50 cursor-pointer">
+                    Pilih Berkas (.csv, .xlsx)
+                  </button>
+                </div>
+
+                <div className="text-[11px] text-gray-500 space-y-1">
+                  <div className="font-bold text-gray-700">Format Template Kolom:</div>
+                  <div>`Title`, `Code`, `Subject`, `Instructor`, `Schedule`, `Quota`, `Price`</div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsImportClassesModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsImportClassesModalOpen(false);
+                      alert('Simulasi Import: 12 jadwal kelas baru berhasil diimpor!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Mulai Impor Kelas</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 10. ENROLL STUDENT INTO CLASS MODAL */}
+          {isEnrollStudentModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                      <UserPlus className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Daftarkan Santri ke Kelas</h3>
+                      <p className="text-xs text-gray-500">{currentSelectedClass.title}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsEnrollStudentModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Pilih Santri / Mahasiswa</label>
+                    <select id="enroll-student-select" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer">
+                      {studentsList.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name} ({s.studentId}) • {s.program}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Status Pembayaran</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer">
+                      <option value="paid">Lunas (Invoice Verified)</option>
+                      <option value="beasiswa">Beasiswa / Gratis</option>
+                      <option value="pending">Menunggu Pembayaran</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsEnrollStudentModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      const selectEl = document.getElementById('enroll-student-select');
+                      const selectedId = selectEl ? selectEl.value : studentsList[0]?.id;
+                      const selectedSt = studentsList.find(s => s.id === selectedId) || studentsList[0];
+
+                      // Add student to current class
+                      const updatedClasses = classesList.map(c => {
+                        if (c.id === currentSelectedClass.id) {
+                          const alreadyIn = c.enrolledStudents.some(st => st.id === selectedSt.id);
+                          if (alreadyIn) return c;
+                          return {
+                            ...c,
+                            enrollment: c.enrollment + 1,
+                            enrolledStudents: [
+                              {
+                                id: selectedSt.id,
+                                name: selectedSt.name,
+                                email: selectedSt.email,
+                                avatar: selectedSt.avatar,
+                                studentId: selectedSt.studentId,
+                                attendance: '100%',
+                                score: 'Baru Masuk',
+                                submittedAssignments: '0/0',
+                                status: 'Active'
+                              },
+                              ...c.enrolledStudents
+                            ]
+                          };
+                        }
+                        return c;
+                      });
+
+                      setClassesList(updatedClasses);
+                      setIsEnrollStudentModalOpen(false);
+                      alert(`Santri ${selectedSt.name} berhasil didaftarkan ke kelas ${currentSelectedClass.title}!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Konfirmasi Pendaftaran</span>
                   </button>
                 </div>
               </div>
