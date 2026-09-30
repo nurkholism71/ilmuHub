@@ -64,7 +64,14 @@ import {
   MapPin,
   Heart,
   Copy,
-  ArrowUpRight
+  ArrowUpRight,
+  Smartphone,
+  Monitor,
+  Tablet,
+  PieChart,
+  TrendingDown,
+  Share2,
+  Compass
 } from 'lucide-react';
 
 export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, onLogout, onSwitchRole }) {
@@ -3375,6 +3382,141 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isExportEarningsReportModalOpen, setIsExportEarningsReportModalOpen] = useState(false);
   const [selectedTxForDetail, setSelectedTxForDetail] = useState(null);
   const [commissionRate, setCommissionRate] = useState(20);
+
+  // =========================================================
+  // ANALYTICS DATASET & STATES (matching media_1790802431428.jpg)
+  // =========================================================
+  const [analyticsDateRange, setAnalyticsDateRange] = useState('1 Sep 2026 - 30 Sep 2026');
+  const [isAnalyticsDateDropdownOpen, setIsAnalyticsDateDropdownOpen] = useState(false);
+  const [analyticsTabFilter, setAnalyticsTabFilter] = useState('overview'); // 'overview' | 'users' | 'classes' | 'engagement' | 'revenue' | 'geographic' | 'devices'
+  const [analyticsTimeFilter, setAnalyticsTimeFilter] = useState('All Time'); // 'All Time' | 'This Month' | 'Last 30 Days' | 'This Quarter' | 'This Year'
+  const [isAnalyticsTimeDropdownOpen, setIsAnalyticsTimeDropdownOpen] = useState(false);
+  const [isAnalyticsExportModalOpen, setIsAnalyticsExportModalOpen] = useState(false);
+  const [isViewAllTopClassesModalOpen, setIsViewAllTopClassesModalOpen] = useState(false);
+  const [isViewAllUserActivityModalOpen, setIsViewAllUserActivityModalOpen] = useState(false);
+  const [isViewAllCountriesModalOpen, setIsViewAllCountriesModalOpen] = useState(false);
+  const [isViewAllTrafficSourcesModalOpen, setIsViewAllTrafficSourcesModalOpen] = useState(false);
+  const [activeSplineTooltip, setActiveSplineTooltip] = useState(null);
+
+  // Top Classes Dataset (matching mockup)
+  const analyticsTopClasses = [
+    {
+      id: 1,
+      title: 'Islamic History Basics',
+      icon: '🕌',
+      thumbnailBg: 'bg-amber-900/10 text-amber-800',
+      teacher: 'Dr. Ahmad Fauzi',
+      teacherAvatar: '/images/tutor_ahmed.jpg',
+      enrollments: '2,184',
+      completionRate: '92%',
+      avgScore: '82%',
+      category: 'Islamic Studies',
+      rating: 4.9,
+      revenue: '$4,368'
+    },
+    {
+      id: 2,
+      title: 'Mathematics - Algebra',
+      icon: '📐',
+      thumbnailBg: 'bg-emerald-900/10 text-emerald-800',
+      teacher: 'Siti Aisyah',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      enrollments: '1,856',
+      completionRate: '88%',
+      avgScore: '78%',
+      category: 'Exact Sciences',
+      rating: 4.8,
+      revenue: '$3,712'
+    },
+    {
+      id: 3,
+      title: 'English Grammar',
+      icon: '📖',
+      thumbnailBg: 'bg-blue-900/10 text-blue-800',
+      teacher: 'Omar Hassan',
+      teacherAvatar: '/images/student_ali.jpg',
+      enrollments: '1,432',
+      completionRate: '85%',
+      avgScore: '76%',
+      category: 'Languages',
+      rating: 4.7,
+      revenue: '$2,864'
+    },
+    {
+      id: 4,
+      title: 'Web Development',
+      icon: '💻',
+      thumbnailBg: 'bg-indigo-900/10 text-indigo-800',
+      teacher: 'Layla Karim',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      enrollments: '1,296',
+      completionRate: '82%',
+      avgScore: '80%',
+      category: 'Technology',
+      rating: 4.9,
+      revenue: '$3,888'
+    },
+    {
+      id: 5,
+      title: 'Quran Memorization',
+      icon: '📜',
+      thumbnailBg: 'bg-amber-900/10 text-amber-800',
+      teacher: 'Fatimah Nur',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      enrollments: '1,120',
+      completionRate: '90%',
+      avgScore: '88%',
+      category: 'Tahfidz',
+      rating: 5.0,
+      revenue: '$2,240'
+    }
+  ];
+
+  // User Activity Daily Log Dataset (matching mockup)
+  const analyticsUserActivity = [
+    { date: '30 Sep 2026', newUsers: 324, enrollments: 486, activeUsers: '2,184', sessions: '3,840', avgDuration: '48m' },
+    { date: '29 Sep 2026', newUsers: 298, enrollments: 442, activeUsers: '2,021', sessions: '3,520', avgDuration: '45m' },
+    { date: '28 Sep 2026', newUsers: 312, enrollments: 468, activeUsers: '2,103', sessions: '3,690', avgDuration: '52m' },
+    { date: '27 Sep 2026', newUsers: 276, enrollments: 421, activeUsers: '1,984', sessions: '3,410', avgDuration: '44m' },
+    { date: '26 Sep 2026', newUsers: 261, enrollments: 398, activeUsers: '1,876', sessions: '3,280', avgDuration: '41m' },
+    { date: '25 Sep 2026', newUsers: 308, enrollments: 452, activeUsers: '2,067', sessions: '3,610', avgDuration: '49m' },
+    { date: '24 Sep 2026', newUsers: 294, enrollments: 430, activeUsers: '1,992', sessions: '3,490', avgDuration: '47m' }
+  ];
+
+  // User Demographics Segments
+  const analyticsDemographics = [
+    { label: 'Students', percentage: 64, count: '8,226', color: '#3B82F6', ringColor: 'text-blue-500', bg: 'bg-blue-500' },
+    { label: 'Teachers', percentage: 18, count: '2,312', color: '#10B981', ringColor: 'text-emerald-500', bg: 'bg-emerald-500' },
+    { label: 'Parents', percentage: 10, count: '1,286', color: '#8B5CF6', ringColor: 'text-purple-500', bg: 'bg-purple-500' },
+    { label: 'Admin', percentage: 3, count: '386', color: '#F59E0B', ringColor: 'text-amber-500', bg: 'bg-amber-500' },
+    { label: 'Others', percentage: 5, count: '644', color: '#06B6D4', ringColor: 'text-cyan-500', bg: 'bg-cyan-500' }
+  ];
+
+  // Top Countries Dataset (matching mockup)
+  const analyticsTopCountries = [
+    { country: 'Indonesia', flag: '🇮🇩', percentage: 42, count: '5,398', color: 'bg-blue-500', width: '42%' },
+    { country: 'Egypt', flag: '🇪🇬', percentage: 18, count: '2,312', color: 'bg-emerald-500', width: '18%' },
+    { country: 'Malaysia', flag: '🇲🇾', percentage: 10, count: '1,287', color: 'bg-purple-500', width: '10%' },
+    { country: 'Saudi Arabia', flag: '🇸🇦', percentage: 8, count: '1,029', color: 'bg-amber-500', width: '8%' },
+    { country: 'United States', flag: '🇺🇸', percentage: 6, count: '771', color: 'bg-rose-500', width: '6%' },
+    { country: 'Others', flag: '🌐', percentage: 16, count: '2,057', color: 'bg-gray-400', width: '16%' }
+  ];
+
+  // Device Usage Dataset (matching mockup)
+  const analyticsDeviceUsage = [
+    { name: 'Mobile', percentage: 68, count: '8,740', color: '#3B82F6', ringColor: 'text-blue-500', bg: 'bg-blue-500', icon: Smartphone },
+    { name: 'Desktop', percentage: 26, count: '3,342', color: '#10B981', ringColor: 'text-emerald-500', bg: 'bg-emerald-500', icon: Monitor },
+    { name: 'Tablet', percentage: 6, count: '772', color: '#8B5CF6', ringColor: 'text-purple-500', bg: 'bg-purple-500', icon: Tablet }
+  ];
+
+  // Traffic Sources Dataset (matching mockup)
+  const analyticsTrafficSources = [
+    { source: 'Direct', icon: Globe, percentage: 38, count: '4,884', color: 'bg-blue-500', width: '38%' },
+    { source: 'Search Engine', icon: Search, percentage: 26, count: '3,342', color: 'bg-emerald-500', width: '26%' },
+    { source: 'Social Media', icon: Share2, percentage: 18, count: '2,312', color: 'bg-purple-500', width: '18%' },
+    { source: 'Referrals', icon: Users, percentage: 10, count: '1,286', color: 'bg-amber-500', width: '10%' },
+    { source: 'Others', icon: Compass, percentage: 8, count: '1,030', color: 'bg-yellow-400', width: '8%' }
+  ];
 
   // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
@@ -12598,6 +12740,797 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'analytics' ? (
+            (() => {
+              // Mini bar heights helper
+              const miniBarRenders = (colorClass, heights) => (
+                <div className="flex items-end gap-1 h-8 shrink-0">
+                  {heights.map((h, idx) => (
+                    <div
+                      key={idx}
+                      className={`w-1.5 rounded-t-xs transition-all duration-300 ${colorClass}`}
+                      style={{ height: `${h}%` }}
+                    />
+                  ))}
+                </div>
+              );
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  {/* 1. TOP ANALYTICS HEADER */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-md shrink-0">
+                        <BarChart2 className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Analytics</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Get insights into platform usage, user engagement, learning activities, and revenue performance.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Action Controls */}
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <div className="relative">
+                        <button
+                          onClick={() => setIsAnalyticsDateDropdownOpen(!isAnalyticsDateDropdownOpen)}
+                          className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                          <span>{analyticsDateRange}</span>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                        </button>
+
+                        {isAnalyticsDateDropdownOpen && (
+                          <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-30 text-xs animate-fadeIn space-y-1">
+                            {[
+                              '1 Sep 2026 - 30 Sep 2026',
+                              '1 Aug 2026 - 31 Aug 2026',
+                              'Last 7 Days',
+                              'Last 30 Days',
+                              'This Quarter (Q3 2026)',
+                              'Year to Date (2026)',
+                              'All Time'
+                            ].map((range) => (
+                              <button
+                                key={range}
+                                onClick={() => {
+                                  setAnalyticsDateRange(range);
+                                  setIsAnalyticsDateDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 rounded-xl font-bold transition-colors cursor-pointer ${
+                                  analyticsDateRange === range ? 'bg-[#114B44] text-white' : 'text-gray-700 hover:bg-gray-50'
+                                }`}
+                              >
+                                {range}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => setIsAnalyticsExportModalOpen(true)}
+                        className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-black shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Export Report</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. TOP 4 KPI CARDS (Matching media_1790802431428.jpg) */}
+                  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
+                    {/* Card 1: Total Users */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                          <Users className="w-5 h-5" />
+                        </div>
+                        {miniBarRenders('bg-blue-500/80', [35, 50, 45, 65, 85, 100])}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-gray-500 font-bold text-xs">Total Users</span>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mt-0.5">12,854</div>
+                        <div className="flex items-center gap-1.5 text-xs mt-1 text-emerald-600 font-extrabold">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span>28% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Active Users */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                          <UserCheck className="w-5 h-5" />
+                        </div>
+                        {miniBarRenders('bg-emerald-500/80', [40, 55, 60, 75, 70, 95])}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-gray-500 font-bold text-xs">Active Users</span>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mt-0.5">8,426</div>
+                        <div className="flex items-center gap-1.5 text-xs mt-1 text-emerald-600 font-extrabold">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span>18% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Total Classes */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                          <BookOpen className="w-5 h-5" />
+                        </div>
+                        {miniBarRenders('bg-purple-500/80', [30, 45, 50, 70, 80, 100])}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-gray-500 font-bold text-xs">Total Classes</span>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mt-0.5">1,248</div>
+                        <div className="flex items-center gap-1.5 text-xs mt-1 text-emerald-600 font-extrabold">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span>32% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Total Enrollments */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                          <GraduationCap className="w-5 h-5" />
+                        </div>
+                        {miniBarRenders('bg-amber-500/80', [45, 50, 65, 80, 75, 95])}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-gray-500 font-bold text-xs">Total Enrollments</span>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mt-0.5">18,562</div>
+                        <div className="flex items-center gap-1.5 text-xs mt-1 text-emerald-600 font-extrabold">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span>26% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. MAIN ANALYTICS GRID (8 COLS CANVAS + 4 COLS SIDEBAR) */}
+                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 min-w-0">
+                    
+                    {/* LEFT MAIN CANVAS (8 COLS) */}
+                    <div className="xl:col-span-8 space-y-5 min-w-0">
+                      
+                      {/* FILTER TABS STRIP */}
+                      <div className="bg-white rounded-2xl p-2 sm:p-2.5 border border-gray-100 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar whitespace-nowrap min-w-0 py-0.5">
+                          {[
+                            { id: 'overview', label: 'Overview' },
+                            { id: 'users', label: 'Users' },
+                            { id: 'classes', label: 'Classes' },
+                            { id: 'engagement', label: 'Engagement' },
+                            { id: 'revenue', label: 'Revenue' },
+                            { id: 'geographic', label: 'Geographic' },
+                            { id: 'devices', label: 'Devices' }
+                          ].map((tab) => {
+                            const isActive = analyticsTabFilter === tab.id;
+                            return (
+                              <button
+                                key={tab.id}
+                                onClick={() => setAnalyticsTabFilter(tab.id)}
+                                className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                                  isActive
+                                    ? 'bg-[#114B44] text-white shadow-xs'
+                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 font-bold'
+                                }`}
+                              >
+                                {tab.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Dropdown Time Filter */}
+                        <div className="relative shrink-0">
+                          <button
+                            onClick={() => setIsAnalyticsTimeDropdownOpen(!isAnalyticsTimeDropdownOpen)}
+                            className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                          >
+                            <span>{analyticsTimeFilter}</span>
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                          </button>
+
+                          {isAnalyticsTimeDropdownOpen && (
+                            <div className="absolute right-0 mt-1.5 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 p-1.5 z-30 text-xs animate-fadeIn space-y-1">
+                              {['All Time', 'This Month', 'Last 30 Days', 'This Quarter', 'This Year'].map((tf) => (
+                                <button
+                                  key={tf}
+                                  onClick={() => {
+                                    setAnalyticsTimeFilter(tf);
+                                    setIsAnalyticsTimeDropdownOpen(false);
+                                  }}
+                                  className={`w-full text-left px-3 py-1.5 rounded-xl font-bold transition-colors cursor-pointer ${
+                                    analyticsTimeFilter === tf ? 'bg-[#114B44] text-white' : 'text-gray-700 hover:bg-gray-50'
+                                  }`}
+                                >
+                                  {tf}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* PLATFORM GROWTH MULTI-LINE SPLINE CHART */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <h3 className="text-base font-black text-gray-900">Platform Growth</h3>
+                            <p className="text-xs text-gray-500">Total users, enrollments, and active users over time.</p>
+                          </div>
+
+                          {/* Legend items */}
+                          <div className="flex items-center gap-4 text-xs font-bold shrink-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                              <span className="text-gray-700 text-[11px]">Total Users</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                              <span className="text-gray-700 text-[11px]">Active Users</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                              <span className="text-gray-700 text-[11px]">Enrollments</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Interactive SVG Chart */}
+                        <div className="relative pt-2">
+                          <svg viewBox="0 0 700 230" className="w-full h-56 sm:h-64 overflow-visible">
+                            <defs>
+                              <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.25" />
+                                <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.0" />
+                              </linearGradient>
+                              <linearGradient id="emeraldGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#10B981" stopOpacity="0.20" />
+                                <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                              </linearGradient>
+                              <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.15" />
+                                <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.0" />
+                              </linearGradient>
+                            </defs>
+
+                            {/* Horizontal Gridlines & Y-Axis Labels */}
+                            {[
+                              { label: '20K', y: 20 },
+                              { label: '15K', y: 65 },
+                              { label: '10K', y: 110 },
+                              { label: '5K', y: 155 },
+                              { label: '0', y: 200 }
+                            ].map((grid, idx) => (
+                              <g key={idx}>
+                                <text x="5" y={grid.y + 4} className="text-[10px] fill-gray-400 font-bold">{grid.label}</text>
+                                <line x1="35" y1={grid.y} x2="690" y2={grid.y} stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                              </g>
+                            ))}
+
+                            {/* Area Fills */}
+                            <path
+                              d="M 40,192 C 100,175 160,150 220,155 C 280,130 340,140 400,110 C 460,95 520,105 580,75 C 630,65 670,45 685,38 L 685,200 L 40,200 Z"
+                              fill="url(#blueGrad)"
+                            />
+                            <path
+                              d="M 40,198 C 100,186 160,172 220,178 C 280,160 340,166 400,144 C 460,132 520,140 580,118 C 630,112 670,98 685,92 L 685,200 L 40,200 Z"
+                              fill="url(#emeraldGrad)"
+                            />
+
+                            {/* SPLINE LINE 1: Total Users (Blue) */}
+                            <path
+                              d="M 40,192 C 100,175 160,150 220,155 C 280,130 340,140 400,110 C 460,95 520,105 580,75 C 630,65 670,45 685,38"
+                              fill="none"
+                              stroke="#3B82F6"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                            />
+
+                            {/* SPLINE LINE 2: Active Users (Green) */}
+                            <path
+                              d="M 40,198 C 100,186 160,172 220,178 C 280,160 340,166 400,144 C 460,132 520,140 580,118 C 630,112 670,98 685,92"
+                              fill="none"
+                              stroke="#10B981"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                            />
+
+                            {/* SPLINE LINE 3: Enrollments (Purple) */}
+                            <path
+                              d="M 40,204 C 100,195 160,188 220,190 C 280,178 340,182 400,164 C 460,156 520,162 580,146 C 630,142 670,130 685,124"
+                              fill="none"
+                              stroke="#8B5CF6"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                            />
+
+                            {/* Milestone Point Nodes */}
+                            {[
+                              { cx: 40, uY: 192, aY: 198, eY: 204, date: '1 Sep', uVal: '3,850', aVal: '2,400', eVal: '1,200' },
+                              { cx: 145, uY: 153, aY: 174, eY: 189, date: '5 Sep', uVal: '6,200', aVal: '4,100', eVal: '2,600' },
+                              { cx: 255, uY: 142, aY: 168, eY: 184, date: '10 Sep', uVal: '8,400', aVal: '5,300', eVal: '3,400' },
+                              { cx: 365, uY: 124, aY: 154, eY: 172, date: '15 Sep', uVal: '9,900', aVal: '6,800', eVal: '4,600' },
+                              { cx: 475, uY: 98, aY: 135, eY: 158, date: '20 Sep', uVal: '11,400', aVal: '7,400', eVal: '5,800' },
+                              { cx: 585, uY: 74, aY: 116, eY: 144, date: '25 Sep', uVal: '12,200', aVal: '8,100', eVal: '7,200' },
+                              { cx: 685, uY: 38, aY: 92, eY: 124, date: '30 Sep', uVal: '12,854', aVal: '8,426', eVal: '18,562' }
+                            ].map((node, idx) => (
+                              <g
+                                key={idx}
+                                className="cursor-pointer group"
+                                onMouseEnter={() => setActiveSplineTooltip(node)}
+                                onMouseLeave={() => setActiveSplineTooltip(null)}
+                              >
+                                <circle cx={node.cx} cy={node.uY} r="4" fill="#3B82F6" stroke="#FFFFFF" strokeWidth="2" className="group-hover:r-6 transition-all" />
+                                <circle cx={node.cx} cy={node.aY} r="4" fill="#10B981" stroke="#FFFFFF" strokeWidth="2" className="group-hover:r-6 transition-all" />
+                                <circle cx={node.cx} cy={node.eY} r="4" fill="#8B5CF6" stroke="#FFFFFF" strokeWidth="2" className="group-hover:r-6 transition-all" />
+                              </g>
+                            ))}
+
+                            {/* X-Axis Date Labels */}
+                            {[
+                              { label: '1 Sep', x: 40 },
+                              { label: '5 Sep', x: 145 },
+                              { label: '10 Sep', x: 255 },
+                              { label: '15 Sep', x: 365 },
+                              { label: '20 Sep', x: 475 },
+                              { label: '25 Sep', x: 585 },
+                              { label: '30 Sep', x: 675 }
+                            ].map((dt, idx) => (
+                              <text key={idx} x={dt.x} y="222" textAnchor="middle" className="text-[10px] fill-gray-400 font-bold">
+                                {dt.label}
+                              </text>
+                            ))}
+                          </svg>
+
+                          {/* Hover Tooltip Overlay */}
+                          {activeSplineTooltip && (
+                            <div className="absolute top-2 right-4 bg-gray-900/95 text-white rounded-xl p-2.5 shadow-xl border border-gray-800 text-[11px] backdrop-blur-xs space-y-1 animate-fadeIn pointer-events-none">
+                              <div className="font-black text-amber-400 border-b border-gray-700 pb-1">{activeSplineTooltip.date} 2026</div>
+                              <div className="flex justify-between gap-3 text-blue-300">
+                                <span>Total Users:</span>
+                                <span className="font-black text-white">{activeSplineTooltip.uVal}</span>
+                              </div>
+                              <div className="flex justify-between gap-3 text-emerald-300">
+                                <span>Active Users:</span>
+                                <span className="font-black text-white">{activeSplineTooltip.aVal}</span>
+                              </div>
+                              <div className="flex justify-between gap-3 text-purple-300">
+                                <span>Enrollments:</span>
+                                <span className="font-black text-white">{activeSplineTooltip.eVal}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* MIDDLE 4 PERFORMANCE KPI CARDS */}
+                      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
+                        {/* 1. Class Completion Rate */}
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs flex flex-col justify-between min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                              <CheckSquare className="w-4 h-4" />
+                            </div>
+                            {miniBarRenders('bg-emerald-500/80', [45, 60, 70, 80, 87])}
+                          </div>
+                          <div className="mt-2.5">
+                            <span className="text-gray-500 font-bold text-[11px] truncate block">Class Completion Rate</span>
+                            <div className="text-lg sm:text-xl font-black text-gray-900 tracking-tight mt-0.5">87%</div>
+                            <div className="flex items-center gap-1 text-[10px] mt-0.5 text-emerald-600 font-extrabold">
+                              <TrendingUp className="w-3 h-3" />
+                              <span>6% from last month</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 2. Average Quiz Score */}
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs flex flex-col justify-between min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                              <FileText className="w-4 h-4" />
+                            </div>
+                            {miniBarRenders('bg-purple-500/80', [50, 65, 70, 75, 78])}
+                          </div>
+                          <div className="mt-2.5">
+                            <span className="text-gray-500 font-bold text-[11px] truncate block">Average Quiz Score</span>
+                            <div className="text-lg sm:text-xl font-black text-gray-900 tracking-tight mt-0.5">78%</div>
+                            <div className="flex items-center gap-1 text-[10px] mt-0.5 text-emerald-600 font-extrabold">
+                              <TrendingUp className="w-3 h-3" />
+                              <span>4% from last month</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 3. Live Class Attendance */}
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs flex flex-col justify-between min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                              <Video className="w-4 h-4" />
+                            </div>
+                            {miniBarRenders('bg-rose-500/80', [35, 50, 65, 80, 95])}
+                          </div>
+                          <div className="mt-2.5">
+                            <span className="text-gray-500 font-bold text-[11px] truncate block">Live Class Attendance</span>
+                            <div className="text-lg sm:text-xl font-black text-gray-900 tracking-tight mt-0.5">1,042</div>
+                            <div className="flex items-center gap-1 text-[10px] mt-0.5 text-emerald-600 font-extrabold">
+                              <TrendingUp className="w-3 h-3" />
+                              <span>22% from last month</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 4. Revenue (Platform) */}
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs flex flex-col justify-between min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                              <Coins className="w-4 h-4" />
+                            </div>
+                            {miniBarRenders('bg-amber-500/80', [40, 55, 70, 85, 100])}
+                          </div>
+                          <div className="mt-2.5">
+                            <span className="text-gray-500 font-bold text-[11px] truncate block">Revenue (Platform)</span>
+                            <div className="text-lg sm:text-xl font-black text-gray-900 tracking-tight mt-0.5">$12,845</div>
+                            <div className="flex items-center gap-1 text-[10px] mt-0.5 text-emerald-600 font-extrabold">
+                              <TrendingUp className="w-3 h-3" />
+                              <span>28% from last month</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* BOTTOM 2-COLUMN SPLIT: TOP CLASSES & USER ACTIVITY */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 min-w-0">
+                        
+                        {/* TOP CLASSES CARD */}
+                        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs space-y-3 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-black text-gray-900">Top Classes</h3>
+                            <button
+                              onClick={() => setIsViewAllTopClassesModalOpen(true)}
+                              className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                              <span>View All</span>
+                              <ArrowUpRight className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          <div className="overflow-x-auto min-w-0 no-scrollbar">
+                            <table className="w-full text-left text-xs min-w-[460px]">
+                              <thead>
+                                <tr className="text-gray-400 font-bold border-b border-gray-100 text-[11px]">
+                                  <th className="pb-2.5 w-6">#</th>
+                                  <th className="pb-2.5">Class Title</th>
+                                  <th className="pb-2.5">Teacher</th>
+                                  <th className="pb-2.5 text-right">Enrollments</th>
+                                  <th className="pb-2.5 text-right">Completion Rate</th>
+                                  <th className="pb-2.5 text-right">Avg. Score</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-50">
+                                {analyticsTopClasses.map((cls) => (
+                                  <tr key={cls.id} className="hover:bg-gray-50/70 transition-colors">
+                                    <td className="py-2.5 font-bold text-gray-400">{cls.id}</td>
+                                    <td className="py-2.5">
+                                      <div className="flex items-center gap-2">
+                                        <div className={`w-6 h-6 rounded-lg ${cls.thumbnailBg} flex items-center justify-center text-xs shrink-0 font-bold`}>
+                                          {cls.icon}
+                                        </div>
+                                        <span className="font-black text-gray-900 text-xs truncate max-w-[120px]">{cls.title}</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-2.5">
+                                      <div className="flex items-center gap-1.5">
+                                        <img
+                                          src={cls.teacherAvatar}
+                                          alt={cls.teacher}
+                                          className="w-5 h-5 rounded-full object-cover shrink-0"
+                                          onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                                        />
+                                        <span className="font-bold text-gray-600 text-[11px] truncate max-w-[90px]">{cls.teacher}</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-2.5 text-right font-black text-gray-800">{cls.enrollments}</td>
+                                    <td className="py-2.5 text-right">
+                                      <span className="font-extrabold text-emerald-600">{cls.completionRate}</span>
+                                    </td>
+                                    <td className="py-2.5 text-right font-bold text-gray-600">{cls.avgScore}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        {/* USER ACTIVITY CARD */}
+                        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs space-y-3 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-black text-gray-900">User Activity</h3>
+                            <button
+                              onClick={() => setIsViewAllUserActivityModalOpen(true)}
+                              className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                              <span>View All</span>
+                              <ArrowUpRight className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          <div className="overflow-x-auto min-w-0 no-scrollbar">
+                            <table className="w-full text-left text-xs min-w-[320px]">
+                              <thead>
+                                <tr className="text-gray-400 font-bold border-b border-gray-100 text-[11px]">
+                                  <th className="pb-2.5">Date</th>
+                                  <th className="pb-2.5 text-right">New Users</th>
+                                  <th className="pb-2.5 text-right">Enrollments</th>
+                                  <th className="pb-2.5 text-right">Active Users</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-50">
+                                {analyticsUserActivity.map((row, idx) => (
+                                  <tr key={idx} className="hover:bg-gray-50/70 transition-colors">
+                                    <td className="py-2.5 font-bold text-gray-700 text-[11px]">{row.date}</td>
+                                    <td className="py-2.5 text-right font-bold text-gray-600">{row.newUsers}</td>
+                                    <td className="py-2.5 text-right font-bold text-gray-600">{row.enrollments}</td>
+                                    <td className="py-2.5 text-right font-black text-gray-900">{row.activeUsers}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* RIGHT SIDEBAR (4 COLS) */}
+                    <aside className="xl:col-span-4 space-y-5 min-w-0">
+                      
+                      {/* CARD 1: USER DEMOGRAPHICS (DONUT CHART) */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                        <h3 className="text-sm font-black text-gray-900">User Demographics</h3>
+
+                        <div className="flex flex-col sm:flex-row xl:flex-col items-center gap-4 pt-1">
+                          {/* Circular SVG Donut */}
+                          <div className="relative w-36 h-36 flex items-center justify-center shrink-0">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                              <circle cx="50" cy="50" r="38" stroke="#F1F5F9" strokeWidth="11" fill="transparent" />
+                              {/* Students: 64% (238.76 total perimeter, 64% is 152.8) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#3B82F6"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="152.8 238.76"
+                                strokeDashoffset="0"
+                              />
+                              {/* Teachers: 18% (43.0) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#10B981"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="43.0 238.76"
+                                strokeDashoffset="-152.8"
+                              />
+                              {/* Parents: 10% (23.8) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#8B5CF6"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="23.8 238.76"
+                                strokeDashoffset="-195.8"
+                              />
+                              {/* Admin: 3% (7.2) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#F59E0B"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="7.2 238.76"
+                                strokeDashoffset="-219.6"
+                              />
+                              {/* Others: 5% (11.9) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#06B6D4"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="11.9 238.76"
+                                strokeDashoffset="-226.8"
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                              <span className="text-base font-black text-gray-900 leading-none">12,854</span>
+                              <span className="text-[10px] font-bold text-gray-400 mt-0.5">Total Users</span>
+                            </div>
+                          </div>
+
+                          {/* Legend List */}
+                          <div className="w-full space-y-2 text-xs">
+                            {analyticsDemographics.map((demo, idx) => (
+                              <div key={idx} className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-2.5 h-2.5 rounded-full ${demo.bg} shrink-0`}></span>
+                                  <span className="font-bold text-gray-700 text-[11px]">{demo.label}</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <span className="text-gray-400 font-bold text-[11px]">{demo.percentage}%</span>
+                                  <span className="font-black text-gray-900 text-[11px]">{demo.count}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CARD 2: TOP COUNTRIES */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Top Countries</h3>
+                          <button
+                            onClick={() => setIsViewAllCountriesModalOpen(true)}
+                            className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-3 text-xs">
+                          {analyticsTopCountries.map((c, idx) => (
+                            <div key={idx} className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm">{c.flag}</span>
+                                  <span className="font-bold text-gray-800 text-[11px]">{c.country}</span>
+                                </div>
+                                <div className="flex items-center gap-2.5">
+                                  <span className="text-gray-400 font-bold text-[11px]">{c.percentage}%</span>
+                                  <span className="font-black text-gray-900 text-[11px]">{c.count}</span>
+                                </div>
+                              </div>
+                              <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                <div className={`${c.color} h-1.5 rounded-full transition-all duration-500`} style={{ width: c.width }}></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* CARD 3: DEVICE USAGE (DONUT CHART) */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                        <h3 className="text-sm font-black text-gray-900">Device Usage</h3>
+
+                        <div className="flex flex-col sm:flex-row xl:flex-col items-center gap-4 pt-1">
+                          {/* Circular SVG Donut */}
+                          <div className="relative w-36 h-36 flex items-center justify-center shrink-0">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                              <circle cx="50" cy="50" r="38" stroke="#F1F5F9" strokeWidth="11" fill="transparent" />
+                              {/* Mobile: 68% (162.3) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#3B82F6"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="162.3 238.76"
+                                strokeDashoffset="0"
+                              />
+                              {/* Desktop: 26% (62.0) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#10B981"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="62.0 238.76"
+                                strokeDashoffset="-162.3"
+                              />
+                              {/* Tablet: 6% (14.3) */}
+                              <circle
+                                cx="50"
+                                cy="50"
+                                r="38"
+                                stroke="#8B5CF6"
+                                strokeWidth="11"
+                                fill="transparent"
+                                strokeDasharray="14.3 238.76"
+                                strokeDashoffset="-224.3"
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                              <span className="text-base font-black text-gray-900 leading-none">12,854</span>
+                              <span className="text-[10px] font-bold text-gray-400 mt-0.5">Total Users</span>
+                            </div>
+                          </div>
+
+                          {/* Legend List */}
+                          <div className="w-full space-y-2 text-xs">
+                            {analyticsDeviceUsage.map((dev, idx) => {
+                              const DevIcon = dev.icon;
+                              return (
+                                <div key={idx} className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className={`w-2.5 h-2.5 rounded-full ${dev.bg} shrink-0`}></span>
+                                    <span className="font-bold text-gray-700 text-[11px]">{dev.name}</span>
+                                  </div>
+                                  <span className="font-black text-gray-900 text-[11px]">{dev.percentage}%</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CARD 4: TRAFFIC SOURCES */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Traffic Sources</h3>
+                          <button
+                            onClick={() => setIsViewAllTrafficSourcesModalOpen(true)}
+                            className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-3 text-xs">
+                          {analyticsTrafficSources.map((src, idx) => {
+                            const SrcIcon = src.icon;
+                            return (
+                              <div key={idx} className="space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <SrcIcon className="w-3.5 h-3.5 text-gray-500" />
+                                    <span className="font-bold text-gray-800 text-[11px]">{src.source}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2.5">
+                                    <span className="text-gray-400 font-bold text-[11px]">{src.percentage}%</span>
+                                    <span className="font-black text-gray-900 text-[11px]">{src.count}</span>
+                                  </div>
+                                </div>
+                                <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                  <div className={`${src.color} h-1.5 rounded-full transition-all duration-500`} style={{ width: src.width }}></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -16808,6 +17741,315 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     <Download className="w-3.5 h-3.5" />
                     <span>Download Struk</span>
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* ANALYTICS MODALS (Export, Top Classes, Activity, etc.)     */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal Export Analytics Report */}
+          {isAnalyticsExportModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Export Analytics Report</h3>
+                      <p className="text-xs text-gray-500">Unduh data performa & statistik platform</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsAnalyticsExportModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Rentang Waktu Laporan</label>
+                    <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-200 font-bold text-gray-800 text-xs flex items-center justify-between">
+                      <span>{analyticsDateRange}</span>
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1.5">Format Dokumen</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['PDF Report', 'Excel (.xlsx)', 'CSV Raw'].map((fmt, idx) => (
+                        <button
+                          key={fmt}
+                          type="button"
+                          className={`py-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer ${
+                            idx === 0
+                              ? 'border-[#114B44] bg-emerald-50/50 text-[#114B44] font-black'
+                              : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          {fmt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1.5">Metrik yang Disertakan</label>
+                    <div className="space-y-2 bg-[#F8FAFC] p-3 rounded-xl border border-gray-200">
+                      {[
+                        'User Growth & Active Users',
+                        'Class Completion & Quiz Averages',
+                        'Live Classroom Attendance',
+                        'Platform Revenue & Transactions',
+                        'Geographic & Country Distribution',
+                        'Device Usage & Traffic Sources'
+                      ].map((item, idx) => (
+                        <label key={idx} className="flex items-center gap-2 cursor-pointer select-none">
+                          <input type="checkbox" defaultChecked className="rounded text-[#114B44] focus:ring-[#114B44] w-3.5 h-3.5" />
+                          <span className="text-[11px] font-bold text-gray-700">{item}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsAnalyticsExportModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsAnalyticsExportModalOpen(false);
+                      alert(`Laporan analitik (${analyticsDateRange}) berhasil di-generate & diunduh!`);
+                    }}
+                    className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Laporan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal View All Top Classes */}
+          {isViewAllTopClassesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <BookOpen className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Top Classes Performance</h3>
+                      <p className="text-xs text-gray-500">Peringkat performa kelas & retensi pembelajaran santri</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllTopClassesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="overflow-x-auto min-w-0">
+                  <table className="w-full text-left text-xs min-w-[540px]">
+                    <thead>
+                      <tr className="text-gray-400 font-bold border-b border-gray-100 text-[11px]">
+                        <th className="pb-2.5 w-6">#</th>
+                        <th className="pb-2.5">Class Title</th>
+                        <th className="pb-2.5">Teacher</th>
+                        <th className="pb-2.5 text-right">Enrollments</th>
+                        <th className="pb-2.5 text-right">Completion</th>
+                        <th className="pb-2.5 text-right">Avg. Score</th>
+                        <th className="pb-2.5 text-right">Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {analyticsTopClasses.map((cls) => (
+                        <tr key={cls.id} className="hover:bg-gray-50/70 transition-colors">
+                          <td className="py-3 font-bold text-gray-400">{cls.id}</td>
+                          <td className="py-3">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-7 h-7 rounded-lg ${cls.thumbnailBg} flex items-center justify-center text-xs shrink-0 font-bold`}>
+                                {cls.icon}
+                              </div>
+                              <div>
+                                <div className="font-black text-gray-900">{cls.title}</div>
+                                <span className="text-[10px] text-gray-400">{cls.category}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-3">
+                            <div className="flex items-center gap-1.5">
+                              <img
+                                src={cls.teacherAvatar}
+                                alt={cls.teacher}
+                                className="w-5 h-5 rounded-full object-cover shrink-0"
+                                onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                              />
+                              <span className="font-bold text-gray-700 text-[11px]">{cls.teacher}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 text-right font-black text-gray-800">{cls.enrollments}</td>
+                          <td className="py-3 text-right">
+                            <span className="font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 text-[10px]">{cls.completionRate}</span>
+                          </td>
+                          <td className="py-3 text-right font-bold text-gray-700">{cls.avgScore}</td>
+                          <td className="py-3 text-right font-black text-gray-900">{cls.revenue}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <span className="text-xs text-gray-400 font-bold">Menampilkan 5 kelas terbaik bulan ini</span>
+                  <button onClick={() => setIsViewAllTopClassesModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal View All User Activity */}
+          {isViewAllUserActivityModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Platform User Activity Log</h3>
+                      <p className="text-xs text-gray-500">Aktivitas harian, pendaftaran baru, & sesi belajar</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllUserActivityModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="overflow-x-auto min-w-0">
+                  <table className="w-full text-left text-xs min-w-[420px]">
+                    <thead>
+                      <tr className="text-gray-400 font-bold border-b border-gray-100 text-[11px]">
+                        <th className="pb-2.5">Date</th>
+                        <th className="pb-2.5 text-right">New Users</th>
+                        <th className="pb-2.5 text-right">Enrollments</th>
+                        <th className="pb-2.5 text-right">Active Users</th>
+                        <th className="pb-2.5 text-right">Avg Duration</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {analyticsUserActivity.map((row, idx) => (
+                        <tr key={idx} className="hover:bg-gray-50/70 transition-colors">
+                          <td className="py-2.5 font-bold text-gray-800">{row.date}</td>
+                          <td className="py-2.5 text-right font-bold text-blue-600">+{row.newUsers}</td>
+                          <td className="py-2.5 text-right font-bold text-purple-600">+{row.enrollments}</td>
+                          <td className="py-2.5 text-right font-black text-gray-900">{row.activeUsers}</td>
+                          <td className="py-2.5 text-right font-bold text-gray-500">{row.avgDuration}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <button
+                    onClick={() => alert('Log aktivitas berhasil diexport ke CSV!')}
+                    className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Export Data CSV</span>
+                  </button>
+                  <button onClick={() => setIsViewAllUserActivityModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal View All Countries */}
+          {isViewAllCountriesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Geographic Distribution</h3>
+                      <p className="text-xs text-gray-500">Sebaran santri & pengajar berdasarkan negara</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllCountriesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  {analyticsTopCountries.map((c, idx) => (
+                    <div key={idx} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{c.flag}</span>
+                          <span className="font-extrabold text-gray-900">{c.country}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400 font-bold">{c.percentage}%</span>
+                          <span className="font-black text-gray-900">{c.count} Santri</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <div className={`${c.color} h-2 rounded-full`} style={{ width: c.width }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllCountriesModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal View All Traffic Sources */}
+          {isViewAllTrafficSourcesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Compass className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Traffic Acquisition Channels</h3>
+                      <p className="text-xs text-gray-500">Saluran sumber kedatangan pengunjung & santri</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllTrafficSourcesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  {analyticsTrafficSources.map((src, idx) => {
+                    const SrcIcon = src.icon;
+                    return (
+                      <div key={idx} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <SrcIcon className="w-4 h-4 text-gray-600" />
+                            <span className="font-extrabold text-gray-900">{src.source}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-400 font-bold">{src.percentage}%</span>
+                            <span className="font-black text-gray-900">{src.count} Kunjungan</span>
+                          </div>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                          <div className={`${src.color} h-2 rounded-full`} style={{ width: src.width }}></div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllTrafficSourcesModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
                 </div>
               </div>
             </div>
