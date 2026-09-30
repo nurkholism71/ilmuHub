@@ -93,6 +93,27 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
 
   // =========================================================
+  // REPORTS ROOM STATES (matching media_1790804062345.jpg)
+  // =========================================================
+  const [reportsDateRange, setReportsDateRange] = useState('1 Sep 2026 - 30 Sep 2026');
+  const [isReportsDateDropdownOpen, setIsReportsDateDropdownOpen] = useState(false);
+  const [reportsActiveTab, setReportsActiveTab] = useState('overview'); // 'overview' | 'users' | 'classes' | 'learning' | 'financial' | 'content' | 'live' | 'quizzes' | 'certificates' | 'system'
+  const [reportsFilterType, setReportsFilterType] = useState('All Reports');
+  const [reportsFilterRole, setReportsFilterRole] = useState('All Roles');
+  const [reportsFilterCategory, setReportsFilterCategory] = useState('All Categories');
+  const [isExportReportModalOpen, setIsExportReportModalOpen] = useState(false);
+  const [isGenerateReportModalOpen, setIsGenerateReportModalOpen] = useState(false);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [generateReportProgress, setGenerateReportProgress] = useState(100);
+  const [isScheduleEmailReportModalOpen, setIsScheduleEmailReportModalOpen] = useState(false);
+  const [isViewAllTopClassesReportsModalOpen, setIsViewAllTopClassesReportsModalOpen] = useState(false);
+  const [isViewAllUserActivityReportsModalOpen, setIsViewAllUserActivityReportsModalOpen] = useState(false);
+  const [isViewAllTopCountriesReportsModalOpen, setIsViewAllTopCountriesReportsModalOpen] = useState(false);
+  const [isViewAllLearningOutcomesModalOpen, setIsViewAllLearningOutcomesModalOpen] = useState(false);
+  const [activeReportsTooltip, setActiveReportsTooltip] = useState(null);
+  const [activeRevenueReportsTooltip, setActiveRevenueReportsTooltip] = useState(null);
+
+  // =========================================================
   // VIP TEACHER APPLICATIONS STATES (Pendaftaran Guru VIP)
   // =========================================================
   const [vipTabFilter, setVipTabFilter] = useState('all'); // 'all' | 'pending' | 'verified' | 'approved' | 'revision'
@@ -3970,6 +3991,77 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 'wh-1', url: 'https://api.ilmhub.com/v1/webhooks/mayar', events: 'payment.settled, payout.disbursed', status: 'Active' },
     { id: 'wh-2', url: 'https://api.ilmhub.com/v1/webhooks/zoom', events: 'meeting.started, meeting.ended', status: 'Active' }
   ]);
+
+  // =========================================================
+  // REPORTS ROOM DATASETS (matching media_1790804062345.jpg)
+  // =========================================================
+  const reportsUserGrowthData = [
+    { label: '1 Sep', newUsers: 2.5, activeUsers: 6.1, totalUsers: 7.2 },
+    { label: '5 Sep', newUsers: 4.2, activeUsers: 7.8, totalUsers: 8.9 },
+    { label: '10 Sep', newUsers: 3.8, activeUsers: 8.4, totalUsers: 10.1 },
+    { label: '15 Sep', newUsers: 5.1, activeUsers: 9.2, totalUsers: 11.4 },
+    { label: '20 Sep', newUsers: 4.9, activeUsers: 9.8, totalUsers: 12.8 },
+    { label: '25 Sep', newUsers: 6.2, activeUsers: 11.2, totalUsers: 14.5 },
+    { label: '30 Sep', newUsers: 5.8, activeUsers: 12.8, totalUsers: 16.2 }
+  ];
+
+  const reportsRevenueData = [
+    { label: '1 Sep', revenue: 5.2, payouts: 3.8 },
+    { label: '5 Sep', revenue: 8.4, payouts: 5.1 },
+    { label: '10 Sep', revenue: 11.2, payouts: 6.4 },
+    { label: '15 Sep', revenue: 12.8, payouts: 7.2 },
+    { label: '20 Sep', revenue: 14.2, payouts: 7.9 },
+    { label: '25 Sep', revenue: 16.8, payouts: 8.8 },
+    { label: '30 Sep', revenue: 18.5, payouts: 10.2 }
+  ];
+
+  const reportsEnrollmentsByCategory = [
+    { name: 'Islamic Studies', pct: 32, count: 5940, color: '#3B82F6', bgClass: 'bg-blue-500', dot: 'bg-blue-500' },
+    { name: 'Mathematics', pct: 18, count: 3341, color: '#10B981', bgClass: 'bg-emerald-500', dot: 'bg-emerald-500' },
+    { name: 'Language', pct: 14, count: 2598, color: '#8B5CF6', bgClass: 'bg-purple-500', dot: 'bg-purple-500' },
+    { name: 'Computer Science', pct: 12, count: 2227, color: '#F97316', bgClass: 'bg-orange-500', dot: 'bg-orange-500' },
+    { name: 'Business', pct: 8, count: 1485, color: '#EF4444', bgClass: 'bg-rose-500', dot: 'bg-rose-500' },
+    { name: 'Others', pct: 16, count: 2971, color: '#06B6D4', bgClass: 'bg-cyan-500', dot: 'bg-cyan-500' }
+  ];
+
+  const reportsTopClasses = [
+    { id: 1, title: 'Islamic History Basics', enrollments: '2,184', icon: '🕌', image: '/images/class_nahwu.jpg', teacher: 'Dr. Ahmad Fauzi', rating: 4.9, revenue: '$4,368' },
+    { id: 2, title: 'Quran Memorization', enrollments: '1,856', icon: '📖', image: '/images/class_tajweed.jpg', teacher: 'Siti Aisyah', rating: 4.8, revenue: '$3,712' },
+    { id: 3, title: 'Arabic Language', enrollments: '1,432', icon: '📜', image: '/images/class_conversation.jpg', teacher: 'Omar Hassan', rating: 4.7, revenue: '$2,864' },
+    { id: 4, title: 'Web Development', enrollments: '1,298', icon: '💻', image: '/images/class_nahwu.jpg', teacher: 'Muhammad Khan', rating: 4.9, revenue: '$2,596' },
+    { id: 5, title: 'Business Management', enrollments: '1,120', icon: '💼', image: '/images/class_conversation.jpg', teacher: 'Layla Karim', rating: 4.6, revenue: '$2,240' }
+  ];
+
+  const reportsUserActivity = [
+    { id: 1, activity: 'Login', count: '25,842', icon: User, iconColor: 'bg-blue-100 text-blue-600', change: '+18%' },
+    { id: 2, activity: 'Class Enrollment', count: '18,562', icon: GraduationCap, iconColor: 'bg-emerald-100 text-emerald-600', change: '+24%' },
+    { id: 3, activity: 'Assignment Submission', count: '12,486', icon: FileText, iconColor: 'bg-purple-100 text-purple-600', change: '+15%' },
+    { id: 4, activity: 'Quiz Attempt', count: '10,284', icon: HelpCircle, iconColor: 'bg-amber-100 text-amber-600', change: '+22%' },
+    { id: 5, activity: 'Certificate Issued', count: '8,426', icon: Award, iconColor: 'bg-rose-100 text-rose-600', change: '+31%' }
+  ];
+
+  const reportsTopCountries = [
+    { id: 1, country: 'Indonesia', flag: '🇮🇩', percentage: 42, count: '5,398', width: '42%', color: 'bg-blue-500' },
+    { id: 2, country: 'Egypt', flag: '🇪🇬', percentage: 18, count: '2,312', width: '18%', color: 'bg-teal-500' },
+    { id: 3, country: 'Malaysia', flag: '🇲🇾', percentage: 10, count: '1,287', width: '10%', color: 'bg-emerald-500' },
+    { id: 4, country: 'Saudi Arabia', flag: '🇸🇦', percentage: 8, count: '1,029', width: '8%', color: 'bg-amber-500' },
+    { id: 5, country: 'United States', flag: '🇺🇸', percentage: 6, count: '771', width: '6%', color: 'bg-purple-500' },
+    { id: 6, country: 'Others', flag: '🌐', percentage: 16, count: '2,057', width: '16%', color: 'bg-gray-400' }
+  ];
+
+  const reportsDeviceUsage = [
+    { id: 1, name: 'Mobile', percentage: 68, count: '8,740', color: '#3B82F6', bg: 'bg-blue-500', icon: Smartphone },
+    { id: 2, name: 'Desktop', percentage: 26, count: '3,342', color: '#06B6D4', bg: 'bg-cyan-500', icon: Monitor },
+    { id: 3, name: 'Tablet', percentage: 6, count: '772', color: '#8B5CF6', bg: 'bg-purple-500', icon: Tablet }
+  ];
+
+  const reportsLearningOutcomes = [
+    { id: 1, title: 'Class Completion Rate', value: '87%', score: '87%', color: 'bg-emerald-500', textColor: 'text-emerald-600', icon: GraduationCap, iconBg: 'bg-emerald-100 text-emerald-700' },
+    { id: 2, title: 'Average Quiz Score', value: '78%', score: '78%', color: 'bg-blue-500', textColor: 'text-blue-600', icon: BookOpen, iconBg: 'bg-blue-100 text-blue-700' },
+    { id: 3, title: 'Assignment Submission', value: '92%', score: '92%', color: 'bg-cyan-500', textColor: 'text-cyan-600', icon: FileText, iconBg: 'bg-cyan-100 text-cyan-700' },
+    { id: 4, title: 'Certificate Issuance', value: '68%', score: '68%', color: 'bg-amber-500', textColor: 'text-amber-600', icon: Award, iconBg: 'bg-amber-100 text-amber-700' },
+    { id: 5, title: 'Student Satisfaction', value: '4.6 / 5', score: '92%', color: 'bg-rose-500', textColor: 'text-rose-600', icon: Star, iconBg: 'bg-rose-100 text-rose-700' }
+  ];
 
   // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
@@ -15897,6 +15989,974 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'reports' ? (
+            (() => {
+              // Smooth line points calculation for User Growth SVG chart (viewBox 0 0 500 160)
+              const userGrowthPointsNew = [
+                { x: 30, y: 135, val: '2.5K' },
+                { x: 105, y: 115, val: '4.2K' },
+                { x: 180, y: 120, val: '3.8K' },
+                { x: 255, y: 100, val: '5.1K' },
+                { x: 330, y: 105, val: '4.9K' },
+                { x: 405, y: 88, val: '6.2K' },
+                { x: 475, y: 92, val: '5.8K' }
+              ];
+              const userGrowthPointsActive = [
+                { x: 30, y: 110, val: '6.1K' },
+                { x: 105, y: 98, val: '7.8K' },
+                { x: 180, y: 92, val: '8.4K' },
+                { x: 255, y: 80, val: '9.2K' },
+                { x: 330, y: 72, val: '9.8K' },
+                { x: 405, y: 60, val: '11.2K' },
+                { x: 475, y: 48, val: '12.8K' }
+              ];
+              const userGrowthPointsTotal = [
+                { x: 30, y: 95, val: '7.2K' },
+                { x: 105, y: 82, val: '8.9K' },
+                { x: 180, y: 70, val: '10.1K' },
+                { x: 255, y: 60, val: '11.4K' },
+                { x: 330, y: 50, val: '12.8K' },
+                { x: 405, y: 38, val: '14.5K' },
+                { x: 475, y: 24, val: '16.2K' }
+              ];
+
+              // Revenue chart points (viewBox 0 0 500 160)
+              const revenuePointsRev = [
+                { x: 30, y: 120, val: '$5.2K' },
+                { x: 105, y: 96, val: '$8.4K' },
+                { x: 180, y: 78, val: '$11.2K' },
+                { x: 255, y: 66, val: '$12.8K' },
+                { x: 330, y: 55, val: '$14.2K' },
+                { x: 405, y: 42, val: '$16.8K' },
+                { x: 475, y: 30, val: '$18.5K' }
+              ];
+              const revenuePointsPayout = [
+                { x: 30, y: 135, val: '$3.8K' },
+                { x: 105, y: 122, val: '$5.1K' },
+                { x: 180, y: 110, val: '$6.4K' },
+                { x: 255, y: 102, val: '$7.2K' },
+                { x: 330, y: 95, val: '$7.9K' },
+                { x: 405, y: 86, val: '$8.8K' },
+                { x: 475, y: 72, val: '$10.2K' }
+              ];
+
+              return (
+                <div className="space-y-5 animate-fadeIn min-w-0">
+                  
+                  {/* 1. TOP HEADER & CONTROLS */}
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    {/* Left title & badge */}
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <BarChart2 className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Reports</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          View and analyze platform performance, user activities, learning outcomes, and financial reports.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right action controls */}
+                    <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+                      {/* Date Range Picker Dropdown */}
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() => setIsReportsDateDropdownOpen(!isReportsDateDropdownOpen)}
+                          className="h-10 px-3.5 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer"
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                          <span>{reportsDateRange}</span>
+                          <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${isReportsDateDropdownOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {isReportsDateDropdownOpen && (
+                          <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50 text-xs animate-fadeIn space-y-1 font-bold text-gray-700">
+                            {[
+                              '1 Sep 2026 - 30 Sep 2026',
+                              'Last 7 Days',
+                              'Last 30 Days',
+                              'This Quarter (Q3 2026)',
+                              'Year to Date (2026)',
+                              'Custom Range...'
+                            ].map((rng) => (
+                              <button
+                                key={rng}
+                                onClick={() => {
+                                  setReportsDateRange(rng);
+                                  setIsReportsDateDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 rounded-xl text-xs transition-colors cursor-pointer ${
+                                  reportsDateRange === rng ? 'bg-emerald-50 text-[#114B44] font-black' : 'hover:bg-gray-50'
+                                }`}
+                              >
+                                {rng}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Export Report Button */}
+                      <button
+                        type="button"
+                        onClick={() => setIsExportReportModalOpen(true)}
+                        className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-black flex items-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                      >
+                        <Download className="w-4 h-4" />
+                        <span>Export Report</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. HORIZONTAL FILTER TABS */}
+                  <div className="bg-white rounded-2xl p-2 sm:p-2.5 border border-gray-100 shadow-xs">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap min-w-0 py-0.5">
+                      {[
+                        { id: 'overview', label: 'Overview' },
+                        { id: 'users', label: 'Users' },
+                        { id: 'classes', label: 'Classes' },
+                        { id: 'learning', label: 'Learning & Engagement' },
+                        { id: 'financial', label: 'Financial' },
+                        { id: 'content', label: 'Content' },
+                        { id: 'live', label: 'Live Classes' },
+                        { id: 'quizzes', label: 'Quizzes & Assignments' },
+                        { id: 'certificates', label: 'Certificates' },
+                        { id: 'system', label: 'System' }
+                      ].map((tab) => {
+                        const isActive = reportsActiveTab === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={() => setReportsActiveTab(tab.id)}
+                            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              isActive
+                                ? 'bg-[#114B44] text-white shadow-xs font-black'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/80'
+                            }`}
+                          >
+                            {tab.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 3. TOP 5 KPI METRIC CARDS */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4 min-w-0">
+                    {/* Card 1: Total Users */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[11px] text-gray-500 font-bold truncate">Total Users</div>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-0.5">12,854</div>
+                        <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 mt-1.5 truncate">
+                          <span>↑ 28% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Total Classes */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <BookOpen className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[11px] text-gray-500 font-bold truncate">Total Classes</div>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-0.5">1,248</div>
+                        <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 mt-1.5 truncate">
+                          <span>↑ 32% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Total Enrollments */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <GraduationCap className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[11px] text-gray-500 font-bold truncate">Total Enrollments</div>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-0.5">18,562</div>
+                        <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 mt-1.5 truncate">
+                          <span>↑ 26% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Platform Revenue */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <Coins className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[11px] text-gray-500 font-bold truncate">Platform Revenue</div>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-0.5">$12,845</div>
+                        <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 mt-1.5 truncate">
+                          <span>↑ 28% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 5: Completion Rate */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 min-w-0 col-span-2 sm:col-span-1">
+                      <div className="w-11 h-11 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <Award className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[11px] text-gray-500 font-bold truncate">Completion Rate</div>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-0.5">87%</div>
+                        <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 mt-1.5 truncate">
+                          <span>↑ 6% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. MAIN CONTENT GRID (LEFT 9 COLS CANVAS + RIGHT 3 COLS SIDEBAR) */}
+                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 min-w-0">
+                    
+                    {/* LEFT CANVAS (9 COLS) */}
+                    <div className="xl:col-span-9 space-y-5 min-w-0">
+                      
+                      {/* ROW 1: USER GROWTH REPORT & REVENUE REPORT CHARTS */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 min-w-0">
+                        
+                        {/* CHART 1: USER GROWTH REPORT */}
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                              <h3 className="text-sm font-black text-gray-900">User Growth Report</h3>
+                              <p className="text-[11px] text-gray-500">New users, active users, and total users over time.</p>
+                            </div>
+                            <div className="flex items-center gap-2.5 text-[10px] font-bold text-gray-500 flex-wrap">
+                              <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-[#38BDF8]"></span>
+                                <span>New Users</span>
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                                <span>Active Users</span>
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-[#8B5CF6]"></span>
+                                <span>Total Users</span>
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Interactive Area Spline SVG Chart */}
+                          <div className="relative w-full h-48 sm:h-52">
+                            <svg className="w-full h-full" viewBox="0 0 500 160" preserveAspectRatio="none">
+                              <defs>
+                                <linearGradient id="gradReportsTotal" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.35" />
+                                  <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.0" />
+                                </linearGradient>
+                                <linearGradient id="gradReportsActive" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#10B981" stopOpacity="0.30" />
+                                  <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                                </linearGradient>
+                                <linearGradient id="gradReportsNew" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.25" />
+                                  <stop offset="100%" stopColor="#38BDF8" stopOpacity="0.0" />
+                                </linearGradient>
+                              </defs>
+
+                              {/* Y Grid Lines */}
+                              {[25, 55, 85, 115, 145].map((yVal, idx) => (
+                                <line key={idx} x1="30" y1={yVal} x2="480" y2={yVal} stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                              ))}
+
+                              {/* Area Fills */}
+                              <path
+                                d="M 30 145 L 30 95 Q 67 88 105 82 T 180 70 T 255 60 T 330 50 T 405 38 T 475 24 L 475 145 Z"
+                                fill="url(#gradReportsTotal)"
+                              />
+                              <path
+                                d="M 30 145 L 30 110 Q 67 104 105 98 T 180 92 T 255 80 T 330 72 T 405 60 T 475 48 L 475 145 Z"
+                                fill="url(#gradReportsActive)"
+                              />
+                              <path
+                                d="M 30 145 L 30 135 Q 67 125 105 115 T 180 120 T 255 100 T 330 105 T 405 88 T 475 92 L 475 145 Z"
+                                fill="url(#gradReportsNew)"
+                              />
+
+                              {/* Spline Lines */}
+                              <path
+                                d="M 30 95 Q 67 88 105 82 T 180 70 T 255 60 T 330 50 T 405 38 T 475 24"
+                                fill="none"
+                                stroke="#8B5CF6"
+                                strokeWidth="2.5"
+                              />
+                              <path
+                                d="M 30 110 Q 67 104 105 98 T 180 92 T 255 80 T 330 72 T 405 60 T 475 48"
+                                fill="none"
+                                stroke="#10B981"
+                                strokeWidth="2.5"
+                              />
+                              <path
+                                d="M 30 135 Q 67 125 105 115 T 180 120 T 255 100 T 330 105 T 405 88 T 475 92"
+                                fill="none"
+                                stroke="#38BDF8"
+                                strokeWidth="2.5"
+                              />
+
+                              {/* Interactive Dot Points */}
+                              {userGrowthPointsTotal.map((pt, i) => (
+                                <circle
+                                  key={`tot-${i}`}
+                                  cx={pt.x}
+                                  cy={pt.y}
+                                  r="4"
+                                  fill="#8B5CF6"
+                                  stroke="#FFFFFF"
+                                  strokeWidth="2"
+                                  className="hover:r-6 cursor-pointer transition-all"
+                                  onMouseEnter={() => setActiveReportsTooltip({ ...pt, type: 'Total Users' })}
+                                  onMouseLeave={() => setActiveReportsTooltip(null)}
+                                />
+                              ))}
+                              {userGrowthPointsActive.map((pt, i) => (
+                                <circle
+                                  key={`act-${i}`}
+                                  cx={pt.x}
+                                  cy={pt.y}
+                                  r="4"
+                                  fill="#10B981"
+                                  stroke="#FFFFFF"
+                                  strokeWidth="2"
+                                  className="hover:r-6 cursor-pointer transition-all"
+                                  onMouseEnter={() => setActiveReportsTooltip({ ...pt, type: 'Active Users' })}
+                                  onMouseLeave={() => setActiveReportsTooltip(null)}
+                                />
+                              ))}
+                              {userGrowthPointsNew.map((pt, i) => (
+                                <circle
+                                  key={`new-${i}`}
+                                  cx={pt.x}
+                                  cy={pt.y}
+                                  r="4"
+                                  fill="#38BDF8"
+                                  stroke="#FFFFFF"
+                                  strokeWidth="2"
+                                  className="hover:r-6 cursor-pointer transition-all"
+                                  onMouseEnter={() => setActiveReportsTooltip({ ...pt, type: 'New Users' })}
+                                  onMouseLeave={() => setActiveReportsTooltip(null)}
+                                />
+                              ))}
+                            </svg>
+
+                            {/* Y Axis Labels */}
+                            <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[9px] font-bold text-gray-400 select-none pointer-events-none">
+                              <span>20K</span>
+                              <span>15K</span>
+                              <span>10K</span>
+                              <span>5K</span>
+                              <span>0</span>
+                            </div>
+
+                            {/* Hover Tooltip */}
+                            {activeReportsTooltip && (
+                              <div
+                                className="absolute z-20 -translate-x-1/2 -translate-y-full pointer-events-none bg-[#0A1822] text-white text-[10px] font-bold py-1 px-2.5 rounded-lg shadow-xl border border-white/10"
+                                style={{ left: `${(activeReportsTooltip.x / 500) * 100}%`, top: `${(activeReportsTooltip.y / 160) * 100 - 5}%` }}
+                              >
+                                <div>{activeReportsTooltip.type}: <span className="text-emerald-400 font-black">{activeReportsTooltip.val}</span></div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* X Axis Labels */}
+                          <div className="flex justify-between pl-6 text-[10px] font-bold text-gray-400 select-none">
+                            <span>1 Sep</span>
+                            <span>5 Sep</span>
+                            <span>10 Sep</span>
+                            <span>15 Sep</span>
+                            <span>20 Sep</span>
+                            <span>25 Sep</span>
+                            <span>30 Sep</span>
+                          </div>
+                        </div>
+
+                        {/* CHART 2: REVENUE REPORT */}
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                              <h3 className="text-sm font-black text-gray-900">Revenue Report</h3>
+                              <p className="text-[11px] text-gray-500">Platform revenue, commissions, and payouts.</p>
+                            </div>
+                            <div className="flex items-center gap-2.5 text-[10px] font-bold text-gray-500 flex-wrap">
+                              <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                                <span>Revenue</span>
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-[#38BDF8]"></span>
+                                <span>Payouts</span>
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Interactive Area Spline SVG Chart */}
+                          <div className="relative w-full h-48 sm:h-52">
+                            <svg className="w-full h-full" viewBox="0 0 500 160" preserveAspectRatio="none">
+                              <defs>
+                                <linearGradient id="gradReportsRev" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#10B981" stopOpacity="0.35" />
+                                  <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                                </linearGradient>
+                                <linearGradient id="gradReportsPay" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.25" />
+                                  <stop offset="100%" stopColor="#38BDF8" stopOpacity="0.0" />
+                                </linearGradient>
+                              </defs>
+
+                              {/* Y Grid Lines */}
+                              {[25, 60, 95, 130].map((yVal, idx) => (
+                                <line key={idx} x1="30" y1={yVal} x2="480" y2={yVal} stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                              ))}
+
+                              {/* Area Fills */}
+                              <path
+                                d="M 30 145 L 30 120 Q 67 108 105 96 T 180 78 T 255 66 T 330 55 T 405 42 T 475 30 L 475 145 Z"
+                                fill="url(#gradReportsRev)"
+                              />
+                              <path
+                                d="M 30 145 L 30 135 Q 67 128 105 122 T 180 110 T 255 102 T 330 95 T 405 86 T 475 72 L 475 145 Z"
+                                fill="url(#gradReportsPay)"
+                              />
+
+                              {/* Spline Lines */}
+                              <path
+                                d="M 30 120 Q 67 108 105 96 T 180 78 T 255 66 T 330 55 T 405 42 T 475 30"
+                                fill="none"
+                                stroke="#10B981"
+                                strokeWidth="2.5"
+                              />
+                              <path
+                                d="M 30 135 Q 67 128 105 122 T 180 110 T 255 102 T 330 95 T 405 86 T 475 72"
+                                fill="none"
+                                stroke="#38BDF8"
+                                strokeWidth="2.5"
+                              />
+
+                              {/* Interactive Dot Points */}
+                              {revenuePointsRev.map((pt, i) => (
+                                <circle
+                                  key={`rev-${i}`}
+                                  cx={pt.x}
+                                  cy={pt.y}
+                                  r="4"
+                                  fill="#10B981"
+                                  stroke="#FFFFFF"
+                                  strokeWidth="2"
+                                  className="hover:r-6 cursor-pointer transition-all"
+                                  onMouseEnter={() => setActiveRevenueReportsTooltip({ ...pt, type: 'Revenue' })}
+                                  onMouseLeave={() => setActiveRevenueReportsTooltip(null)}
+                                />
+                              ))}
+                              {revenuePointsPayout.map((pt, i) => (
+                                <circle
+                                  key={`pay-${i}`}
+                                  cx={pt.x}
+                                  cy={pt.y}
+                                  r="4"
+                                  fill="#38BDF8"
+                                  stroke="#FFFFFF"
+                                  strokeWidth="2"
+                                  className="hover:r-6 cursor-pointer transition-all"
+                                  onMouseEnter={() => setActiveRevenueReportsTooltip({ ...pt, type: 'Payouts' })}
+                                  onMouseLeave={() => setActiveRevenueReportsTooltip(null)}
+                                />
+                              ))}
+                            </svg>
+
+                            {/* Y Axis Labels */}
+                            <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[9px] font-bold text-gray-400 select-none pointer-events-none">
+                              <span>$20K</span>
+                              <span>$15K</span>
+                              <span>$10K</span>
+                              <span>$5K</span>
+                            </div>
+
+                            {/* Hover Tooltip */}
+                            {activeRevenueReportsTooltip && (
+                              <div
+                                className="absolute z-20 -translate-x-1/2 -translate-y-full pointer-events-none bg-[#0A1822] text-white text-[10px] font-bold py-1 px-2.5 rounded-lg shadow-xl border border-white/10"
+                                style={{ left: `${(activeRevenueReportsTooltip.x / 500) * 100}%`, top: `${(activeRevenueReportsTooltip.y / 160) * 100 - 5}%` }}
+                              >
+                                <div>{activeRevenueReportsTooltip.type}: <span className="text-emerald-400 font-black">{activeRevenueReportsTooltip.val}</span></div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* X Axis Labels */}
+                          <div className="flex justify-between pl-6 text-[10px] font-bold text-gray-400 select-none">
+                            <span>1 Sep</span>
+                            <span>5 Sep</span>
+                            <span>10 Sep</span>
+                            <span>15 Sep</span>
+                            <span>20 Sep</span>
+                            <span>25 Sep</span>
+                            <span>30 Sep</span>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* ROW 2: ENROLLMENTS BY CATEGORY, TOP CLASSES, & USER ACTIVITY REPORT */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 min-w-0">
+                        
+                        {/* CARD 1: ENROLLMENTS BY CATEGORY (DONUT CHART) */}
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                          <h3 className="text-sm font-black text-gray-900">Enrollments by Category</h3>
+
+                          <div className="flex flex-col sm:flex-row items-center gap-4 pt-1">
+                            {/* SVG Donut Chart */}
+                            <div className="relative w-32 h-32 flex items-center justify-center shrink-0">
+                              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="38" stroke="#F1F5F9" strokeWidth="12" fill="transparent" />
+                                {/* Islamic Studies: 32% (76.4) */}
+                                <circle cx="50" cy="50" r="38" stroke="#3B82F6" strokeWidth="12" fill="transparent" strokeDasharray="76.4 238.76" strokeDashoffset="0" />
+                                {/* Mathematics: 18% (43.0) */}
+                                <circle cx="50" cy="50" r="38" stroke="#10B981" strokeWidth="12" fill="transparent" strokeDasharray="43.0 238.76" strokeDashoffset="-76.4" />
+                                {/* Language: 14% (33.4) */}
+                                <circle cx="50" cy="50" r="38" stroke="#8B5CF6" strokeWidth="12" fill="transparent" strokeDasharray="33.4 238.76" strokeDashoffset="-119.4" />
+                                {/* Computer Science: 12% (28.7) */}
+                                <circle cx="50" cy="50" r="38" stroke="#F97316" strokeWidth="12" fill="transparent" strokeDasharray="28.7 238.76" strokeDashoffset="-152.8" />
+                                {/* Business: 8% (19.1) */}
+                                <circle cx="50" cy="50" r="38" stroke="#EF4444" strokeWidth="12" fill="transparent" strokeDasharray="19.1 238.76" strokeDashoffset="-181.5" />
+                                {/* Others: 16% (38.2) */}
+                                <circle cx="50" cy="50" r="38" stroke="#06B6D4" strokeWidth="12" fill="transparent" strokeDasharray="38.2 238.76" strokeDashoffset="-200.6" />
+                              </svg>
+                              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                <span className="text-sm font-black text-gray-900 leading-none">18,562</span>
+                                <span className="text-[9px] font-bold text-gray-400 mt-0.5">Total Enrollments</span>
+                              </div>
+                            </div>
+
+                            {/* Legend List */}
+                            <div className="w-full space-y-1.5 text-xs">
+                              {reportsEnrollmentsByCategory.map((cat, idx) => (
+                                <div key={idx} className="flex items-center justify-between text-[11px]">
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <span className={`w-2 h-2 rounded-full ${cat.dot} shrink-0`}></span>
+                                    <span className="font-bold text-gray-700 truncate">{cat.name}</span>
+                                  </div>
+                                  <span className="font-black text-gray-900 ml-1">{cat.pct}%</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* CARD 2: TOP PERFORMING CLASSES TABLE */}
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between pb-1">
+                              <h3 className="text-sm font-black text-gray-900">Top Performing Classes</h3>
+                              <button
+                                type="button"
+                                onClick={() => setIsViewAllTopClassesReportsModalOpen(true)}
+                                className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                              >
+                                <span>View All</span>
+                                <ArrowUpRight className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-left text-xs">
+                                <thead>
+                                  <tr className="border-b border-gray-100 text-[10px] uppercase font-bold text-gray-400">
+                                    <th className="py-2 pl-0.5">#</th>
+                                    <th className="py-2 px-2">Class Title</th>
+                                    <th className="py-2 text-right pr-0.5">Enrollments</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50 text-[11px]">
+                                  {reportsTopClasses.map((cls, idx) => (
+                                    <tr key={cls.id} className="hover:bg-gray-50/70 transition-colors">
+                                      <td className="py-2 font-bold text-gray-400 pl-0.5">{idx + 1}</td>
+                                      <td className="py-2 px-2">
+                                        <div className="flex items-center gap-2 min-w-0">
+                                          <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-800 flex items-center justify-center text-xs shrink-0 font-bold">
+                                            {cls.icon}
+                                          </div>
+                                          <span className="font-extrabold text-gray-900 truncate max-w-[120px]">{cls.title}</span>
+                                        </div>
+                                      </td>
+                                      <td className="py-2 text-right font-black text-gray-900 pr-0.5">{cls.enrollments}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* CARD 3: USER ACTIVITY REPORT TABLE */}
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between pb-1">
+                              <h3 className="text-sm font-black text-gray-900">User Activity Report</h3>
+                              <button
+                                type="button"
+                                onClick={() => setIsViewAllUserActivityReportsModalOpen(true)}
+                                className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                              >
+                                <span>View All</span>
+                                <ArrowUpRight className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-left text-xs">
+                                <thead>
+                                  <tr className="border-b border-gray-100 text-[10px] uppercase font-bold text-gray-400">
+                                    <th className="py-2 pl-0.5">#</th>
+                                    <th className="py-2 px-2">Activity</th>
+                                    <th className="py-2 text-right pr-0.5">Count</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50 text-[11px]">
+                                  {reportsUserActivity.map((act, idx) => {
+                                    const ActIcon = act.icon;
+                                    return (
+                                      <tr key={act.id} className="hover:bg-gray-50/70 transition-colors">
+                                        <td className="py-2 font-bold text-gray-400 pl-0.5">{idx + 1}</td>
+                                        <td className="py-2 px-2">
+                                          <div className="flex items-center gap-2 min-w-0">
+                                            <div className={`w-6 h-6 rounded-md ${act.iconColor} flex items-center justify-center shrink-0`}>
+                                              <ActIcon className="w-3 h-3" />
+                                            </div>
+                                            <span className="font-extrabold text-gray-900 truncate max-w-[120px]">{act.activity}</span>
+                                          </div>
+                                        </td>
+                                        <td className="py-2 text-right font-black text-gray-900 pr-0.5">{act.count}</td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* ROW 3: TOP COUNTRIES, DEVICE USAGE, & LEARNING OUTCOMES */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 min-w-0">
+                        
+                        {/* CARD 1: TOP COUNTRIES */}
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-black text-gray-900">Top Countries</h3>
+                            <button
+                              type="button"
+                              onClick={() => setIsViewAllTopCountriesReportsModalOpen(true)}
+                              className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                            >
+                              <span>View All</span>
+                              <ArrowUpRight className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          <div className="space-y-2.5 text-xs">
+                            {reportsTopCountries.map((c) => (
+                              <div key={c.id} className="space-y-1">
+                                <div className="flex items-center justify-between text-[11px]">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm">{c.flag}</span>
+                                    <span className="font-extrabold text-gray-800">{c.country}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-gray-400 font-bold">{c.percentage}%</span>
+                                    <span className="font-black text-gray-900">{c.count}</span>
+                                  </div>
+                                </div>
+                                <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                  <div className={`${c.color} h-1.5 rounded-full`} style={{ width: c.width }}></div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* CARD 2: DEVICE USAGE (DONUT CHART) */}
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                          <h3 className="text-sm font-black text-gray-900">Device Usage</h3>
+
+                          <div className="flex flex-col sm:flex-row items-center gap-4 pt-1">
+                            {/* SVG Donut Chart */}
+                            <div className="relative w-32 h-32 flex items-center justify-center shrink-0">
+                              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="38" stroke="#F1F5F9" strokeWidth="12" fill="transparent" />
+                                {/* Mobile: 68% (162.3) */}
+                                <circle cx="50" cy="50" r="38" stroke="#3B82F6" strokeWidth="12" fill="transparent" strokeDasharray="162.3 238.76" strokeDashoffset="0" />
+                                {/* Desktop: 26% (62.1) */}
+                                <circle cx="50" cy="50" r="38" stroke="#06B6D4" strokeWidth="12" fill="transparent" strokeDasharray="62.1 238.76" strokeDashoffset="-162.3" />
+                                {/* Tablet: 6% (14.3) */}
+                                <circle cx="50" cy="50" r="38" stroke="#8B5CF6" strokeWidth="12" fill="transparent" strokeDasharray="14.3 238.76" strokeDashoffset="-224.4" />
+                              </svg>
+                              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                <span className="text-sm font-black text-gray-900 leading-none">12,854</span>
+                                <span className="text-[9px] font-bold text-gray-400 mt-0.5">Total Users</span>
+                              </div>
+                            </div>
+
+                            {/* Legend List */}
+                            <div className="w-full space-y-2 text-xs">
+                              {reportsDeviceUsage.map((dev) => (
+                                <div key={dev.id} className="flex items-center justify-between text-[11px]">
+                                  <div className="flex items-center gap-2">
+                                    <span className={`w-2 h-2 rounded-full ${dev.bg} shrink-0`}></span>
+                                    <span className="font-bold text-gray-700">{dev.name}</span>
+                                  </div>
+                                  <span className="font-black text-gray-900">{dev.percentage}%</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* CARD 3: LEARNING OUTCOMES */}
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-black text-gray-900">Learning Outcomes</h3>
+                            <button
+                              type="button"
+                              onClick={() => setIsViewAllLearningOutcomesModalOpen(true)}
+                              className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                            >
+                              <span>View All</span>
+                              <ArrowUpRight className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          <div className="space-y-2.5 text-xs">
+                            {reportsLearningOutcomes.map((out) => {
+                              const OutIcon = out.icon;
+                              return (
+                                <div key={out.id} className="space-y-1">
+                                  <div className="flex items-center justify-between text-[11px]">
+                                    <div className="flex items-center gap-1.5 min-w-0">
+                                      <div className={`w-5 h-5 rounded-md ${out.iconBg} flex items-center justify-center shrink-0`}>
+                                        <OutIcon className="w-2.5 h-2.5" />
+                                      </div>
+                                      <span className="font-bold text-gray-800 truncate max-w-[130px]">{out.title}</span>
+                                    </div>
+                                    <span className="font-black text-gray-900 shrink-0">{out.value}</span>
+                                  </div>
+                                  <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                    <div className={`${out.color} h-1.5 rounded-full`} style={{ width: out.score }}></div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* RIGHT SIDEBAR (3 COLS) */}
+                    <aside className="xl:col-span-3 space-y-5 min-w-0">
+                      
+                      {/* SIDEBAR CARD 1: REPORT FILTERS */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                        <div className="flex items-center gap-2">
+                          <Filter className="w-4 h-4 text-[#114B44]" />
+                          <h3 className="text-sm font-black text-gray-900">Report Filters</h3>
+                        </div>
+
+                        <div className="space-y-3 text-xs">
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Date Range</label>
+                            <div className="relative">
+                              <select
+                                value={reportsDateRange}
+                                onChange={(e) => setReportsDateRange(e.target.value)}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44] cursor-pointer"
+                              >
+                                <option>1 Sep 2026 - 30 Sep 2026</option>
+                                <option>Last 7 Days</option>
+                                <option>Last 30 Days</option>
+                                <option>This Quarter (Q3 2026)</option>
+                                <option>Year to Date (2026)</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Report Type</label>
+                            <select
+                              value={reportsFilterType}
+                              onChange={(e) => setReportsFilterType(e.target.value)}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            >
+                              <option>All Reports</option>
+                              <option>User Growth & Activities</option>
+                              <option>Class Enrollment & Performance</option>
+                              <option>Revenue & Financial Reports</option>
+                              <option>Learning Outcomes & Quiz Scores</option>
+                              <option>System Diagnostic Reports</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">User Role</label>
+                            <select
+                              value={reportsFilterRole}
+                              onChange={(e) => setReportsFilterRole(e.target.value)}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            >
+                              <option>All Roles</option>
+                              <option>Students (Santri)</option>
+                              <option>Teachers (Asatidz)</option>
+                              <option>VIP Mentors</option>
+                              <option>Administrators</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Class Category</label>
+                            <select
+                              value={reportsFilterCategory}
+                              onChange={(e) => setReportsFilterCategory(e.target.value)}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            >
+                              <option>All Categories</option>
+                              <option>Islamic Studies</option>
+                              <option>Mathematics</option>
+                              <option>Language</option>
+                              <option>Computer Science</option>
+                              <option>Business</option>
+                            </select>
+                          </div>
+
+                          {/* Generate Report Button */}
+                          <div className="pt-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsGeneratingReport(true);
+                                setGenerateReportProgress(0);
+                                setIsGenerateReportModalOpen(true);
+                                let p = 0;
+                                const interval = setInterval(() => {
+                                  p += 25;
+                                  setGenerateReportProgress(p);
+                                  if (p >= 100) {
+                                    clearInterval(interval);
+                                    setIsGeneratingReport(false);
+                                  }
+                                }, 200);
+                              }}
+                              className="w-full py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white font-extrabold rounded-xl text-xs flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
+                            >
+                              <BarChart2 className="w-4 h-4" />
+                              <span>Generate Report</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* SIDEBAR CARD 2: QUICK REPORTS */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <h3 className="text-sm font-black text-gray-900">Quick Reports</h3>
+
+                        <div className="space-y-1 text-xs">
+                          {[
+                            { name: 'User Report', icon: User, action: () => alert('Membuka Laporan Detail Pengguna (User Report)...') },
+                            { name: 'Class Report', icon: BookOpen, action: () => alert('Membuka Laporan Kelas & Kursus (Class Report)...') },
+                            { name: 'Revenue Report', icon: BarChart2, action: () => alert('Membuka Laporan Keuangan & Omset (Revenue Report)...') },
+                            { name: 'Engagement Report', icon: Activity, action: () => alert('Membuka Laporan Aktivitas & Retensi (Engagement Report)...') },
+                            { name: 'Quiz & Assignment Report', icon: FileCheck, action: () => alert('Membuka Laporan Nilai Kuis & Tugas (Quiz Report)...') },
+                            { name: 'Certificate Report', icon: Award, action: () => alert('Membuka Laporan Penerbitan Sertifikat (Certificate Report)...') },
+                            { name: 'Live Class Report', icon: Video, action: () => alert('Membuka Laporan Kelas Live Streaming (Live Class Report)...') },
+                            { name: 'System Activity Report', icon: Sliders, action: () => alert('Membuka Laporan Audit Log & Diagnostik Server (System Report)...') }
+                          ].map((item, idx) => {
+                            const ItemIcon = item.icon;
+                            return (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={item.action}
+                                className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#114B44] font-bold transition-colors cursor-pointer text-left"
+                              >
+                                <ItemIcon className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                                <span className="text-[11px] truncate">{item.name}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* SIDEBAR CARD 3: EXPORT OPTIONS */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <h3 className="text-sm font-black text-gray-900">Export Options</h3>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => alert('Mengunduh Laporan Lengkap format PDF (IlmHub-Report-Sep2026.pdf)...')}
+                            className="p-2.5 rounded-xl border border-gray-200 hover:border-red-300 hover:bg-red-50/40 text-gray-700 transition-all cursor-pointer flex flex-col items-center text-center gap-1.5"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs">
+                              📄
+                            </div>
+                            <span className="text-[10px] font-extrabold text-gray-800">Export as PDF</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => alert('Mengunduh Laporan Lengkap format Excel XLSX (IlmHub-Data-Sep2026.xlsx)...')}
+                            className="p-2.5 rounded-xl border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/40 text-gray-700 transition-all cursor-pointer flex flex-col items-center text-center gap-1.5"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">
+                              📊
+                            </div>
+                            <span className="text-[10px] font-extrabold text-gray-800">Export as Excel</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => alert('Mengunduh Data Mentah format CSV (IlmHub-Raw-Sep2026.csv)...')}
+                            className="p-2.5 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50/40 text-gray-700 transition-all cursor-pointer flex flex-col items-center text-center gap-1.5"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-black text-xs">
+                              📁
+                            </div>
+                            <span className="text-[10px] font-extrabold text-gray-800">Export as CSV</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setIsScheduleEmailReportModalOpen(true)}
+                            className="p-2.5 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-purple-50/40 text-gray-700 transition-all cursor-pointer flex flex-col items-center text-center gap-1.5"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-black text-xs">
+                              ✉️
+                            </div>
+                            <span className="text-[10px] font-extrabold text-gray-800">Schedule Report (Email)</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -21662,6 +22722,450 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                 <div className="flex items-center justify-end pt-3 border-t border-gray-100">
                   <button onClick={() => setIsViewAllIntegrationLogsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* REPORTS INTERACTIVE MODALS (Export, Generate, Schedules)  */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal Export Report */}
+          {isExportReportModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Export Reports & Analytics</h3>
+                      <p className="text-xs text-gray-500">Unduh data performa platform dalam berbagai format</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsExportReportModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Rentang Waktu Laporan</label>
+                    <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-200 font-bold text-gray-800 text-xs flex items-center justify-between">
+                      <span>{reportsDateRange}</span>
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1.5">Pilih Format Dokumen</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { label: 'PDF Report', icon: '📄', desc: 'Presentasi Siap Cetak' },
+                        { label: 'Excel (.xlsx)', icon: '📊', desc: 'Spreadsheet Terformat' },
+                        { label: 'CSV Raw', icon: '📁', desc: 'Data Mentah Tabel' }
+                      ].map((fmt, idx) => (
+                        <button
+                          key={fmt.label}
+                          type="button"
+                          className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1 ${
+                            idx === 0
+                              ? 'border-[#114B44] bg-emerald-50/60 text-[#114B44] font-black'
+                              : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span className="text-base">{fmt.icon}</span>
+                          <span className="text-[11px] font-extrabold">{fmt.label}</span>
+                          <span className="text-[9px] text-gray-400">{fmt.desc}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1.5">Seksi & Metrik yang Disertakan</label>
+                    <div className="space-y-2 bg-[#F8FAFC] p-3 rounded-xl border border-gray-200">
+                      {[
+                        'Ringkasan Pertumbuhan Pengguna (User Growth & Active Users)',
+                        'Laporan Pendaftaran & Performa Kelas (Enrollments by Category)',
+                        'Laporan Keuangan Platform, Komisi & Payout (Revenue vs Payouts)',
+                        'Analisis Hasil Belajar & Kelulusan (Learning Outcomes & Quiz Scores)',
+                        'Demografi Wilayah & Sebaran Santri (Top Countries)',
+                        'Statistik Penggunaan Perangkat (Device & Platform Usage)'
+                      ].map((sec, idx) => (
+                        <label key={idx} className="flex items-center gap-2 cursor-pointer select-none">
+                          <input type="checkbox" defaultChecked className="rounded text-[#114B44] focus:ring-[#114B44] w-3.5 h-3.5" />
+                          <span className="text-[11px] font-bold text-gray-700">{sec}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsExportReportModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsExportReportModalOpen(false);
+                      alert(`Laporan platform periode ${reportsDateRange} berhasil diexport dan diunduh!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Laporan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal Generate Report (Compiler Preview) */}
+          {isGenerateReportModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center font-black">
+                      <BarChart2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Hasil Kompilasi Laporan Platform</h3>
+                      <p className="text-xs text-gray-500">Periode: {reportsDateRange} • Tipe: {reportsFilterType}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsGenerateReportModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                {isGeneratingReport ? (
+                  <div className="py-8 text-center space-y-3">
+                    <div className="w-12 h-12 border-4 border-[#114B44] border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div className="text-xs font-bold text-gray-700">Mengkalkulasi metrik dan mengompilasi laporan...</div>
+                    <div className="w-48 bg-gray-200 rounded-full h-2 mx-auto overflow-hidden">
+                      <div className="bg-[#114B44] h-2 rounded-full transition-all duration-200" style={{ width: `${generateReportProgress}%` }}></div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4 text-xs">
+                    {/* Executive KPI Summary */}
+                    <div className="grid grid-cols-3 gap-2.5">
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                        <span className="text-gray-400 font-bold block text-[10px]">Total Santri Aktif</span>
+                        <span className="text-base font-black text-gray-900">12,854</span>
+                        <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">+28% YoY</span>
+                      </div>
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                        <span className="text-gray-400 font-bold block text-[10px]">Total Pendaftaran</span>
+                        <span className="text-base font-black text-gray-900">18,562</span>
+                        <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">+26% YoY</span>
+                      </div>
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                        <span className="text-gray-400 font-bold block text-[10px]">Total Omset</span>
+                        <span className="text-base font-black text-gray-900">$12,845</span>
+                        <span className="text-[10px] text-emerald-600 font-bold block mt-0.5">+28% YoY</span>
+                      </div>
+                    </div>
+
+                    {/* Report Content Table */}
+                    <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
+                      <div className="font-black text-gray-900 text-xs">Highlights Eksekutif:</div>
+                      <ul className="list-disc pl-4 space-y-1 text-[11px] text-gray-700">
+                        <li>Kategori <strong>Islamic Studies</strong> menduduki peringkat #1 dengan kontribusi 32% total pendaftaran (5,940 santri).</li>
+                        <li>Tingkat kepuasan santri mencapai <strong>4.6 / 5</strong> dan rata-rata skor kuis 78%.</li>
+                        <li>Distribusi akses didominasi perangkat <strong>Mobile (68%)</strong> disusul Desktop (26%).</li>
+                        <li>Negara asal santri terbesar: Indonesia (42%), Mesir (18%), dan Malaysia (10%).</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
+                  <span className="text-gray-400 text-[11px]">Dibuat otomatis oleh AI IlmHub Engine</span>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setIsGenerateReportModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer">Tutup</button>
+                    <button
+                      onClick={() => {
+                        alert('Laporan berhasil dikirimkan ke printer!');
+                      }}
+                      className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold rounded-xl cursor-pointer"
+                    >
+                      Cetak
+                    </button>
+                    <button
+                      onClick={() => {
+                        alert('Laporan hasil kompilasi berhasil diunduh (PDF)!');
+                        setIsGenerateReportModalOpen(false);
+                      }}
+                      className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white font-black rounded-xl cursor-pointer shadow-xs"
+                    >
+                      Download PDF
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal View All Top Classes */}
+          {isViewAllTopClassesReportsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <BookOpen className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Seluruh Kelas & Kursus Terbaik</h3>
+                      <p className="text-xs text-gray-500">Peringkat berdasarkan total santri terdaftar dan rating</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllTopClassesReportsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-gray-100 text-[10px] uppercase font-bold text-gray-400 bg-gray-50/60">
+                        <th className="py-2.5 px-3">#</th>
+                        <th className="py-2.5 px-3">Judul Kelas</th>
+                        <th className="py-2.5 px-3">Pengampu</th>
+                        <th className="py-2.5 px-3 text-right">Pendaftaran</th>
+                        <th className="py-2.5 px-3 text-right">Rating</th>
+                        <th className="py-2.5 px-3 text-right">Omset</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 text-[11px]">
+                      {[
+                        ...reportsTopClasses,
+                        { id: 6, title: 'Ushul Fiqh Matn Waraqat', enrollments: '980', icon: '⚖️', teacher: 'Dr. Sheikh Tariq', rating: 5.0, revenue: '$1,960' },
+                        { id: 7, title: 'Nahwu Jurumiyyah Syarah', enrollments: '870', icon: '📖', teacher: 'Ust. Ahmed Mohamed', rating: 4.9, revenue: '$1,740' },
+                        { id: 8, title: 'Musthalah Hadits Dasar', enrollments: '750', icon: '📜', teacher: 'Dr. Maryam Al-Khatib', rating: 4.8, revenue: '$1,500' }
+                      ].map((cls, idx) => (
+                        <tr key={cls.id} className="hover:bg-gray-50/70 transition-colors">
+                          <td className="py-2.5 px-3 font-bold text-gray-400">{idx + 1}</td>
+                          <td className="py-2.5 px-3 font-extrabold text-gray-900">
+                            <div className="flex items-center gap-2">
+                              <span>{cls.icon}</span>
+                              <span>{cls.title}</span>
+                            </div>
+                          </td>
+                          <td className="py-2.5 px-3 font-bold text-gray-600">{cls.teacher}</td>
+                          <td className="py-2.5 px-3 text-right font-black text-emerald-700">{cls.enrollments}</td>
+                          <td className="py-2.5 px-3 text-right font-black text-amber-500">★ {cls.rating}</td>
+                          <td className="py-2.5 px-3 text-right font-black text-gray-900">{cls.revenue}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllTopClassesReportsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal View All User Activities */}
+          {isViewAllUserActivityReportsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Laporan Aktivitas Pengguna Lengkap</h3>
+                      <p className="text-xs text-gray-500">Metrik interaksi harian, mingguan, & bulanan santri</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllUserActivityReportsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {reportsUserActivity.map((act, idx) => {
+                    const ActIcon = act.icon;
+                    return (
+                      <div key={act.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <span className="font-bold text-gray-400 text-xs w-4">{idx + 1}</span>
+                          <div className={`w-8 h-8 rounded-xl ${act.iconColor} flex items-center justify-center shrink-0`}>
+                            <ActIcon className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="font-extrabold text-gray-900">{act.activity}</div>
+                            <div className="text-[10px] text-gray-400">Tren pertumbuhan: <span className="text-emerald-600 font-bold">{act.change}</span></div>
+                          </div>
+                        </div>
+                        <span className="font-black text-sm text-gray-900 bg-white px-3 py-1 rounded-xl border border-gray-200 shadow-2xs">
+                          {act.count}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllUserActivityReportsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal View All Top Countries */}
+          {isViewAllTopCountriesReportsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Sebaran Wilayah & Negara</h3>
+                      <p className="text-xs text-gray-500">Distribusi demografis santri dan pengajar</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllTopCountriesReportsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  {reportsTopCountries.map((c) => (
+                    <div key={c.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{c.flag}</span>
+                          <span className="font-extrabold text-gray-900">{c.country}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400 font-bold">{c.percentage}%</span>
+                          <span className="font-black text-gray-900">{c.count} Santri</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <div className={`${c.color} h-2 rounded-full`} style={{ width: c.width }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllTopCountriesReportsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Modal View All Learning Outcomes */}
+          {isViewAllLearningOutcomesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <GraduationCap className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Laporan Hasil Belajar & Kelulusan</h3>
+                      <p className="text-xs text-gray-500">Indikator capaian pembelajaran platform</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllLearningOutcomesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  {reportsLearningOutcomes.map((out) => {
+                    const OutIcon = out.icon;
+                    return (
+                      <div key={out.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-6 h-6 rounded-lg ${out.iconBg} flex items-center justify-center`}>
+                              <OutIcon className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="font-extrabold text-gray-900">{out.title}</span>
+                          </div>
+                          <span className="font-black text-sm text-gray-900">{out.value}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                          <div className={`${out.color} h-2 rounded-full`} style={{ width: out.score }}></div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllLearningOutcomesModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. Modal Schedule Email Report */}
+          {isScheduleEmailReportModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Jadwalkan Pengiriman Laporan (Email)</h3>
+                      <p className="text-xs text-gray-500">Kirimkan ringkasan analitik berkala otomatis</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsScheduleEmailReportModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Frekuensi Pengiriman</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]">
+                      <option>Setiap Hari (Daily Digest - 08:00 WIB)</option>
+                      <option>Setiap Minggu (Weekly Report - Senin Pagi)</option>
+                      <option>Setiap Bulan (Monthly Summary - Tgl 1)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Daftar Email Penerima</label>
+                    <input
+                      type="text"
+                      defaultValue="admin@ilmhub.com, finance@ilmhub.com, board@ilmhub.com"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44]"
+                    />
+                    <span className="text-[10px] text-gray-400 mt-1 block">Pisahkan beberapa email dengan koma</span>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Lampiran File Laporan</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="p-2 rounded-xl border border-[#114B44] bg-emerald-50 text-[#114B44] text-[11px] font-bold flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                        <span>PDF Summary</span>
+                      </label>
+                      <label className="p-2 rounded-xl border border-gray-200 bg-white text-gray-700 text-[11px] font-bold flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                        <span>Excel Spreadsheet</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsScheduleEmailReportModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsScheduleEmailReportModalOpen(false);
+                      alert('Jadwal pengiriman laporan otomatis via email berhasil disimpan!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>Simpan Jadwal</span>
+                  </button>
                 </div>
               </div>
             </div>
