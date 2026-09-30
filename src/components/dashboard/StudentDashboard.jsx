@@ -877,21 +877,21 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                 </div>
               </div>
 
-              {/* 4. MAIN BROWSE LAYOUT: 2 Columns (Center Feed + Right Widgets) */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+              {/* 4. MAIN BROWSE LAYOUT: 2 Columns (Center Feed + Right Sidebar) */}
+              <div className="flex flex-col lg:flex-row gap-5 items-start">
                 
-                {/* LEFT & CENTER FEED (9 Cols) */}
-                <div className="xl:col-span-9 space-y-7 min-w-0">
+                {/* LEFT & CENTER FEED (Flex-1) */}
+                <div className="flex-1 min-w-0 space-y-6">
                   
                   {/* Hero Wide Banner: Deepen Your Knowledge */}
-                  <div className="relative rounded-3xl overflow-hidden min-h-[160px] p-6 sm:p-8 text-white flex flex-col justify-between shadow-md bg-gradient-to-r from-[#0F2F2B] via-[#114B44] to-[#1E3A34]">
+                  <div className="relative rounded-3xl overflow-hidden min-h-[150px] p-5 sm:p-7 text-white flex flex-col justify-between shadow-md bg-gradient-to-r from-[#0F2F2B] via-[#114B44] to-[#1E3A34]">
                     <img
                       src="/images/login_lms_desk_bg.jpg"
                       alt="Mosque Silhouette Banner"
                       className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-35"
                     />
-                    <div className="relative z-10 space-y-2 max-w-xl">
-                      <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                    <div className="relative z-10 space-y-1.5 max-w-xl">
+                      <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
                         Deepen Your Knowledge
                       </h2>
                       <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
@@ -899,13 +899,13 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                       </p>
                     </div>
 
-                    <div className="relative z-10 pt-4">
+                    <div className="relative z-10 pt-3">
                       <button
                         onClick={() => {
                           const el = document.getElementById('featured-section');
                           if (el) el.scrollIntoView({ behavior: 'smooth' });
                         }}
-                        className="inline-flex items-center gap-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-100 border border-emerald-400/40 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer backdrop-blur-xs"
+                        className="inline-flex items-center gap-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-100 border border-emerald-400/40 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer backdrop-blur-xs"
                       >
                         <span>Explore Featured Classes</span>
                         <ChevronRight className="w-3.5 h-3.5 text-emerald-300" />
@@ -914,9 +914,9 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   </div>
 
                   {/* SECTION 1: Featured Classes */}
-                  <div id="featured-section" className="space-y-4">
+                  <div id="featured-section" className="space-y-3.5">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-base sm:text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                      <h2 className="text-base font-black text-gray-900 tracking-tight flex items-center gap-2">
                         <span>Featured Classes</span>
                       </h2>
                       <button 
@@ -929,7 +929,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                     </div>
 
                     {/* 4 Cards Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-3.5">
                       {featuredBrowseClasses.map((item) => {
                         const isLiked = wishlist.includes(item.id);
                         return (
@@ -939,7 +939,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                           >
                             <div>
                               {/* Thumbnail with Badge & Heart Button */}
-                              <div className="relative h-36 w-full bg-gray-100 overflow-hidden">
+                              <div className="relative h-32 sm:h-36 w-full bg-gray-100 overflow-hidden">
                                 <img 
                                   src={item.image} 
                                   alt={item.title}
@@ -948,7 +948,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                                 />
                                 {/* Top Badge */}
                                 {item.badge && (
-                                  <span className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shadow-2xs ${item.badge.color}`}>
+                                  <span className={`absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider shadow-2xs ${item.badge.color}`}>
                                     {item.badge.text}
                                   </span>
                                 )}
@@ -958,14 +958,14 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                                     e.stopPropagation();
                                     toggleWishlist(item.id);
                                   }}
-                                  className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer"
+                                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer"
                                 >
-                                  <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-white'}`} />
+                                  <Heart className={`w-3 h-3 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-white'}`} />
                                 </button>
                               </div>
 
                               {/* Card Body */}
-                              <div className="p-3.5 space-y-2">
+                              <div className="p-3 space-y-1.5">
                                 <div>
                                   <h3 className="font-extrabold text-xs text-gray-900 group-hover:text-[#114B44] transition-colors line-clamp-1">
                                     {item.title}
@@ -986,13 +986,13 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                                 </div>
 
                                 {/* Rating & Students */}
-                                <div className="flex items-center justify-between text-[11px] pt-1">
+                                <div className="flex items-center justify-between text-[10px] pt-1">
                                   <div className="flex items-center gap-1 font-bold text-amber-500">
-                                    <Star className="w-3.5 h-3.5 fill-amber-400" />
+                                    <Star className="w-3 h-3 fill-amber-400" />
                                     <span>{item.rating}</span>
-                                    <span className="text-gray-400 font-normal text-[10px]">({item.reviews})</span>
+                                    <span className="text-gray-400 font-normal text-[9px]">({item.reviews})</span>
                                   </div>
-                                  <div className="flex items-center gap-1 text-gray-500 text-[10px] font-medium">
+                                  <div className="flex items-center gap-1 text-gray-500 text-[9px] font-medium">
                                     <Users className="w-3 h-3 text-gray-400" />
                                     <span>{item.students} students</span>
                                   </div>
@@ -1001,7 +1001,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                             </div>
 
                             {/* Card Footer */}
-                            <div className="px-3.5 py-2.5 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500 font-medium">
+                            <div className="px-3 py-2 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500 font-medium">
                               <div className="flex items-center gap-1">
                                 <BookOpen className="w-3 h-3 text-gray-400" />
                                 <span>{item.lessons} lessons</span>
@@ -1019,9 +1019,9 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   </div>
 
                   {/* SECTION 2: All Classes */}
-                  <div className="space-y-4 pt-2">
+                  <div className="space-y-3.5 pt-2">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-base sm:text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                      <h2 className="text-base font-black text-gray-900 tracking-tight flex items-center gap-2">
                         <span>All Classes</span>
                       </h2>
                       <button 
@@ -1034,7 +1034,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                     </div>
 
                     {/* 8 Cards Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-3.5">
                       {allBrowseClassesList.map((item) => {
                         const isLiked = wishlist.includes(item.id);
                         return (
@@ -1044,7 +1044,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                           >
                             <div>
                               {/* Thumbnail */}
-                              <div className="relative h-36 w-full bg-gray-100 overflow-hidden">
+                              <div className="relative h-32 sm:h-36 w-full bg-gray-100 overflow-hidden">
                                 <img 
                                   src={item.image} 
                                   alt={item.title}
@@ -1057,14 +1057,14 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                                     e.stopPropagation();
                                     toggleWishlist(item.id);
                                   }}
-                                  className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer"
+                                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer"
                                 >
-                                  <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-white'}`} />
+                                  <Heart className={`w-3 h-3 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-white'}`} />
                                 </button>
                               </div>
 
                               {/* Body */}
-                              <div className="p-3.5 space-y-2">
+                              <div className="p-3 space-y-1.5">
                                 <div>
                                   <h3 className="font-extrabold text-xs text-gray-900 group-hover:text-[#114B44] transition-colors line-clamp-1">
                                     {item.title}
@@ -1085,13 +1085,13 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                                 </div>
 
                                 {/* Rating & Students */}
-                                <div className="flex items-center justify-between text-[11px] pt-1">
+                                <div className="flex items-center justify-between text-[10px] pt-1">
                                   <div className="flex items-center gap-1 font-bold text-amber-500">
-                                    <Star className="w-3.5 h-3.5 fill-amber-400" />
+                                    <Star className="w-3 h-3 fill-amber-400" />
                                     <span>{item.rating}</span>
-                                    <span className="text-gray-400 font-normal text-[10px]">({item.reviews})</span>
+                                    <span className="text-gray-400 font-normal text-[9px]">({item.reviews})</span>
                                   </div>
-                                  <div className="flex items-center gap-1 text-gray-500 text-[10px] font-medium">
+                                  <div className="flex items-center gap-1 text-gray-500 text-[9px] font-medium">
                                     <Users className="w-3 h-3 text-gray-400" />
                                     <span>{item.students} students</span>
                                   </div>
@@ -1100,7 +1100,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                             </div>
 
                             {/* Footer */}
-                            <div className="px-3.5 py-2.5 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500 font-medium">
+                            <div className="px-3 py-2 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500 font-medium">
                               <div className="flex items-center gap-1">
                                 <BookOpen className="w-3 h-3 text-gray-400" />
                                 <span>{item.lessons} lessons</span>
@@ -1119,8 +1119,8 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
 
                 </div>
 
-                {/* RIGHT SIDEBAR WIDGETS (Compact & Clean Matching media_1790726478349.jpg) */}
-                <div className="xl:col-span-3 space-y-4">
+                {/* RIGHT SIDEBAR WIDGETS (Always on the right on desktop) */}
+                <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
                   
                   {/* 1. Popular Topics Card */}
                   <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-2.5">
@@ -1255,7 +1255,7 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                     </div>
                   </div>
 
-                </div>
+                </aside>
 
               </div>
 
