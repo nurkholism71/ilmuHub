@@ -74,6 +74,16 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   const [selectedAssignmentForSubmit, setSelectedAssignmentForSubmit] = useState(null);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
+  // Quizzes View States (matching media_1790728429009.jpg)
+  const [quizTabFilter, setQuizTabFilter] = useState('all'); // 'all' | 'not_started' | 'in_progress' | 'completed'
+  const [quizSearchQuery, setQuizSearchQuery] = useState('');
+  const [quizClassFilter, setQuizClassFilter] = useState('All Classes');
+  const [quizTypeFilter, setQuizTypeFilter] = useState('All Types');
+  const [quizStatusFilter, setQuizStatusFilter] = useState('All Status');
+  const [quizSortOrder, setQuizSortOrder] = useState('Due Date');
+  const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
+
   // Browse Classes View States (matching media_1790726478349.jpg)
   const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
   const [browseSearchQuery, setBrowseSearchQuery] = useState('');
@@ -942,6 +952,190 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
       date: '15 Sep 2026',
       grade: '92',
       icon: '🎙️',
+      iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-100'
+    }
+  ];
+
+  // Quizzes Datasets (Matching media_1790728429009.jpg)
+  const studentQuizzesList = [
+    {
+      id: 'qz-1',
+      title: 'Quiz 1: Introduction to Islam',
+      course: 'Nahwu for Beginners',
+      instructor: 'Ustadz Ahmad Fauzi',
+      questionsCount: 10,
+      duration: '20 minutes',
+      format: 'Multiple Choice',
+      dueDate: '25 Sep 2026, 11:59 PM',
+      status: 'not_started',
+      statusBadge: 'Due Soon',
+      statusColor: 'bg-rose-50 text-rose-600 border-rose-200',
+      dueDateColor: 'text-rose-600',
+      image: '/images/class_nahwu.jpg',
+      actionType: 'start',
+      actionLabel: 'Start Quiz',
+      isPrimaryAction: true
+    },
+    {
+      id: 'qz-2',
+      title: 'Quiz 2: Arabic Vocabulary',
+      course: 'Arabic Conversation',
+      instructor: 'Ustadz Omar Hassan',
+      questionsCount: 15,
+      duration: '30 minutes',
+      format: 'Multiple Choice',
+      dueDate: '26 Sep 2026, 11:59 PM',
+      status: 'in_progress',
+      statusBadge: 'In Progress',
+      statusColor: 'bg-blue-50 text-blue-600 border-blue-200',
+      dueDateColor: 'text-gray-500',
+      image: '/images/class_conversation.jpg',
+      actionType: 'continue',
+      actionLabel: 'Continue',
+      isPrimaryAction: false
+    },
+    {
+      id: 'qz-3',
+      title: 'Quiz 3: Academic Writing Basics',
+      course: 'Academic Writing',
+      instructor: 'Dr. Layla Ahmad',
+      questionsCount: 12,
+      duration: '25 minutes',
+      format: 'Multiple Choice',
+      dueDate: '28 Sep 2026, 11:59 PM',
+      status: 'not_started',
+      statusBadge: 'Not Started',
+      statusColor: 'bg-gray-100 text-gray-600 border-gray-200',
+      dueDateColor: 'text-gray-500',
+      image: '/images/login_lms_desk_bg.jpg',
+      actionType: 'start',
+      actionLabel: 'Start Quiz',
+      isPrimaryAction: false
+    },
+    {
+      id: 'qz-4',
+      title: 'Quiz 4: Islamic History',
+      course: 'Islamic History',
+      instructor: 'Ustadz Ali Khan',
+      questionsCount: 20,
+      duration: '30 minutes',
+      format: 'Multiple Choice',
+      dueDate: '29 Sep 2026, 11:59 PM',
+      status: 'not_started',
+      statusBadge: 'Not Started',
+      statusColor: 'bg-gray-100 text-gray-600 border-gray-200',
+      dueDateColor: 'text-gray-500',
+      image: '/images/class_nahwu.jpg',
+      actionType: 'start',
+      actionLabel: 'Start Quiz',
+      isPrimaryAction: false
+    },
+    {
+      id: 'qz-5',
+      title: 'Quiz 5: Environmental Issues',
+      course: 'Environmental Management',
+      instructor: 'Dr. Sara Nabilah',
+      questionsCount: 15,
+      duration: '30 minutes',
+      format: 'Multiple Choice',
+      dueDate: '1 Oct 2026, 11:59 PM',
+      status: 'not_started',
+      statusBadge: 'Not Started',
+      statusColor: 'bg-gray-100 text-gray-600 border-gray-200',
+      dueDateColor: 'text-gray-500',
+      image: '/images/class_conversation.jpg',
+      actionType: 'start',
+      actionLabel: 'Start Quiz',
+      isPrimaryAction: false
+    },
+    {
+      id: 'qz-6',
+      title: 'Quiz 6: Data Analysis Basics',
+      course: 'Data Analysis',
+      instructor: 'Mr. Ali Rahman',
+      questionsCount: 20,
+      duration: '40 minutes',
+      format: 'Multiple Choice',
+      dueDate: '15 Sep 2026, 10:20 AM',
+      status: 'completed',
+      statusBadge: '✓ Completed',
+      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      dueDateColor: 'text-gray-500',
+      image: '/images/login_lms_desk_bg.jpg',
+      actionType: 'review',
+      actionLabel: 'Review Quiz',
+      isPrimaryAction: false
+    }
+  ];
+
+  const upcomingQuizzesList = [
+    {
+      id: 'uq-1',
+      month: 'SEP',
+      day: '25',
+      title: 'Quiz 1: Introduction to Islam',
+      course: 'Nahwu for Beginners',
+      statusTag: '⏰ Due Soon',
+      tagColor: 'text-rose-600'
+    },
+    {
+      id: 'uq-2',
+      month: 'SEP',
+      day: '26',
+      title: 'Quiz 2: Arabic Vocabulary',
+      course: 'Arabic Conversation',
+      statusTag: '⏳ In Progress',
+      tagColor: 'text-amber-600'
+    },
+    {
+      id: 'uq-3',
+      month: 'SEP',
+      day: '28',
+      title: 'Quiz 3: Academic Writing Basics',
+      course: 'Academic Writing',
+      statusTag: '⚪ Not Started',
+      tagColor: 'text-gray-400'
+    },
+    {
+      id: 'uq-4',
+      month: 'SEP',
+      day: '29',
+      title: 'Quiz 4: Islamic History',
+      course: 'Islamic History',
+      statusTag: '⚪ Not Started',
+      tagColor: 'text-gray-400'
+    },
+    {
+      id: 'uq-5',
+      month: 'OCT',
+      day: '01',
+      title: 'Quiz 5: Environmental Issues',
+      course: 'Environmental Management',
+      statusTag: '⚪ Not Started',
+      tagColor: 'text-gray-400'
+    }
+  ];
+
+  const recentQuizResultsList = [
+    {
+      id: 'qr-1',
+      title: 'Quiz 6: Data Analysis Basics',
+      date: '15 Sep 2026',
+      score: '95',
+      iconBg: 'bg-blue-50 text-blue-600 border-blue-100'
+    },
+    {
+      id: 'qr-2',
+      title: 'Quiz 5: Grammar Review',
+      date: '10 Sep 2026',
+      score: '88',
+      iconBg: 'bg-blue-50 text-blue-600 border-blue-100'
+    },
+    {
+      id: 'qr-3',
+      title: 'Quiz 4: Islamic History',
+      date: '5 Sep 2026',
+      score: '92',
       iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-100'
     }
   ];
@@ -3340,6 +3534,490 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                         className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
                       >
                         Confirm & Submit
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          ) : activeNav === 'quizzes' ? (
+            /* ========================================================= */
+            /* VIEW: QUIZZES ROOM (MATCHING media_1790728429009.jpg)     */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* 1. PAGE TOP HEADER */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <HelpCircle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Quizzes</h1>
+                    <p className="text-xs text-gray-500 font-medium">Test your understanding and track your progress.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. TAB PILLS FILTER TOOLBAR */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {[
+                  { id: 'all', label: 'All Quizzes' },
+                  { id: 'not_started', label: 'Not Started', badge: '4', badgeColor: 'bg-blue-500 text-white' },
+                  { id: 'in_progress', label: 'In Progress', badge: '2', badgeColor: 'bg-amber-500 text-white' },
+                  { id: 'completed', label: 'Completed', badge: '8', badgeColor: 'bg-emerald-500 text-white' },
+                ].map((tab) => {
+                  const isActive = quizTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setQuizTabFilter(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/80'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      {tab.badge && (
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                          isActive ? 'bg-white/20 text-white' : tab.badgeColor
+                        }`}>
+                          {tab.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 3. SEARCH & DROPDOWN FILTERS */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
+                {/* Search Input */}
+                <div className="relative flex-1">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={quizSearchQuery}
+                    onChange={(e) => setQuizSearchQuery(e.target.value)}
+                    placeholder="Search quizzes..."
+                    className="w-full bg-[#F8FAFC] border border-gray-200/80 rounded-xl pl-10 pr-4 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all shadow-2xs font-medium"
+                  />
+                </div>
+
+                {/* 4 Dropdown Filters */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Classes */}
+                  <div className="relative">
+                    <select
+                      value={quizClassFilter}
+                      onChange={(e) => setQuizClassFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Classes">All Classes</option>
+                      <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                      <option value="Arabic Conversation">Arabic Conversation</option>
+                      <option value="Academic Writing">Academic Writing</option>
+                      <option value="Islamic History">Islamic History</option>
+                      <option value="Environmental Management">Environmental Management</option>
+                      <option value="Data Analysis">Data Analysis</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Types */}
+                  <div className="relative">
+                    <select
+                      value={quizTypeFilter}
+                      onChange={(e) => setQuizTypeFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Types">All Types</option>
+                      <option value="Multiple Choice">Multiple Choice</option>
+                      <option value="True/False">True/False</option>
+                      <option value="Essay & Short Answer">Essay & Short Answer</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Status */}
+                  <div className="relative">
+                    <select
+                      value={quizStatusFilter}
+                      onChange={(e) => setQuizStatusFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Status">All Status</option>
+                      <option value="Due Soon">Due Soon</option>
+                      <option value="Not Started">Not Started</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Sort */}
+                  <div className="relative">
+                    <select
+                      value={quizSortOrder}
+                      onChange={(e) => setQuizSortOrder(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="Due Date">Sort by: Due Date</option>
+                      <option value="Newest">Sort by: Newest</option>
+                      <option value="Highest Score">Sort by: Highest Score</option>
+                      <option value="Title">Sort by: Title</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. MAIN TWO-COLUMN LAYOUT */}
+              <div className="flex flex-col lg:flex-row gap-5 items-start">
+                
+                {/* LEFT CANVAS: LIST OF QUIZ CARDS */}
+                <div className="flex-1 min-w-0 space-y-3.5 w-full">
+                  {studentQuizzesList
+                    .filter(q => {
+                      if (quizTabFilter === 'not_started') return q.status === 'not_started';
+                      if (quizTabFilter === 'in_progress') return q.status === 'in_progress';
+                      if (quizTabFilter === 'completed') return q.status === 'completed';
+                      return true;
+                    })
+                    .filter(q => {
+                      if (quizClassFilter !== 'All Classes' && q.course !== quizClassFilter) return false;
+                      if (quizTypeFilter !== 'All Types' && q.format !== quizTypeFilter) return false;
+                      if (quizStatusFilter !== 'All Status') {
+                        if (quizStatusFilter === 'Completed' && q.status !== 'completed') return false;
+                        if (quizStatusFilter === 'In Progress' && q.status !== 'in_progress') return false;
+                        if (quizStatusFilter === 'Not Started' && q.status !== 'not_started') return false;
+                        if (quizStatusFilter === 'Due Soon' && q.statusBadge !== 'Due Soon') return false;
+                      }
+                      if (quizSearchQuery) {
+                        const sq = quizSearchQuery.toLowerCase();
+                        return q.title.toLowerCase().includes(sq) || q.course.toLowerCase().includes(sq) || q.instructor.toLowerCase().includes(sq);
+                      }
+                      return true;
+                    })
+                    .map((qz) => (
+                      <div
+                        key={qz.id}
+                        className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs hover:shadow-xs hover:border-emerald-300 transition-all flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 group"
+                      >
+                        {/* Left Info: Image + Details */}
+                        <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
+                          {/* Square Image Thumbnail */}
+                          <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0 relative">
+                            <img
+                              src={qz.image}
+                              alt={qz.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                            />
+                          </div>
+
+                          {/* Info Text */}
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <h3 className="font-extrabold text-sm text-gray-900 group-hover:text-[#114B44] transition-colors leading-tight">
+                              {qz.title}
+                            </h3>
+
+                            <p className="text-xs font-semibold text-gray-600 truncate">
+                              {qz.course} • {qz.instructor}
+                            </p>
+
+                            {/* Metadata Pills: Questions, Duration, Format */}
+                            <div className="flex items-center gap-2.5 flex-wrap pt-0.5 text-[11px] text-gray-500 font-medium">
+                              <span className="flex items-center gap-1">
+                                <FileText className="w-3 h-3 text-gray-400" />
+                                <span>{qz.questionsCount} questions</span>
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-gray-400" />
+                                <span>{qz.duration}</span>
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <CheckCircle2 className="w-3 h-3 text-gray-400" />
+                                <span>{qz.format}</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right Status & Action Controls */}
+                        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+                          {/* Status Badge + Due Date */}
+                          <div className="flex sm:flex-col items-center sm:items-end gap-1.5">
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${qz.statusColor}`}>
+                              {qz.statusBadge}
+                            </span>
+                            <span className={`text-[10px] font-bold flex items-center gap-1 ${qz.dueDateColor}`}>
+                              <Calendar className="w-3 h-3" />
+                              <span>{qz.dueDate}</span>
+                            </span>
+                          </div>
+
+                          {/* Button & Menu */}
+                          <div className="flex items-center gap-1.5">
+                            {qz.isPrimaryAction ? (
+                              <button
+                                onClick={() => {
+                                  setSelectedQuiz(qz);
+                                  setIsQuizModalOpen(true);
+                                }}
+                                className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
+                              >
+                                {qz.actionLabel}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  setSelectedQuiz(qz);
+                                  setIsQuizModalOpen(true);
+                                }}
+                                className="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                              >
+                                {qz.actionLabel}
+                              </button>
+                            )}
+
+                            <button
+                              onClick={() => alert(`Opsi kuis: ${qz.title}`)}
+                              className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <MoreVertical className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {/* RIGHT SIDEBAR (MATCHING media_1790728429009.jpg) */}
+                <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
+                  
+                  {/* CARD 1: Quiz Performance Donut Chart */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Quiz Performance</h3>
+                      <button
+                        onClick={() => setQuizTabFilter('all')}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-1">
+                      {/* Donut Chart */}
+                      <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
+                        <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 80 80">
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="32"
+                            stroke="#E2E8F0"
+                            strokeWidth="8"
+                            fill="transparent"
+                          />
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="32"
+                            stroke="#114B44"
+                            strokeWidth="8"
+                            strokeDasharray={`${0.75 * 201.06} 201.06`}
+                            strokeLinecap="round"
+                            fill="transparent"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none">
+                          <span className="text-lg font-black text-gray-900 leading-none">75%</span>
+                          <span className="text-[8px] font-bold text-gray-400 mt-0.5">Average Score</span>
+                        </div>
+                      </div>
+
+                      {/* Legend Breakdown */}
+                      <div className="space-y-1.5 text-[10.5px] font-bold min-w-0 flex-1">
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+                            <span className="truncate text-gray-500 font-semibold">Completed</span>
+                          </span>
+                          <span className="font-black text-gray-900">8</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span className="truncate text-gray-500 font-semibold">In Progress</span>
+                          </span>
+                          <span className="font-black text-gray-900">2</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-slate-800"></span>
+                            <span className="truncate text-gray-500 font-semibold">Not Started</span>
+                          </span>
+                          <span className="font-black text-gray-900">4</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Best Score Banner */}
+                    <div className="pt-2 border-t border-gray-100 flex items-center justify-between bg-amber-50/50 p-2.5 rounded-xl border border-amber-200/60">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">🏆</span>
+                        <span className="text-xs font-extrabold text-amber-900">Best Score</span>
+                      </div>
+                      <span className="text-sm font-black text-amber-800">95%</span>
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Upcoming Quizzes */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Upcoming Quizzes</h3>
+                      <button
+                        onClick={() => setQuizTabFilter('not_started')}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {upcomingQuizzesList.map((uq) => (
+                        <div key={uq.id} className="flex items-center gap-3">
+                          {/* Date Badge */}
+                          <div className="w-10 h-10 rounded-xl bg-rose-50/70 border border-rose-100 text-center flex flex-col items-center justify-center shrink-0">
+                            <span className="text-[8px] font-extrabold text-rose-600 uppercase leading-none">{uq.month}</span>
+                            <span className="text-xs font-black text-gray-900 leading-tight mt-0.5">{uq.day}</span>
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">{uq.title}</h4>
+                            <p className="text-[10px] text-gray-500 truncate">{uq.course}</p>
+                            <span className={`text-[9px] font-bold flex items-center gap-1 mt-0.5 ${uq.tagColor}`}>
+                              <span>{uq.statusTag}</span>
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CARD 3: Recent Results */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Recent Results</h3>
+                      <button
+                        onClick={() => setQuizTabFilter('completed')}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {recentQuizResultsList.map((qr) => (
+                        <div
+                          key={qr.id}
+                          className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] flex items-center justify-between gap-2.5"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm border shrink-0 ${qr.iconBg}`}>
+                              <FileText className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">{qr.title}</h4>
+                              <span className="text-[9px] text-gray-400">{qr.date}</span>
+                            </div>
+                          </div>
+
+                          <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-black flex items-center justify-center shrink-0">
+                            {qr.score}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </aside>
+
+              </div>
+
+              {/* QUIZ DETAILS / START MODAL POPUP */}
+              {isQuizModalOpen && selectedQuiz && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <HelpCircle className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">{selectedQuiz.title}</h3>
+                          <p className="text-xs text-gray-500">{selectedQuiz.course} • {selectedQuiz.instructor}</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsQuizModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs cursor-pointer font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    {/* Quiz Spec Cards */}
+                    <div className="grid grid-cols-3 gap-2.5 text-center">
+                      <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                        <span className="text-[10px] text-gray-400 block font-bold uppercase">Questions</span>
+                        <span className="text-sm font-black text-gray-900">{selectedQuiz.questionsCount} Items</span>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                        <span className="text-[10px] text-gray-400 block font-bold uppercase">Time Limit</span>
+                        <span className="text-sm font-black text-gray-900">{selectedQuiz.duration}</span>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                        <span className="text-[10px] text-gray-400 block font-bold uppercase">Passing Score</span>
+                        <span className="text-sm font-black text-emerald-600">70%</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 text-xs bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-gray-700">
+                      <h5 className="font-bold text-gray-900 flex items-center gap-1.5">
+                        <span>📌</span>
+                        <span>Quiz Instructions:</span>
+                      </h5>
+                      <ul className="list-disc pl-5 space-y-1 text-[11px] text-gray-600 leading-relaxed">
+                        <li>Each question has multiple choices with only one correct answer.</li>
+                        <li>The timer will start immediately after you click "Start Test Now".</li>
+                        <li>Do not close or refresh your browser while the quiz is in progress.</li>
+                      </ul>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsQuizModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Close
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsQuizModalOpen(false);
+                          alert(`Memulai kuis: ${selectedQuiz.title}! Semoga sukses!`);
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Start Test Now
                       </button>
                     </div>
                   </div>
