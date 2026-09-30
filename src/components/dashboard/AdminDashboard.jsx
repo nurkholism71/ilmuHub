@@ -2618,6 +2618,227 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [newQuizDescription, setNewQuizDescription] = useState('');
 
   // =========================================================
+  // CERTIFICATES DATASET (matching media_1790801468598.jpg)
+  // =========================================================
+  const [certificatesList, setCertificatesList] = useState([
+    {
+      id: 'cert-1',
+      number: 1,
+      studentName: 'Ahmed Ali',
+      studentEmail: 'ahmedali@ilmhub.com',
+      studentAvatar: '/images/student_ali.jpg',
+      title: 'Islamic Studies Completion Certificate',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      courseClass: 'Islamic History Basics',
+      issueDate: '23 Sep 2026',
+      status: 'Issued',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      certId: 'CERT-ILM-2026-0923',
+      template: 'Course Completion',
+      instructor: 'Dr. Ahmad Fauzi',
+      score: '98%',
+      description: 'Awarded for exceptional mastery of Islamic history, biography of the Prophet, and core classical scholarship.'
+    },
+    {
+      id: 'cert-2',
+      number: 2,
+      studentName: 'Siti Aisyah',
+      studentEmail: 'siti@ilmhub.com',
+      studentAvatar: '/images/student_fatimah.jpg',
+      title: 'Mathematics Achievement Certificate',
+      type: 'Quiz',
+      typeBadge: 'bg-sky-50 text-sky-700 border-sky-200',
+      courseClass: 'Mathematics - Algebra',
+      issueDate: '22 Sep 2026',
+      status: 'Issued',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      certId: 'CERT-ILM-2026-0922',
+      template: 'Quiz Achievement',
+      instructor: 'Layla Karim',
+      score: '95%',
+      description: 'Awarded for scoring in the 95th percentile in the Algebra & Advanced Functions Grand Assessment.'
+    },
+    {
+      id: 'cert-3',
+      number: 3,
+      studentName: 'Omar Hassan',
+      studentEmail: 'omar@ilmhub.com',
+      studentAvatar: '/images/student_omar.jpg',
+      title: 'English Language Completion Certificate',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      courseClass: 'English Grammar',
+      issueDate: '21 Sep 2026',
+      status: 'Issued',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      certId: 'CERT-ILM-2026-0921',
+      template: 'Course Completion',
+      instructor: 'Omar Hassan',
+      score: '92%',
+      description: 'Awarded for completing full grammar curriculum and academic writing dissertation.'
+    },
+    {
+      id: 'cert-4',
+      number: 4,
+      studentName: 'Layla Karim',
+      studentEmail: 'layla@ilmhub.com',
+      studentAvatar: '/images/student_fatimah.jpg',
+      title: 'Participation Certificate',
+      type: 'Participation',
+      typeBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      courseClass: 'Web Development Workshop',
+      issueDate: '20 Sep 2026',
+      status: 'Issued',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      certId: 'CERT-ILM-2026-0920',
+      template: 'Participation',
+      instructor: 'Muhammad Khan',
+      score: '100% Attendance',
+      description: 'Active participation in the 3-day intensive Fullstack Web Development Bootcamp.'
+    },
+    {
+      id: 'cert-5',
+      number: 5,
+      studentName: 'Zainab Ali',
+      studentEmail: 'zainab@ilmhub.com',
+      studentAvatar: '/images/student_maryam.jpg',
+      title: 'Science Achievement Certificate',
+      type: 'Quiz',
+      typeBadge: 'bg-sky-50 text-sky-700 border-sky-200',
+      courseClass: 'Physics - Mechanics',
+      issueDate: '20 Sep 2026',
+      status: 'Pending',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      certId: 'CERT-ILM-2026-0920B',
+      template: 'Quiz Achievement',
+      instructor: 'Dr. Ahmad Fauzi',
+      score: '91%',
+      description: 'Passed Mechanics & Energy conservation comprehensive quiz challenge.'
+    },
+    {
+      id: 'cert-6',
+      number: 6,
+      studentName: 'Dr. Ahmad Fauzi',
+      studentEmail: 'ahmad@ilmhub.com',
+      studentAvatar: '/images/tutor_ahmed.jpg',
+      title: 'Teaching Excellence Certificate',
+      type: 'Special',
+      typeBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      courseClass: 'Teacher Training',
+      issueDate: '19 Sep 2026',
+      status: 'Issued',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      certId: 'CERT-ILM-2026-0919',
+      template: 'Special Certificate',
+      instructor: 'Council of Academics',
+      score: 'Distinction',
+      description: 'Recognition for exemplary pedagogy, student satisfaction rating of 4.95, and curricular innovation.'
+    },
+    {
+      id: 'cert-7',
+      number: 7,
+      studentName: 'Fatimah Nur',
+      studentEmail: 'fatimah@ilmhub.com',
+      studentAvatar: '/images/student_fatimah.jpg',
+      title: 'History Completion Certificate',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      courseClass: 'History of Islam',
+      issueDate: '18 Sep 2026',
+      status: 'Issued',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      certId: 'CERT-ILM-2026-0918',
+      template: 'Course Completion',
+      instructor: 'Fatimah Nur',
+      score: '94%',
+      description: 'Completed in-depth studies of the Early Caliphate and Islamic Civilization.'
+    },
+    {
+      id: 'cert-8',
+      number: 8,
+      studentName: 'Muhammad Khan',
+      studentEmail: 'khan@ilmhub.com',
+      studentAvatar: '/images/student_ali.jpg',
+      title: 'Computer Science Certificate',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      courseClass: 'Web Development',
+      issueDate: '17 Sep 2026',
+      status: 'Issued',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      certId: 'CERT-ILM-2026-0917',
+      template: 'Course Completion',
+      instructor: 'Muhammad Khan',
+      score: '96%',
+      description: 'Passed final capstone project with production web application deployment.'
+    },
+    {
+      id: 'cert-9',
+      number: 9,
+      studentName: 'Nadia Rahman',
+      studentEmail: 'nadia@ilmhub.com',
+      studentAvatar: '/images/student_fatimah.jpg',
+      title: 'Environmental Awareness Certificate',
+      type: 'Participation',
+      typeBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      courseClass: 'Environmental Care',
+      issueDate: '16 Sep 2026',
+      status: 'Pending',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      certId: 'CERT-ILM-2026-0916',
+      template: 'Participation',
+      instructor: 'Nadia Rahman',
+      score: 'Pending Review',
+      description: 'Active contribution in the Green Earth youth conservation symposium.'
+    },
+    {
+      id: 'cert-10',
+      number: 10,
+      studentName: 'Ali Reza',
+      studentEmail: 'alireza@ilmhub.com',
+      studentAvatar: '/images/student_omar.jpg',
+      title: 'Business Studies Certificate',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      courseClass: 'Business Basics',
+      issueDate: '15 Sep 2026',
+      status: 'Issued',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      certId: 'CERT-ILM-2026-0915',
+      template: 'Course Completion',
+      instructor: 'Ali Reza',
+      score: '89%',
+      description: 'Completed entrepreneurship fundamentals and Sharia business compliance curriculum.'
+    }
+  ]);
+
+  const [certTabFilter, setCertTabFilter] = useState('all'); // 'all' (1856) | 'course' (1420) | 'quiz' (286) | 'participation' (150)
+  const [certSearchQuery, setCertSearchQuery] = useState('');
+  const [certTypeFilter, setCertTypeFilter] = useState('All Types');
+  const [certClassFilter, setCertClassFilter] = useState('All Classes');
+  const [certStatusFilter, setCertStatusFilter] = useState('All Status');
+  const [selectedCertCheckboxes, setSelectedCertCheckboxes] = useState([]);
+  const [selectedCertificateForPreview, setSelectedCertificateForPreview] = useState(null);
+  const [isIssueCertificateModalOpen, setIsIssueCertificateModalOpen] = useState(false);
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
+  const [isFullPreviewModalOpen, setIsFullPreviewModalOpen] = useState(false);
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
+  const [verifyCertIdInput, setVerifyCertIdInput] = useState('');
+  const [verificationResult, setVerificationResult] = useState(null);
+
+  // Form states for Issue Certificate
+  const [issueRecipientName, setIssueRecipientName] = useState('');
+  const [issueRecipientEmail, setIssueRecipientEmail] = useState('');
+  const [issueCertTitle, setIssueCertTitle] = useState('');
+  const [issueCertType, setIssueCertType] = useState('Course');
+  const [issueCourseClass, setIssueCourseClass] = useState('Islamic History Basics');
+  const [issueTemplate, setIssueTemplate] = useState('Course Completion');
+  const [issueInstructor, setIssueInstructor] = useState('Dr. Ahmad Fauzi');
+  const [issueScore, setIssueScore] = useState('95%');
+  const [issueDescription, setIssueDescription] = useState('');
+
+  // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
   const [vipTeachersList, setVipTeachersList] = useState([
@@ -9535,6 +9756,816 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'certificates' ? (
+            (() => {
+              const filteredCerts = certificatesList.filter(cert => {
+                if (certTabFilter === 'course' && cert.type.toLowerCase() !== 'course') return false;
+                if (certTabFilter === 'quiz' && cert.type.toLowerCase() !== 'quiz') return false;
+                if (certTabFilter === 'participation' && cert.type.toLowerCase() !== 'participation') return false;
+                if (certTypeFilter !== 'All Types' && cert.type !== certTypeFilter) return false;
+                if (certClassFilter !== 'All Classes' && cert.courseClass !== certClassFilter) return false;
+                if (certStatusFilter !== 'All Status' && cert.status !== certStatusFilter) return false;
+                if (certSearchQuery.trim()) {
+                  const q = certSearchQuery.toLowerCase();
+                  const matchName = cert.studentName.toLowerCase().includes(q);
+                  const matchEmail = cert.studentEmail.toLowerCase().includes(q);
+                  const matchTitle = cert.title.toLowerCase().includes(q);
+                  const matchCourse = cert.courseClass.toLowerCase().includes(q);
+                  const matchCertId = cert.certId.toLowerCase().includes(q);
+                  if (!matchName && !matchEmail && !matchTitle && !matchCourse && !matchCertId) return false;
+                }
+                return true;
+              });
+
+              const isAllSelected = filteredCerts.length > 0 && selectedCertCheckboxes.length === filteredCerts.length;
+              const toggleSelectAll = () => {
+                if (isAllSelected) {
+                  setSelectedCertCheckboxes([]);
+                } else {
+                  setSelectedCertCheckboxes(filteredCerts.map(c => c.id));
+                }
+              };
+              const toggleSelectCert = (id) => {
+                if (selectedCertCheckboxes.includes(id)) {
+                  setSelectedCertCheckboxes(selectedCertCheckboxes.filter(item => item !== id));
+                } else {
+                  setSelectedCertCheckboxes([...selectedCertCheckboxes, id]);
+                }
+              };
+
+              const allCount = 1856;
+              const courseCount = 1420;
+              const quizCount = 286;
+              const participationCount = 150;
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* 1. TOP CERTIFICATES HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                        <Award className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Certificates</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Manage and issue certificates for course completion, achievements, and participation.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <button
+                        onClick={() => setIsIssueCertificateModalOpen(true)}
+                        className="px-4 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>+ Issue Certificate</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsTemplatesModalOpen(true)}
+                        className="px-3.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Certificate Templates</span>
+                      </button>
+
+                      <button
+                        onClick={() => alert('Opsi Pengaturan Sertifikat & Penandatangan')}
+                        className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 transition-colors cursor-pointer shadow-xs"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. KPI METRICS (4 CARDS) */}
+                  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
+                    
+                    {/* Card 1: Total Certificates */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Total Certificates</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">1,856</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 28% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-blue-200 h-3 rounded-full"></div>
+                          <div className="w-1 bg-blue-300 h-5 rounded-full"></div>
+                          <div className="w-1 bg-blue-400 h-4 rounded-full"></div>
+                          <div className="w-1 bg-blue-500 h-7 rounded-full"></div>
+                          <div className="w-1 bg-blue-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Issued This Month */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Issued This Month</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">248</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 32% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                          <GraduationCap className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-emerald-200 h-4 rounded-full"></div>
+                          <div className="w-1 bg-emerald-300 h-3 rounded-full"></div>
+                          <div className="w-1 bg-emerald-400 h-6 rounded-full"></div>
+                          <div className="w-1 bg-emerald-500 h-5 rounded-full"></div>
+                          <div className="w-1 bg-emerald-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Unique Recipients */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Unique Recipients</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">1,204</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 18% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                          <Users className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-purple-200 h-2 rounded-full"></div>
+                          <div className="w-1 bg-purple-300 h-4 rounded-full"></div>
+                          <div className="w-1 bg-purple-400 h-6 rounded-full"></div>
+                          <div className="w-1 bg-purple-500 h-5 rounded-full"></div>
+                          <div className="w-1 bg-purple-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Completion Rate */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Completion Rate</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">87%</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 6% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                          <Star className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-amber-200 h-3 rounded-full"></div>
+                          <div className="w-1 bg-amber-300 h-5 rounded-full"></div>
+                          <div className="w-1 bg-amber-400 h-6 rounded-full"></div>
+                          <div className="w-1 bg-amber-500 h-7 rounded-full"></div>
+                          <div className="w-1 bg-amber-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 3. STATUS TABS & FILTERS */}
+                  <div className="space-y-3">
+                    {/* Status Filter Tabs */}
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 w-full min-w-0">
+                      <button
+                        onClick={() => setCertTabFilter('all')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                          certTabFilter === 'all'
+                            ? 'bg-[#114B44] text-white shadow-xs'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>All Certificates</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          certTabFilter === 'all' ? 'bg-[#0D3B35] text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {allCount}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setCertTabFilter('course')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                          certTabFilter === 'course'
+                            ? 'bg-[#114B44] text-white shadow-xs'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>Course Completion</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          certTabFilter === 'course' ? 'bg-[#0D3B35] text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {courseCount}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setCertTabFilter('quiz')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                          certTabFilter === 'quiz'
+                            ? 'bg-[#114B44] text-white shadow-xs'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>Quiz Achievement</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          certTabFilter === 'quiz' ? 'bg-[#0D3B35] text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {quizCount}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setCertTabFilter('participation')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                          certTabFilter === 'participation'
+                            ? 'bg-[#114B44] text-white shadow-xs'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>Participation</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          certTabFilter === 'participation' ? 'bg-[#0D3B35] text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {participationCount}
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Search Bar & Side-Scrollable Dropdowns */}
+                    <div className="space-y-2">
+                      <div className="relative w-full">
+                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          placeholder="Search by student name, course, or certificate ID..."
+                          value={certSearchQuery}
+                          onChange={(e) => setCertSearchQuery(e.target.value)}
+                          className="w-full bg-white border border-gray-200 rounded-xl pl-9 pr-4 py-2 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#114B44] shadow-xs"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 w-full min-w-0">
+                        <select
+                          value={certTypeFilter}
+                          onChange={(e) => setCertTypeFilter(e.target.value)}
+                          aria-label="Filter Tipe Sertifikat"
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option>All Types</option>
+                          <option>Course</option>
+                          <option>Quiz</option>
+                          <option>Participation</option>
+                          <option>Special</option>
+                        </select>
+
+                        <select
+                          value={certClassFilter}
+                          onChange={(e) => setCertClassFilter(e.target.value)}
+                          aria-label="Filter Kelas Sertifikat"
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option>All Classes</option>
+                          <option>Islamic History Basics</option>
+                          <option>Mathematics - Algebra</option>
+                          <option>English Grammar</option>
+                          <option>Web Development Workshop</option>
+                          <option>Physics - Mechanics</option>
+                          <option>Teacher Training</option>
+                          <option>History of Islam</option>
+                          <option>Web Development</option>
+                          <option>Environmental Care</option>
+                          <option>Business Basics</option>
+                        </select>
+
+                        <select
+                          value={certStatusFilter}
+                          onChange={(e) => setCertStatusFilter(e.target.value)}
+                          aria-label="Filter Status Sertifikat"
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option>All Status</option>
+                          <option>Issued</option>
+                          <option>Pending</option>
+                        </select>
+
+                        <button
+                          onClick={() => alert('Filter Rentang Tanggal: 1 Sep 2026 - 30 Sep 2026')}
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                          <span>Date Range</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setCertTypeFilter('All Types');
+                            setCertClassFilter('All Classes');
+                            setCertStatusFilter('All Status');
+                            setCertSearchQuery('');
+                          }}
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Filter className="w-3 h-3 text-gray-500" />
+                          <span>Filters</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. MAIN CONTENT GRID (8 COLS TABLE + 4 COLS SIDEBAR) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    
+                    {/* LEFT COLUMN: CERTIFICATES DATA TABLE (8 COLS) */}
+                    <div className="lg:col-span-8 space-y-4 min-w-0">
+                      
+                      {/* Table Card */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
+                        
+                        {/* Table Header Bar if checkboxes selected */}
+                        {selectedCertCheckboxes.length > 0 && (
+                          <div className="bg-emerald-50 px-4 py-2.5 border-b border-emerald-100 flex items-center justify-between text-xs">
+                            <span className="font-bold text-emerald-900">
+                              {selectedCertCheckboxes.length} sertifikat dipilih
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  alert(`Menerbitkan massal ${selectedCertCheckboxes.length} sertifikat terpilih.`);
+                                  setCertificatesList(prev => prev.map(c => selectedCertCheckboxes.includes(c.id) ? { ...c, status: 'Issued', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' } : c));
+                                  setSelectedCertCheckboxes([]);
+                                }}
+                                className="px-2.5 py-1 bg-[#114B44] text-white font-bold rounded-lg hover:bg-[#0D3B35] transition-colors cursor-pointer"
+                              >
+                                Terbitkan
+                              </button>
+                              <button
+                                onClick={() => {
+                                  alert(`Mendownload ${selectedCertCheckboxes.length} berkas PDF sertifikat dalam format ZIP.`);
+                                  setSelectedCertCheckboxes([]);
+                                }}
+                                className="px-2.5 py-1 bg-white border border-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                              >
+                                Download ZIP
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Scrollable Table View */}
+                        <div className="overflow-x-auto w-full min-w-0">
+                          <table className="w-full text-left text-xs text-gray-600 min-w-[880px] whitespace-nowrap">
+                            <thead className="bg-[#F8FAFC] text-[11px] font-black text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              <tr>
+                                <th className="px-4 py-3.5 w-12 text-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={isAllSelected}
+                                    onChange={toggleSelectAll}
+                                    aria-label="Pilih Semua Sertifikat"
+                                    className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                                  />
+                                </th>
+                                <th className="px-2 py-3.5 w-8 font-extrabold text-gray-400">#</th>
+                                <th className="px-4 py-3.5 font-extrabold text-gray-700">Student</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Certificate Title</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Type</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Course/Class</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Issue Date</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700 text-center">Status</th>
+                                <th className="px-4 py-3.5 font-extrabold text-gray-700 text-right">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                              {filteredCerts.length === 0 ? (
+                                <tr>
+                                  <td colSpan={9} className="py-12 text-center text-gray-400">
+                                    <Award className="w-10 h-10 mx-auto text-gray-300 mb-2" />
+                                    <div className="font-bold text-sm text-gray-600">Tidak ada sertifikat ditemukan</div>
+                                    <div className="text-xs text-gray-400 mt-1">Coba sesuaikan filter atau terbitkan sertifikat baru</div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                filteredCerts.map((cert) => (
+                                  <tr
+                                    key={cert.id}
+                                    className={`hover:bg-emerald-50/20 transition-colors ${
+                                      selectedCertCheckboxes.includes(cert.id) ? 'bg-emerald-50/30' : ''
+                                    }`}
+                                  >
+                                    <td className="px-4 py-3.5 text-center">
+                                      <input
+                                        type="checkbox"
+                                        checked={selectedCertCheckboxes.includes(cert.id)}
+                                        onChange={() => toggleSelectCert(cert.id)}
+                                        aria-label={`Pilih Sertifikat ${cert.studentName}`}
+                                        className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                                      />
+                                    </td>
+                                    <td className="px-2 py-3.5 font-bold text-gray-400">{cert.number}</td>
+                                    
+                                    {/* Student Info */}
+                                    <td className="px-4 py-3.5">
+                                      <div className="flex items-center gap-2.5">
+                                        <img
+                                          src={cert.studentAvatar}
+                                          alt={cert.studentName}
+                                          className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200"
+                                          onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                                        />
+                                        <div>
+                                          <div className="font-extrabold text-gray-900 hover:text-emerald-800 transition-colors cursor-pointer"
+                                            onClick={() => {
+                                              setSelectedCertificateForPreview(cert);
+                                              setIsFullPreviewModalOpen(true);
+                                            }}
+                                          >
+                                            {cert.studentName}
+                                          </div>
+                                          <div className="text-[10px] text-gray-400 font-medium">
+                                            {cert.studentEmail}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+
+                                    {/* Certificate Title */}
+                                    <td className="px-3 py-3.5">
+                                      <div className="font-bold text-gray-900 max-w-[200px] truncate">
+                                        {cert.title}
+                                      </div>
+                                    </td>
+
+                                    {/* Type */}
+                                    <td className="px-3 py-3.5">
+                                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-extrabold border ${cert.typeBadge}`}>
+                                        {cert.type}
+                                      </span>
+                                    </td>
+
+                                    {/* Course/Class */}
+                                    <td className="px-3 py-3.5 font-medium text-gray-700">
+                                      {cert.courseClass}
+                                    </td>
+
+                                    {/* Issue Date */}
+                                    <td className="px-3 py-3.5 font-semibold text-gray-600">
+                                      {cert.issueDate}
+                                    </td>
+
+                                    {/* Status */}
+                                    <td className="px-3 py-3.5 text-center">
+                                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${cert.statusBadge}`}>
+                                        {cert.status}
+                                      </span>
+                                    </td>
+
+                                    {/* Actions */}
+                                    <td className="px-4 py-3.5 text-right">
+                                      <div className="flex items-center justify-end gap-1">
+                                        <button
+                                          onClick={() => {
+                                            setSelectedCertificateForPreview(cert);
+                                            setIsFullPreviewModalOpen(true);
+                                          }}
+                                          title="Preview Sertifikat"
+                                          className="p-1.5 rounded-lg hover:bg-emerald-50 text-gray-400 hover:text-emerald-700 transition-colors cursor-pointer"
+                                        >
+                                          <Eye className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => alert(`Mengunduh sertifikat digital ${cert.certId} format PDF resmi...`)}
+                                          title="Unduh PDF"
+                                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        >
+                                          <Download className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => alert(`Opsi Sertifikat: ${cert.certId} • Verifikasi, Kirim Email, atau Cabut Sertifikat`)}
+                                          title="Opsi Lainnya"
+                                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        >
+                                          <MoreHorizontal className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Pagination Footer */}
+                        <div className="px-4 py-3 bg-[#F8FAFC] border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500">
+                          <div>
+                            Showing <span className="font-bold text-gray-800">1</span> to <span className="font-bold text-gray-800">{filteredCerts.length}</span> of <span className="font-bold text-gray-800">1,856</span> certificates
+                          </div>
+                          
+                          <div className="flex items-center gap-1.5 self-center sm:self-auto">
+                            <button
+                              onClick={() => alert('Halaman Sebelumnya')}
+                              className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer"
+                            >
+                              &lt;
+                            </button>
+                            <button className="w-7 h-7 rounded-lg bg-[#114B44] text-white font-black text-xs flex items-center justify-center shadow-xs">
+                              1
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">
+                              2
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">
+                              3
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">
+                              4
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">
+                              5
+                            </button>
+                            <span className="px-1 text-gray-400">...</span>
+                            <button className="px-2 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">
+                              186
+                            </button>
+                            <button
+                              onClick={() => alert('Halaman Selanjutnya')}
+                              className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer"
+                            >
+                              &gt;
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* RIGHT COLUMN: PREVIEW & TEMPLATES SIDEBAR (4 COLS) */}
+                    <aside className="lg:col-span-4 space-y-4 min-w-0">
+                      
+                      {/* Card 1: Certificate Preview (High Fidelity Ornate Certificate matching mockup) */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Certificate Preview</h3>
+                          <button
+                            onClick={() => {
+                              setSelectedCertificateForPreview(certificatesList[0]);
+                              setIsFullPreviewModalOpen(true);
+                            }}
+                            className="text-xs font-bold text-[#114B44] hover:text-[#0D3B35] flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View Full Size</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* Ornate Certificate Canvas */}
+                        <div 
+                          onClick={() => {
+                            setSelectedCertificateForPreview(certificatesList[0]);
+                            setIsFullPreviewModalOpen(true);
+                          }}
+                          className="relative bg-gradient-to-b from-[#FAF8F2] to-[#F5EFE1] rounded-xl p-4 border-4 border-[#1E4D3E] shadow-md cursor-pointer hover:shadow-lg transition-all group overflow-hidden"
+                        >
+                          {/* Inner Decorative Border */}
+                          <div className="border border-[#C9A86A] p-3 text-center space-y-2 relative">
+                            
+                            {/* Decorative Corner Ornaments */}
+                            <div className="absolute top-1 left-1 w-3 h-3 border-t-2 border-l-2 border-[#C9A86A]"></div>
+                            <div className="absolute top-1 right-1 w-3 h-3 border-t-2 border-r-2 border-[#C9A86A]"></div>
+                            <div className="absolute bottom-1 left-1 w-3 h-3 border-b-2 border-l-2 border-[#C9A86A]"></div>
+                            <div className="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-[#C9A86A]"></div>
+
+                            {/* Logo */}
+                            <div className="flex items-center justify-center gap-1.5">
+                              <div className="w-5 h-5 rounded bg-[#114B44] text-[#C9A86A] flex items-center justify-center text-[10px] font-black">
+                                🏛️
+                              </div>
+                              <div>
+                                <div className="text-xs font-black text-[#114B44] tracking-tight">IlmHub</div>
+                                <div className="text-[7px] text-[#C9A86A] font-bold uppercase tracking-widest -mt-0.5">Learn • Teach • Grow</div>
+                              </div>
+                            </div>
+
+                            {/* Certificate Title */}
+                            <div>
+                              <div className="text-[11px] font-black tracking-widest text-[#1E4D3E] uppercase font-serif">
+                                CERTIFICATE
+                              </div>
+                              <div className="text-[8px] font-bold tracking-wider text-[#C9A86A] uppercase font-serif">
+                                OF COMPLETION
+                              </div>
+                            </div>
+
+                            <div className="text-[9px] text-gray-500 italic">This is to certify that</div>
+
+                            {/* Recipient Name in Elegant Serif Script */}
+                            <div className="text-base font-serif font-black text-[#114B44] italic tracking-wide border-b border-[#C9A86A]/40 pb-0.5 inline-block px-4">
+                              Ahmed Ali
+                            </div>
+
+                            <div className="text-[8px] text-gray-500">has successfully completed the course</div>
+                            
+                            {/* Course Name */}
+                            <div className="text-xs font-bold text-gray-900">
+                              Islamic History Basics
+                            </div>
+
+                            <div className="text-[8px] text-gray-400 leading-tight px-2">
+                              in recognition of their dedication and commitment to learning.
+                            </div>
+
+                            {/* Footer Seals & Signature */}
+                            <div className="pt-2 flex items-end justify-between text-[8px] text-gray-500 border-t border-[#C9A86A]/30">
+                              <div className="text-left">
+                                <div className="text-gray-400 font-bold">23 September 2026</div>
+                                <div className="font-semibold text-gray-600">Issue Date</div>
+                              </div>
+
+                              {/* Golden Seal Badge */}
+                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#E2C785] to-[#B89445] text-white flex items-center justify-center shadow-xs border border-white">
+                                <Award className="w-4 h-4 text-amber-950" />
+                              </div>
+
+                              <div className="text-right">
+                                <div className="font-serif italic font-bold text-gray-800">Ibrahim IlmHub</div>
+                                <div className="font-semibold text-gray-600">Instructor</div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card 2: Certificate Templates (4 Templates Grid) */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Certificate Templates</h3>
+                          <button
+                            onClick={() => setIsTemplatesModalOpen(true)}
+                            className="text-xs font-bold text-[#114B44] hover:text-[#0D3B35] flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* 4 Mini Template Cards */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          
+                          {/* Template 1: Course Completion */}
+                          <div 
+                            onClick={() => {
+                              setIssueTemplate('Course Completion');
+                              setIsIssueCertificateModalOpen(true);
+                            }}
+                            className="p-2 rounded-xl border border-emerald-200 bg-emerald-50/40 hover:border-emerald-500 transition-all cursor-pointer text-center group space-y-1.5"
+                          >
+                            <div className="aspect-[4/3] bg-white rounded-lg border border-emerald-200 p-1 flex flex-col items-center justify-center shadow-2xs group-hover:shadow-xs transition-shadow">
+                              <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[8px] font-black">🏛️</div>
+                              <div className="w-8 h-0.5 bg-emerald-400 rounded-full mt-1"></div>
+                              <div className="w-6 h-0.5 bg-gray-200 rounded-full mt-0.5"></div>
+                            </div>
+                            <div className="text-[10px] font-extrabold text-gray-800 leading-tight">Course Completion</div>
+                          </div>
+
+                          {/* Template 2: Quiz Achievement */}
+                          <div 
+                            onClick={() => {
+                              setIssueTemplate('Quiz Achievement');
+                              setIsIssueCertificateModalOpen(true);
+                            }}
+                            className="p-2 rounded-xl border border-sky-200 bg-sky-50/40 hover:border-sky-500 transition-all cursor-pointer text-center group space-y-1.5"
+                          >
+                            <div className="aspect-[4/3] bg-white rounded-lg border border-sky-200 p-1 flex flex-col items-center justify-center shadow-2xs group-hover:shadow-xs transition-shadow">
+                              <div className="w-4 h-4 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[8px] font-black">⭐</div>
+                              <div className="w-8 h-0.5 bg-sky-400 rounded-full mt-1"></div>
+                              <div className="w-6 h-0.5 bg-gray-200 rounded-full mt-0.5"></div>
+                            </div>
+                            <div className="text-[10px] font-extrabold text-gray-800 leading-tight">Quiz Achievement</div>
+                          </div>
+
+                          {/* Template 3: Participation */}
+                          <div 
+                            onClick={() => {
+                              setIssueTemplate('Participation');
+                              setIsIssueCertificateModalOpen(true);
+                            }}
+                            className="p-2 rounded-xl border border-purple-200 bg-purple-50/40 hover:border-purple-500 transition-all cursor-pointer text-center group space-y-1.5"
+                          >
+                            <div className="aspect-[4/3] bg-white rounded-lg border border-purple-200 p-1 flex flex-col items-center justify-center shadow-2xs group-hover:shadow-xs transition-shadow">
+                              <div className="w-4 h-4 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-[8px] font-black">🎖️</div>
+                              <div className="w-8 h-0.5 bg-purple-400 rounded-full mt-1"></div>
+                              <div className="w-6 h-0.5 bg-gray-200 rounded-full mt-0.5"></div>
+                            </div>
+                            <div className="text-[10px] font-extrabold text-gray-800 leading-tight">Participation</div>
+                          </div>
+
+                          {/* Template 4: Special Certificate */}
+                          <div 
+                            onClick={() => {
+                              setIssueTemplate('Special Certificate');
+                              setIsIssueCertificateModalOpen(true);
+                            }}
+                            className="p-2 rounded-xl border border-amber-200 bg-amber-50/40 hover:border-amber-500 transition-all cursor-pointer text-center group space-y-1.5"
+                          >
+                            <div className="aspect-[4/3] bg-white rounded-lg border border-amber-200 p-1 flex flex-col items-center justify-center shadow-2xs group-hover:shadow-xs transition-shadow">
+                              <div className="w-4 h-4 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-[8px] font-black">👑</div>
+                              <div className="w-8 h-0.5 bg-amber-400 rounded-full mt-1"></div>
+                              <div className="w-6 h-0.5 bg-gray-200 rounded-full mt-0.5"></div>
+                            </div>
+                            <div className="text-[10px] font-extrabold text-gray-800 leading-tight">Special Certificate</div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                      {/* Card 3: Quick Actions (2x2 Grid) */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3">
+                        <h3 className="text-sm font-black text-gray-900">Quick Actions</h3>
+
+                        <div className="grid grid-cols-2 gap-2.5">
+                          
+                          <button
+                            onClick={() => setIsIssueCertificateModalOpen(true)}
+                            className="p-3 rounded-xl border border-gray-200 bg-white hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex items-center gap-2 text-left cursor-pointer group shadow-2xs"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-[#114B44] flex items-center justify-center shrink-0 group-hover:bg-[#114B44] group-hover:text-white transition-colors">
+                              <Plus className="w-4 h-4" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-800 group-hover:text-[#114B44] leading-tight">
+                              Issue Certificate
+                            </span>
+                          </button>
+
+                          <button
+                            onClick={() => setIsTemplatesModalOpen(true)}
+                            className="p-3 rounded-xl border border-gray-200 bg-white hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex items-center gap-2 text-left cursor-pointer group shadow-2xs"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                              <Settings className="w-4 h-4" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-800 group-hover:text-[#114B44] leading-tight">
+                              Manage Templates
+                            </span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              alert('Membuka antarmuka penerbitan sertifikat massal untuk seluruh lulusan angkatan!');
+                            }}
+                            className="p-3 rounded-xl border border-gray-200 bg-white hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex items-center gap-2 text-left cursor-pointer group shadow-2xs"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                              <Award className="w-4 h-4" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-800 group-hover:text-[#114B44] leading-tight">
+                              Bulk Issue
+                            </span>
+                          </button>
+
+                          <button
+                            onClick={() => setIsVerifyModalOpen(true)}
+                            className="p-3 rounded-xl border border-gray-200 bg-white hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex items-center gap-2 text-left cursor-pointer group shadow-2xs"
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                              <ShieldCheck className="w-4 h-4" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-800 group-hover:text-[#114B44] leading-tight">
+                              Verify Certificate
+                            </span>
+                          </button>
+
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -12804,6 +13835,446 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Issue Certificate */}
+          {isIssueCertificateModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center font-black">
+                      <Award className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Terbitkan Sertifikat Baru</h3>
+                      <p className="text-xs text-gray-500">Penerbitan sertifikat kelulusan, prestasi kuis, atau partisipasi</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsIssueCertificateModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Nama Santri / Penerima</label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: Ahmed Ali"
+                        value={issueRecipientName}
+                        onChange={(e) => setIssueRecipientName(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Email Santri</label>
+                      <input
+                        type="email"
+                        placeholder="Contoh: ahmedali@ilmhub.com"
+                        value={issueRecipientEmail}
+                        onChange={(e) => setIssueRecipientEmail(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul Sertifikat</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Islamic Studies Completion Certificate"
+                      value={issueCertTitle}
+                      onChange={(e) => setIssueCertTitle(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Kategori / Tipe</label>
+                      <select
+                        value={issueCertType}
+                        onChange={(e) => setIssueCertType(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      >
+                        <option>Course</option>
+                        <option>Quiz</option>
+                        <option>Participation</option>
+                        <option>Special</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Mata Pelajaran / Kelas</label>
+                      <select
+                        value={issueCourseClass}
+                        onChange={(e) => setIssueCourseClass(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      >
+                        <option>Islamic History Basics</option>
+                        <option>Mathematics - Algebra</option>
+                        <option>English Grammar</option>
+                        <option>Web Development Workshop</option>
+                        <option>Physics - Mechanics</option>
+                        <option>Teacher Training</option>
+                        <option>History of Islam</option>
+                        <option>Web Development</option>
+                        <option>Environmental Care</option>
+                        <option>Business Basics</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Template Desain</label>
+                      <select
+                        value={issueTemplate}
+                        onChange={(e) => setIssueTemplate(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      >
+                        <option>Course Completion</option>
+                        <option>Quiz Achievement</option>
+                        <option>Participation</option>
+                        <option>Special Certificate</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Pengajar / Penandatangan</label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: Dr. Ahmad Fauzi"
+                        value={issueInstructor}
+                        onChange={(e) => setIssueInstructor(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Catatan Deskripsi Sertifikat</label>
+                    <textarea
+                      rows={2}
+                      placeholder="Contoh: Diberikan atas prestasi dan dedikasi menyelesaikan seluruh materi kajian..."
+                      value={issueDescription}
+                      onChange={(e) => setIssueDescription(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsIssueCertificateModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (!issueRecipientName.trim()) {
+                        alert('Silakan masukkan nama penerima sertifikat!');
+                        return;
+                      }
+                      const typeBadgeMap = {
+                        Course: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        Quiz: 'bg-sky-50 text-sky-700 border-sky-200',
+                        Participation: 'bg-purple-50 text-purple-700 border-purple-200',
+                        Special: 'bg-rose-50 text-rose-700 border-rose-200'
+                      };
+                      const newCert = {
+                        id: `cert-${Date.now()}`,
+                        number: certificatesList.length + 1,
+                        studentName: issueRecipientName,
+                        studentEmail: issueRecipientEmail || `${issueRecipientName.toLowerCase().replace(/\s+/g, '')}@ilmhub.com`,
+                        studentAvatar: '/images/student_ali.jpg',
+                        title: issueCertTitle || `${issueCourseClass} Certificate`,
+                        type: issueCertType,
+                        typeBadge: typeBadgeMap[issueCertType] || typeBadgeMap.Course,
+                        courseClass: issueCourseClass,
+                        issueDate: '23 Sep 2026',
+                        status: 'Issued',
+                        statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        certId: `CERT-ILM-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+                        template: issueTemplate,
+                        instructor: issueInstructor || 'Dr. Ahmad Fauzi',
+                        score: issueScore || '95%',
+                        description: issueDescription || 'Awarded for dedication and outstanding academic accomplishment.'
+                      };
+                      setCertificatesList(prev => [newCert, ...prev]);
+                      setIsIssueCertificateModalOpen(false);
+                      setIssueRecipientName('');
+                      setIssueRecipientEmail('');
+                      setIssueCertTitle('');
+                      setIssueDescription('');
+                      alert(`Sertifikat ${newCert.certId} untuk ${newCert.studentName} berhasil diterbitkan dan siap diunduh!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Award className="w-3.5 h-3.5" />
+                    <span>Terbitkan Sertifikat</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Manage Certificate Templates */}
+          {isTemplatesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center font-black">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Template Sertifikat Resmi IlmHub</h3>
+                      <p className="text-xs text-gray-500">Pilih dan sesuaikan tata letak grafis, border emas, dan ornamen Islami</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsTemplatesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  
+                  <div className="p-3 rounded-2xl border-2 border-[#114B44] bg-emerald-50/30 space-y-2">
+                    <div className="aspect-[16/10] bg-gradient-to-b from-[#FAF8F2] to-[#F5EFE1] rounded-xl border-2 border-[#1E4D3E] p-3 text-center flex flex-col justify-between shadow-xs">
+                      <div className="text-[9px] font-serif font-black text-[#114B44] uppercase tracking-widest">CERTIFICATE OF COMPLETION</div>
+                      <div className="text-xs font-serif font-bold text-[#C9A86A] italic">Royal Emerald Edition</div>
+                      <div className="text-[8px] text-gray-400">Border Emas • Stempel Resmi • Tanda Tangan Digital</div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-extrabold text-gray-900 text-xs">Course Completion (Default)</div>
+                        <div className="text-[10px] text-emerald-700 font-bold">Digunakan oleh 1,420 santri</div>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-md bg-[#114B44] text-white text-[9px] font-black">Aktif</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-2xl border border-gray-200 bg-white hover:border-sky-400 transition-all space-y-2 cursor-pointer"
+                    onClick={() => {
+                      setIsTemplatesModalOpen(false);
+                      setIssueTemplate('Quiz Achievement');
+                      setIsIssueCertificateModalOpen(true);
+                    }}
+                  >
+                    <div className="aspect-[16/10] bg-gradient-to-b from-sky-50 to-blue-50/40 rounded-xl border-2 border-sky-400 p-3 text-center flex flex-col justify-between shadow-xs">
+                      <div className="text-[9px] font-serif font-black text-sky-900 uppercase tracking-widest">CERTIFICATE OF ACHIEVEMENT</div>
+                      <div className="text-xs font-serif font-bold text-sky-600 italic">Sapphire Excellence</div>
+                      <div className="text-[8px] text-gray-400">Border Biru Klasik • Pita Medali Bintang</div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-extrabold text-gray-900 text-xs">Quiz Achievement</div>
+                        <div className="text-[10px] text-gray-500 font-medium">Digunakan untuk asesmen</div>
+                      </div>
+                      <button className="px-2 py-0.5 rounded-md border border-gray-200 text-gray-700 text-[9px] font-bold hover:bg-gray-50">Gunakan</button>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-2xl border border-gray-200 bg-white hover:border-purple-400 transition-all space-y-2 cursor-pointer"
+                    onClick={() => {
+                      setIsTemplatesModalOpen(false);
+                      setIssueTemplate('Participation');
+                      setIsIssueCertificateModalOpen(true);
+                    }}
+                  >
+                    <div className="aspect-[16/10] bg-gradient-to-b from-purple-50 to-violet-50/40 rounded-xl border-2 border-purple-400 p-3 text-center flex flex-col justify-between shadow-xs">
+                      <div className="text-[9px] font-serif font-black text-purple-900 uppercase tracking-widest">CERTIFICATE OF PARTICIPATION</div>
+                      <div className="text-xs font-serif font-bold text-purple-600 italic">Amethyst Symposium</div>
+                      <div className="text-[8px] text-gray-400">Workshop • Bootcamp • Webinar Talaqqi</div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-extrabold text-gray-900 text-xs">Participation Certificate</div>
+                        <div className="text-[10px] text-gray-500 font-medium">Digunakan untuk kehadiran acara</div>
+                      </div>
+                      <button className="px-2 py-0.5 rounded-md border border-gray-200 text-gray-700 text-[9px] font-bold hover:bg-gray-50">Gunakan</button>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-2xl border border-gray-200 bg-white hover:border-amber-400 transition-all space-y-2 cursor-pointer"
+                    onClick={() => {
+                      setIsTemplatesModalOpen(false);
+                      setIssueTemplate('Special Certificate');
+                      setIsIssueCertificateModalOpen(true);
+                    }}
+                  >
+                    <div className="aspect-[16/10] bg-gradient-to-b from-amber-50 to-orange-50/40 rounded-xl border-2 border-amber-500 p-3 text-center flex flex-col justify-between shadow-xs">
+                      <div className="text-[9px] font-serif font-black text-amber-950 uppercase tracking-widest">HONORARY DISTINCTION</div>
+                      <div className="text-xs font-serif font-bold text-amber-600 italic">Imperial Gold Edition</div>
+                      <div className="text-[8px] text-gray-400">Ijazah Bersanad • Penghargaan Khusus Guru</div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-extrabold text-gray-900 text-xs">Special Certificate</div>
+                        <div className="text-[10px] text-gray-500 font-medium">Penghargaan prestisius khusus</div>
+                      </div>
+                      <button className="px-2 py-0.5 rounded-md border border-gray-200 text-gray-700 text-[9px] font-bold hover:bg-gray-50">Gunakan</button>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsTemplatesModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Full Preview Certificate (High Resolution) */}
+          {isFullPreviewModalOpen && selectedCertificateForPreview && (
+            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-3xl rounded-3xl p-6 shadow-2xl space-y-4 max-h-[95vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-[#114B44] flex items-center justify-center font-black">
+                      <Award className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Pratinjau Sertifikat Resmi Digital</h3>
+                      <p className="text-xs text-gray-500">ID Sertifikat: <span className="font-bold text-[#114B44]">{selectedCertificateForPreview.certId}</span></p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsFullPreviewModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                {/* Printable Certificate Frame */}
+                <div className="relative bg-gradient-to-b from-[#FAF8F2] to-[#F5EFE1] rounded-2xl p-8 border-8 border-[#1E4D3E] shadow-xl text-center space-y-4">
+                  <div className="border-2 border-[#C9A86A] p-6 rounded-xl relative space-y-4">
+                    
+                    {/* Ornaments */}
+                    <div className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-[#C9A86A]"></div>
+                    <div className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-[#C9A86A]"></div>
+                    <div className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-[#C9A86A]"></div>
+                    <div className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-[#C9A86A]"></div>
+
+                    {/* Logo & Header */}
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      <div className="w-10 h-10 rounded-2xl bg-[#114B44] text-[#C9A86A] flex items-center justify-center text-lg font-black shadow-xs">
+                        🏛️
+                      </div>
+                      <div className="text-lg font-black text-[#114B44] tracking-tight">IlmHub</div>
+                      <div className="text-[10px] text-[#C9A86A] font-bold uppercase tracking-widest">Learn • Teach • Grow</div>
+                    </div>
+
+                    <div>
+                      <div className="text-xl sm:text-2xl font-serif font-black tracking-widest text-[#1E4D3E] uppercase">
+                        CERTIFICATE OF COMPLETION
+                      </div>
+                      <div className="text-xs font-serif font-bold tracking-wider text-[#C9A86A] uppercase mt-0.5">
+                        This is to certify that
+                      </div>
+                    </div>
+
+                    {/* Recipient */}
+                    <div className="py-2">
+                      <div className="text-2xl sm:text-3xl font-serif italic font-black text-[#114B44] tracking-wide border-b-2 border-[#C9A86A]/50 pb-1 inline-block px-8">
+                        {selectedCertificateForPreview.studentName}
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-gray-600 max-w-lg mx-auto">
+                      has successfully completed the course <strong className="text-gray-900">{selectedCertificateForPreview.courseClass}</strong> in recognition of their outstanding dedication and commitment to learning.
+                    </div>
+
+                    {/* Footer */}
+                    <div className="pt-6 flex items-end justify-between text-xs text-gray-600 border-t border-[#C9A86A]/30">
+                      <div className="text-left">
+                        <div className="font-bold text-gray-900">{selectedCertificateForPreview.issueDate}</div>
+                        <div className="text-[10px] text-gray-400 font-bold uppercase">Issue Date</div>
+                      </div>
+
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E2C785] to-[#B89445] text-amber-950 flex items-center justify-center shadow-md border-2 border-white">
+                        <Award className="w-6 h-6" />
+                      </div>
+
+                      <div className="text-right">
+                        <div className="font-serif italic font-black text-gray-900 text-sm">{selectedCertificateForPreview.instructor || 'Ibrahim IlmHub'}</div>
+                        <div className="text-[10px] text-gray-400 font-bold uppercase">Authorized Instructor</div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div className="text-xs text-gray-400">
+                    Status: <strong className="text-emerald-700">Terverifikasi Resmi di Blockchain IlmHub</strong>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setIsFullPreviewModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                    <button
+                      onClick={() => alert(`Mengunduh file PDF beresolusi tinggi untuk sertifikat ${selectedCertificateForPreview.certId}...`)}
+                      className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download PDF</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Verify Certificate */}
+          {isVerifyModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-black">
+                      <ShieldCheck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Verifikasi Keaslian Sertifikat</h3>
+                      <p className="text-xs text-gray-500">Cek validitas nomor lisensi & sertifikat santri</p>
+                    </div>
+                  </div>
+                  <button onClick={() => { setIsVerifyModalOpen(false); setVerificationResult(null); }} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Nomor / ID Sertifikat</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Contoh: CERT-ILM-2026-0923"
+                        value={verifyCertIdInput}
+                        onChange={(e) => setVerifyCertIdInput(e.target.value)}
+                        className="flex-1 bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                      <button
+                        onClick={() => {
+                          const found = certificatesList.find(c => c.certId.toLowerCase() === verifyCertIdInput.trim().toLowerCase()) || certificatesList[0];
+                          setVerificationResult(found);
+                        }}
+                        className="px-4 py-2 bg-[#114B44] text-white font-black rounded-xl hover:bg-[#0D3B35] cursor-pointer"
+                      >
+                        Cek Validitas
+                      </button>
+                    </div>
+                  </div>
+
+                  {verificationResult && (
+                    <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2 animate-fadeIn">
+                      <div className="flex items-center gap-2 text-emerald-800 font-black">
+                        <CheckCircle className="w-4 h-4 text-emerald-600" />
+                        <span>Sertifikat Terverifikasi Asli & Valid</span>
+                      </div>
+                      <div className="text-[11px] text-gray-700 space-y-1">
+                        <div><strong>Penerima:</strong> {verificationResult.studentName} ({verificationResult.studentEmail})</div>
+                        <div><strong>Mata Pelajaran:</strong> {verificationResult.courseClass}</div>
+                        <div><strong>Tanggal Terbit:</strong> {verificationResult.issueDate}</div>
+                        <div><strong>Pengajar:</strong> {verificationResult.instructor}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => { setIsVerifyModalOpen(false); setVerificationResult(null); }} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
                 </div>
               </div>
             </div>
