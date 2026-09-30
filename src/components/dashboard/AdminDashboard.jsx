@@ -107,15 +107,18 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [editingUser, setEditingUser] = useState(null);
 
   // =========================================================
-  // FACULTY & TEACHERS ROOM STATES
+  // TEACHERS ROOM STATES (matching media_1790732606905.jpg)
   // =========================================================
+  const [teacherTabFilter, setTeacherTabFilter] = useState('all'); // 'all' (1,248) | 'active' (1,092) | 'pending' (48) | 'inactive' (108)
   const [teacherSearchQuery, setTeacherSearchQuery] = useState('');
-  const [teacherDepartmentFilter, setTeacherDepartmentFilter] = useState('All Departments');
+  const [teacherSubjectFilter, setTeacherSubjectFilter] = useState('All Subjects');
   const [teacherStatusFilter, setTeacherStatusFilter] = useState('All Status');
-  const [selectedFacultyId, setSelectedFacultyId] = useState('tea-1');
-  const [selectedFacultyDetailTab, setSelectedFacultyDetailTab] = useState('overview'); // 'overview' | 'classes' | 'performance'
+  const [teacherJoinDateFilter, setTeacherJoinDateFilter] = useState('All Joining Dates');
+  const [selectedFacultyId, setSelectedFacultyId] = useState('tea-2'); // Default to Siti Aisyah matching screenshot
+  const [selectedFacultyDetailTab, setSelectedFacultyDetailTab] = useState('profile'); // 'profile' | 'classes' | 'performance' | 'documents'
   const [selectedFacultyCheckboxes, setSelectedFacultyCheckboxes] = useState([]);
   const [isAddFacultyModalOpen, setIsAddFacultyModalOpen] = useState(false);
+  const [isImportFacultyModalOpen, setIsImportFacultyModalOpen] = useState(false);
 
   const adminName = user?.name || 'Admin';
   const adminRole = 'Super Admin';
@@ -577,132 +580,238 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   };
 
   // =========================================================
-  // FACULTY & REGULAR TEACHERS DATASET
+  // FACULTY & REGULAR TEACHERS DATASET (media_1790732606905.jpg)
   // =========================================================
   const [facultyTeachersList, setFacultyTeachersList] = useState([
     {
       id: 'tea-1',
-      name: 'Dr. Farhan Kamil, Lc., M.A.',
-      email: 'farhan.kamil@ilmhub.com',
+      number: 1,
+      name: 'Dr. Ahmad Fauzi',
+      email: 'ahmad.fauzi@example.com',
       avatar: '/images/tutor_ahmed.jpg',
-      phone: '+62 811-2345-6789',
-      department: 'Bahasa Arab & Sastra',
-      specialty: 'Nahwu, Sharaf & Balaghah',
+      teacherId: 'TCH-001247',
+      subjects: [
+        { label: 'Islamic Studies', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { label: 'History', bg: 'bg-sky-50 text-sky-700 border-sky-200' },
+        { label: '+2', bg: 'bg-gray-100 text-gray-600 border-gray-200' }
+      ],
+      allSubjects: ['Islamic Studies', 'History', 'Arabic', 'Quran'],
+      classesCount: 12,
+      totalStudents: 342,
+      rating: 4.9,
+      reviewsCount: 184,
       status: 'Active',
       statusType: 'active',
-      joinDate: '15 Jan 2025',
-      classesCount: 12,
-      totalStudents: 840,
-      rating: 4.9,
-      reviewsCount: 312,
-      hourlyRate: 'Rp 350.000 / sesi',
-      monthlyRevenue: 'Rp 24.500.000',
-      university: 'Universitas Al-Azhar Kairo (S1 & S2)',
-      bio: 'Dosen Bahasa Arab dengan pengalaman lebih dari 12 tahun mengajar nahwu-shorof aplikatif untuk membaca kitab kuning.',
-      activeCourses: [
-        { id: 'c-1', name: 'Nahwu Jurumiyyah Aplikatif', students: 342, schedule: 'Senin & Kamis, 20.00 WIB' },
-        { id: 'c-2', name: 'Kupas Tuntas Alfiyyah Ibn Malik', students: 280, schedule: 'Sabtu, 09.00 WIB' },
-        { id: 'c-3', name: 'Balaghah & Keindahan Sastra Arab', students: 218, schedule: 'Ahad, 16.00 WIB' }
-      ]
+      joinDate: '12 Jan 2024',
+      subtitle: 'Islamic Studies | History Professor',
+      bio: 'Experienced scholar specializing in classical Islamic history, Sirah Nabawiyyah, and Islamic jurisprudence with interactive digital methods.'
     },
     {
       id: 'tea-2',
-      name: 'Dr. Layla Ahmad, Ph.D.',
-      email: 'layla.ahmad@ilmhub.com',
-      avatar: '/images/student_fatimah.jpg',
-      phone: '+62 812-3456-7890',
-      department: 'Ulumul Quran & Hadits',
-      specialty: 'Tafsir Tematik & Musthalah Hadits',
+      number: 2,
+      name: 'Siti Aisyah',
+      email: 'siti.aisyah@example.com',
+      avatar: '/images/student_aisha.jpg',
+      teacherId: 'TCH-001248',
+      subjects: [
+        { label: 'Arabic', bg: 'bg-blue-50 text-blue-700 border-blue-200' },
+        { label: 'Quran', bg: 'bg-sky-50 text-sky-700 border-sky-200' },
+        { label: '+1', bg: 'bg-gray-100 text-gray-600 border-gray-200' }
+      ],
+      allSubjects: ['Arabic', 'Quran', 'Islamic Studies'],
+      classesCount: 8,
+      totalStudents: 284,
+      rating: 4.8,
+      reviewsCount: 126,
       status: 'Active',
       statusType: 'active',
-      joinDate: '10 Feb 2025',
-      classesCount: 8,
-      totalStudents: 620,
-      rating: 4.8,
-      reviewsCount: 245,
-      hourlyRate: 'Rp 300.000 / sesi',
-      monthlyRevenue: 'Rp 18.600.000',
-      university: 'Islamic University of Madinah',
-      bio: 'Doktor bidang studi Islam memfokuskan pengajaran pada kajian tafsir ayat ahkam dan metodologi takhrij hadits.',
-      activeCourses: [
-        { id: 'c-4', name: 'Tafsir Ayat-Ayat Ahkam', students: 254, schedule: 'Selasa, 19.30 WIB' },
-        { id: 'c-5', name: 'Metodologi Takhrij Hadits Digital', students: 366, schedule: 'Jumat, 20.00 WIB' }
-      ]
+      joinDate: '5 Feb 2024',
+      subtitle: 'Arabic Teacher | Quran Studies',
+      bio: 'Passionate about Islamic education and Arabic language. Helping students to understand Quran with modern learning methods.'
     },
     {
       id: 'tea-3',
-      name: 'Ustadz Ahmad Fauzi, Lc.',
-      email: 'ahmad.fauzi@ilmhub.com',
-      avatar: '/images/tutor_ahmed.jpg',
-      phone: '+62 813-9876-5432',
-      department: 'Kaidah Fiqh & Muamalah',
-      specialty: 'Fiqh Muamalah Kontemporer',
+      number: 3,
+      name: 'Omar Hassan',
+      email: 'omar.hassan@example.com',
+      avatar: '/images/student_omar.jpg',
+      teacherId: 'TCH-001249',
+      subjects: [
+        { label: 'English', bg: 'bg-blue-50 text-blue-700 border-blue-200' },
+        { label: 'Academic Writing', bg: 'bg-purple-50 text-purple-700 border-purple-200' }
+      ],
+      allSubjects: ['English', 'Academic Writing'],
+      classesCount: 15,
+      totalStudents: 412,
+      rating: 4.7,
+      reviewsCount: 205,
       status: 'Active',
       statusType: 'active',
-      joinDate: '1 Mar 2025',
-      classesCount: 10,
-      totalStudents: 1248,
-      rating: 5.0,
-      reviewsCount: 489,
-      hourlyRate: 'Rp 400.000 / sesi',
-      monthlyRevenue: 'Rp 32.800.000',
-      university: 'LIPIA Jakarta (Syariah)',
-      bio: 'Praktisi dan pengajar fikih muamalah kontemporer, konsultan perbankan syariah dan zakat corporate.',
-      activeCourses: [
-        { id: 'c-6', name: 'Fiqh Transaksi Modern & Crypto', students: 490, schedule: 'Rabu, 20.00 WIB' },
-        { id: 'c-7', name: 'Qawaid Fiqhiyyah Finansial', students: 758, schedule: 'Ahad, 08.00 WIB' }
-      ]
+      joinDate: '20 Jan 2024',
+      subtitle: 'English Language & Academic Writing Instructor',
+      bio: 'Academic researcher dedicated to building robust communication and scholarly writing skills for global learners.'
     },
     {
       id: 'tea-4',
-      name: 'Ustadzah Fatimah Ali, S.Pd.I.',
-      email: 'fatimah.ali@ilmhub.com',
-      avatar: '/images/student_aisha.jpg',
-      phone: '+62 821-4567-8901',
-      department: 'Tahsin & Qiraat',
-      specialty: 'Tahsin Bersanad Jazariyyah',
+      number: 4,
+      name: 'Layla Karim',
+      email: 'layla.karim@example.com',
+      avatar: '/images/student_fatimah.jpg',
+      teacherId: 'TCH-001250',
+      subjects: [
+        { label: 'Science', bg: 'bg-pink-50 text-pink-700 border-pink-200' },
+        { label: 'Environmental', bg: 'bg-purple-50 text-purple-700 border-purple-200' },
+        { label: '+1', bg: 'bg-gray-100 text-gray-600 border-gray-200' }
+      ],
+      allSubjects: ['Science', 'Environmental', 'Biology'],
+      classesCount: 10,
+      totalStudents: 298,
+      rating: 4.9,
+      reviewsCount: 142,
       status: 'Active',
       statusType: 'active',
-      joinDate: '15 Mar 2025',
-      classesCount: 6,
-      totalStudents: 450,
-      rating: 4.9,
-      reviewsCount: 198,
-      hourlyRate: 'Rp 250.000 / sesi',
-      monthlyRevenue: 'Rp 14.200.000',
-      university: 'Institut Ilmu Al-Quran (IIQ)',
-      bio: 'Pemegang sanad Matn Al-Jazariyyah dan Tuhfatul Athfal, membimbing ratusan santriwati dalam tajwid presisi.',
-      activeCourses: [
-        { id: 'c-8', name: 'Daurah Matn Jazariyyah Bersanad', students: 230, schedule: 'Sabtu, 14.00 WIB' },
-        { id: 'c-9', name: 'Tahsin Talaqqi Khusus Akhwat', students: 220, schedule: 'Senin, 16.00 WIB' }
-      ]
+      joinDate: '18 Feb 2024',
+      subtitle: 'Science & Environmental Studies Specialist',
+      bio: 'Connecting science and nature with ecological principles and sustainable community education.'
     },
     {
       id: 'tea-5',
-      name: 'Ustadz Khalid Mansoor, M.E.I.',
-      email: 'khalid.mansoor@ilmhub.com',
+      number: 5,
+      name: 'Zainab Ali',
+      email: 'zainab.ali@example.com',
+      avatar: '/images/student_aisha.jpg',
+      teacherId: 'TCH-001251',
+      subjects: [
+        { label: 'Mathematics', bg: 'bg-pink-50 text-pink-700 border-pink-200' },
+        { label: 'Statistics', bg: 'bg-purple-50 text-purple-700 border-purple-200' }
+      ],
+      allSubjects: ['Mathematics', 'Statistics'],
+      classesCount: 14,
+      totalStudents: 356,
+      rating: 4.6,
+      reviewsCount: 178,
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '10 Mar 2024',
+      subtitle: 'Mathematics & Data Science Educator',
+      bio: 'Passionate about simplifying complex mathematical concepts and statistical reasoning for all backgrounds.'
+    },
+    {
+      id: 'tea-6',
+      number: 6,
+      name: 'Muhammad Khan',
+      email: 'muhammad.khan@example.com',
       avatar: '/images/student_ali.jpg',
-      phone: '+62 857-1234-9876',
-      department: 'Ekonomi Syariah',
-      specialty: 'Islamic Wealth Management',
-      status: 'On Leave',
-      statusType: 'pending',
-      joinDate: '5 Apr 2025',
-      classesCount: 4,
-      totalStudents: 280,
+      teacherId: 'TCH-001252',
+      subjects: [
+        { label: 'Business', bg: 'bg-purple-50 text-purple-700 border-purple-200' },
+        { label: 'Economics', bg: 'bg-blue-50 text-blue-700 border-blue-200' },
+        { label: '+1', bg: 'bg-gray-100 text-gray-600 border-gray-200' }
+      ],
+      allSubjects: ['Business', 'Economics', 'Islamic Finance'],
+      classesCount: 11,
+      totalStudents: 301,
+      rating: 4.8,
+      reviewsCount: 153,
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '22 Feb 2024',
+      subtitle: 'Business & Applied Economics Lecturer',
+      bio: 'Guiding students through financial fundamentals, business ethics, and modern economic frameworks.'
+    },
+    {
+      id: 'tea-7',
+      number: 7,
+      name: 'Fatimah Nur',
+      email: 'fatimah.nur@example.com',
+      avatar: '/images/student_fatimah.jpg',
+      teacherId: 'TCH-001253',
+      subjects: [
+        { label: 'Computer Science', bg: 'bg-purple-50 text-purple-700 border-purple-200' },
+        { label: 'AI', bg: 'bg-blue-50 text-blue-700 border-blue-200' },
+        { label: '+1', bg: 'bg-gray-100 text-gray-600 border-gray-200' }
+      ],
+      allSubjects: ['Computer Science', 'AI', 'Machine Learning'],
+      classesCount: 9,
+      totalStudents: 276,
       rating: 4.7,
-      reviewsCount: 112,
-      hourlyRate: 'Rp 300.000 / sesi',
-      monthlyRevenue: 'Rp 9.500.000',
-      university: 'UIN Sunan Kalijaga',
-      bio: 'Konsultan perencanaan keuangan keluarga muslim berbasis syariah dan filantropi Islam.',
-      activeCourses: [
-        { id: 'c-10', name: 'Manajemen Waris & Wasiat Syar\'i', students: 280, schedule: 'Kamis, 19.30 WIB' }
-      ]
+      reviewsCount: 98,
+      status: 'Pending',
+      statusType: 'pending',
+      joinDate: '2 Sep 2026',
+      subtitle: 'Computer Science & AI Researcher',
+      bio: 'Exploring cutting-edge machine learning applications and curriculum development for computer science.'
+    },
+    {
+      id: 'tea-8',
+      number: 8,
+      name: 'Hassan Malik',
+      email: 'hassan.malik@example.com',
+      avatar: '/images/tutor_ahmed.jpg',
+      teacherId: 'TCH-001254',
+      subjects: [
+        { label: 'Physics', bg: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
+        { label: 'Engineering', bg: 'bg-purple-50 text-purple-700 border-purple-200' }
+      ],
+      allSubjects: ['Physics', 'Engineering'],
+      classesCount: 7,
+      totalStudents: 198,
+      rating: 4.5,
+      reviewsCount: 84,
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '14 Jan 2024',
+      subtitle: 'Physics & Applied Engineering Tutor',
+      bio: 'Bridging theoretical physics with practical engineering principles and experiments.'
+    },
+    {
+      id: 'tea-9',
+      number: 9,
+      name: 'Nadia Rahman',
+      email: 'nadia.rahman@example.com',
+      avatar: '/images/student_aisha.jpg',
+      teacherId: 'TCH-001255',
+      subjects: [
+        { label: 'Psychology', bg: 'bg-purple-50 text-purple-700 border-purple-200' },
+        { label: 'Personal Development', bg: 'bg-blue-50 text-blue-700 border-blue-200' }
+      ],
+      allSubjects: ['Psychology', 'Personal Development'],
+      classesCount: 6,
+      totalStudents: 167,
+      rating: 4.8,
+      reviewsCount: 79,
+      status: 'Inactive',
+      statusType: 'inactive',
+      joinDate: '28 Aug 2026',
+      subtitle: 'Psychology & Mentorship Coach',
+      bio: 'Focusing on cognitive psychology, emotional intelligence, and holistic personal growth.'
+    },
+    {
+      id: 'tea-10',
+      number: 10,
+      name: 'Ali Reza',
+      email: 'ali.reza@example.com',
+      avatar: '/images/student_omar.jpg',
+      teacherId: 'TCH-001256',
+      subjects: [
+        { label: 'Accounting', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { label: 'Finance', bg: 'bg-teal-50 text-teal-700 border-teal-200' },
+        { label: '+1', bg: 'bg-gray-100 text-gray-600 border-gray-200' }
+      ],
+      allSubjects: ['Accounting', 'Finance', 'Auditing'],
+      classesCount: 13,
+      totalStudents: 321,
+      rating: 4.6,
+      reviewsCount: 140,
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '8 Mar 2024',
+      subtitle: 'Accounting & Corporate Finance Specialist',
+      bio: 'Certified financial analyst teaching corporate financial analysis and tax accounting.'
     }
   ]);
 
-  const currentSelectedFaculty = facultyTeachersList.find(f => f.id === selectedFacultyId) || facultyTeachersList[0];
+  const currentSelectedFaculty = facultyTeachersList.find(f => f.id === selectedFacultyId) || facultyTeachersList[1] || facultyTeachersList[0];
 
   const toggleSelectFacultyCheckbox = (id) => {
     setSelectedFacultyCheckboxes(prev => 
@@ -2187,19 +2296,13 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               {/* 1. TOP TEACHERS HEADER */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-[#114B44] text-white flex items-center justify-center shadow-xs shrink-0">
-                    <GraduationCap className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs shrink-0">
+                    <GraduationCap className="w-6 h-6" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Teachers & Faculty</h1>
-                      <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300/80 flex items-center gap-1 shrink-0">
-                        <BookOpen className="w-3 h-3 text-emerald-700" />
-                        <span>Faculty Management</span>
-                      </span>
-                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight whitespace-nowrap">Teachers</h1>
                     <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-                      Kelola daftar seluruh pengajar aktif, departemen keilmuan, kelas yang diampu, serta rating evaluasi santri.
+                      Manage all teachers, their profiles, classes, and performance.
                     </p>
                   </div>
                 </div>
@@ -2210,16 +2313,23 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     onClick={() => setIsAddFacultyModalOpen(true)}
                     className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
                   >
-                    <UserPlus className="w-4 h-4 shrink-0" />
-                    <span>+ Tambah Pengajar</span>
+                    <Plus className="w-4 h-4 shrink-0" />
+                    <span>Add Teacher</span>
                   </button>
 
                   <button 
-                    onClick={() => setIsExportModalOpen(true)}
+                    onClick={() => setIsImportFacultyModalOpen(true)}
                     className="h-10 px-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer whitespace-nowrap"
                   >
-                    <Download className="w-4 h-4 text-gray-500" />
-                    <span>Ekspor Data Guru</span>
+                    <Download className="w-4 h-4 text-gray-500 shrink-0" />
+                    <span>Import Teachers</span>
+                  </button>
+
+                  <button 
+                    onClick={() => alert('More Options')}
+                    className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs flex items-center justify-center transition-all cursor-pointer shrink-0"
+                  >
+                    <MoreVertical className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -2227,55 +2337,55 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               {/* 2. TOP 4 KPI CARDS FOR TEACHERS */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
-                {/* Total Faculty */}
+                {/* Total Teachers */}
                 <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                        <GraduationCap className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Total Pengajar</span>
+                      <span className="text-xs font-bold text-gray-500">Total Teachers</span>
                     </div>
                     <div className="pt-2">
                       <div className="text-2xl font-black text-gray-900 leading-tight">1,248</div>
                       <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
                         <TrendingUp className="w-3 h-3" />
-                        <span>+8% dari bulan lalu</span>
+                        <span>8% from last month</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-emerald-100 rounded-full h-4"></div>
-                    <div className="w-1.5 bg-emerald-200 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-emerald-300 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
-                    <div className="w-1.5 bg-emerald-600 rounded-full h-10"></div>
+                    <div className="w-1.5 bg-blue-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-blue-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-blue-300 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
                   </div>
                 </div>
 
-                {/* Active Teaching Faculty */}
+                {/* Active Teachers */}
                 <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
-                        <Users className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <BookOpen className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Pengajar Aktif</span>
+                      <span className="text-xs font-bold text-gray-500">Active Teachers</span>
                     </div>
                     <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">1,120</div>
+                      <div className="text-2xl font-black text-gray-900 leading-tight">1,092</div>
                       <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
                         <TrendingUp className="w-3 h-3" />
-                        <span>90% tingkat keaktifan</span>
+                        <span>12% from last month</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-blue-100 rounded-full h-3"></div>
-                    <div className="w-1.5 bg-blue-200 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-blue-300 rounded-full h-7"></div>
-                    <div className="w-1.5 bg-blue-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                    <div className="w-1.5 bg-emerald-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-emerald-200 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-emerald-300 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-emerald-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-emerald-600 rounded-full h-10"></div>
                   </div>
                 </div>
 
@@ -2283,16 +2393,16 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
-                        <BookOpen className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Total Kelas Dibuka</span>
+                      <span className="text-xs font-bold text-gray-500">Classes Taught</span>
                     </div>
                     <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">248 Kelas</div>
+                      <div className="text-2xl font-black text-gray-900 leading-tight">3,428</div>
                       <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
                         <TrendingUp className="w-3 h-3" />
-                        <span>+18% semester ini</span>
+                        <span>18% from last month</span>
                       </div>
                     </div>
                   </div>
@@ -2300,24 +2410,25 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     <div className="w-1.5 bg-purple-100 rounded-full h-4"></div>
                     <div className="w-1.5 bg-purple-200 rounded-full h-6"></div>
                     <div className="w-1.5 bg-purple-300 rounded-full h-8"></div>
-                    <div className="w-1.5 bg-purple-500 rounded-full h-10"></div>
+                    <div className="w-1.5 bg-purple-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-purple-600 rounded-full h-10"></div>
                   </div>
                 </div>
 
-                {/* Avg Satisfaction Rating */}
+                {/* Average Rating */}
                 <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                        <Award className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                        <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Rata-Rata Rating</span>
+                      <span className="text-xs font-bold text-gray-500">Average Rating</span>
                     </div>
                     <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">4.9 / 5.0</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-amber-600 mt-0.5">
-                        <Sparkles className="w-3 h-3" />
-                        <span>1,350+ Ulasan Santri</span>
+                      <div className="text-2xl font-black text-gray-900 leading-tight">4.7 / 5</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>0.3 from last month</span>
                       </div>
                     </div>
                   </div>
@@ -2325,6 +2436,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     <div className="w-1.5 bg-amber-100 rounded-full h-3"></div>
                     <div className="w-1.5 bg-amber-200 rounded-full h-6"></div>
                     <div className="w-1.5 bg-amber-300 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-amber-400 rounded-full h-9"></div>
                     <div className="w-1.5 bg-amber-500 rounded-full h-10"></div>
                   </div>
                 </div>
@@ -2334,35 +2446,77 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               {/* 3. MAIN SECTION: Two-Column Layout (70% Table, 30% Right Dossier) */}
               <div className="flex flex-col xl:flex-row gap-5 items-start">
                 
-                {/* LEFT MAIN AREA: SEARCH & FILTER + TABLE */}
+                {/* LEFT MAIN AREA: TABS, SEARCH & FILTER + TABLE */}
                 <div className="flex-1 w-full min-w-0 space-y-4">
                   
-                  {/* Search and Filters */}
+                  {/* Status Filter Tabs (Pills) */}
+                  <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                    {[
+                      { id: 'all', label: 'All Teachers', count: '1,248' },
+                      { id: 'active', label: 'Active', count: '1,092' },
+                      { id: 'pending', label: 'Pending', count: '48' },
+                      { id: 'inactive', label: 'Inactive', count: '108' },
+                    ].map((tab) => {
+                      const isActive = teacherTabFilter === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setTeacherTabFilter(tab.id)}
+                          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                            isActive
+                              ? 'bg-[#114B44] text-white shadow-2xs'
+                              : 'bg-white hover:bg-gray-50 border border-gray-200 text-gray-700'
+                          }`}
+                        >
+                          <span>{tab.label}</span>
+                          <span
+                            className={`px-2 py-0.2 rounded-full text-[10px] font-black ${
+                              isActive
+                                ? 'bg-white/20 text-white'
+                                : 'bg-gray-100 text-gray-600'
+                            }`}
+                          >
+                            {tab.count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Search and Dropdowns Row */}
                   <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3">
                     <div className="flex flex-col md:flex-row gap-2.5 items-center justify-between">
+                      {/* Search input */}
                       <div className="relative w-full md:flex-1">
                         <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                         <input
                           type="text"
                           value={teacherSearchQuery}
                           onChange={(e) => setTeacherSearchQuery(e.target.value)}
-                          placeholder="Cari nama pengajar, universitas, keahlian, email..."
+                          placeholder="Search teachers by name, email, or subject..."
                           className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all shadow-2xs"
                         />
                       </div>
 
+                      {/* Dropdown Filters */}
                       <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
                         <select
-                          value={teacherDepartmentFilter}
-                          onChange={(e) => setTeacherDepartmentFilter(e.target.value)}
+                          value={teacherSubjectFilter}
+                          onChange={(e) => setTeacherSubjectFilter(e.target.value)}
                           className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
                         >
-                          <option value="All Departments">Semua Departemen</option>
-                          <option value="Bahasa Arab & Sastra">Bahasa Arab & Sastra</option>
-                          <option value="Ulumul Quran & Hadits">Ulumul Quran & Hadits</option>
-                          <option value="Kaidah Fiqh & Muamalah">Kaidah Fiqh & Muamalah</option>
-                          <option value="Tahsin & Qiraat">Tahsin & Qiraat</option>
-                          <option value="Ekonomi Syariah">Ekonomi Syariah</option>
+                          <option value="All Subjects">All Subjects</option>
+                          <option value="Arabic">Arabic</option>
+                          <option value="Quran">Quran</option>
+                          <option value="Islamic Studies">Islamic Studies</option>
+                          <option value="English">English</option>
+                          <option value="Mathematics">Mathematics</option>
+                          <option value="Science">Science</option>
+                          <option value="Computer Science">Computer Science</option>
+                          <option value="Business">Business</option>
+                          <option value="Physics">Physics</option>
+                          <option value="Psychology">Psychology</option>
+                          <option value="Accounting">Accounting</option>
                         </select>
 
                         <select
@@ -2370,21 +2524,40 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                           onChange={(e) => setTeacherStatusFilter(e.target.value)}
                           className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
                         >
-                          <option value="All Status">Semua Status</option>
-                          <option value="Active">Aktif Mengajar</option>
-                          <option value="On Leave">Cuti / Non-Aktif</option>
+                          <option value="All Status">All Status</option>
+                          <option value="Active">Active</option>
+                          <option value="Pending">Pending</option>
+                          <option value="Inactive">Inactive</option>
                         </select>
+
+                        <select
+                          value={teacherJoinDateFilter}
+                          onChange={(e) => setTeacherJoinDateFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Joining Dates">All Joining Dates</option>
+                          <option value="2024">Joined 2024</option>
+                          <option value="2026">Joined 2026</option>
+                        </select>
+
+                        <button
+                          onClick={() => alert('Filter options')}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold shadow-2xs cursor-pointer"
+                        >
+                          <Sliders className="w-3.5 h-3.5 text-gray-500" />
+                          <span>Filters</span>
+                        </button>
                       </div>
                     </div>
                   </div>
 
-                  {/* TEACHERS CRM TABLE */}
+                  {/* TEACHERS CRM TABLE (matching media_1790732606905.jpg) */}
                   <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
                     <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse text-xs min-w-[900px]">
+                      <table className="w-full text-left border-collapse text-xs min-w-[920px]">
                         <thead>
                           <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
-                            <th className="p-3.5 pl-4 w-10">
+                            <th className="p-3 pl-4 w-8">
                               <input
                                 type="checkbox"
                                 checked={selectedFacultyCheckboxes.length === facultyTeachersList.length && facultyTeachersList.length > 0}
@@ -2392,22 +2565,33 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                 className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
                               />
                             </th>
-                            <th className="py-3.5 px-3 min-w-[200px]">Pengajar / Ustadz</th>
-                            <th className="py-3.5 px-3 min-w-[190px]">Departemen & Keahlian</th>
-                            <th className="py-3.5 px-3 min-w-[150px]">Kelas & Santri</th>
-                            <th className="py-3.5 px-3 min-w-[130px]">Rating & Ulasan</th>
-                            <th className="py-3.5 px-3 min-w-[120px]">Status</th>
-                            <th className="py-3.5 px-3 text-right pr-4 min-w-[110px]">Aksi</th>
+                            <th className="py-3 px-2 w-8 text-gray-400">#</th>
+                            <th className="py-3 px-3 min-w-[180px]">Teacher</th>
+                            <th className="py-3 px-3 min-w-[210px]">Subject(s)</th>
+                            <th className="py-3 px-3 min-w-[80px]">Classes</th>
+                            <th className="py-3 px-3 min-w-[80px]">Students</th>
+                            <th className="py-3 px-3 min-w-[80px]">Rating</th>
+                            <th className="py-3 px-3 min-w-[90px]">Status</th>
+                            <th className="py-3 px-3 min-w-[100px]">Join Date</th>
+                            <th className="py-3 px-3 text-right pr-4 min-w-[100px]">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                           {facultyTeachersList
                             .filter((f) => {
-                              if (teacherDepartmentFilter !== 'All Departments') return f.department === teacherDepartmentFilter;
+                              if (teacherTabFilter === 'active') return f.status === 'Active';
+                              if (teacherTabFilter === 'pending') return f.status === 'Pending';
+                              if (teacherTabFilter === 'inactive') return f.status === 'Inactive';
                               return true;
                             })
                             .filter((f) => {
                               if (teacherStatusFilter !== 'All Status') return f.status === teacherStatusFilter;
+                              return true;
+                            })
+                            .filter((f) => {
+                              if (teacherSubjectFilter !== 'All Subjects') {
+                                return f.allSubjects?.includes(teacherSubjectFilter);
+                              }
                               return true;
                             })
                             .filter((f) => {
@@ -2416,9 +2600,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                               return (
                                 f.name.toLowerCase().includes(q) ||
                                 f.email.toLowerCase().includes(q) ||
-                                f.department.toLowerCase().includes(q) ||
-                                f.specialty.toLowerCase().includes(q) ||
-                                f.university.toLowerCase().includes(q)
+                                f.allSubjects?.some(s => s.toLowerCase().includes(q))
                               );
                             })
                             .map((teacher) => {
@@ -2431,12 +2613,12 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                   onClick={() => setSelectedFacultyId(teacher.id)}
                                   className={`transition-colors cursor-pointer group ${
                                     isSelected
-                                      ? 'bg-emerald-50/50'
+                                      ? 'bg-blue-50/40'
                                       : 'hover:bg-gray-50/80'
                                   }`}
                                 >
                                   {/* Checkbox */}
-                                  <td className="p-3.5 pl-4" onClick={(e) => e.stopPropagation()}>
+                                  <td className="p-3 pl-4" onClick={(e) => e.stopPropagation()}>
                                     <input
                                       type="checkbox"
                                       checked={isChecked}
@@ -2445,95 +2627,110 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                     />
                                   </td>
 
+                                  {/* # Number */}
+                                  <td className="py-3 px-2 text-gray-400 font-bold text-xs">
+                                    {teacher.number}
+                                  </td>
+
                                   {/* Teacher Column */}
                                   <td className="py-3 px-3">
                                     <div className="flex items-center gap-3">
                                       <img
                                         src={teacher.avatar}
                                         alt={teacher.name}
-                                        className="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0"
+                                        className="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
                                         onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
                                       />
                                       <div className="min-w-0">
-                                        <div className="font-extrabold text-gray-900 group-hover:text-[#114B44] transition-colors truncate whitespace-nowrap">
+                                        <div className="font-extrabold text-gray-900 group-hover:text-[#114B44] transition-colors truncate whitespace-nowrap text-xs">
                                           {teacher.name}
                                         </div>
-                                        <div className="text-[11px] text-gray-500 truncate flex items-center gap-1.5 mt-0.5 whitespace-nowrap">
-                                          <span>{teacher.email}</span>
-                                          <span>•</span>
-                                          <span className="text-gray-400 font-mono text-[10px]">{teacher.phone}</span>
+                                        <div className="text-[11px] text-gray-400 truncate mt-0.5 whitespace-nowrap">
+                                          {teacher.email}
                                         </div>
                                       </div>
                                     </div>
                                   </td>
 
-                                  {/* Department & Specialty */}
+                                  {/* Subject(s) Column */}
                                   <td className="py-3 px-3">
-                                    <div className="space-y-1">
-                                      <span className="inline-block px-2 py-0.5 rounded-md font-bold text-[10px] bg-blue-50 text-blue-800 border border-blue-200 whitespace-nowrap">
-                                        {teacher.department}
-                                      </span>
-                                      <p className="text-[11px] text-gray-600 truncate font-medium">
-                                        {teacher.specialty}
-                                      </p>
+                                    <div className="flex flex-wrap gap-1.5 items-center">
+                                      {teacher.subjects.map((sub, sIdx) => (
+                                        <span
+                                          key={sIdx}
+                                          className={`px-2 py-0.5 rounded text-[10px] font-bold border whitespace-nowrap ${sub.bg}`}
+                                        >
+                                          {sub.label}
+                                        </span>
+                                      ))}
                                     </div>
                                   </td>
 
-                                  {/* Classes & Students */}
-                                  <td className="py-3 px-3 whitespace-nowrap">
-                                    <div className="space-y-0.5 text-[11px]">
-                                      <div className="font-bold text-gray-900 flex items-center gap-1">
-                                        <BookOpen className="w-3.5 h-3.5 text-[#114B44]" />
-                                        <span>{teacher.classesCount} Kelas Diampu</span>
-                                      </div>
-                                      <div className="text-gray-500 flex items-center gap-1">
-                                        <Users className="w-3.5 h-3.5 text-gray-400" />
-                                        <span>{teacher.totalStudents} Total Santri</span>
-                                      </div>
-                                    </div>
+                                  {/* Classes */}
+                                  <td className="py-3 px-3 font-semibold text-gray-700 whitespace-nowrap text-xs">
+                                    {teacher.classesCount}
                                   </td>
 
-                                  {/* Rating & Reviews */}
+                                  {/* Students */}
+                                  <td className="py-3 px-3 font-semibold text-gray-700 whitespace-nowrap text-xs">
+                                    {teacher.totalStudents}
+                                  </td>
+
+                                  {/* Rating */}
                                   <td className="py-3 px-3 whitespace-nowrap">
-                                    <div className="flex items-center gap-1.5">
-                                      <span className="font-extrabold text-amber-600 text-xs">★ {teacher.rating}</span>
-                                      <span className="text-gray-400 text-[10px]">({teacher.reviewsCount} ulasan)</span>
+                                    <div className="flex items-center gap-1">
+                                      <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
+                                      <span className="font-extrabold text-gray-800 text-xs">{teacher.rating}</span>
                                     </div>
                                   </td>
 
                                   {/* Status */}
                                   <td className="py-3 px-3 whitespace-nowrap">
-                                    {teacher.status === 'Active' ? (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                        <span>Aktif Mengajar</span>
+                                    {teacher.status === 'Active' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        Active
                                       </span>
-                                    ) : (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
-                                        <Clock className="w-3 h-3 text-amber-600" />
-                                        <span>Cuti Sementara</span>
+                                    )}
+                                    {teacher.status === 'Pending' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                        Pending
+                                      </span>
+                                    )}
+                                    {teacher.status === 'Inactive' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                        Inactive
                                       </span>
                                     )}
                                   </td>
 
-                                  {/* Quick Actions */}
+                                  {/* Join Date */}
+                                  <td className="py-3 px-3 text-gray-500 font-medium whitespace-nowrap text-xs">
+                                    {teacher.joinDate}
+                                  </td>
+
+                                  {/* Actions */}
                                   <td className="py-3 px-3 text-right pr-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                                    <div className="flex items-center justify-end gap-1.5">
+                                    <div className="flex items-center justify-end gap-1.5 text-gray-400">
                                       <button
-                                        onClick={() => {
-                                          window.open(`https://wa.me/${teacher.phone.replace(/[^0-9]/g, '')}?text=Assalamu'alaikum%20${encodeURIComponent(teacher.name)},%20kami%20dari%20Akademik%20IlmuHub...`, '_blank');
-                                        }}
-                                        className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                                        title="Chat WhatsApp"
+                                        onClick={() => setSelectedFacultyId(teacher.id)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="View Profile"
                                       >
-                                        <Phone className="w-3.5 h-3.5" />
+                                        <Eye className="w-3.5 h-3.5" />
                                       </button>
                                       <button
-                                        onClick={() => alert(`Membuka profil pengajar ${teacher.name}`)}
-                                        className="p-1.5 hover:bg-gray-100 text-gray-600 rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                                        title="Lihat Detail"
+                                        onClick={() => alert(`Edit ${teacher.name}`)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="Edit Teacher"
                                       >
-                                        <Edit3 className="w-3.5 h-3.5" />
+                                        <Edit2 className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => alert(`Options for ${teacher.name}`)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="More Options"
+                                      >
+                                        <MoreHorizontal className="w-3.5 h-3.5" />
                                       </button>
                                     </div>
                                   </td>
@@ -2544,28 +2741,46 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       </table>
                     </div>
 
-                    {/* Pagination */}
-                    <div className="p-3.5 border-t border-gray-100 bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500 font-semibold">
-                      <div className="flex items-center gap-1">
-                        <span>Menampilkan</span>
-                        <span className="font-extrabold text-gray-900">1-{facultyTeachersList.length}</span>
-                        <span>dari</span>
-                        <span className="font-extrabold text-gray-900">1,248 Guru Terdaftar</span>
+                    {/* Pagination matching screenshot */}
+                    <div className="p-3.5 border-t border-gray-100 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500 font-semibold">
+                      <div>
+                        Showing 1 to 10 of 1,248 teachers
                       </div>
 
                       <div className="flex items-center gap-1.5">
-                        <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold cursor-pointer">&lt;</button>
-                        <button className="px-3 py-1 rounded-lg bg-[#114B44] text-white font-bold cursor-pointer">1</button>
-                        <button className="px-3 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold cursor-pointer">2</button>
-                        <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold cursor-pointer">&gt;</button>
+                        <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer">
+                          &lt;
+                        </button>
+                        <button className="w-7 h-7 rounded-lg bg-[#114B44] text-white font-bold flex items-center justify-center cursor-pointer shadow-xs">
+                          1
+                        </button>
+                        <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer">
+                          2
+                        </button>
+                        <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer">
+                          3
+                        </button>
+                        <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer">
+                          4
+                        </button>
+                        <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer">
+                          5
+                        </button>
+                        <span className="px-1 text-gray-400">...</span>
+                        <button className="px-2 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer">
+                          125
+                        </button>
+                        <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer">
+                          &gt;
+                        </button>
                       </div>
                     </div>
                   </div>
 
                 </div>
 
-                {/* RIGHT TEACHER DOSSIER PANEL */}
-                <aside className="w-full xl:w-96 shrink-0 bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-5 animate-fadeIn">
+                {/* RIGHT TEACHER DOSSIER PANEL (matching media_1790732606905.jpg) */}
+                <aside className="w-full xl:w-88 shrink-0 bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4 animate-fadeIn">
                   
                   {/* Selected Teacher Header Profile */}
                   <div className="flex items-start justify-between gap-3">
@@ -2573,32 +2788,36 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       <img
                         src={currentSelectedFaculty.avatar}
                         alt={currentSelectedFaculty.name}
-                        className="w-13 h-13 rounded-2xl object-cover border-2 border-[#114B44]/20 shadow-xs shrink-0"
-                        onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-xs shrink-0"
+                        onError={(e) => { e.target.src = '/images/student_aisha.jpg'; }}
                       />
                       <div>
                         <h2 className="font-extrabold text-sm text-gray-900 leading-tight">
                           {currentSelectedFaculty.name}
                         </h2>
-                        <p className="text-gray-500 text-xs truncate max-w-[170px]">{currentSelectedFaculty.email}</p>
-                        <div className="mt-1 flex items-center gap-1.5">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            {currentSelectedFaculty.status}
-                          </span>
-                          <span className="text-[10px] font-bold text-amber-600">
-                            ★ {currentSelectedFaculty.rating}
-                          </span>
+                        <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold mt-0.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                          <span>{currentSelectedFaculty.status}</span>
                         </div>
+                        <p className="text-gray-400 text-[11px] mt-0.5 truncate max-w-[170px]">{currentSelectedFaculty.subtitle}</p>
                       </div>
                     </div>
+
+                    <button
+                      onClick={() => alert(`Edit profile ${currentSelectedFaculty.name}`)}
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
 
-                  {/* Detail Sub-Tabs */}
+                  {/* 4 Detail Sub-Tabs (Profile, Classes, Performance, Documents) */}
                   <div className="flex items-center justify-between border-b border-gray-100 text-xs font-bold text-gray-500">
                     {[
-                      { id: 'overview', label: 'Ringkasan & Bio' },
-                      { id: 'classes', label: 'Kelas Aktif' },
-                      { id: 'performance', label: 'Finansial & Honor' },
+                      { id: 'profile', label: 'Profile' },
+                      { id: 'classes', label: 'Classes' },
+                      { id: 'performance', label: 'Performance' },
+                      { id: 'documents', label: 'Documents' },
                     ].map((tab) => {
                       const isActive = selectedFacultyDetailTab === tab.id;
                       return (
@@ -2618,94 +2837,202 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     })}
                   </div>
 
-                  {/* TAB 1: OVERVIEW */}
-                  {selectedFacultyDetailTab === 'overview' && (
-                    <div className="space-y-3.5 text-xs animate-fadeIn">
-                      <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1">
-                        <span className="text-[10px] font-bold uppercase text-gray-400 block">Biografi Pengajar</span>
-                        <p className="text-gray-700 leading-relaxed text-[11px] font-medium">
-                          {currentSelectedFaculty.bio}
-                        </p>
-                      </div>
-
-                      <div className="space-y-2 p-3 rounded-xl border border-gray-200 bg-[#F8FAFC]">
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-400 font-bold">Almamater:</span>
-                          <span className="font-extrabold text-gray-900 truncate max-w-[180px]">{currentSelectedFaculty.university}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-400 font-bold">Bergabung Sejak:</span>
-                          <span className="font-semibold text-gray-800">{currentSelectedFaculty.joinDate}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-400 font-bold">Total Santri:</span>
-                          <span className="font-bold text-emerald-700">{currentSelectedFaculty.totalStudents} Santri</span>
+                  {/* TAB 1: PROFILE (matching media_1790732606905.jpg) */}
+                  {selectedFacultyDetailTab === 'profile' && (
+                    <div className="space-y-3 text-xs animate-fadeIn">
+                      
+                      {/* Full Name */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <User className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-gray-500 font-semibold">Full Name</span>
+                          <span className="font-bold text-gray-900">{currentSelectedFaculty.name}</span>
                         </div>
                       </div>
-                    </div>
-                  )}
 
-                  {/* TAB 2: ACTIVE CLASSES */}
-                  {selectedFacultyDetailTab === 'classes' && (
-                    <div className="space-y-2.5 text-xs animate-fadeIn">
-                      <span className="font-extrabold text-gray-800 block text-[11px]">Daftar Kelas Semester Ini:</span>
-                      {currentSelectedFaculty.activeCourses.map((course) => (
-                        <div key={course.id} className="p-2.5 rounded-xl bg-[#F8FAFC] border border-gray-200 space-y-1">
-                          <div className="font-bold text-gray-900 flex items-center justify-between">
-                            <span>{course.name}</span>
-                            <span className="text-[10px] font-black px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
-                              {course.students} Santri
-                            </span>
+                      {/* Email */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <Mail className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-gray-500 font-semibold">Email</span>
+                          <span className="font-semibold text-gray-900">{currentSelectedFaculty.email}</span>
+                        </div>
+                      </div>
+
+                      {/* Teacher ID */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <CreditCard className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-gray-500 font-semibold">Teacher ID</span>
+                          <span className="font-mono font-bold text-gray-900">{currentSelectedFaculty.teacherId}</span>
+                        </div>
+                      </div>
+
+                      {/* Subjects */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <BookOpen className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 flex flex-col gap-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-500 font-semibold">Subjects</span>
                           </div>
-                          <p className="text-[10px] text-gray-500 flex items-center gap-1">
-                            <Clock className="w-3 h-3 text-gray-400" />
-                            <span>{course.schedule}</span>
+                          <div className="flex flex-wrap gap-1">
+                            {currentSelectedFaculty.allSubjects?.map((sub, idx) => (
+                              <span key={idx} className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200">
+                                {sub}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Bio */}
+                      <div className="flex items-start gap-2.5 text-gray-700 pt-1">
+                        <FileText className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 space-y-1">
+                          <span className="text-gray-500 font-semibold block">Bio</span>
+                          <p className="text-gray-700 text-[11px] leading-relaxed bg-[#F8FAFC] p-2.5 rounded-xl border border-gray-100 font-medium">
+                            {currentSelectedFaculty.bio}
                           </p>
                         </div>
-                      ))}
+                      </div>
+
+                      {/* Join Date */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <Calendar className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-gray-500 font-semibold">Join Date</span>
+                          <span className="font-bold text-gray-900">{currentSelectedFaculty.joinDate}</span>
+                        </div>
+                      </div>
+
+                      {/* Status */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-gray-500 font-semibold">Status</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            {currentSelectedFaculty.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Total Classes */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <BookOpen className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-gray-500 font-semibold">Total Classes</span>
+                          <span className="font-bold text-gray-900">{currentSelectedFaculty.classesCount}</span>
+                        </div>
+                      </div>
+
+                      {/* Total Students */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <Users className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-gray-500 font-semibold">Total Students</span>
+                          <span className="font-bold text-gray-900">{currentSelectedFaculty.totalStudents}</span>
+                        </div>
+                      </div>
+
+                      {/* Average Rating */}
+                      <div className="flex items-start gap-2.5 text-gray-700">
+                        <Star className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5 fill-amber-500" />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-gray-500 font-semibold">Average Rating</span>
+                          <span className="font-bold text-amber-600">
+                            ★ {currentSelectedFaculty.rating} ({currentSelectedFaculty.reviewsCount} reviews)
+                          </span>
+                        </div>
+                      </div>
+
                     </div>
                   )}
 
-                  {/* TAB 3: PERFORMANCE & FINANCIAL */}
+                  {/* TAB 2: CLASSES */}
+                  {selectedFacultyDetailTab === 'classes' && (
+                    <div className="space-y-2 text-xs animate-fadeIn">
+                      <span className="text-gray-500 font-bold block">Assigned Classes ({currentSelectedFaculty.classesCount})</span>
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1">
+                        <div className="font-bold text-gray-900">Quranic Arabic Intensive</div>
+                        <div className="text-[11px] text-gray-500">142 students • Mon & Wed 19:00</div>
+                      </div>
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1">
+                        <div className="font-bold text-gray-900">Tajweed & Tahsin Talaqqi</div>
+                        <div className="text-[11px] text-gray-500">142 students • Saturday 10:00</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 3: PERFORMANCE */}
                   {selectedFacultyDetailTab === 'performance' && (
-                    <div className="space-y-3 text-xs animate-fadeIn">
-                      <div className="p-3 rounded-xl border border-gray-200 bg-[#F8FAFC] space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-400 font-bold">Tarif Sesi Standar:</span>
-                          <span className="font-extrabold text-gray-900">{currentSelectedFaculty.hourlyRate}</span>
+                    <div className="space-y-2 text-xs animate-fadeIn">
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Attendance Rate</span>
+                          <span className="font-bold text-emerald-700">98.5%</span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-400 font-bold">Estimasi Honor Bln Ini:</span>
-                          <span className="font-bold text-emerald-700">{currentSelectedFaculty.monthlyRevenue}</span>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Student Satisfaction</span>
+                          <span className="font-bold text-gray-900">4.8 / 5.0</span>
                         </div>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-200 text-[11px] space-y-1">
-                        <span className="font-black text-blue-950 block">Status Pembayaran Honor:</span>
-                        <p className="text-blue-900">
-                          Honor terbayar otomatis setiap tanggal 1 lewat transfer bank / Mayar.id.
-                        </p>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Assignments Graded</span>
+                          <span className="font-bold text-gray-900">100% On-time</span>
+                        </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Action Buttons Footer */}
+                  {/* TAB 4: DOCUMENTS */}
+                  {selectedFacultyDetailTab === 'documents' && (
+                    <div className="space-y-2 text-xs animate-fadeIn">
+                      <div className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-blue-600" />
+                          <span className="font-bold text-gray-800">Teaching_Certificate.pdf</span>
+                        </div>
+                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Verified</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons Footer (matching media_1790732606905.jpg) */}
                   <div className="space-y-2 pt-3 border-t border-gray-100">
+                    {/* Primary Green Button: Send Message */}
                     <button
-                      onClick={() => {
-                        window.open(`https://wa.me/${currentSelectedFaculty.phone.replace(/[^0-9]/g, '')}?text=Assalamu'alaikum%20${encodeURIComponent(currentSelectedFaculty.name)},%20kami%20dari%20Akademik%20IlmuHub...`, '_blank');
-                      }}
+                      onClick={() => alert(`Kirim pesan ke ${currentSelectedFaculty.name}`)}
                       className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
                     >
-                      <Phone className="w-4 h-4 text-emerald-300" />
-                      <span>Hubungi Pengajar via WhatsApp</span>
+                      <Mail className="w-4 h-4 text-white" />
+                      <span>Send Message</span>
                     </button>
 
+                    {/* View Profile & Reset Password Side by Side */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => alert(`View Profile ${currentSelectedFaculty.name}`)}
+                        className="flex items-center justify-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-gray-500" />
+                        <span>View Profile</span>
+                      </button>
+
+                      <button
+                        onClick={() => alert(`Reset password untuk ${currentSelectedFaculty.email}`)}
+                        className="flex items-center justify-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <Key className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Reset Password</span>
+                      </button>
+                    </div>
+
+                    {/* Deactivate Teacher Outline Red Button */}
                     <button
-                      onClick={() => alert(`Buka formulir penugasan kelas baru untuk ${currentSelectedFaculty.name}`)}
-                      className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      onClick={() => alert(`Non-aktifkan akun pengajar ${currentSelectedFaculty.name}`)}
+                      className="w-full bg-rose-50/50 hover:bg-rose-100/80 text-rose-700 border border-rose-200 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      + Tugaskan Kelas Baru
+                      <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Deactivate Teacher</span>
                     </button>
                   </div>
 
