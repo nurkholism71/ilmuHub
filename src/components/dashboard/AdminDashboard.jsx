@@ -61,7 +61,10 @@ import {
   Edit2,
   User,
   MoreHorizontal,
-  MapPin
+  MapPin,
+  Heart,
+  Copy,
+  ArrowUpRight
 } from 'lucide-react';
 
 export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, onLogout, onSwitchRole }) {
@@ -171,6 +174,29 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     price: 'Rp 299.000 / bln',
     format: 'Live Zoom + Rekaman HD',
     description: ''
+  });
+
+  // =========================================================
+  // LIVE ROOMS STATES (matching media_1790734764232.jpg)
+  // =========================================================
+  const [liveTabFilter, setLiveTabFilter] = useState('all'); // 'all' (48) | 'live' (12) | 'upcoming' (18) | 'ended' (18)
+  const [liveSearchQuery, setLiveSearchQuery] = useState('');
+  const [liveSubjectFilter, setLiveSubjectFilter] = useState('All Subjects');
+  const [liveTeacherFilter, setLiveTeacherFilter] = useState('All Teachers');
+  const [liveStatusFilter, setLiveStatusFilter] = useState('All Status');
+  const [selectedLiveRoomId, setSelectedLiveRoomId] = useState('live-1'); // Default to Quran Recitation
+  const [selectedLiveCheckboxes, setSelectedLiveCheckboxes] = useState([]);
+  const [isCreateLiveModalOpen, setIsCreateLiveModalOpen] = useState(false);
+  const [isScheduleLiveModalOpen, setIsScheduleLiveModalOpen] = useState(false);
+  const [newLiveRoom, setNewLiveRoom] = useState({
+    title: '',
+    subtitle: '',
+    teacher: 'Siti Aisyah',
+    subject: 'Islamic Studies',
+    startTime: '23 Sep 2026 09:00 AM',
+    duration: '1h 20m',
+    status: 'Live',
+    description: "Let's practice correct recitation with proper Tajweed rules."
   });
 
   const adminName = user?.name || 'Admin';
@@ -1580,6 +1606,208 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   };
 
   // =========================================================
+  // LIVE CLASSROOMS DATASET (matching media_1790734764232.jpg)
+  // =========================================================
+  const [liveRoomsList, setLiveRoomsList] = useState([
+    {
+      id: 'live-1',
+      number: 1,
+      title: 'Quran Recitation',
+      subtitle: 'Tajweed Practice',
+      image: '/images/class_nahwu.jpg',
+      teacher: 'Siti Aisyah',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      subject: 'Islamic Studies',
+      subjectBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      startTime: '23 Sep 2026 09:00 AM',
+      startedTimeText: '09:00 AM (1h 20m)',
+      duration: '1h 20m',
+      attendees: 86,
+      status: 'Live',
+      statusType: 'live',
+      description: "Let's practice correct recitation with proper Tajweed rules."
+    },
+    {
+      id: 'live-2',
+      number: 2,
+      title: 'English Conversation',
+      subtitle: 'Speaking Practice',
+      image: '/images/class_conversation.jpg',
+      teacher: 'Omar Hassan',
+      teacherAvatar: '/images/student_omar.jpg',
+      subject: 'English',
+      subjectBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      startTime: '23 Sep 2026 10:00 AM',
+      startedTimeText: '10:00 AM (1h 0m)',
+      duration: '1h 0m',
+      attendees: 124,
+      status: 'Live',
+      statusType: 'live',
+      description: 'Daily English dialogue and pronunciation practice with native idioms.'
+    },
+    {
+      id: 'live-3',
+      number: 3,
+      title: 'Mathematics Basics',
+      subtitle: 'Algebra Fundamentals',
+      image: '/images/class_sharaf.jpg',
+      teacher: 'Layla Karim',
+      teacherAvatar: '/images/student_aisha.jpg',
+      subject: 'Mathematics',
+      subjectBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      startTime: '23 Sep 2026 11:00 AM',
+      startedTimeText: '11:00 AM (1h 30m)',
+      duration: '1h 30m',
+      attendees: 95,
+      status: 'Live',
+      statusType: 'live',
+      description: 'Linear equations, polynomials, and algebraic functions problem solving.'
+    },
+    {
+      id: 'live-4',
+      number: 4,
+      title: 'Arabic Language',
+      subtitle: 'Reading & Writing',
+      image: '/images/class_tajweed.jpg',
+      teacher: 'Zainab Ali',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      subject: 'Arabic',
+      subjectBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      startTime: '23 Sep 2026 01:00 PM',
+      startedTimeText: '01:00 PM (1h 15m)',
+      duration: '1h 15m',
+      attendees: 78,
+      status: 'Upcoming',
+      statusType: 'upcoming',
+      description: 'Introduction to Arabic alphabet, vowels, and sentence structure.'
+    },
+    {
+      id: 'live-5',
+      number: 5,
+      title: 'Science Exploration',
+      subtitle: 'The Solar System',
+      image: '/images/class_balaghah.jpg',
+      teacher: 'Dr. Ahmad Fauzi',
+      teacherAvatar: '/images/tutor_ahmed.jpg',
+      subject: 'Science',
+      subjectBadge: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+      startTime: '23 Sep 2026 02:00 PM',
+      startedTimeText: '02:00 PM (1h 0m)',
+      duration: '1h 0m',
+      attendees: 64,
+      status: 'Upcoming',
+      statusType: 'upcoming',
+      description: 'Planetary orbits, astrophysics basics, and universe exploration.'
+    },
+    {
+      id: 'live-6',
+      number: 6,
+      title: 'History of Islam',
+      subtitle: 'Early Civilization',
+      image: '/images/class_nahwu.jpg',
+      teacher: 'Fatimah Nur',
+      teacherAvatar: '/images/student_aisha.jpg',
+      subject: 'History',
+      subjectBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      startTime: '23 Sep 2026 03:00 PM',
+      startedTimeText: '03:00 PM (1h 0m)',
+      duration: '1h 0m',
+      attendees: 52,
+      status: 'Upcoming',
+      statusType: 'upcoming',
+      description: 'The golden age of Islamic scholarship, Baghdad, and Andalusia.'
+    },
+    {
+      id: 'live-7',
+      number: 7,
+      title: 'Web Development',
+      subtitle: 'HTML & CSS Basics',
+      image: '/images/class_conversation.jpg',
+      teacher: 'Muhammad Khan',
+      teacherAvatar: '/images/student_ali.jpg',
+      subject: 'Computer Science',
+      subjectBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      startTime: '23 Sep 2026 04:00 PM',
+      startedTimeText: '04:00 PM (1h 30m)',
+      duration: '1h 30m',
+      attendees: 68,
+      status: 'Ended',
+      statusType: 'ended',
+      description: 'Semantic HTML, CSS Flexbox and Grid fundamentals.'
+    },
+    {
+      id: 'live-8',
+      number: 8,
+      title: 'Environmental Care',
+      subtitle: 'Sustainability Talk',
+      image: '/images/class_sharaf.jpg',
+      teacher: 'Nadia Rahman',
+      teacherAvatar: '/images/student_aisha.jpg',
+      subject: 'Environmental',
+      subjectBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      startTime: '23 Sep 2026 05:00 PM',
+      startedTimeText: '05:00 PM (1h 0m)',
+      duration: '1h 0m',
+      attendees: 41,
+      status: 'Ended',
+      statusType: 'ended',
+      description: 'Global climate policies, zero waste, and ecological balance.'
+    },
+    {
+      id: 'live-9',
+      number: 9,
+      title: 'Business Basics',
+      subtitle: 'Entrepreneurship',
+      image: '/images/class_tajweed.jpg',
+      teacher: 'Ali Reza',
+      teacherAvatar: '/images/student_omar.jpg',
+      subject: 'Business',
+      subjectBadge: 'bg-pink-50 text-pink-700 border-pink-200',
+      startTime: '23 Sep 2026 06:00 PM',
+      startedTimeText: '06:00 PM (1h 20m)',
+      duration: '1h 20m',
+      attendees: 57,
+      status: 'Ended',
+      statusType: 'ended',
+      description: 'Startup funding, pitch deck preparation, and market fit.'
+    },
+    {
+      id: 'live-10',
+      number: 10,
+      title: 'Psychology 101',
+      subtitle: 'Mind and Behavior',
+      image: '/images/class_balaghah.jpg',
+      teacher: 'Hassan Malik',
+      teacherAvatar: '/images/tutor_ahmed.jpg',
+      subject: 'Psychology',
+      subjectBadge: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+      startTime: '23 Sep 2026 07:00 PM',
+      startedTimeText: '07:00 PM (1h 0m)',
+      duration: '1h 0m',
+      attendees: 39,
+      status: 'Ended',
+      statusType: 'ended',
+      description: 'Cognitive neuroscience, human perception, and behavioral science.'
+    }
+  ]);
+
+  const currentSelectedLiveRoom = liveRoomsList.find(r => r.id === selectedLiveRoomId) || liveRoomsList[0];
+
+  const toggleSelectLiveCheckbox = (id) => {
+    setSelectedLiveCheckboxes(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllLive = () => {
+    if (selectedLiveCheckboxes.length === liveRoomsList.length) {
+      setSelectedLiveCheckboxes([]);
+    } else {
+      setSelectedLiveCheckboxes(liveRoomsList.map(r => r.id));
+    }
+  };
+
+  // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
   const [vipTeachersList, setVipTeachersList] = useState([
@@ -2078,17 +2306,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 return (
                   <button
                     key={item.id}
-                    onClick={() => {
-                      if (item.id === 'live') {
-                        onNavigateToLive({
-                          title: 'Nahwu for Beginners (Super Admin Monitoring)',
-                          tutor: { name: 'Ahmed Mohamed', avatar: '/images/tutor_ahmed.jpg' },
-                          image: '/images/class_nahwu.jpg'
-                        });
-                        return;
-                      }
-                      setActiveNav(item.id);
-                    }}
+                    onClick={() => setActiveNav(item.id)}
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer select-none ${
                       isActive
                         ? 'bg-[#114B44] text-white shadow-xs'
@@ -5440,6 +5658,804 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
             </div>
+          ) : activeNav === 'live' ? (
+            <div className="space-y-5 animate-fadeIn">
+              
+              {/* 1. TOP LIVE ROOMS HEADER (matching media_1790734764232.jpg) */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Video className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight whitespace-nowrap">Live Rooms</h1>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                      Manage live classrooms, monitor sessions, and view real-time activity.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Action Buttons */}
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <button
+                    onClick={() => setIsCreateLiveModalOpen(true)}
+                    className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                  >
+                    <Plus className="w-4 h-4 shrink-0" />
+                    <span>Create Live Room</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsScheduleLiveModalOpen(true)}
+                    className="h-10 px-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <Calendar className="w-4 h-4 text-gray-500 shrink-0" />
+                    <span>Schedule Room</span>
+                  </button>
+
+                  <button 
+                    onClick={() => alert('Live Room Options')}
+                    className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs flex items-center justify-center transition-all cursor-pointer shrink-0"
+                  >
+                    <MoreHorizontal className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. TOP 4 KPI CARDS FOR LIVE ROOMS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* Live Now */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                        <Radio className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Live Now</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">12</div>
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600 shrink-0"></span>
+                        <span>3 more than usual</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-rose-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-rose-200 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-rose-300 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-rose-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-rose-500 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Total Sessions (Today) */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Total Sessions (Today)</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">48</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <span>↑ 20% from yesterday</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-blue-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-blue-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-blue-300 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-blue-400 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Total Attendees */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Total Attendees</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">2,856</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <span>↑ 28% from yesterday</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-purple-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-purple-200 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-purple-300 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-purple-400 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-purple-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Average Duration */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Clock className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Average Duration</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">52 min</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <span>↑ 12% from last week</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-emerald-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-emerald-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-emerald-300 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-emerald-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-emerald-500 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* 3. STATUS FILTER PILLS */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+                <button
+                  onClick={() => setLiveTabFilter('all')}
+                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+                    liveTabFilter === 'all'
+                      ? 'bg-[#114B44] text-white shadow-xs'
+                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  <span>All Rooms</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                    liveTabFilter === 'all' ? 'bg-emerald-950/60 text-white' : 'bg-gray-100 text-gray-600'
+                  }`}>48</span>
+                </button>
+
+                <button
+                  onClick={() => setLiveTabFilter('live')}
+                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+                    liveTabFilter === 'live'
+                      ? 'bg-[#114B44] text-white shadow-xs'
+                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  <span>Live Now</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700">12</span>
+                </button>
+
+                <button
+                  onClick={() => setLiveTabFilter('upcoming')}
+                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+                    liveTabFilter === 'upcoming'
+                      ? 'bg-[#114B44] text-white shadow-xs'
+                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  <span>Upcoming</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-700">18</span>
+                </button>
+
+                <button
+                  onClick={() => setLiveTabFilter('ended')}
+                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+                    liveTabFilter === 'ended'
+                      ? 'bg-[#114B44] text-white shadow-xs'
+                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  <span>Ended</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-gray-100 text-gray-600">18</span>
+                </button>
+              </div>
+
+              {/* 4. MAIN 2-COLUMN VIEW: LEFT TABLE + RIGHT DOSSIER */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                {/* 4A. LEFT 8-COLS (SEARCH & TABLE) */}
+                <div className="lg:col-span-8 space-y-4">
+                  
+                  {/* Search & Filters Bar */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                    
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search by title, teacher, or subject..."
+                        value={liveSearchQuery}
+                        onChange={(e) => setLiveSearchQuery(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2 bg-[#F8FAFC] border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+
+                    {/* Filter Dropdowns */}
+                    <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                      {/* Subject */}
+                      <div className="relative">
+                        <select
+                          value={liveSubjectFilter}
+                          onChange={(e) => setLiveSubjectFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Subjects">All Subjects</option>
+                          <option value="Islamic Studies">Islamic Studies</option>
+                          <option value="English">English</option>
+                          <option value="Mathematics">Mathematics</option>
+                          <option value="Arabic">Arabic</option>
+                          <option value="Science">Science</option>
+                          <option value="History">History</option>
+                          <option value="Computer Science">Computer Science</option>
+                          <option value="Environmental">Environmental</option>
+                          <option value="Business">Business</option>
+                          <option value="Psychology">Psychology</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+
+                      {/* Teachers */}
+                      <div className="relative">
+                        <select
+                          value={liveTeacherFilter}
+                          onChange={(e) => setLiveTeacherFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Teachers">All Teachers</option>
+                          <option value="Siti Aisyah">Siti Aisyah</option>
+                          <option value="Omar Hassan">Omar Hassan</option>
+                          <option value="Layla Karim">Layla Karim</option>
+                          <option value="Zainab Ali">Zainab Ali</option>
+                          <option value="Dr. Ahmad Fauzi">Dr. Ahmad Fauzi</option>
+                          <option value="Fatimah Nur">Fatimah Nur</option>
+                          <option value="Muhammad Khan">Muhammad Khan</option>
+                          <option value="Nadia Rahman">Nadia Rahman</option>
+                          <option value="Ali Reza">Ali Reza</option>
+                          <option value="Hassan Malik">Hassan Malik</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+
+                      {/* Status */}
+                      <div className="relative">
+                        <select
+                          value={liveStatusFilter}
+                          onChange={(e) => setLiveStatusFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Status">All Status</option>
+                          <option value="Live">Live</option>
+                          <option value="Upcoming">Upcoming</option>
+                          <option value="Ended">Ended</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+
+                      {/* Filter Button */}
+                      <button
+                        onClick={() => alert('Filter options')}
+                        className="p-2 border border-gray-200 hover:bg-gray-50 rounded-xl text-gray-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer shrink-0"
+                      >
+                        <Sliders className="w-3.5 h-3.5 text-gray-500" />
+                        <span className="hidden sm:inline">Filters</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Table of Live Rooms (matching media_1790734764232.jpg) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs min-w-[880px]">
+                        <thead>
+                          <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
+                            <th className="p-3.5 pl-4 w-8">
+                              <input
+                                type="checkbox"
+                                checked={selectedLiveCheckboxes.length === liveRoomsList.length && liveRoomsList.length > 0}
+                                onChange={toggleSelectAllLive}
+                                className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                              />
+                            </th>
+                            <th className="py-3.5 px-2 w-6 text-gray-400">#</th>
+                            <th className="py-3.5 px-3">Room Title</th>
+                            <th className="py-3.5 px-3">Teacher</th>
+                            <th className="py-3.5 px-3">Subject</th>
+                            <th className="py-3.5 px-3">Start Time</th>
+                            <th className="py-3.5 px-3">Duration</th>
+                            <th className="py-3.5 px-3">Attendees</th>
+                            <th className="py-3.5 px-3">Status</th>
+                            <th className="py-3.5 px-3 text-right pr-4">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {liveRoomsList
+                            .filter((r) => {
+                              // Tab Filter
+                              if (liveTabFilter === 'live' && r.status !== 'Live') return false;
+                              if (liveTabFilter === 'upcoming' && r.status !== 'Upcoming') return false;
+                              if (liveTabFilter === 'ended' && r.status !== 'Ended') return false;
+
+                              // Subject Filter
+                              if (liveSubjectFilter !== 'All Subjects' && r.subject !== liveSubjectFilter) {
+                                return false;
+                              }
+
+                              // Teacher Filter
+                              if (liveTeacherFilter !== 'All Teachers' && r.teacher !== liveTeacherFilter) {
+                                return false;
+                              }
+
+                              // Status Filter
+                              if (liveStatusFilter !== 'All Status' && r.status !== liveStatusFilter) {
+                                return false;
+                              }
+
+                              // Search Query
+                              if (liveSearchQuery.trim()) {
+                                const q = liveSearchQuery.toLowerCase();
+                                return (
+                                  r.title.toLowerCase().includes(q) ||
+                                  r.subtitle.toLowerCase().includes(q) ||
+                                  r.teacher.toLowerCase().includes(q) ||
+                                  r.subject.toLowerCase().includes(q)
+                                );
+                              }
+                              return true;
+                            })
+                            .map((room) => {
+                              const isSelectedRow = room.id === selectedLiveRoomId;
+                              const isChecked = selectedLiveCheckboxes.includes(room.id);
+
+                              return (
+                                <tr
+                                  key={room.id}
+                                  onClick={() => setSelectedLiveRoomId(room.id)}
+                                  className={`hover:bg-gray-50/80 transition-colors cursor-pointer ${
+                                    isSelectedRow ? 'bg-blue-50/40 font-semibold' : ''
+                                  }`}
+                                >
+                                  {/* Checkbox */}
+                                  <td className="p-3.5 pl-4" onClick={(e) => e.stopPropagation()}>
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={() => toggleSelectLiveCheckbox(room.id)}
+                                      className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Row Number */}
+                                  <td className="py-3 px-2 text-gray-400 font-bold text-xs">
+                                    {room.number}
+                                  </td>
+
+                                  {/* Room Title */}
+                                  <td className="py-3 px-3">
+                                    <div className="flex items-center gap-3">
+                                      <img
+                                        src={room.image}
+                                        alt={room.title}
+                                        className="w-10 h-10 rounded-xl object-cover border border-gray-200 shrink-0"
+                                      />
+                                      <div className="min-w-0">
+                                        <div className="font-extrabold text-gray-900 text-xs hover:text-[#114B44]">
+                                          {room.title}
+                                        </div>
+                                        <div className="text-[11px] text-gray-400 font-medium truncate">
+                                          {room.subtitle}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Teacher */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="flex items-center gap-2">
+                                      <img
+                                        src={room.teacherAvatar}
+                                        alt={room.teacher}
+                                        className="w-7 h-7 rounded-full object-cover border border-gray-200 shrink-0"
+                                      />
+                                      <span className="font-bold text-gray-800 text-xs">{room.teacher}</span>
+                                    </div>
+                                  </td>
+
+                                  {/* Subject */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold border ${room.subjectBadge}`}>
+                                      {room.subject}
+                                    </span>
+                                  </td>
+
+                                  {/* Start Time */}
+                                  <td className="py-3 px-3 text-gray-600 font-medium whitespace-nowrap text-xs">
+                                    {room.startTime}
+                                  </td>
+
+                                  {/* Duration */}
+                                  <td className="py-3 px-3 text-gray-600 font-bold whitespace-nowrap text-xs">
+                                    {room.duration}
+                                  </td>
+
+                                  {/* Attendees */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="flex items-center gap-1 text-gray-700 font-bold text-xs">
+                                      <Users className="w-3.5 h-3.5 text-gray-400" />
+                                      <span>{room.attendees}</span>
+                                    </div>
+                                  </td>
+
+                                  {/* Status */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    {room.status === 'Live' && (
+                                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>
+                                        <span>Live</span>
+                                      </span>
+                                    )}
+                                    {room.status === 'Upcoming' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                        Upcoming
+                                      </span>
+                                    )}
+                                    {room.status === 'Ended' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                                        Ended
+                                      </span>
+                                    )}
+                                  </td>
+
+                                  {/* Actions */}
+                                  <td className="py-3 px-3 text-right pr-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex items-center justify-end gap-1.5 text-gray-400">
+                                      <button
+                                        onClick={() => setSelectedLiveRoomId(room.id)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="View Live Room Details"
+                                      >
+                                        <Eye className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => alert(`Edit ruang kelas live ${room.title}`)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="Edit Live Room"
+                                      >
+                                        <Edit2 className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => alert(`Opsi live room ${room.title}`)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="More Options"
+                                      >
+                                        <MoreHorizontal className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination matching media_1790734764232.jpg */}
+                    <div className="p-3.5 border-t border-gray-100 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500 font-semibold">
+                      <div>
+                        Showing 1 to 10 of 48 live rooms
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button className="w-7 h-7 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 flex items-center justify-center cursor-pointer">
+                          &lt;
+                        </button>
+                        <button className="w-7 h-7 bg-[#114B44] text-white rounded-lg font-bold flex items-center justify-center">
+                          1
+                        </button>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          2
+                        </button>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          3
+                        </button>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          4
+                        </button>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          5
+                        </button>
+                        <span className="px-1 text-gray-400">...</span>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          48
+                        </button>
+                        <button className="w-7 h-7 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 flex items-center justify-center cursor-pointer">
+                          &gt;
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* 4B. RIGHT 4-COLS (LIVE ROOM DETAILS & ACTIVITIES - matching media_1790734764232.jpg) */}
+                <aside className="lg:col-span-4 space-y-4">
+                  
+                  {/* SECTION 1: LIVE ROOM DETAILS */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                    
+                    {/* Header with View Room link */}
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-sm font-black text-gray-900">Live Room Details</h2>
+                      <button
+                        onClick={() => {
+                          if (onNavigateToLive) {
+                            onNavigateToLive({
+                              title: currentSelectedLiveRoom.title,
+                              tutor: { name: currentSelectedLiveRoom.teacher, avatar: currentSelectedLiveRoom.teacherAvatar },
+                              image: currentSelectedLiveRoom.image
+                            });
+                          }
+                        }}
+                        className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View Room</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Image Card with LIVE badge */}
+                    <div className="relative rounded-2xl overflow-hidden border border-gray-200 aspect-video shadow-2xs">
+                      <img
+                        src={currentSelectedLiveRoom.image}
+                        alt={currentSelectedLiveRoom.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {currentSelectedLiveRoom.status === 'Live' && (
+                        <div className="absolute top-2.5 left-2.5">
+                          <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-600 text-white flex items-center gap-1 shadow-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                            <span>LIVE</span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Title & Subtitle */}
+                    <div>
+                      <h3 className="text-base font-black text-gray-900 leading-tight">
+                        {currentSelectedLiveRoom.title}
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {currentSelectedLiveRoom.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Teacher & Subject Grid */}
+                    <div className="grid grid-cols-2 gap-3 pt-1">
+                      <div>
+                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Teacher</div>
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={currentSelectedLiveRoom.teacherAvatar}
+                            alt={currentSelectedLiveRoom.teacher}
+                            className="w-6 h-6 rounded-full object-cover border border-gray-200"
+                          />
+                          <span className="font-bold text-gray-900 text-xs truncate">{currentSelectedLiveRoom.teacher}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Subject</div>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold border ${currentSelectedLiveRoom.subjectBadge}`}>
+                          {currentSelectedLiveRoom.subject}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Metadata Rows */}
+                    <div className="space-y-2 pt-2 border-t border-gray-100 text-xs">
+                      <div className="flex items-center justify-between text-gray-700">
+                        <div className="flex items-center gap-2 text-gray-500 font-medium">
+                          <Clock className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Started</span>
+                        </div>
+                        <span className="font-bold text-gray-900">{currentSelectedLiveRoom.startedTimeText}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-gray-700">
+                        <div className="flex items-center gap-2 text-gray-500 font-medium">
+                          <Users className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Attendees</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-black text-gray-900">{currentSelectedLiveRoom.attendees}</span>
+                          {currentSelectedLiveRoom.status === 'Live' && (
+                            <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              ● Live now
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-2 text-gray-700 pt-1">
+                        <FileText className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="text-gray-500 font-medium block">Description</span>
+                          <p className="text-[11px] text-gray-600 mt-0.5 leading-snug">
+                            {currentSelectedLiveRoom.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons: Join Room & End Session */}
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => {
+                          if (onNavigateToLive) {
+                            onNavigateToLive({
+                              title: currentSelectedLiveRoom.title,
+                              tutor: { name: currentSelectedLiveRoom.teacher, avatar: currentSelectedLiveRoom.teacherAvatar },
+                              image: currentSelectedLiveRoom.image
+                            });
+                          } else {
+                            alert(`Bergabung ke ruang kelas live ${currentSelectedLiveRoom.title}`);
+                          }
+                        }}
+                        className="flex items-center justify-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer active:scale-95"
+                      >
+                        <Video className="w-3.5 h-3.5 text-white" />
+                        <span>Join Room</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (confirm(`Akhiri sesi live room ${currentSelectedLiveRoom.title}?`)) {
+                            const updated = liveRoomsList.map(r => r.id === currentSelectedLiveRoom.id ? { ...r, status: 'Ended', statusType: 'ended' } : r);
+                            setLiveRoomsList(updated);
+                            alert(`Sesi live room ${currentSelectedLiveRoom.title} telah berakhir.`);
+                          }
+                        }}
+                        className="flex items-center justify-center gap-1.5 bg-white hover:bg-rose-50 border border-rose-200 text-rose-600 py-2.5 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <LogOut className="w-3.5 h-3.5 text-rose-600" />
+                        <span>End Session</span>
+                      </button>
+                    </div>
+
+                  </div>
+
+                  {/* SECTION 2: LIVE ACTIVITY FEED (matching media_1790734764232.jpg) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-black text-gray-900">Live Activity</h3>
+                      <button
+                        onClick={() => alert('View all real-time activities')}
+                        className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-gray-800">
+                          <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                            <User className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="font-semibold text-[11px]">Ahmad joined the room</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400">2 minutes ago</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-gray-800">
+                          <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                            <MessageSquare className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="font-semibold text-[11px]">New message in chat</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400">5 minutes ago</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-gray-800">
+                          <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                            <HelpCircle className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="font-semibold text-[11px]">Hana asked a question</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400">8 minutes ago</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-gray-800">
+                          <div className="w-6 h-6 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center shrink-0">
+                            <Heart className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="font-semibold text-[11px]">25 reactions</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400">12 minutes ago</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-gray-800">
+                          <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                            <User className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="font-semibold text-[11px]">Zaid joined the room</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400">15 minutes ago</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-gray-800">
+                          <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                            <FileText className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="font-semibold text-[11px] truncate max-w-[170px]">File shared: Tajweed_Guide.pdf</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400 shrink-0">18 minutes ago</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SECTION 3: QUICK ACTIONS (matching media_1790734764232.jpg) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3">
+                    <h3 className="text-sm font-black text-gray-900">Quick Actions</h3>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <button
+                        onClick={() => {
+                          navigator.clipboard?.writeText(window.location.href);
+                          alert('Tautan Live Room berhasil disalin ke papan klip!');
+                        }}
+                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer"
+                      >
+                        <Copy className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+                        <span className="truncate">Copy Room Link</span>
+                      </button>
+
+                      <button
+                        onClick={() => alert('Buka panel moderasi percakapan live')}
+                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+                        <span className="truncate">Moderate Chat</span>
+                      </button>
+
+                      <button
+                        onClick={() => alert(`Kelola ${currentSelectedLiveRoom.attendees} peserta di ${currentSelectedLiveRoom.title}`)}
+                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer"
+                      >
+                        <Users className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+                        <span className="truncate">Manage Participants</span>
+                      </button>
+
+                      <button
+                        onClick={() => alert(`Pengaturan ruang live ${currentSelectedLiveRoom.title}`)}
+                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer"
+                      >
+                        <Settings className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+                        <span className="truncate">Room Settings</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </aside>
+
+              </div>
+
+            </div>
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -7608,6 +8624,206 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Konfirmasi Pendaftaran</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 11. CREATE LIVE ROOM MODAL */}
+          {isCreateLiveModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center">
+                      <Radio className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Create Live Room</h3>
+                      <p className="text-xs text-gray-500">Buka sesi siaran langsung interaktif kelas sekarang</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsCreateLiveModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul Sesi Live *</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Quran Recitation & Tajweed Talaqqi"
+                      value={newLiveRoom.title}
+                      onChange={(e) => setNewLiveRoom({ ...newLiveRoom, title: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Sub-judul / Topik</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Tajweed Practice & Makhorijul Huruf"
+                      value={newLiveRoom.subtitle}
+                      onChange={(e) => setNewLiveRoom({ ...newLiveRoom, subtitle: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Guru / Ustadz Pengajar</label>
+                      <select
+                        value={newLiveRoom.teacher}
+                        onChange={(e) => setNewLiveRoom({ ...newLiveRoom, teacher: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Siti Aisyah">Siti Aisyah</option>
+                        <option value="Omar Hassan">Omar Hassan</option>
+                        <option value="Layla Karim">Layla Karim</option>
+                        <option value="Zainab Ali">Zainab Ali</option>
+                        <option value="Dr. Ahmad Fauzi">Dr. Ahmad Fauzi</option>
+                        <option value="Fatimah Nur">Fatimah Nur</option>
+                        <option value="Muhammad Khan">Muhammad Khan</option>
+                        <option value="Nadia Rahman">Nadia Rahman</option>
+                        <option value="Ali Reza">Ali Reza</option>
+                        <option value="Hassan Malik">Hassan Malik</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Mata Pelajaran / Subject</label>
+                      <select
+                        value={newLiveRoom.subject}
+                        onChange={(e) => setNewLiveRoom({ ...newLiveRoom, subject: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Islamic Studies">Islamic Studies</option>
+                        <option value="English">English</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="Science">Science</option>
+                        <option value="History">History</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Environmental">Environmental</option>
+                        <option value="Business">Business</option>
+                        <option value="Psychology">Psychology</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Deskripsi Live Room</label>
+                    <textarea
+                      rows={2}
+                      placeholder="Instruksi dan deskripsi materi untuk santri..."
+                      value={newLiveRoom.description}
+                      onChange={(e) => setNewLiveRoom({ ...newLiveRoom, description: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsCreateLiveModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!newLiveRoom.title.trim()) {
+                        alert('Silakan masukkan judul sesi live.');
+                        return;
+                      }
+                      const newId = `live-${Date.now()}`;
+                      const roomObj = {
+                        id: newId,
+                        number: liveRoomsList.length + 1,
+                        title: newLiveRoom.title,
+                        subtitle: newLiveRoom.subtitle || 'Live Talaqqi Session',
+                        image: '/images/class_nahwu.jpg',
+                        teacher: newLiveRoom.teacher,
+                        teacherAvatar: '/images/tutor_ahmed.jpg',
+                        subject: newLiveRoom.subject,
+                        subjectBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        startTime: 'Hari Ini 09:00 AM',
+                        startedTimeText: 'Baru Dimulai (Live)',
+                        duration: '1h 30m',
+                        attendees: 1,
+                        status: 'Live',
+                        statusType: 'live',
+                        description: newLiveRoom.description || 'Sesi pembelajaran langsung interaktif.'
+                      };
+                      setLiveRoomsList([roomObj, ...liveRoomsList]);
+                      setSelectedLiveRoomId(newId);
+                      setIsCreateLiveModalOpen(false);
+                      setNewLiveRoom({
+                        title: '',
+                        subtitle: '',
+                        teacher: 'Siti Aisyah',
+                        subject: 'Islamic Studies',
+                        startTime: '23 Sep 2026 09:00 AM',
+                        duration: '1h 20m',
+                        status: 'Live',
+                        description: "Let's practice correct recitation with proper Tajweed rules."
+                      });
+                      alert(`Ruang live "${roomObj.title}" berhasil dibuka!`);
+                    }}
+                    className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Radio className="w-3.5 h-3.5" />
+                    <span>Mulai Siaran Live</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 12. SCHEDULE LIVE ROOM MODAL */}
+          {isScheduleLiveModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                      <Calendar className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Schedule Live Room</h3>
+                      <p className="text-xs text-gray-500">Jadwalkan ruang kelas live untuk waktu mendatang</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsScheduleLiveModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul Kelas</label>
+                    <input type="text" placeholder="Contoh: Arabic Language: Reading & Writing" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Tanggal</label>
+                      <input type="date" defaultValue="2026-09-24" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Jam Mulai</label>
+                      <input type="time" defaultValue="14:00" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsScheduleLiveModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsScheduleLiveModalOpen(false);
+                      alert('Jadwal live room berhasil disimpan dan notifikasi telah dikirim ke santri!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>Simpan Jadwal</span>
                   </button>
                 </div>
               </div>
