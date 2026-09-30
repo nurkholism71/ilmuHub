@@ -244,6 +244,15 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isInteractiveSnapCheckoutModalOpen, setIsInteractiveSnapCheckoutModalOpen] = useState(false);
   const [snapSimStep, setSnapSimStep] = useState('select_method'); // 'select_method' | 'awaiting_payment' | 'success'
 
+  // Disbursements & Financial Reconciliation States
+  const [payoutStatusFilter, setPayoutStatusFilter] = useState('ALL');
+  const [selectedPayoutForProcess, setSelectedPayoutForProcess] = useState(null);
+  const [isBatchPayoutModalOpen, setIsBatchPayoutModalOpen] = useState(false);
+  const [reconciliationDateFilter, setReconciliationDateFilter] = useState('September 2026');
+  const [isReconcileScanRunning, setIsReconcileScanRunning] = useState(false);
+  const [reconcileScanLastRun, setReconcileScanLastRun] = useState('Hari ini, 01:15 WIB (100% Match)');
+  const [selectedDiscrepancyForFix, setSelectedDiscrepancyForFix] = useState(null);
+
   // =========================================================
   // HEALTH CHECK STATES
   // =========================================================
@@ -1234,6 +1243,153 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 'bri_va', name: 'BRI Virtual Account', type: 'Bank Transfer', fee: 'Rp 4.000 / tx', status: 'Active', uptime: '100%', volume24h: 'Rp 55.400.000' },
     { id: 'bni_va', name: 'BNI Virtual Account', type: 'Bank Transfer', fee: 'Rp 4.000 / tx', status: 'Active', uptime: '99.90%', volume24h: 'Rp 38.100.000' },
     { id: 'cc', name: 'Credit Card (3D Secure Visa/Mastercard)', type: 'Card Payment', fee: '2.0% + Rp 2.000', status: 'Active', uptime: '99.85%', volume24h: 'Rp 82.600.000' }
+  ];
+
+  const paymentPayoutsList = [
+    {
+      id: 'PO-2026-081',
+      teacherName: 'Ustadz Abdullah Said, Lc',
+      teacherAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      bankName: 'BCA',
+      accountNumber: '0812903819',
+      accountHolder: 'ABDULLAH SAID',
+      grossEarnings: 14500000,
+      taxPPh21: 362500, // 2.5%
+      platformFee: 2175000, // 15%
+      netTransfer: 11962500,
+      classCount: 3,
+      status: 'Pending Review', // 'Pending Review' | 'Processing' | 'Completed' | 'Rejected'
+      requestedDate: '28 Sep 2026, 09:30',
+      disbursedAt: '-',
+      irisTxId: '-'
+    },
+    {
+      id: 'PO-2026-082',
+      teacherName: 'Ustadzah Maryam Jamilah, M.Pd',
+      teacherAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150',
+      bankName: 'BSI (Bank Syariah Indonesia)',
+      accountNumber: '7109283910',
+      accountHolder: 'MARYAM JAMILAH',
+      grossEarnings: 9800000,
+      taxPPh21: 245000,
+      platformFee: 1470000,
+      netTransfer: 8085000,
+      classCount: 2,
+      status: 'Processing',
+      requestedDate: '29 Sep 2026, 14:15',
+      disbursedAt: '-',
+      irisTxId: 'IRIS-BATCH-9921'
+    },
+    {
+      id: 'PO-2026-083',
+      teacherName: 'Dr. Erwandi Tarmizi, MA',
+      teacherAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      bankName: 'Bank Mandiri',
+      accountNumber: '13700192083',
+      accountHolder: 'ERWANDI TARMIZI',
+      grossEarnings: 28600000,
+      taxPPh21: 715000,
+      platformFee: 4290000,
+      netTransfer: 23595000,
+      classCount: 5,
+      status: 'Completed',
+      requestedDate: '25 Sep 2026, 10:00',
+      disbursedAt: '25 Sep 2026, 17:30',
+      irisTxId: 'IRIS-TX-90218'
+    },
+    {
+      id: 'PO-2026-084',
+      teacherName: 'Syekh Dr. Abdul Karim',
+      teacherAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+      bankName: 'BCA',
+      accountNumber: '8920194819',
+      accountHolder: 'ABDUL KARIM',
+      grossEarnings: 18200000,
+      taxPPh21: 455000,
+      platformFee: 2730000,
+      netTransfer: 15015000,
+      classCount: 4,
+      status: 'Completed',
+      requestedDate: '24 Sep 2026, 11:20',
+      disbursedAt: '24 Sep 2026, 14:15',
+      irisTxId: 'IRIS-TX-90184'
+    },
+    {
+      id: 'PO-2026-085',
+      teacherName: 'Ustadz Hamdan Al-Khatib',
+      teacherAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+      bankName: 'GoPay Payout Rail',
+      accountNumber: '08129038192',
+      accountHolder: 'HAMDAN KHATIB',
+      grossEarnings: 4200000,
+      taxPPh21: 105000,
+      platformFee: 630000,
+      netTransfer: 3465000,
+      classCount: 1,
+      status: 'Pending Review',
+      requestedDate: '30 Sep 2026, 18:45',
+      disbursedAt: '-',
+      irisTxId: '-'
+    }
+  ];
+
+  const paymentReconciliationList = [
+    {
+      id: 'REC-2026-09-30',
+      date: '30 Sep 2026',
+      platformVolume: 42850000,
+      platformTxCount: 78,
+      gatewaySettled: 42850000,
+      gatewayTxCount: 78,
+      gatewayFeeMDR: 428500,
+      bankNetInflow: 42421500,
+      matchRate: '100%',
+      discrepancyCount: 0,
+      status: 'Reconciled',
+      auditedBy: 'Sentinel Auto-Audit'
+    },
+    {
+      id: 'REC-2026-09-29',
+      date: '29 Sep 2026',
+      platformVolume: 38200000,
+      platformTxCount: 65,
+      gatewaySettled: 38200000,
+      gatewayTxCount: 65,
+      gatewayFeeMDR: 382000,
+      bankNetInflow: 37818000,
+      matchRate: '100%',
+      discrepancyCount: 0,
+      status: 'Reconciled',
+      auditedBy: 'Sentinel Auto-Audit'
+    },
+    {
+      id: 'REC-2026-09-28',
+      date: '28 Sep 2026',
+      platformVolume: 51400000,
+      platformTxCount: 94,
+      gatewaySettled: 50950000,
+      gatewayTxCount: 93,
+      gatewayFeeMDR: 509500,
+      bankNetInflow: 50440500,
+      matchRate: '98.9%',
+      discrepancyCount: 1,
+      status: 'Auto-Resolved',
+      auditedBy: 'Sentinel Auto-Audit (1 Delayed Webhook Handled)'
+    },
+    {
+      id: 'REC-2026-09-27',
+      date: '27 Sep 2026',
+      platformVolume: 29700000,
+      platformTxCount: 52,
+      gatewaySettled: 29700000,
+      gatewayTxCount: 52,
+      gatewayFeeMDR: 297000,
+      bankNetInflow: 29403000,
+      matchRate: '100%',
+      discrepancyCount: 0,
+      status: 'Reconciled',
+      auditedBy: 'Sentinel Auto-Audit'
+    }
   ];
 
 
@@ -15189,6 +15345,8 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   <div className="flex items-center gap-2 border-b border-gray-200 pb-2 overflow-x-auto text-xs font-bold">
                     {[
                       { id: 'transactions', label: 'All Transactions', count: paymentTransactionsList.length, icon: DollarSign },
+                      { id: 'disbursements', label: 'Teacher Payouts & Iris', count: paymentPayoutsList.length, icon: Send },
+                      { id: 'reconciliation', label: 'Financial Reconciliation', count: paymentReconciliationList.length, icon: FileCheck },
                       { id: 'webhooks', label: 'Webhook Logs & Retries', count: paymentWebhookLogsList.length, icon: Terminal },
                       { id: 'refunds', label: 'Refund Management', count: paymentRefundRequestsList.length, icon: RotateCcw },
                       { id: 'channels', label: 'Payment Channels & Fees', count: paymentChannelsList.length, icon: CreditCard },
@@ -15371,7 +15529,297 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </div>
                   )}
 
-                  {/* 6. TAB 2: WEBHOOK LOGS & RETRIES */}
+                  {/* 6. TAB 2: TEACHER PAYOUTS & IRIS DISBURSEMENTS */}
+                  {paymentsActiveTab === 'disbursements' && (
+                    <div className="space-y-5">
+                      {/* Top Payouts Summary Metrics */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                            <span>Midtrans Iris Balance Pool</span>
+                            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                              <Coins className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <div className="text-2xl font-black text-gray-900">Rp 125.000.000</div>
+                          <div className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>Direct Rail Connected (Iris API)</span>
+                          </div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                            <span>Pending Payout Requests</span>
+                            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                              <Clock className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <div className="text-2xl font-black text-amber-600">Rp 15.427.500</div>
+                          <div className="text-[11px] text-gray-400 font-medium">2 Pengajar menunggu persetujuan</div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                            <span>Total Disbursed (Bulan Ini)</span>
+                            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                              <Send className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <div className="text-2xl font-black text-gray-900">Rp 60.275.000</div>
+                          <div className="text-[11px] text-blue-600 font-bold">18 Batch transfer terkirim</div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                            <span>PPh 21 Tax Withheld (2.5%)</span>
+                            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                              <ShieldCheck className="w-4 h-4" />
+                            </div>
+                          </div>
+                          <div className="text-2xl font-black text-gray-900">Rp 1.506.875</div>
+                          <div className="text-[11px] text-purple-700 font-bold">Disetor otomatis ke DJP Pajak</div>
+                        </div>
+                      </div>
+
+                      {/* Payouts Table & Action Bar */}
+                      <div className="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden space-y-4 p-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-black text-gray-900 uppercase tracking-wider">Antrean Penarikan Saldo Pengajar (Payout Requests)</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">
+                              {paymentPayoutsList.length} Records
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setIsBatchPayoutModalOpen(true)}
+                              className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                            >
+                              <Send className="w-3.5 h-3.5" />
+                              <span>Batch Disburse Approved (Iris Bulk)</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Table */}
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr className="border-b border-gray-100 text-[10px] font-black uppercase tracking-wider text-gray-400 bg-gray-50/50">
+                                <th className="py-3 px-4">Payout ID & Tanggal</th>
+                                <th className="py-3 px-4">Nama Guru & Rekening Tujuan</th>
+                                <th className="py-3 px-4 text-right">Pendapatan Kotor</th>
+                                <th className="py-3 px-4 text-right">Potongan Platform (15%)</th>
+                                <th className="py-3 px-4 text-right">PPh 21 (2.5%)</th>
+                                <th className="py-3 px-4 text-right">Net Transfer</th>
+                                <th className="py-3 px-4 text-center">Status</th>
+                                <th className="py-3 px-4 text-center">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 text-[11px]">
+                              {paymentPayoutsList.map((po) => {
+                                const isPending = po.status === 'Pending Review';
+                                const isProcessing = po.status === 'Processing';
+                                const isCompleted = po.status === 'Completed';
+
+                                return (
+                                  <tr key={po.id} className="hover:bg-gray-50/70 transition-colors">
+                                    <td className="py-3.5 px-4 whitespace-nowrap">
+                                      <div className="font-mono font-black text-gray-900">{po.id}</div>
+                                      <div className="text-[10px] text-gray-400">{po.requestedDate}</div>
+                                    </td>
+
+                                    <td className="py-3.5 px-4 whitespace-nowrap">
+                                      <div className="flex items-center gap-2.5">
+                                        <img src={po.teacherAvatar} alt={po.teacherName} className="w-7 h-7 rounded-full object-cover" />
+                                        <div>
+                                          <div className="font-black text-gray-900">{po.teacherName}</div>
+                                          <div className="text-[10px] font-mono text-gray-500">
+                                            {po.bankName} • {po.accountNumber} ({po.accountHolder})
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+
+                                    <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono text-gray-900 font-bold">
+                                      Rp {po.grossEarnings.toLocaleString('id-ID')}
+                                    </td>
+
+                                    <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono text-gray-500">
+                                      -Rp {po.platformFee.toLocaleString('id-ID')}
+                                    </td>
+
+                                    <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono text-purple-600">
+                                      -Rp {po.taxPPh21.toLocaleString('id-ID')}
+                                    </td>
+
+                                    <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono font-black text-emerald-700 text-xs">
+                                      Rp {po.netTransfer.toLocaleString('id-ID')}
+                                    </td>
+
+                                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                                      <span
+                                        className={`px-2.5 py-1 rounded-full text-[10px] font-black ${
+                                          isCompleted
+                                            ? 'bg-emerald-100 text-emerald-800'
+                                            : isProcessing
+                                            ? 'bg-blue-100 text-blue-800'
+                                            : 'bg-amber-100 text-amber-800'
+                                        }`}
+                                      >
+                                        {po.status}
+                                      </span>
+                                    </td>
+
+                                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                                      {isCompleted ? (
+                                        <button
+                                          onClick={() => alert(`Bukti transfer Iris Disbursement: ${po.irisTxId} berhasil diunduh.`)}
+                                          className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-colors cursor-pointer flex items-center gap-1 mx-auto"
+                                        >
+                                          <Download className="w-3 h-3" />
+                                          <span>Receipt</span>
+                                        </button>
+                                      ) : (
+                                        <button
+                                          onClick={() => setSelectedPayoutForProcess(po)}
+                                          className="px-3.5 py-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl font-bold transition-colors cursor-pointer shadow-2xs"
+                                        >
+                                          Review & Disburse
+                                        </button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 7. TAB 3: FINANCIAL RECONCILIATION & AUDIT LEDGER */}
+                  {paymentsActiveTab === 'reconciliation' && (
+                    <div className="space-y-5">
+                      {/* Sentinel Header */}
+                      <div className="bg-slate-900 text-white rounded-2xl p-5 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                            <h3 className="text-sm font-black text-white">Automated 3-Way Reconciliation Sentinel</h3>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">
+                              Audit Status: 100% Reconciled
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-300">
+                            Mencocokkan database order IlmHub vs laporan settlement Midtrans/Xendit vs mutasi rekening bank penampung secara otomatis.
+                          </p>
+                          <div className="text-[11px] text-slate-400 pt-1">
+                            Pemeriksaan Terakhir: <strong className="text-emerald-300">{reconcileScanLastRun}</strong>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            disabled={isReconcileScanRunning}
+                            onClick={() => {
+                              setIsReconcileScanRunning(true);
+                              setTimeout(() => {
+                                setIsReconcileScanRunning(false);
+                                setReconcileScanLastRun('Baru saja (100% Match - 0 Discrepancy)');
+                                alert('Audit Rekonsiliasi 3-Arah selesai! Seluruh 289 transaksi klop 100% dengan mutasi gateway.');
+                              }, 800);
+                            }}
+                            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black shadow-md transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+                          >
+                            <RefreshCw className={`w-3.5 h-3.5 ${isReconcileScanRunning ? 'animate-spin' : ''}`} />
+                            <span>{isReconcileScanRunning ? 'Memindai Ledger...' : 'Run 3-Way Auto Reconcile'}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Daily Reconciliation Records Table */}
+                      <div className="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden p-4 space-y-4">
+                        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                          <div className="flex items-center gap-2">
+                            <FileCheck className="w-4 h-4 text-[#114B44]" />
+                            <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider">Buku Besar Rekonsiliasi Harian (Daily Settlement Ledger)</h3>
+                          </div>
+                          <span className="text-[11px] text-gray-400">Periode: September 2026</span>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr className="border-b border-gray-100 text-[10px] font-black uppercase tracking-wider text-gray-400 bg-gray-50/50">
+                                <th className="py-3 px-4">Tanggal Audit & Batch ID</th>
+                                <th className="py-3 px-4 text-right">Volume Platform (DB)</th>
+                                <th className="py-3 px-4 text-right">Volume Gateway (Midtrans)</th>
+                                <th className="py-3 px-4 text-right">Biaya MDR Gateway</th>
+                                <th className="py-3 px-4 text-right">Net Masuk Rekening Bank</th>
+                                <th className="py-3 px-4 text-center">Match Rate</th>
+                                <th className="py-3 px-4 text-center">Status Rekonsiliasi</th>
+                                <th className="py-3 px-4 text-center">Audit Sentinel</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 text-[11px]">
+                              {paymentReconciliationList.map((rec) => (
+                                <tr key={rec.id} className="hover:bg-gray-50/70 transition-colors">
+                                  <td className="py-3.5 px-4 whitespace-nowrap">
+                                    <div className="font-mono font-black text-gray-900">{rec.date}</div>
+                                    <div className="text-[10px] text-gray-400 font-mono">{rec.id}</div>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono font-bold text-gray-900">
+                                    Rp {rec.platformVolume.toLocaleString('id-ID')}
+                                    <span className="block text-[10px] text-gray-400">{rec.platformTxCount} Transaksi</span>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono font-bold text-emerald-700">
+                                    Rp {rec.gatewaySettled.toLocaleString('id-ID')}
+                                    <span className="block text-[10px] text-gray-400">{rec.gatewayTxCount} Settled</span>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono text-gray-500">
+                                    -Rp {rec.gatewayFeeMDR.toLocaleString('id-ID')}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono font-black text-gray-900">
+                                    Rp {rec.bankNetInflow.toLocaleString('id-ID')}
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                                    <span className="font-mono font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px]">
+                                      {rec.matchRate}
+                                    </span>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                                    <span
+                                      className={`px-2.5 py-1 rounded-full text-[10px] font-black ${
+                                        rec.status === 'Reconciled'
+                                          ? 'bg-emerald-100 text-emerald-800'
+                                          : 'bg-blue-100 text-blue-800'
+                                      }`}
+                                    >
+                                      {rec.status}
+                                    </span>
+                                  </td>
+
+                                  <td className="py-3.5 px-4 text-center whitespace-nowrap text-gray-500 text-[10px]">
+                                    {rec.auditedBy}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {paymentsActiveTab === 'webhooks' && (
                     <div className="space-y-4">
                       <div className="p-4 bg-slate-900 text-white rounded-2xl border border-slate-800 space-y-3">
@@ -31514,6 +31962,160 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   </div>
                 )}
 
+              </div>
+            </div>
+          )}
+
+          {/* 18. Modal Process Single Iris Payout */}
+          {selectedPayoutForProcess && (
+            <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200 border border-gray-100">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black">
+                      <Send className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Review & Eksekusi Payout Guru</h3>
+                      <p className="text-xs text-gray-500">ID: {selectedPayoutForProcess.id} • Direct Rail Iris</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedPayoutForProcess(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                {/* Teacher Profile & Account */}
+                <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img src={selectedPayoutForProcess.teacherAvatar} alt={selectedPayoutForProcess.teacherName} className="w-10 h-10 rounded-full object-cover" />
+                    <div>
+                      <h4 className="text-xs font-black text-gray-900">{selectedPayoutForProcess.teacherName}</h4>
+                      <div className="text-[11px] text-gray-500 font-mono">
+                        {selectedPayoutForProcess.bankName} • {selectedPayoutForProcess.accountNumber}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    Akun Terverifikasi
+                  </span>
+                </div>
+
+                {/* Financial Breakdown */}
+                <div className="p-4 bg-[#F8FAFC] rounded-2xl border border-gray-200 text-xs space-y-2.5 font-mono">
+                  <div className="flex justify-between items-center text-gray-700">
+                    <span>Pendapatan Kotor Kursus ({selectedPayoutForProcess.classCount} Kelas):</span>
+                    <strong className="text-gray-900">Rp {selectedPayoutForProcess.grossEarnings.toLocaleString('id-ID')}</strong>
+                  </div>
+
+                  <div className="flex justify-between items-center text-gray-600">
+                    <span>Potongan Platform (15%):</span>
+                    <span className="text-rose-600 font-bold">-Rp {selectedPayoutForProcess.platformFee.toLocaleString('id-ID')}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center text-gray-600">
+                    <span>PPh 21 Honorarium Guru (2.5%):</span>
+                    <span className="text-purple-600 font-bold">-Rp {selectedPayoutForProcess.taxPPh21.toLocaleString('id-ID')}</span>
+                  </div>
+
+                  <div className="pt-2 border-t border-gray-200 flex justify-between items-center text-sm font-black font-sans">
+                    <span className="text-gray-900">Total Net Transfer Cair:</span>
+                    <span className="text-emerald-700 font-mono text-base">
+                      Rp {selectedPayoutForProcess.netTransfer.toLocaleString('id-ID')}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-900 leading-relaxed flex items-start gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+                  <span>Transfer diproses instan via Midtrans Iris Disbursement API 24/7 langsung ke rekening bank pengajar tanpa biaya penanganan tambahan.</span>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 text-xs font-bold">
+                  <button onClick={() => setSelectedPayoutForProcess(null)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl cursor-pointer">
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => {
+                      alert(`Disbursement berhasil! Dana Rp ${selectedPayoutForProcess.netTransfer.toLocaleString('id-ID')} telah ditransfer ke ${selectedPayoutForProcess.bankName} (${selectedPayoutForProcess.accountNumber}) a.n ${selectedPayoutForProcess.accountHolder}. Ref: IRIS-TX-${Math.floor(10000 + Math.random() * 90000)}.`);
+                      selectedPayoutForProcess.status = 'Completed';
+                      selectedPayoutForProcess.disbursedAt = 'Baru saja';
+                      selectedPayoutForProcess.irisTxId = `IRIS-TX-${Math.floor(10000 + Math.random() * 90000)}`;
+                      setSelectedPayoutForProcess(null);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl cursor-pointer shadow-xs flex items-center gap-1.5"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Konfirmasi & Transfer Dana Sekarang</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 19. Modal Batch Bulk Iris Disbursement */}
+          {isBatchPayoutModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200 border border-gray-100">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center font-black">
+                      <Send className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Batch Bulk Iris Disbursement</h3>
+                      <p className="text-xs text-gray-500">Kirim transfer ke beberapa pengajar secara massal</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsBatchPayoutModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 space-y-1">
+                    <div className="font-bold text-amber-900">Ringkasan Batch Transfer:</div>
+                    <div className="flex justify-between text-amber-800">
+                      <span>Total Pengajar:</span>
+                      <strong>2 Pengajar (Ustadz Abdullah Said & Ustadz Hamdan)</strong>
+                    </div>
+                    <div className="flex justify-between text-amber-900 font-bold">
+                      <span>Total Dana Cair:</span>
+                      <strong className="font-mono text-sm">Rp 15.427.500</strong>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100 space-y-2 text-[11px]">
+                    <div className="font-bold text-gray-700">Daftar Rekening Tujuan:</div>
+                    <div className="flex items-center justify-between py-1 border-b border-gray-200">
+                      <span>1. Ustadz Abdullah Said (BCA - 0812903819)</span>
+                      <span className="font-mono font-bold text-emerald-700">Rp 11.962.500</span>
+                    </div>
+                    <div className="flex items-center justify-between py-1">
+                      <span>2. Ustadz Hamdan Al-Khatib (GoPay - 08129038192)</span>
+                      <span className="font-mono font-bold text-emerald-700">Rp 3.465.000</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 text-xs font-bold">
+                  <button onClick={() => setIsBatchPayoutModalOpen(false)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl cursor-pointer">
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => {
+                      paymentPayoutsList.forEach(po => {
+                        if (po.status === 'Pending Review' || po.status === 'Processing') {
+                          po.status = 'Completed';
+                          po.disbursedAt = 'Baru saja (Batch)';
+                          po.irisTxId = `IRIS-BATCH-${Math.floor(1000 + Math.random() * 9000)}`;
+                        }
+                      });
+                      alert('Batch Bulk Disbursement Berhasil! Total Rp 15.427.500 telah ditransfer ke seluruh rekening pengajar yang menunggu.');
+                      setIsBatchPayoutModalOpen(false);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl cursor-pointer shadow-xs flex items-center gap-1.5"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Eksekusi Batch Bulk Transfer</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
