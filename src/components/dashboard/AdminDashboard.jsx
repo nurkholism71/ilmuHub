@@ -71,7 +71,15 @@ import {
   PieChart,
   TrendingDown,
   Share2,
-  Compass
+  Compass,
+  Folder,
+  FolderOpen,
+  Megaphone,
+  Tag,
+  Archive,
+  HardDrive,
+  File,
+  Image as ImageIcon
 } from 'lucide-react';
 
 export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, onLogout, onSwitchRole }) {
@@ -3519,6 +3527,236 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   ];
 
   // =========================================================
+  // CONTENT MANAGEMENT DATASET & STATES (matching media_1790802827118.jpg)
+  // =========================================================
+  const [contentActiveSubNav, setContentActiveSubNav] = useState('all'); // 'all' | 'courses' | 'lessons' | 'quizzes' | 'assignments' | 'categories' | 'media-library' | 'announcements' | 'tags'
+  const [contentTypeTab, setContentTypeTab] = useState('all'); // 'all' (2,856) | 'courses' (1,248) | 'lessons' (3,562) | 'quizzes' (412) | 'assignments' (386) | 'articles' (284) | 'announcements' (96)
+  const [contentSearchQuery, setContentSearchQuery] = useState('');
+  const [contentTypeDropdown, setContentTypeDropdown] = useState('All Types');
+  const [contentSubjectDropdown, setContentSubjectDropdown] = useState('All Subjects');
+  const [contentStatusDropdown, setContentStatusDropdown] = useState('All Status');
+  const [contentTeacherDropdown, setContentTeacherDropdown] = useState('All Teachers');
+  const [selectedContentCheckboxes, setSelectedContentCheckboxes] = useState([]);
+  const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
+  const [isImportContentModalOpen, setIsImportContentModalOpen] = useState(false);
+  const [isBulkActionModalOpen, setIsBulkActionModalOpen] = useState(false);
+  const [isManageStorageModalOpen, setIsManageStorageModalOpen] = useState(false);
+  const [isViewAllCategoriesModalOpen, setIsViewAllCategoriesModalOpen] = useState(false);
+  const [isViewAllUploadsModalOpen, setIsViewAllUploadsModalOpen] = useState(false);
+  const [selectedContentForDetail, setSelectedContentForDetail] = useState(null);
+  const [selectedContentForEdit, setSelectedContentForEdit] = useState(null);
+
+  // New Content Form State
+  const [newContentItem, setNewContentItem] = useState({
+    title: '',
+    subtitle: '',
+    type: 'Course',
+    subject: 'Islamic Studies',
+    teacher: 'Dr. Ahmad Fauzi',
+    status: 'Published',
+    description: '',
+    duration: '4h 30m',
+    level: 'Beginner'
+  });
+
+  // Content Items Dataset (10 Realistic Items matching media_1790802827118.jpg)
+  const [contentItemsList, setContentItemsList] = useState([
+    {
+      id: 1,
+      title: 'Islamic History Basics',
+      subtitle: 'Introduction to Islamic civilization and its milestones...',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      subject: 'Islamic Studies',
+      subjectBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      teacher: 'Dr. Ahmad Fauzi',
+      teacherAvatar: '/images/tutor_ahmed.jpg',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      views: '12.4K',
+      updated: '23 Sep 2026',
+      icon: '🕌',
+      category: 'courses'
+    },
+    {
+      id: 2,
+      title: 'Mathematics - Algebra',
+      subtitle: 'Algebra fundamentals for high school & university preparation...',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      subject: 'Mathematics',
+      subjectBadge: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+      teacher: 'Siti Aisyah',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      views: '9.8K',
+      updated: '22 Sep 2026',
+      icon: '📐',
+      category: 'courses'
+    },
+    {
+      id: 3,
+      title: 'English Grammar',
+      subtitle: 'Complete English grammar guide with interactive exercises...',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      subject: 'English',
+      subjectBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      teacher: 'Omar Hassan',
+      teacherAvatar: '/images/student_ali.jpg',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      views: '8.6K',
+      updated: '21 Sep 2026',
+      icon: '📖',
+      category: 'courses'
+    },
+    {
+      id: 4,
+      title: 'Web Development Basics',
+      subtitle: 'Learn HTML, CSS, and JavaScript from scratch with projects...',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      subject: 'Computer Science',
+      subjectBadge: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+      teacher: 'Layla Karim',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      views: '7.2K',
+      updated: '20 Sep 2026',
+      icon: '💻',
+      category: 'courses'
+    },
+    {
+      id: 5,
+      title: 'Quran Memorization Tips',
+      subtitle: 'Effective methods and daily routines for memorizing Al-Quran...',
+      type: 'Article',
+      typeBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      subject: 'Islamic Studies',
+      subjectBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      teacher: 'Dr. Ahmad Fauzi',
+      teacherAvatar: '/images/tutor_ahmed.jpg',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      views: '6.9K',
+      updated: '19 Sep 2026',
+      icon: '📜',
+      category: 'articles'
+    },
+    {
+      id: 6,
+      title: 'Physics - Mechanics Quiz',
+      subtitle: 'Test your understanding of Newton laws and kinematics...',
+      type: 'Quiz',
+      typeBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      subject: 'Physics',
+      subjectBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      teacher: 'Zainab Ali',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      views: '5.4K',
+      updated: '18 Sep 2026',
+      icon: '💡',
+      category: 'quizzes'
+    },
+    {
+      id: 7,
+      title: 'Environmental Science PDF',
+      subtitle: 'Complete study material (PDF) on ecology and conservation...',
+      type: 'Material',
+      typeBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      subject: 'Environmental',
+      subjectBadge: 'bg-teal-50 text-teal-700 border-teal-200',
+      teacher: 'Fatimah Nur',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      views: '4.8K',
+      updated: '17 Sep 2026',
+      icon: '📄',
+      category: 'lessons'
+    },
+    {
+      id: 8,
+      title: 'Live Class: Islamic Finance',
+      subtitle: 'Recording and lecture notes from the latest seminar...',
+      type: 'Recording',
+      typeBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      subject: 'Islamic Studies',
+      subjectBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      teacher: 'Omar Hassan',
+      teacherAvatar: '/images/student_ali.jpg',
+      status: 'Draft',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      views: '2.1K',
+      updated: '16 Sep 2026',
+      icon: '🎥',
+      category: 'lessons'
+    },
+    {
+      id: 9,
+      title: 'Business Plan Assignment',
+      subtitle: 'Create a comprehensive business model plan for startups...',
+      type: 'Assignment',
+      typeBadge: 'bg-sky-50 text-sky-700 border-sky-200',
+      subject: 'Business',
+      subjectBadge: 'bg-sky-50 text-sky-700 border-sky-200',
+      teacher: 'Muhammad Khan',
+      teacherAvatar: '/images/student_ali.jpg',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      views: '3.2K',
+      updated: '15 Sep 2026',
+      icon: '📋',
+      category: 'assignments'
+    },
+    {
+      id: 10,
+      title: 'Sustainable Development',
+      subtitle: 'Introduction to sustainable green development models...',
+      type: 'Course',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      subject: 'Environmental',
+      subjectBadge: 'bg-teal-50 text-teal-700 border-teal-200',
+      teacher: 'Nadia Rahman',
+      teacherAvatar: '/images/student_fatimah.jpg',
+      status: 'Archived',
+      statusBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      views: '1.9K',
+      updated: '14 Sep 2026',
+      icon: '🌿',
+      category: 'courses'
+    }
+  ]);
+
+  // Content Categories Breakdown (matching mockup)
+  const contentCategoriesList = [
+    { name: 'Islamic Studies', count: 542, icon: '🕌', color: 'bg-amber-500' },
+    { name: 'Mathematics', count: 386, icon: '📐', color: 'bg-blue-500' },
+    { name: 'English', count: 324, icon: '📖', color: 'bg-rose-500' },
+    { name: 'Computer Science', count: 298, icon: '💻', color: 'bg-purple-500' },
+    { name: 'Physics', count: 276, icon: '⚛️', color: 'bg-emerald-500' },
+    { name: 'Business', count: 254, icon: '💼', color: 'bg-sky-500' },
+    { name: 'Environmental', count: 186, icon: '🌿', color: 'bg-teal-500' },
+    { name: 'Psychology', count: 142, icon: '🧠', color: 'bg-indigo-500' },
+    { name: 'History', count: 128, icon: '🏛️', color: 'bg-orange-500' },
+    { name: 'Others', count: 326, icon: '🌐', color: 'bg-gray-400' }
+  ];
+
+  // Recent Uploads List (matching mockup)
+  const contentRecentUploads = [
+    { name: 'Islamic Finance.pdf', time: 'Today, 10:24', size: '2.4 MB', type: 'pdf', icon: '📄', bg: 'bg-rose-100 text-rose-600' },
+    { name: 'Class Recording.mp4', time: 'Today, 09:15', size: '142.8 MB', type: 'video', icon: '🎥', bg: 'bg-purple-100 text-purple-600' },
+    { name: 'Algebra Worksheet.docx', time: 'Yesterday, 16:42', size: '850 KB', type: 'doc', icon: '📝', bg: 'bg-blue-100 text-blue-600' },
+    { name: 'Environmental Images.zip', time: 'Yesterday, 14:18', size: '34.2 MB', type: 'zip', icon: '🖼️', bg: 'bg-amber-100 text-amber-600' },
+    { name: 'Quiz Questions.csv', time: '20 Sep 2026, 11:30', size: '420 KB', type: 'csv', icon: '📊', bg: 'bg-emerald-100 text-emerald-600' }
+  ];
+
+  // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
   const [vipTeachersList, setVipTeachersList] = useState([
@@ -4041,17 +4279,68 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 );
               })}
 
-              {/* Expandable Content Management */}
-              <button
-                onClick={() => setContentManagementOpen(!contentManagementOpen)}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-gray-300 hover:bg-white/5 hover:text-white transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <Layers className="w-4 h-4 text-gray-400" />
-                  <span>Content Management</span>
-                </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${contentManagementOpen ? 'rotate-180' : ''}`} />
-              </button>
+              {/* Expandable Content Management (matching media_1790802827118.jpg) */}
+              <div className="space-y-1">
+                <button
+                  onClick={() => {
+                    setContentManagementOpen(!contentManagementOpen);
+                    setActiveNav('content-management');
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeNav === 'content-management'
+                      ? 'bg-[#114B44] text-white shadow-xs'
+                      : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Folder className={`w-4 h-4 ${activeNav === 'content-management' ? 'text-white' : 'text-gray-400'}`} />
+                    <span>Content Management</span>
+                  </div>
+                  <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${contentManagementOpen || activeNav === 'content-management' ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Sub-items Tree */}
+                {(contentManagementOpen || activeNav === 'content-management') && (
+                  <div className="pl-3.5 pr-1 py-1 space-y-0.5 border-l border-white/10 ml-3 animate-fadeIn">
+                    {[
+                      { id: 'all', label: 'All Content', icon: Folder },
+                      { id: 'courses', label: 'Courses', icon: BookOpen },
+                      { id: 'lessons', label: 'Lessons', icon: FileText },
+                      { id: 'quizzes', label: 'Quizzes', icon: HelpCircle },
+                      { id: 'assignments', label: 'Assignments', icon: FileCheck },
+                      { id: 'categories', label: 'Categories', icon: Layers },
+                      { id: 'media-library', label: 'Media Library', icon: ImageIcon },
+                      { id: 'announcements', label: 'Announcements', icon: Megaphone },
+                      { id: 'tags', label: 'Tags', icon: Tag },
+                    ].map((sub) => {
+                      const SubIcon = sub.icon;
+                      const isSubActive = contentActiveSubNav === sub.id && activeNav === 'content-management';
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => {
+                            setContentActiveSubNav(sub.id);
+                            setActiveNav('content-management');
+                            if (sub.id !== 'all' && sub.id !== 'media-library' && sub.id !== 'categories' && sub.id !== 'tags') {
+                              setContentTypeTab(sub.id);
+                            } else if (sub.id === 'all') {
+                              setContentTypeTab('all');
+                            }
+                          }}
+                          className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                            isSubActive
+                              ? 'bg-emerald-500/20 text-emerald-300 font-extrabold'
+                              : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                          }`}
+                        >
+                          <SubIcon className="w-3 h-3 shrink-0" />
+                          <span className="truncate">{sub.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
               {/* Expandable Settings */}
               <button
@@ -13531,6 +13820,658 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'content-management' ? (
+            (() => {
+              // Mini bar heights helper
+              const miniBarRenders = (colorClass, heights) => (
+                <div className="flex items-end gap-1 h-8 shrink-0">
+                  {heights.map((h, idx) => (
+                    <div
+                      key={idx}
+                      className={`w-1.5 rounded-t-xs transition-all duration-300 ${colorClass}`}
+                      style={{ height: `${h}%` }}
+                    />
+                  ))}
+                </div>
+              );
+
+              // Filtered content items
+              const filteredContent = contentItemsList.filter((item) => {
+                if (contentTypeTab !== 'all' && item.category !== contentTypeTab && item.type.toLowerCase() !== contentTypeTab.toLowerCase()) return false;
+                if (contentTypeDropdown !== 'All Types' && item.type !== contentTypeDropdown) return false;
+                if (contentSubjectDropdown !== 'All Subjects' && item.subject !== contentSubjectDropdown) return false;
+                if (contentStatusDropdown !== 'All Status' && item.status !== contentStatusDropdown) return false;
+                if (contentTeacherDropdown !== 'All Teachers' && item.teacher !== contentTeacherDropdown) return false;
+                if (contentSearchQuery.trim()) {
+                  const q = contentSearchQuery.toLowerCase();
+                  return (
+                    item.title.toLowerCase().includes(q) ||
+                    item.subtitle.toLowerCase().includes(q) ||
+                    item.teacher.toLowerCase().includes(q) ||
+                    item.subject.toLowerCase().includes(q)
+                  );
+                }
+                return true;
+              });
+
+              const allChecked = filteredContent.length > 0 && selectedContentCheckboxes.length === filteredContent.length;
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  {/* 1. TOP HEADER */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-md shrink-0">
+                        <Folder className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Content Management</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Manage all learning content, courses, lessons, media, and platform materials.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Action Buttons */}
+                    <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+                      <button
+                        onClick={() => setIsImportContentModalOpen(true)}
+                        className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Import Content</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (selectedContentCheckboxes.length === 0) {
+                            alert('Pilih minimal 1 konten untuk melakukan aksi massal.');
+                          } else {
+                            setIsBulkActionModalOpen(true);
+                          }
+                        }}
+                        className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                      >
+                        <Layers className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Bulk Actions {selectedContentCheckboxes.length > 0 ? `(${selectedContentCheckboxes.length})` : ''}</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsAddContentModalOpen(true)}
+                        className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-black shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>+ Add Content</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. TOP 3 KPI METRIC CARDS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 min-w-0">
+                    {/* Card 1: Total Content */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        {miniBarRenders('bg-blue-500/80', [35, 50, 45, 65, 85, 100])}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-gray-500 font-bold text-xs">Total Content</span>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mt-0.5">2,856</div>
+                        <div className="flex items-center gap-1.5 text-xs mt-1 text-emerald-600 font-extrabold">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span>28% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Published */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                          <BookOpen className="w-5 h-5" />
+                        </div>
+                        {miniBarRenders('bg-emerald-500/80', [40, 55, 60, 75, 70, 95])}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-gray-500 font-bold text-xs">Published</span>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mt-0.5">2,124</div>
+                        <div className="flex items-center gap-1.5 text-xs mt-1 text-emerald-600 font-extrabold">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span>32% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Drafts */}
+                    <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                          <Clock className="w-5 h-5" />
+                        </div>
+                        {miniBarRenders('bg-amber-500/80', [30, 45, 50, 60, 65, 80])}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-gray-500 font-bold text-xs">Drafts</span>
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mt-0.5">421</div>
+                        <div className="flex items-center gap-1.5 text-xs mt-1 text-emerald-600 font-extrabold">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          <span>12% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. CONTENT TABS STRIP (matching media_1790802827118.jpg) */}
+                  <div className="bg-white rounded-2xl p-2 sm:p-2.5 border border-gray-100 shadow-xs">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap min-w-0 py-0.5">
+                      {[
+                        { id: 'all', label: 'All Content', count: '2,856' },
+                        { id: 'courses', label: 'Courses', count: '1,248' },
+                        { id: 'lessons', label: 'Lessons', count: '3,562' },
+                        { id: 'quizzes', label: 'Quizzes', count: '412' },
+                        { id: 'assignments', label: 'Assignments', count: '386' },
+                        { id: 'articles', label: 'Articles', count: '284' },
+                        { id: 'announcements', label: 'Announcements', count: '96' }
+                      ].map((tab) => {
+                        const isActive = contentTypeTab === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={() => setContentTypeTab(tab.id)}
+                            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              isActive
+                                ? 'bg-[#114B44] text-white shadow-xs font-black'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/80'
+                            }`}
+                          >
+                            <span>{tab.label}</span>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                              isActive
+                                ? 'bg-white/20 text-white'
+                                : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              {tab.count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 4. MAIN 2-COLUMN GRID (8 COLS CANVAS + 4 COLS SIDEBAR) */}
+                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 min-w-0">
+                    
+                    {/* LEFT MAIN CANVAS (8 COLS) */}
+                    <div className="xl:col-span-8 space-y-4 min-w-0">
+                      
+                      {/* SEARCH & FILTERS STRIP */}
+                      <div className="bg-white rounded-2xl p-3 border border-gray-100 shadow-xs">
+                        <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+                          {/* Search Bar */}
+                          <div className="relative flex-1 min-w-[200px]">
+                            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="text"
+                              value={contentSearchQuery}
+                              onChange={(e) => setContentSearchQuery(e.target.value)}
+                              placeholder="Search content by title, description, or tags..."
+                              className="w-full bg-[#F8FAFC] border border-gray-200/90 rounded-xl pl-9 pr-4 py-2 text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:ring-1 focus:ring-[#114B44] transition-all"
+                            />
+                            {contentSearchQuery && (
+                              <button
+                                onClick={() => setContentSearchQuery('')}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Filter Dropdowns Strip (Horizontal Scrollable) */}
+                          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap min-w-0 pb-1 lg:pb-0">
+                            {/* Content Type Filter */}
+                            <select
+                              value={contentTypeDropdown}
+                              onChange={(e) => setContentTypeDropdown(e.target.value)}
+                              className="bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs"
+                            >
+                              <option>All Types</option>
+                              <option>Course</option>
+                              <option>Article</option>
+                              <option>Quiz</option>
+                              <option>Material</option>
+                              <option>Recording</option>
+                              <option>Assignment</option>
+                            </select>
+
+                            {/* Subject Filter */}
+                            <select
+                              value={contentSubjectDropdown}
+                              onChange={(e) => setContentSubjectDropdown(e.target.value)}
+                              className="bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs"
+                            >
+                              <option>All Subjects</option>
+                              <option>Islamic Studies</option>
+                              <option>Mathematics</option>
+                              <option>English</option>
+                              <option>Computer Science</option>
+                              <option>Physics</option>
+                              <option>Business</option>
+                              <option>Environmental</option>
+                            </select>
+
+                            {/* Status Filter */}
+                            <select
+                              value={contentStatusDropdown}
+                              onChange={(e) => setContentStatusDropdown(e.target.value)}
+                              className="bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs"
+                            >
+                              <option>All Status</option>
+                              <option>Published</option>
+                              <option>Draft</option>
+                              <option>Archived</option>
+                            </select>
+
+                            {/* Teacher Filter */}
+                            <select
+                              value={contentTeacherDropdown}
+                              onChange={(e) => setContentTeacherDropdown(e.target.value)}
+                              className="bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs"
+                            >
+                              <option>All Teachers</option>
+                              <option>Dr. Ahmad Fauzi</option>
+                              <option>Siti Aisyah</option>
+                              <option>Omar Hassan</option>
+                              <option>Layla Karim</option>
+                              <option>Fatimah Nur</option>
+                              <option>Zainab Ali</option>
+                              <option>Muhammad Khan</option>
+                              <option>Nadia Rahman</option>
+                            </select>
+
+                            {/* Date Range Button */}
+                            <button
+                              onClick={() => alert('Filter rentang tanggal materi: 1 Sep 2026 - 30 Sep 2026')}
+                              className="flex items-center gap-1.5 bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold hover:bg-gray-50 cursor-pointer shadow-2xs"
+                            >
+                              <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                              <span>Date Range</span>
+                            </button>
+
+                            {/* Filter Reset / More */}
+                            <button
+                              onClick={() => {
+                                setContentSearchQuery('');
+                                setContentTypeDropdown('All Types');
+                                setContentSubjectDropdown('All Subjects');
+                                setContentStatusDropdown('All Status');
+                                setContentTeacherDropdown('All Teachers');
+                              }}
+                              className="flex items-center gap-1.5 bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-xl text-xs font-bold hover:bg-gray-50 cursor-pointer shadow-2xs"
+                            >
+                              <Filter className="w-3.5 h-3.5 text-gray-500" />
+                              <span>Filters</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* DATA TABLE */}
+                      <div className="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
+                        <div className="overflow-x-auto min-w-0 no-scrollbar">
+                          <table className="w-full text-left text-xs min-w-[900px]">
+                            <thead>
+                              <tr className="bg-[#F8FAFC] text-gray-500 font-bold border-b border-gray-200 text-[11px]">
+                                <th className="py-3 px-4 w-10">
+                                  <input
+                                    type="checkbox"
+                                    checked={allChecked}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setSelectedContentCheckboxes(filteredContent.map(c => c.id));
+                                      } else {
+                                        setSelectedContentCheckboxes([]);
+                                      }
+                                    }}
+                                    className="rounded text-[#114B44] focus:ring-[#114B44] w-3.5 h-3.5 cursor-pointer"
+                                  />
+                                </th>
+                                <th className="py-3 px-2 w-8">#</th>
+                                <th className="py-3 px-3">Thumbnail</th>
+                                <th className="py-3 px-4">Title</th>
+                                <th className="py-3 px-3">Type</th>
+                                <th className="py-3 px-3">Subject</th>
+                                <th className="py-3 px-4">Teacher</th>
+                                <th className="py-3 px-3">Status</th>
+                                <th className="py-3 px-3 text-right">Views</th>
+                                <th className="py-3 px-4">Updated</th>
+                                <th className="py-3 px-4 text-center">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                              {filteredContent.map((item) => {
+                                const isChecked = selectedContentCheckboxes.includes(item.id);
+                                return (
+                                  <tr key={item.id} className={`hover:bg-gray-50/80 transition-colors ${isChecked ? 'bg-emerald-50/30' : ''}`}>
+                                    {/* Checkbox */}
+                                    <td className="py-3.5 px-4">
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={(e) => {
+                                          if (e.target.checked) {
+                                            setSelectedContentCheckboxes(prev => [...prev, item.id]);
+                                          } else {
+                                            setSelectedContentCheckboxes(prev => prev.filter(id => id !== item.id));
+                                          }
+                                        }}
+                                        className="rounded text-[#114B44] focus:ring-[#114B44] w-3.5 h-3.5 cursor-pointer"
+                                      />
+                                    </td>
+
+                                    {/* Number */}
+                                    <td className="py-3.5 px-2 font-bold text-gray-400 text-[11px]">{item.id}</td>
+
+                                    {/* Thumbnail */}
+                                    <td className="py-3.5 px-3">
+                                      <div className="w-10 h-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-sm shadow-2xs shrink-0">
+                                        {item.icon}
+                                      </div>
+                                    </td>
+
+                                    {/* Title & Subtitle */}
+                                    <td className="py-3.5 px-4 max-w-[200px]">
+                                      <div className="font-black text-gray-900 text-xs truncate">{item.title}</div>
+                                      <div className="text-[10px] text-gray-400 truncate mt-0.5">{item.subtitle}</div>
+                                    </td>
+
+                                    {/* Type Badge */}
+                                    <td className="py-3.5 px-3">
+                                      <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold border ${item.typeBadge}`}>
+                                        {item.type}
+                                      </span>
+                                    </td>
+
+                                    {/* Subject Badge */}
+                                    <td className="py-3.5 px-3">
+                                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${item.subjectBadge}`}>
+                                        {item.subject}
+                                      </span>
+                                    </td>
+
+                                    {/* Teacher */}
+                                    <td className="py-3.5 px-4">
+                                      <div className="flex items-center gap-2">
+                                        <img
+                                          src={item.teacherAvatar}
+                                          alt={item.teacher}
+                                          className="w-5 h-5 rounded-full object-cover shrink-0 border border-gray-200"
+                                          onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                                        />
+                                        <span className="font-bold text-gray-700 text-[11px] truncate max-w-[95px]">{item.teacher}</span>
+                                      </div>
+                                    </td>
+
+                                    {/* Status Badge */}
+                                    <td className="py-3.5 px-3">
+                                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold border ${item.statusBadge}`}>
+                                        {item.status}
+                                      </span>
+                                    </td>
+
+                                    {/* Views */}
+                                    <td className="py-3.5 px-3 text-right font-black text-gray-900 text-xs">
+                                      {item.views}
+                                    </td>
+
+                                    {/* Updated Date */}
+                                    <td className="py-3.5 px-4 font-bold text-gray-500 text-[11px] whitespace-nowrap">
+                                      {item.updated}
+                                    </td>
+
+                                    {/* Action Buttons */}
+                                    <td className="py-3.5 px-4 text-center">
+                                      <div className="flex items-center justify-center gap-1">
+                                        <button
+                                          onClick={() => setSelectedContentForEdit(item)}
+                                          title="Edit Content"
+                                          className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                                        >
+                                          <Edit3 className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => setSelectedContentForDetail(item)}
+                                          title="Preview Content"
+                                          className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                                        >
+                                          <Eye className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => alert(`Opsi lanjutan untuk materi: ${item.title}`)}
+                                          title="More Options"
+                                          className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                                        >
+                                          <MoreHorizontal className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Pagination Bar (matching mockup) */}
+                        <div className="p-3.5 bg-[#F8FAFC] border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                          <span className="text-gray-500 font-bold text-[11px]">
+                            Showing 1 to {filteredContent.length} of 2,856 content items
+                          </span>
+
+                          <div className="flex items-center gap-1">
+                            <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs cursor-pointer shadow-2xs">
+                              ‹
+                            </button>
+                            <button className="px-3 py-1 rounded-lg bg-[#114B44] text-white font-black text-xs shadow-xs">
+                              1
+                            </button>
+                            <button className="px-3 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs cursor-pointer shadow-2xs">
+                              2
+                            </button>
+                            <button className="px-3 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs cursor-pointer shadow-2xs">
+                              3
+                            </button>
+                            <button className="px-3 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs cursor-pointer shadow-2xs">
+                              4
+                            </button>
+                            <button className="px-3 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs cursor-pointer shadow-2xs">
+                              5
+                            </button>
+                            <span className="px-1 text-gray-400 font-bold">...</span>
+                            <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs cursor-pointer shadow-2xs">
+                              286
+                            </button>
+                            <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs cursor-pointer shadow-2xs">
+                              ›
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* RIGHT SIDEBAR (4 COLS) */}
+                    <aside className="xl:col-span-4 space-y-5 min-w-0">
+                      
+                      {/* CARD 1: QUICK ACTIONS (2x3 GRID) */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <h3 className="text-sm font-black text-gray-900">Quick Actions</h3>
+
+                        <div className="grid grid-cols-2 gap-2.5 text-xs">
+                          <button
+                            onClick={() => {
+                              setNewContentItem({ ...newContentItem, type: 'Course' });
+                              setIsAddContentModalOpen(true);
+                            }}
+                            className="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:border-[#114B44] hover:bg-emerald-50/40 text-gray-700 hover:text-[#114B44] transition-all font-bold cursor-pointer"
+                          >
+                            <BookOpen className="w-4 h-4 text-emerald-600 shrink-0" />
+                            <span className="truncate text-[11px]">Add New Course</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setNewContentItem({ ...newContentItem, type: 'Material' });
+                              setIsAddContentModalOpen(true);
+                            }}
+                            className="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:border-[#114B44] hover:bg-emerald-50/40 text-gray-700 hover:text-[#114B44] transition-all font-bold cursor-pointer"
+                          >
+                            <Upload className="w-4 h-4 text-blue-600 shrink-0" />
+                            <span className="truncate text-[11px]">Upload Material</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setNewContentItem({ ...newContentItem, type: 'Quiz' });
+                              setIsAddContentModalOpen(true);
+                            }}
+                            className="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:border-[#114B44] hover:bg-emerald-50/40 text-gray-700 hover:text-[#114B44] transition-all font-bold cursor-pointer"
+                          >
+                            <HelpCircle className="w-4 h-4 text-purple-600 shrink-0" />
+                            <span className="truncate text-[11px]">Create Quiz</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setNewContentItem({ ...newContentItem, type: 'Assignment' });
+                              setIsAddContentModalOpen(true);
+                            }}
+                            className="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:border-[#114B44] hover:bg-emerald-50/40 text-gray-700 hover:text-[#114B44] transition-all font-bold cursor-pointer"
+                          >
+                            <FileCheck className="w-4 h-4 text-amber-600 shrink-0" />
+                            <span className="truncate text-[11px]">New Assignment</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setNewContentItem({ ...newContentItem, type: 'Article' });
+                              setIsAddContentModalOpen(true);
+                            }}
+                            className="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:border-[#114B44] hover:bg-emerald-50/40 text-gray-700 hover:text-[#114B44] transition-all font-bold cursor-pointer"
+                          >
+                            <Edit2 className="w-4 h-4 text-cyan-600 shrink-0" />
+                            <span className="truncate text-[11px]">Write Article</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setNewContentItem({ ...newContentItem, type: 'Announcement' });
+                              setIsAddContentModalOpen(true);
+                            }}
+                            className="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:border-[#114B44] hover:bg-emerald-50/40 text-gray-700 hover:text-[#114B44] transition-all font-bold cursor-pointer"
+                          >
+                            <Megaphone className="w-4 h-4 text-rose-600 shrink-0" />
+                            <span className="truncate text-[11px]">Post Announcement</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* CARD 2: CONTENT CATEGORIES */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Content Categories</h3>
+                          <button
+                            onClick={() => setIsViewAllCategoriesModalOpen(true)}
+                            className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2 text-xs">
+                          {contentCategoriesList.map((cat, idx) => (
+                            <div key={idx} className="flex items-center justify-between hover:bg-gray-50/80 p-1.5 rounded-lg transition-colors">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm">{cat.icon}</span>
+                                <span className="font-bold text-gray-700 text-[11px]">{cat.name}</span>
+                              </div>
+                              <span className="font-black text-gray-900 text-[11px]">{cat.count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* CARD 3: STORAGE USAGE */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Storage Usage</h3>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            68% used
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                            <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style={{ width: '68%' }}></div>
+                          </div>
+                          <div className="flex items-center justify-between text-[11px] text-gray-500 font-bold pt-1">
+                            <span>34.2 GB of 50 GB</span>
+                            <button
+                              onClick={() => setIsManageStorageModalOpen(true)}
+                              className="text-[#114B44] font-black hover:underline cursor-pointer"
+                            >
+                              Manage Storage
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CARD 4: RECENT UPLOADS */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Recent Uploads</h3>
+                          <button
+                            onClick={() => setIsViewAllUploadsModalOpen(true)}
+                            className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {contentRecentUploads.map((up, idx) => (
+                            <div key={idx} className="flex items-center justify-between gap-2 p-1.5 hover:bg-gray-50/80 rounded-xl transition-colors">
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className={`w-7 h-7 rounded-lg ${up.bg} flex items-center justify-center text-xs shrink-0 font-bold`}>
+                                  {up.icon}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="font-bold text-gray-900 text-[11px] truncate">{up.name}</div>
+                                  <div className="text-[10px] text-gray-400">{up.time} • {up.size}</div>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => alert(`Aksi untuk file: ${up.name}`)}
+                                className="text-gray-400 hover:text-gray-600 p-1 rounded-md cursor-pointer"
+                              >
+                                <MoreHorizontal className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -18050,6 +18991,587 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                 <div className="flex items-center justify-end pt-3 border-t border-gray-100">
                   <button onClick={() => setIsViewAllTrafficSourcesModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* CONTENT MANAGEMENT MODALS                                 */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal Add New Content */}
+          {isAddContentModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Plus className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Tambah Konten Pembelajaran Baru</h3>
+                      <p className="text-xs text-gray-500">Publikasikan kursus, modul, kuis, atau artikel</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsAddContentModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul Konten / Materi</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Ushul Fiqh: Pengantar Kaidah Ushuliyyah"
+                      value={newContentItem.title}
+                      onChange={(e) => setNewContentItem({ ...newContentItem, title: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Sub-judul / Deskripsi Singkat</label>
+                    <input
+                      type="text"
+                      placeholder="Ringkasan 1 kalimat tentang isi konten..."
+                      value={newContentItem.subtitle}
+                      onChange={(e) => setNewContentItem({ ...newContentItem, subtitle: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Tipe Konten</label>
+                      <select
+                        value={newContentItem.type}
+                        onChange={(e) => setNewContentItem({ ...newContentItem, type: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      >
+                        <option>Course</option>
+                        <option>Lesson</option>
+                        <option>Quiz</option>
+                        <option>Assignment</option>
+                        <option>Article</option>
+                        <option>Material</option>
+                        <option>Recording</option>
+                        <option>Announcement</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Kategori / Subjek</label>
+                      <select
+                        value={newContentItem.subject}
+                        onChange={(e) => setNewContentItem({ ...newContentItem, subject: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      >
+                        <option>Islamic Studies</option>
+                        <option>Mathematics</option>
+                        <option>English</option>
+                        <option>Computer Science</option>
+                        <option>Physics</option>
+                        <option>Business</option>
+                        <option>Environmental</option>
+                        <option>Psychology</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Instruktur / Pembuat</label>
+                      <select
+                        value={newContentItem.teacher}
+                        onChange={(e) => setNewContentItem({ ...newContentItem, teacher: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      >
+                        <option>Dr. Ahmad Fauzi</option>
+                        <option>Siti Aisyah</option>
+                        <option>Omar Hassan</option>
+                        <option>Layla Karim</option>
+                        <option>Fatimah Nur</option>
+                        <option>Zainab Ali</option>
+                        <option>Muhammad Khan</option>
+                        <option>Nadia Rahman</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Status Publikasi</label>
+                      <select
+                        value={newContentItem.status}
+                        onChange={(e) => setNewContentItem({ ...newContentItem, status: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      >
+                        <option>Published</option>
+                        <option>Draft</option>
+                        <option>Archived</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Upload Media Zone */}
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Upload File Materi / Video / PDF</label>
+                    <div className="border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center hover:bg-gray-50 transition-colors cursor-pointer space-y-1">
+                      <UploadCloud className="w-6 h-6 text-[#114B44] mx-auto" />
+                      <div className="font-bold text-gray-700 text-xs">Klik untuk memilih file atau drag & drop</div>
+                      <div className="text-[10px] text-gray-400">Mendukung MP4, PDF, DOCX, EPUB, ZIP (Maks 500 MB)</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsAddContentModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (!newContentItem.title.trim()) {
+                        alert('Silakan masukkan judul materi terlebih dahulu.');
+                        return;
+                      }
+                      const newItem = {
+                        id: contentItemsList.length + 1,
+                        title: newContentItem.title,
+                        subtitle: newContentItem.subtitle || 'Materi pembelajaran baru di platform',
+                        type: newContentItem.type,
+                        typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        subject: newContentItem.subject,
+                        subjectBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+                        teacher: newContentItem.teacher,
+                        teacherAvatar: '/images/tutor_ahmed.jpg',
+                        status: newContentItem.status,
+                        statusBadge: newContentItem.status === 'Published' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200',
+                        views: '0',
+                        updated: 'Hari ini',
+                        icon: '📚',
+                        category: newContentItem.type.toLowerCase() + 's'
+                      };
+                      setContentItemsList([newItem, ...contentItemsList]);
+                      setIsAddContentModalOpen(false);
+                      setNewContentItem({
+                        title: '',
+                        subtitle: '',
+                        type: 'Course',
+                        subject: 'Islamic Studies',
+                        teacher: 'Dr. Ahmad Fauzi',
+                        status: 'Published',
+                        description: '',
+                        duration: '4h 30m',
+                        level: 'Beginner'
+                      });
+                      alert(`Konten "${newItem.title}" berhasil ditambahkan!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Simpan & Publikasikan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal Import Bulk Content */}
+          {isImportContentModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Upload className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Import Paket Konten</h3>
+                      <p className="text-xs text-gray-500">Upload format SCORM 1.2 / 2004, ZIP, atau CSV</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsImportContentModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer space-y-2">
+                    <UploadCloud className="w-8 h-8 text-[#114B44] mx-auto" />
+                    <div className="font-extrabold text-gray-800">Tarik file arsip ke sini</div>
+                    <div className="text-[11px] text-gray-400">Mendukung file bundle kursus .zip, .scorm, .csv</div>
+                  </div>
+
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800">
+                    💡 <strong>Tips:</strong> Struktur kurikulum, kuis, dan lampiran PDF akan secara otomatis diekstrak ke dalam silabus platform.
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsImportContentModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsImportContentModalOpen(false);
+                      alert('Paket konten SCORM berhasil di-import dan 12 modul baru telah dibuat!');
+                    }}
+                    className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>Mulai Proses Import</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal Bulk Action */}
+          {isBulkActionModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">
+                      <Layers className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Aksi Massal ({selectedContentCheckboxes.length} Terpilih)</h3>
+                      <p className="text-xs text-gray-500">Terapkan perubahan status pada konten terpilih</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsBulkActionModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <button
+                    onClick={() => {
+                      setContentItemsList(prev => prev.map(c => selectedContentCheckboxes.includes(c.id) ? { ...c, status: 'Published', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' } : c));
+                      setSelectedContentCheckboxes([]);
+                      setIsBulkActionModalOpen(false);
+                      alert('Status seluruh konten terpilih berhasil diubah menjadi Published!');
+                    }}
+                    className="w-full text-left p-3 rounded-xl border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 font-bold text-gray-800 transition-colors flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-emerald-600" />
+                      <span>Publikasikan Semua (Published)</span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setContentItemsList(prev => prev.map(c => selectedContentCheckboxes.includes(c.id) ? { ...c, status: 'Draft', statusBadge: 'bg-amber-50 text-amber-700 border-amber-200' } : c));
+                      setSelectedContentCheckboxes([]);
+                      setIsBulkActionModalOpen(false);
+                      alert('Status seluruh konten terpilih berhasil diubah menjadi Draft!');
+                    }}
+                    className="w-full text-left p-3 rounded-xl border border-gray-200 hover:bg-amber-50 hover:border-amber-300 font-bold text-gray-800 transition-colors flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-amber-600" />
+                      <span>Ubah ke Draft (Drafts)</span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setContentItemsList(prev => prev.map(c => selectedContentCheckboxes.includes(c.id) ? { ...c, status: 'Archived', statusBadge: 'bg-rose-50 text-rose-700 border-rose-200' } : c));
+                      setSelectedContentCheckboxes([]);
+                      setIsBulkActionModalOpen(false);
+                      alert('Seluruh konten terpilih berhasil diarsipkan (Archived)!');
+                    }}
+                    className="w-full text-left p-3 rounded-xl border border-gray-200 hover:bg-rose-50 hover:border-rose-300 font-bold text-rose-700 transition-colors flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Archive className="w-4 h-4 text-rose-600" />
+                      <span>Arsipkan Konten (Archived)</span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsBulkActionModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal Manage Storage */}
+          {isManageStorageModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <HardDrive className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Cloud Storage Management</h3>
+                      <p className="text-xs text-gray-500">Kapasitas penyimpanan media platform</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsManageStorageModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div className="p-3.5 bg-[#F8FAFC] rounded-2xl border border-gray-200 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="font-extrabold text-gray-900">Total Penggunaan</span>
+                      <span className="font-black text-blue-600">34.2 GB / 50 GB (68%)</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                      <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '68%' }}></div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center p-2 rounded-xl bg-gray-50 text-[11px]">
+                      <span className="text-gray-600 font-bold">🎥 Video Rekaman Kelas & Kursus</span>
+                      <span className="font-black text-gray-900">24.1 GB</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 rounded-xl bg-gray-50 text-[11px]">
+                      <span className="text-gray-600 font-bold">📄 Dokumen & PDF Silabus</span>
+                      <span className="font-black text-gray-900">6.8 GB</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 rounded-xl bg-gray-50 text-[11px]">
+                      <span className="text-gray-600 font-bold">🖼️ Gambar & Thumbnail</span>
+                      <span className="font-black text-gray-900">2.1 GB</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 rounded-xl bg-gray-50 text-[11px]">
+                      <span className="text-gray-600 font-bold">📦 Backup Database</span>
+                      <span className="font-black text-gray-900">1.2 GB</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <button
+                    onClick={() => {
+                      alert('Cache sementara berhasil dibersihkan! 1.4 GB ruang kosong dibebaskan.');
+                      setIsManageStorageModalOpen(false);
+                    }}
+                    className="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                  >
+                    Bersihkan Cache
+                  </button>
+                  <button
+                    onClick={() => {
+                      alert('Membuka halaman upgrade kuota server storage...');
+                      setIsManageStorageModalOpen(false);
+                    }}
+                    className="px-4 py-2 bg-[#114B44] text-white rounded-xl text-xs font-extrabold hover:bg-[#0D3B35] cursor-pointer shadow-xs"
+                  >
+                    Upgrade Kapasitas
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal Preview Content Detail */}
+          {selectedContentForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center text-lg font-black">
+                      {selectedContentForDetail.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">{selectedContentForDetail.title}</h3>
+                      <p className="text-xs text-gray-500">{selectedContentForDetail.type} • {selectedContentForDetail.subject}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedContentForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="p-4 bg-[#F8FAFC] rounded-2xl border border-gray-200 space-y-3 text-xs">
+                  <div>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">Keterangan Singkat</span>
+                    <p className="text-xs text-gray-800 font-semibold mt-0.5">{selectedContentForDetail.subtitle}</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200 text-[11px]">
+                    <div>
+                      <span className="text-gray-400 font-bold block">Instruktur:</span>
+                      <span className="font-extrabold text-gray-800">{selectedContentForDetail.teacher}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400 font-bold block">Status:</span>
+                      <span className={`px-2 py-0.5 rounded-full font-black text-[10px] border ${selectedContentForDetail.statusBadge}`}>
+                        {selectedContentForDetail.status}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400 font-bold block">Total Dilihat:</span>
+                      <span className="font-extrabold text-gray-800">{selectedContentForDetail.views} Views</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400 font-bold block">Terakhir Update:</span>
+                      <span className="font-extrabold text-gray-800">{selectedContentForDetail.updated}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setSelectedContentForDetail(null)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      const target = selectedContentForDetail;
+                      setSelectedContentForDetail(null);
+                      setSelectedContentForEdit(target);
+                    }}
+                    className="px-5 py-2 bg-[#114B44] text-white rounded-xl text-xs font-extrabold hover:bg-[#0D3B35] cursor-pointer shadow-xs flex items-center gap-1.5"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>Edit Konten</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Modal Edit Content */}
+          {selectedContentForEdit && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center font-black">
+                      <Edit3 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Edit Konten</h3>
+                      <p className="text-xs text-gray-500">Perbarui informasi dan status materi</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedContentForEdit(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul Materi</label>
+                    <input
+                      type="text"
+                      value={selectedContentForEdit.title}
+                      onChange={(e) => setSelectedContentForEdit({ ...selectedContentForEdit, title: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Status Publikasi</label>
+                    <select
+                      value={selectedContentForEdit.status}
+                      onChange={(e) => setSelectedContentForEdit({
+                        ...selectedContentForEdit,
+                        status: e.target.value,
+                        statusBadge: e.target.value === 'Published'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : e.target.value === 'Draft'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-rose-50 text-rose-700 border-rose-200'
+                      })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    >
+                      <option>Published</option>
+                      <option>Draft</option>
+                      <option>Archived</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setSelectedContentForEdit(null)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setContentItemsList(prev => prev.map(c => c.id === selectedContentForEdit.id ? selectedContentForEdit : c));
+                      setSelectedContentForEdit(null);
+                      alert('Perubahan materi berhasil disimpan!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] text-white rounded-xl text-xs font-extrabold hover:bg-[#0D3B35] cursor-pointer shadow-xs"
+                  >
+                    <span>Simpan Perubahan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. Modal View All Categories */}
+          {isViewAllCategoriesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Layers className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Seluruh Kategori Konten</h3>
+                      <p className="text-xs text-gray-500">10 subjek dan kategori materi aktif</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllCategoriesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {contentCategoriesList.map((cat, idx) => (
+                    <div key={idx} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-lg">{cat.icon}</span>
+                        <span className="font-extrabold text-gray-900">{cat.name}</span>
+                      </div>
+                      <span className="font-black text-gray-900 bg-white px-2.5 py-1 rounded-lg border border-gray-200 shadow-2xs">
+                        {cat.count} Materi
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllCategoriesModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 8. Modal View All Uploads */}
+          {isViewAllUploadsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <UploadCloud className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Daftar Berkas Terkini</h3>
+                      <p className="text-xs text-gray-500">File media, video rekaman, & modul</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllUploadsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {contentRecentUploads.map((up, idx) => (
+                    <div key={idx} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className={`w-8 h-8 rounded-lg ${up.bg} flex items-center justify-center text-sm shrink-0 font-bold`}>
+                          {up.icon}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-extrabold text-gray-900 truncate">{up.name}</div>
+                          <div className="text-[10px] text-gray-400">{up.time} • {up.size}</div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => alert(`Mengunduh file: ${up.name}`)}
+                        className="px-2.5 py-1 bg-[#114B44] text-white text-[10px] font-bold rounded-lg hover:bg-[#0D3B35] cursor-pointer shrink-0"
+                      >
+                        Download
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllUploadsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
                 </div>
               </div>
             </div>
