@@ -3161,6 +3161,222 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   };
 
   // =========================================================
+  // EARNINGS DATASET & STATES (matching media_1790802194900.jpg)
+  // =========================================================
+  const [earningsTransactionsList, setEarningsTransactionsList] = useState([
+    {
+      id: 'tx-1',
+      number: 1,
+      date: '23 Sep 2026',
+      type: 'Course Sale',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      description: 'Islamic History Basics',
+      userName: 'Ali Reza',
+      userAvatar: '/images/student_omar.jpg',
+      amount: '$49.00',
+      isNegative: false,
+      status: 'Completed',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      method: 'Credit Card (Stripe)',
+      category: 'course-sales',
+      platformFee: '$7.35',
+      netAmount: '$41.65'
+    },
+    {
+      id: 'tx-2',
+      number: 2,
+      date: '23 Sep 2026',
+      type: 'Subscription',
+      typeBadge: 'bg-sky-50 text-sky-700 border-sky-200',
+      description: 'Monthly Plan',
+      userName: 'Ahmed Ali',
+      userAvatar: '/images/student_ali.jpg',
+      amount: '$9.99',
+      isNegative: false,
+      status: 'Completed',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      method: 'PayPal',
+      category: 'subscriptions',
+      platformFee: '$1.50',
+      netAmount: '$8.49'
+    },
+    {
+      id: 'tx-3',
+      number: 3,
+      date: '22 Sep 2026',
+      type: 'Teacher Payout',
+      typeBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      description: 'Class Earnings',
+      userName: 'Dr. Ahmad Fauzi',
+      userAvatar: '/images/tutor_ahmed.jpg',
+      amount: '$450.00',
+      isNegative: false,
+      status: 'Pending',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      method: 'Bank Transfer (BSI)',
+      category: 'payouts',
+      platformFee: '$0.00',
+      netAmount: '$450.00'
+    },
+    {
+      id: 'tx-4',
+      number: 4,
+      date: '22 Sep 2026',
+      type: 'Course Sale',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      description: 'Mathematics - Algebra',
+      userName: 'Siti Aisyah',
+      userAvatar: '/images/student_fatimah.jpg',
+      amount: '$39.00',
+      isNegative: false,
+      status: 'Completed',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      method: 'Credit Card',
+      category: 'course-sales',
+      platformFee: '$5.85',
+      netAmount: '$33.15'
+    },
+    {
+      id: 'tx-5',
+      number: 5,
+      date: '21 Sep 2026',
+      type: 'Course Sale',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      description: 'English Grammar',
+      userName: 'Layla Karim',
+      userAvatar: '/images/student_fatimah.jpg',
+      amount: '$29.00',
+      isNegative: false,
+      status: 'Completed',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      method: 'Midtrans / QRIS',
+      category: 'course-sales',
+      platformFee: '$4.35',
+      netAmount: '$24.65'
+    },
+    {
+      id: 'tx-6',
+      number: 6,
+      date: '21 Sep 2026',
+      type: 'Refund',
+      typeBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      description: 'Course Refund',
+      userName: 'User #U1024',
+      userAvatar: '/images/student_ali.jpg',
+      amount: '-$49.00',
+      isNegative: true,
+      status: 'Processed',
+      statusBadge: 'bg-sky-50 text-sky-700 border-sky-200',
+      method: 'Bank Refund',
+      category: 'refunds',
+      platformFee: '-$7.35',
+      netAmount: '-$41.65'
+    },
+    {
+      id: 'tx-7',
+      number: 7,
+      date: '20 Sep 2026',
+      type: 'Course Sale',
+      typeBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      description: 'Web Development',
+      userName: 'Muhammad Khan',
+      userAvatar: '/images/student_ali.jpg',
+      amount: '$59.00',
+      isNegative: false,
+      status: 'Completed',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      method: 'Credit Card (Stripe)',
+      category: 'course-sales',
+      platformFee: '$8.85',
+      netAmount: '$50.15'
+    },
+    {
+      id: 'tx-8',
+      number: 8,
+      date: '20 Sep 2026',
+      type: 'Teacher Payout',
+      typeBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      description: 'Class Earnings',
+      userName: 'Nadia Rahman',
+      userAvatar: '/images/student_fatimah.jpg',
+      amount: '$230.00',
+      isNegative: false,
+      status: 'Pending',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      method: 'Bank Transfer (BCA)',
+      category: 'payouts',
+      platformFee: '$0.00',
+      netAmount: '$230.00'
+    },
+    {
+      id: 'tx-9',
+      number: 9,
+      date: '19 Sep 2026',
+      type: 'Subscription',
+      typeBadge: 'bg-sky-50 text-sky-700 border-sky-200',
+      description: 'Annual Plan',
+      userName: 'Fatimah Nur',
+      userAvatar: '/images/student_fatimah.jpg',
+      amount: '$99.00',
+      isNegative: false,
+      status: 'Completed',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      method: 'PayPal',
+      category: 'subscriptions',
+      platformFee: '$14.85',
+      netAmount: '$84.15'
+    },
+    {
+      id: 'tx-10',
+      number: 10,
+      date: '18 Sep 2026',
+      type: 'Adjustment',
+      typeBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      description: 'Manual Adjustment',
+      userName: 'Admin',
+      userAvatar: '/images/tutor_ahmed.jpg',
+      amount: '$25.00',
+      isNegative: false,
+      status: 'Completed',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      method: 'System Ledger',
+      category: 'adjustments',
+      platformFee: '$0.00',
+      netAmount: '$25.00'
+    }
+  ]);
+
+  // Pending Payouts Mock Data
+  const [pendingPayoutsList, setPendingPayoutsList] = useState([
+    { id: 'po-1', name: 'Dr. Ahmad Fauzi', avatar: '/images/tutor_ahmed.jpg', amount: '$450', date: '22 Sep 2026', status: 'Pending' },
+    { id: 'po-2', name: 'Siti Aisyah', avatar: '/images/student_fatimah.jpg', amount: '$320', date: '21 Sep 2026', status: 'Pending' },
+    { id: 'po-3', name: 'Layla Karim', avatar: '/images/student_fatimah.jpg', amount: '$280', date: '20 Sep 2026', status: 'Pending' },
+    { id: 'po-4', name: 'Muhammad Khan', avatar: '/images/student_ali.jpg', amount: '$510', date: '19 Sep 2026', status: 'Pending' },
+    { id: 'po-5', name: 'Nadia Rahman', avatar: '/images/student_fatimah.jpg', amount: '$230', date: '18 Sep 2026', status: 'Pending' }
+  ]);
+
+  // Top Earning Teachers Mock Data
+  const topEarningTeachersList = [
+    { rank: 1, name: 'Dr. Ahmad Fauzi', avatar: '/images/tutor_ahmed.jpg', amount: '$2,480', barColor: 'bg-emerald-500', barWidth: '95%' },
+    { rank: 2, name: 'Siti Aisyah', avatar: '/images/student_fatimah.jpg', amount: '$1,920', barColor: 'bg-blue-500', barWidth: '78%' },
+    { rank: 3, name: 'Layla Karim', avatar: '/images/student_fatimah.jpg', amount: '$1,760', barColor: 'bg-amber-500', barWidth: '70%' },
+    { rank: 4, name: 'Muhammad Khan', avatar: '/images/student_ali.jpg', amount: '$1,520', barColor: 'bg-purple-500', barWidth: '60%' },
+    { rank: 5, name: 'Nadia Rahman', avatar: '/images/student_fatimah.jpg', amount: '$1,340', barColor: 'bg-cyan-500', barWidth: '52%' }
+  ];
+
+  const [earningsTabFilter, setEarningsTabFilter] = useState('all'); // 'all' | 'course-sales' | 'subscriptions' | 'payouts' | 'refunds' | 'adjustments'
+  const [earningsChartRange, setEarningsChartRange] = useState('daily'); // 'daily' | 'weekly' | 'monthly'
+  const [earningsSearchQuery, setEarningsSearchQuery] = useState('');
+  const [earningsTypeFilter, setEarningsTypeFilter] = useState('All Types');
+  const [earningsStatusFilter, setEarningsStatusFilter] = useState('All Status');
+  const [selectedEarningsCheckboxes, setSelectedEarningsCheckboxes] = useState([]);
+  const [isProcessPayoutModalOpen, setIsProcessPayoutModalOpen] = useState(false);
+  const [isAdjustCommissionModalOpen, setIsAdjustCommissionModalOpen] = useState(false);
+  const [isExportEarningsReportModalOpen, setIsExportEarningsReportModalOpen] = useState(false);
+  const [selectedTxForDetail, setSelectedTxForDetail] = useState(null);
+  const [commissionRate, setCommissionRate] = useState(20);
+
+  // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
   const [vipTeachersList, setVipTeachersList] = useState([
@@ -11542,6 +11758,846 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'earnings' ? (
+            (() => {
+              const filteredTxs = earningsTransactionsList.filter(tx => {
+                if (earningsTabFilter === 'course-sales' && tx.category !== 'course-sales') return false;
+                if (earningsTabFilter === 'subscriptions' && tx.category !== 'subscriptions') return false;
+                if (earningsTabFilter === 'payouts' && tx.category !== 'payouts') return false;
+                if (earningsTabFilter === 'refunds' && tx.category !== 'refunds') return false;
+                if (earningsTabFilter === 'adjustments' && tx.category !== 'adjustments') return false;
+                if (earningsTypeFilter !== 'All Types' && tx.type !== earningsTypeFilter) return false;
+                if (earningsStatusFilter !== 'All Status' && tx.status !== earningsStatusFilter) return false;
+                if (earningsSearchQuery.trim()) {
+                  const q = earningsSearchQuery.toLowerCase();
+                  const matchDesc = tx.description.toLowerCase().includes(q);
+                  const matchUser = tx.userName.toLowerCase().includes(q);
+                  const matchType = tx.type.toLowerCase().includes(q);
+                  const matchAmount = tx.amount.toLowerCase().includes(q);
+                  if (!matchDesc && !matchUser && !matchType && !matchAmount) return false;
+                }
+                return true;
+              });
+
+              const isAllSelected = filteredTxs.length > 0 && selectedEarningsCheckboxes.length === filteredTxs.length;
+              const toggleSelectAll = () => {
+                if (isAllSelected) {
+                  setSelectedEarningsCheckboxes([]);
+                } else {
+                  setSelectedEarningsCheckboxes(filteredTxs.map(t => t.id));
+                }
+              };
+              const toggleSelectTx = (id) => {
+                if (selectedEarningsCheckboxes.includes(id)) {
+                  setSelectedEarningsCheckboxes(selectedEarningsCheckboxes.filter(item => item !== id));
+                } else {
+                  setSelectedEarningsCheckboxes([...selectedEarningsCheckboxes, id]);
+                }
+              };
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* 1. TOP EARNINGS HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xs shrink-0 font-black">
+                        <DollarSign className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Earnings</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Track revenue, payments, commissions, and payouts. Manage financial activities across the platform.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <div className="relative">
+                        <button
+                          onClick={() => setIsDateRangeDropdownOpen(!isDateRangeDropdownOpen)}
+                          className="px-3.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                          <span>{dateRangeFilter}</span>
+                          <ChevronDown className="w-3 h-3 text-gray-400" />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => setIsExportEarningsReportModalOpen(true)}
+                        className="px-4 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Export Report</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. KPI METRICS (4 CARDS) */}
+                  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
+                    
+                    {/* Card 1: Total Revenue */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Total Revenue</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">$12,845</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 28% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                          <Coins className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-blue-200 h-3 rounded-full"></div>
+                          <div className="w-1 bg-blue-300 h-5 rounded-full"></div>
+                          <div className="w-1 bg-blue-400 h-4 rounded-full"></div>
+                          <div className="w-1 bg-blue-500 h-7 rounded-full"></div>
+                          <div className="w-1 bg-blue-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Platform Commission */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Platform Commission</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">$2,569</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 25% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                          <DollarSign className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-emerald-200 h-4 rounded-full"></div>
+                          <div className="w-1 bg-emerald-300 h-3 rounded-full"></div>
+                          <div className="w-1 bg-emerald-400 h-6 rounded-full"></div>
+                          <div className="w-1 bg-emerald-500 h-5 rounded-full"></div>
+                          <div className="w-1 bg-emerald-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Teacher Payouts */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Teacher Payouts</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">$7,420</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 32% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                          <CreditCard className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-purple-200 h-2 rounded-full"></div>
+                          <div className="w-1 bg-purple-300 h-4 rounded-full"></div>
+                          <div className="w-1 bg-purple-400 h-6 rounded-full"></div>
+                          <div className="w-1 bg-purple-500 h-5 rounded-full"></div>
+                          <div className="w-1 bg-purple-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Net Profit */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Net Profit</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">$2,856</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>↑ 18% from last month</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                          <CheckCircle2 className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:flex items-end gap-0.5 h-8">
+                          <div className="w-1 bg-emerald-200 h-3 rounded-full"></div>
+                          <div className="w-1 bg-emerald-300 h-5 rounded-full"></div>
+                          <div className="w-1 bg-emerald-400 h-6 rounded-full"></div>
+                          <div className="w-1 bg-emerald-500 h-7 rounded-full"></div>
+                          <div className="w-1 bg-emerald-600 h-8 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 3. MAIN CONTENT GRID (8 COLS LEFT + 4 COLS SIDEBAR RIGHT) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    
+                    {/* LEFT COLUMN: REVENUE CHART + TRANSACTIONS TABLE (8 COLS) */}
+                    <div className="lg:col-span-8 space-y-5 min-w-0">
+                      
+                      {/* Card 1: Revenue Overview Multi-Line Chart */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-5 space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <h3 className="text-base font-black text-gray-900 tracking-tight">Revenue Overview</h3>
+                            <div className="flex items-center gap-4 mt-1 text-xs">
+                              <div className="flex items-center gap-1.5">
+                                <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0"></span>
+                                <span className="font-bold text-gray-600 text-[11px]">Total Revenue</span>
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span className="font-bold text-gray-600 text-[11px]">Platform Commission</span>
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                                <span className="font-bold text-gray-600 text-[11px]">Teacher Payouts</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* View Toggles */}
+                          <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl shrink-0 self-start sm:self-auto">
+                            <button
+                              onClick={() => setEarningsChartRange('daily')}
+                              className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                                earningsChartRange === 'daily'
+                                  ? 'bg-[#114B44] text-white shadow-xs'
+                                  : 'text-gray-600 hover:text-gray-900'
+                              }`}
+                            >
+                              Daily
+                            </button>
+                            <button
+                              onClick={() => setEarningsChartRange('weekly')}
+                              className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                                earningsChartRange === 'weekly'
+                                  ? 'bg-[#114B44] text-white shadow-xs'
+                                  : 'text-gray-600 hover:text-gray-900'
+                              }`}
+                            >
+                              Weekly
+                            </button>
+                            <button
+                              onClick={() => setEarningsChartRange('monthly')}
+                              className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                                earningsChartRange === 'monthly'
+                                  ? 'bg-[#114B44] text-white shadow-xs'
+                                  : 'text-gray-600 hover:text-gray-900'
+                              }`}
+                            >
+                              Monthly
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Spline Chart Canvas */}
+                        <div className="pt-2">
+                          <div className="flex items-end gap-2 h-56 w-full">
+                            {/* Y-Axis Labels */}
+                            <div className="flex flex-col justify-between h-full text-[10px] font-bold text-gray-400 pr-1 shrink-0 pb-6 select-none">
+                              <span>$800</span>
+                              <span>$600</span>
+                              <span>$400</span>
+                              <span>$200</span>
+                              <span>$0</span>
+                            </div>
+
+                            <div className="relative flex-1 h-full flex flex-col justify-end">
+                              {/* Grid Background Lines */}
+                              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40 pb-6">
+                                <div className="border-b border-gray-200 w-full"></div>
+                                <div className="border-b border-gray-100 w-full"></div>
+                                <div className="border-b border-gray-100 w-full"></div>
+                                <div className="border-b border-gray-100 w-full"></div>
+                                <div className="border-b border-gray-200 w-full"></div>
+                              </div>
+
+                              {/* Multi-Line Curves */}
+                              <svg className="w-full h-[82%] overflow-visible" viewBox="0 0 700 200" preserveAspectRatio="none">
+                                <defs>
+                                  <linearGradient id="blueGradEarnings" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.2" />
+                                    <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.0" />
+                                  </linearGradient>
+                                </defs>
+                                
+                                {/* Area Fill for Top Line */}
+                                <path
+                                  d="M 10,130 Q 70,80 120,90 T 230,110 T 340,65 T 450,85 T 560,40 T 690,60 L 690,195 L 10,195 Z"
+                                  fill="url(#blueGradEarnings)"
+                                />
+
+                                {/* Line 1: Total Revenue (Blue) */}
+                                <path
+                                  d="M 10,130 Q 70,80 120,90 T 230,110 T 340,65 T 450,85 T 560,40 T 690,60"
+                                  fill="none"
+                                  stroke="#3B82F6"
+                                  strokeWidth="3"
+                                  strokeLinecap="round"
+                                />
+
+                                {/* Line 2: Platform Commission (Green) */}
+                                <path
+                                  d="M 10,165 Q 70,140 120,145 T 230,150 T 340,120 T 450,135 T 560,95 T 690,110"
+                                  fill="none"
+                                  stroke="#10B981"
+                                  strokeWidth="2.5"
+                                  strokeLinecap="round"
+                                />
+
+                                {/* Line 3: Teacher Payouts (Orange) */}
+                                <path
+                                  d="M 10,185 Q 70,175 120,180 T 230,175 T 340,160 T 450,170 T 560,140 T 690,150"
+                                  fill="none"
+                                  stroke="#F59E0B"
+                                  strokeWidth="2.5"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+
+                              {/* X-Axis Labels */}
+                              <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 pt-2 px-1 border-t border-gray-200 select-none">
+                                <span>1 Sep</span>
+                                <span>5 Sep</span>
+                                <span>10 Sep</span>
+                                <span>15 Sep</span>
+                                <span>20 Sep</span>
+                                <span>25 Sep</span>
+                                <span>30 Sep</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card 2: Transactions Data Table */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden space-y-3">
+                        
+                        {/* Status Filter Tabs */}
+                        <div className="p-3 border-b border-gray-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                          <button
+                            onClick={() => setEarningsTabFilter('all')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                              earningsTabFilter === 'all'
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                          >
+                            <span>All Transactions</span>
+                          </button>
+
+                          <button
+                            onClick={() => setEarningsTabFilter('course-sales')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                              earningsTabFilter === 'course-sales'
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                          >
+                            <span>Course Sales</span>
+                          </button>
+
+                          <button
+                            onClick={() => setEarningsTabFilter('subscriptions')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                              earningsTabFilter === 'subscriptions'
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                          >
+                            <span>Subscriptions</span>
+                          </button>
+
+                          <button
+                            onClick={() => setEarningsTabFilter('payouts')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                              earningsTabFilter === 'payouts'
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                          >
+                            <span>Teacher Payouts</span>
+                          </button>
+
+                          <button
+                            onClick={() => setEarningsTabFilter('refunds')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                              earningsTabFilter === 'refunds'
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                          >
+                            <span>Refunds</span>
+                          </button>
+
+                          <button
+                            onClick={() => setEarningsTabFilter('adjustments')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                              earningsTabFilter === 'adjustments'
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                          >
+                            <span>Adjustments</span>
+                          </button>
+                        </div>
+
+                        {/* Search Bar & Dropdowns Filter Strip */}
+                        <div className="px-4 space-y-2">
+                          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 w-full min-w-0">
+                            <div className="relative flex-1 min-w-[200px]">
+                              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                              <input
+                                type="text"
+                                placeholder="Search transactions..."
+                                value={earningsSearchQuery}
+                                onChange={(e) => setEarningsSearchQuery(e.target.value)}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44]"
+                              />
+                            </div>
+
+                            <select
+                              value={earningsTypeFilter}
+                              onChange={(e) => setEarningsTypeFilter(e.target.value)}
+                              aria-label="Filter Tipe Transaksi"
+                              className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            >
+                              <option>All Types</option>
+                              <option>Course Sale</option>
+                              <option>Subscription</option>
+                              <option>Teacher Payout</option>
+                              <option>Refund</option>
+                              <option>Adjustment</option>
+                            </select>
+
+                            <select
+                              value={earningsStatusFilter}
+                              onChange={(e) => setEarningsStatusFilter(e.target.value)}
+                              aria-label="Filter Status Transaksi"
+                              className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            >
+                              <option>All Status</option>
+                              <option>Completed</option>
+                              <option>Pending</option>
+                              <option>Processed</option>
+                            </select>
+
+                            <button
+                              onClick={() => alert('Filter Rentang Tanggal Transaksi')}
+                              className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                              <span>Date Range</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setEarningsTypeFilter('All Types');
+                                setEarningsStatusFilter('All Status');
+                                setEarningsSearchQuery('');
+                              }}
+                              className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <Filter className="w-3 h-3 text-gray-500" />
+                              <span>Filters</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Transactions Table */}
+                        <div className="overflow-x-auto w-full min-w-0">
+                          <table className="w-full text-left text-xs text-gray-600 min-w-[860px] whitespace-nowrap">
+                            <thead className="bg-[#F8FAFC] text-[11px] font-black text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              <tr>
+                                <th className="px-4 py-3.5 w-12 text-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={isAllSelected}
+                                    onChange={toggleSelectAll}
+                                    aria-label="Pilih Semua Transaksi"
+                                    className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                                  />
+                                </th>
+                                <th className="px-2 py-3.5 w-8 font-extrabold text-gray-400">#</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Date</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Type</th>
+                                <th className="px-4 py-3.5 font-extrabold text-gray-700">Description</th>
+                                <th className="px-4 py-3.5 font-extrabold text-gray-700">User/Teacher</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Amount</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700 text-center">Status</th>
+                                <th className="px-4 py-3.5 font-extrabold text-gray-700 text-right">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                              {filteredTxs.length === 0 ? (
+                                <tr>
+                                  <td colSpan={9} className="py-12 text-center text-gray-400">
+                                    <Coins className="w-10 h-10 mx-auto text-gray-300 mb-2" />
+                                    <div className="font-bold text-sm text-gray-600">Tidak ada transaksi ditemukan</div>
+                                    <div className="text-xs text-gray-400 mt-1">Coba sesuaikan filter pencarian atau rentang tanggal</div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                filteredTxs.map((tx) => (
+                                  <tr
+                                    key={tx.id}
+                                    className={`hover:bg-emerald-50/20 transition-colors ${
+                                      selectedEarningsCheckboxes.includes(tx.id) ? 'bg-emerald-50/30' : ''
+                                    }`}
+                                  >
+                                    <td className="px-4 py-3.5 text-center">
+                                      <input
+                                        type="checkbox"
+                                        checked={selectedEarningsCheckboxes.includes(tx.id)}
+                                        onChange={() => toggleSelectTx(tx.id)}
+                                        aria-label={`Pilih Transaksi ${tx.description}`}
+                                        className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                                      />
+                                    </td>
+                                    <td className="px-2 py-3.5 font-bold text-gray-400">{tx.number}</td>
+                                    
+                                    {/* Date */}
+                                    <td className="px-3 py-3.5 font-semibold text-gray-600">
+                                      {tx.date}
+                                    </td>
+
+                                    {/* Type */}
+                                    <td className="px-3 py-3.5">
+                                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-extrabold border ${tx.typeBadge}`}>
+                                        {tx.type}
+                                      </span>
+                                    </td>
+
+                                    {/* Description */}
+                                    <td className="px-4 py-3.5 font-bold text-gray-900">
+                                      {tx.description}
+                                    </td>
+
+                                    {/* User/Teacher */}
+                                    <td className="px-4 py-3.5">
+                                      <div className="flex items-center gap-2">
+                                        <img
+                                          src={tx.userAvatar}
+                                          alt={tx.userName}
+                                          className="w-7 h-7 rounded-full object-cover border border-gray-200 shrink-0"
+                                          onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                                        />
+                                        <span className="font-extrabold text-gray-800 text-xs truncate max-w-[120px]">
+                                          {tx.userName}
+                                        </span>
+                                      </div>
+                                    </td>
+
+                                    {/* Amount */}
+                                    <td className="px-3 py-3.5 font-black text-xs">
+                                      <span className={tx.isNegative ? 'text-rose-600' : 'text-gray-900'}>
+                                        {tx.amount}
+                                      </span>
+                                    </td>
+
+                                    {/* Status */}
+                                    <td className="px-3 py-3.5 text-center">
+                                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${tx.statusBadge}`}>
+                                        {tx.status}
+                                      </span>
+                                    </td>
+
+                                    {/* Actions */}
+                                    <td className="px-4 py-3.5 text-right">
+                                      <div className="flex items-center justify-end gap-1">
+                                        <button
+                                          onClick={() => {
+                                            setSelectedTxForDetail(tx);
+                                          }}
+                                          title="Lihat Detail Transaksi"
+                                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        >
+                                          <Eye className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => alert(`Opsi Transaksi #${tx.number}: ${tx.description} (${tx.amount})`)}
+                                          title="Opsi Lainnya"
+                                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        >
+                                          <MoreHorizontal className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Pagination Footer */}
+                        <div className="p-4 bg-[#F8FAFC] border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500">
+                          <div>
+                            Showing <span className="font-bold text-gray-800">1</span> to <span className="font-bold text-gray-800">{filteredTxs.length}</span> of <span className="font-bold text-gray-800">1,248</span> transactions
+                          </div>
+                          
+                          <div className="flex items-center gap-1.5 self-center sm:self-auto">
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">&lt;</button>
+                            <button className="w-7 h-7 rounded-lg bg-[#114B44] text-white font-black text-xs flex items-center justify-center shadow-xs">1</button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">2</button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">3</button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">4</button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">5</button>
+                            <span className="px-1 text-gray-400">...</span>
+                            <button className="px-2 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">125</button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs flex items-center justify-center shadow-xs transition-colors cursor-pointer">&gt;</button>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* RIGHT COLUMN: SIDEBAR WIDGETS (4 COLS) */}
+                    <aside className="lg:col-span-4 space-y-4 min-w-0">
+                      
+                      {/* Card 1: Quick Actions (2x2 Grid with Chevron) */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3">
+                        <h3 className="text-sm font-black text-gray-900">Quick Actions</h3>
+
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          
+                          <button
+                            onClick={() => setIsProcessPayoutModalOpen(true)}
+                            className="p-2.5 rounded-xl border border-gray-200 hover:bg-emerald-50/50 hover:border-emerald-300 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
+                          >
+                            <div className="flex items-center gap-2">
+                              <ArrowUpRight className="w-3.5 h-3.5 text-[#114B44]" />
+                              <span className="font-bold text-gray-800 text-[11px]">Process Payouts</span>
+                            </div>
+                            <ChevronRight className="w-3 h-3 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+                          </button>
+
+                          <button
+                            onClick={() => setIsAdjustCommissionModalOpen(true)}
+                            className="p-2.5 rounded-xl border border-gray-200 hover:bg-emerald-50/50 hover:border-emerald-300 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Settings className="w-3.5 h-3.5 text-blue-600" />
+                              <span className="font-bold text-gray-800 text-[11px]">Adjust Commission</span>
+                            </div>
+                            <ChevronRight className="w-3 h-3 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+                          </button>
+
+                          <button
+                            onClick={() => setIsExportEarningsReportModalOpen(true)}
+                            className="p-2.5 rounded-xl border border-gray-200 hover:bg-emerald-50/50 hover:border-emerald-300 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
+                          >
+                            <div className="flex items-center gap-2">
+                              <FileText className="w-3.5 h-3.5 text-purple-600" />
+                              <span className="font-bold text-gray-800 text-[11px]">Generate Report</span>
+                            </div>
+                            <ChevronRight className="w-3 h-3 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setEarningsTabFilter('all');
+                              alert('Menampilkan seluruh riwayat transaksi platform.');
+                            }}
+                            className="p-2.5 rounded-xl border border-gray-200 hover:bg-emerald-50/50 hover:border-emerald-300 transition-all flex items-center justify-between group cursor-pointer shadow-2xs"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Layers className="w-3.5 h-3.5 text-amber-600" />
+                              <span className="font-bold text-gray-800 text-[11px]">View Transactions</span>
+                            </div>
+                            <ChevronRight className="w-3 h-3 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+                          </button>
+
+                        </div>
+                      </div>
+
+                      {/* Card 2: Pending Payout Requests */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Pending Payout Requests</h3>
+                          <button
+                            onClick={() => setIsProcessPayoutModalOpen(true)}
+                            className="text-xs font-bold text-[#114B44] hover:text-[#0D3B35] flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2 text-xs">
+                          {pendingPayoutsList.map((po) => (
+                            <div key={po.id} className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <img
+                                  src={po.avatar}
+                                  alt={po.name}
+                                  className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0"
+                                  onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                                />
+                                <div className="min-w-0">
+                                  <div className="font-extrabold text-gray-900 text-xs truncate">
+                                    {po.name}
+                                  </div>
+                                  <div className="text-[10px] text-gray-400 font-medium">
+                                    {po.amount} • {po.date}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-50 text-amber-700 border border-amber-200">
+                                  {po.status}
+                                </span>
+                                <button
+                                  onClick={() => {
+                                    if (confirm(`Setujui dan proses pencairan dana ${po.amount} untuk ${po.name}?`)) {
+                                      setPendingPayoutsList(prev => prev.filter(p => p.id !== po.id));
+                                      alert(`Pencairan dana ${po.amount} untuk ${po.name} berhasil diproses!`);
+                                    }
+                                  }}
+                                  className="p-1 rounded-lg text-gray-400 hover:text-emerald-700 hover:bg-emerald-50 transition-colors cursor-pointer"
+                                  title="Proses Pencairan"
+                                >
+                                  <Check className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Card 3: Top Earning Teachers */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Top Earning Teachers</h3>
+                          <button
+                            onClick={() => alert('Melihat seluruh laporan pendapatan pengajar')}
+                            className="text-xs font-bold text-[#114B44] hover:text-[#0D3B35] flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {topEarningTeachersList.map((tea) => (
+                            <div key={tea.rank} className="flex items-center justify-between gap-2.5">
+                              <div className="flex items-center gap-2 min-w-0 flex-1">
+                                <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black flex items-center justify-center shrink-0">
+                                  {tea.rank}
+                                </span>
+                                <img
+                                  src={tea.avatar}
+                                  alt={tea.name}
+                                  className="w-7 h-7 rounded-full object-cover border border-gray-200 shrink-0"
+                                  onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <div className="font-extrabold text-gray-900 text-xs truncate">
+                                    {tea.name}
+                                  </div>
+                                  <div className="w-full bg-gray-100 rounded-full h-1.5 mt-1">
+                                    <div className={`${tea.barColor} h-1.5 rounded-full`} style={{ width: tea.barWidth }}></div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <span className="font-black text-gray-900 text-xs shrink-0">
+                                {tea.amount}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Card 4: Revenue Breakdown (Donut Chart & Legends) */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3.5">
+                        <h3 className="text-sm font-black text-gray-900">Revenue Breakdown</h3>
+
+                        <div className="flex items-center justify-center py-2">
+                          <div className="relative w-36 h-36 flex items-center justify-center">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#F1F5F9" strokeWidth="12" />
+                              {/* Course Sales (65%) -> Blue */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#3B82F6" strokeWidth="12" strokeDasharray="155.2 238.8" strokeDashoffset="0" />
+                              {/* Subscriptions (20%) -> Green */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#10B981" strokeWidth="12" strokeDasharray="47.7 238.8" strokeDashoffset="-155.2" />
+                              {/* Live Classes (10%) -> Amber */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#F59E0B" strokeWidth="12" strokeDasharray="23.9 238.8" strokeDashoffset="-202.9" />
+                              {/* Other (5%) -> Purple */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#8B5CF6" strokeWidth="12" strokeDasharray="12.0 238.8" strokeDashoffset="-226.8" />
+                            </svg>
+                            <div className="absolute flex flex-col items-center justify-center text-center">
+                              <span className="text-base font-black text-gray-900">$12,845</span>
+                              <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Total Revenue</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Breakdown List */}
+                        <div className="space-y-2 text-xs pt-1 border-t border-gray-100">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0"></span>
+                              <span className="font-bold text-gray-700 text-[11px]">Course Sales</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-gray-400 font-bold text-[11px]">65%</span>
+                              <span className="font-black text-gray-900 text-[11px]">$8,349</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                              <span className="font-bold text-gray-700 text-[11px]">Subscriptions</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-gray-400 font-bold text-[11px]">20%</span>
+                              <span className="font-black text-gray-900 text-[11px]">$2,569</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                              <span className="font-bold text-gray-700 text-[11px]">Live Classes</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-gray-400 font-bold text-[11px]">10%</span>
+                              <span className="font-black text-gray-900 text-[11px]">$1,285</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0"></span>
+                              <span className="font-bold text-gray-700 text-[11px]">Other</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-gray-400 font-bold text-[11px]">5%</span>
+                              <span className="font-black text-gray-900 text-[11px]">$642</span>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -15487,6 +16543,270 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
                   >
                     <span>Buat Tiket</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Process Payouts */}
+          {isProcessPayoutModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center font-black">
+                      <ArrowUpRight className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Proses Pencairan Dana Pengajar</h3>
+                      <p className="text-xs text-gray-500">Transfer bagi hasil kelas langsung ke rekening terdaftar</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsProcessPayoutModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 flex justify-between items-center">
+                    <div>
+                      <div className="text-[10px] font-bold uppercase text-emerald-700">Total Permintaan Menunggu</div>
+                      <div className="text-xl font-black mt-0.5">$1,790.00</div>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-200 text-emerald-900 text-[10px] font-bold">5 Pengajar</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {pendingPayoutsList.map((po) => (
+                      <div key={po.id} className="p-3 rounded-xl border border-gray-200 bg-[#F8FAFC] flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5">
+                          <img
+                            src={po.avatar}
+                            alt={po.name}
+                            className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                            onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                          />
+                          <div>
+                            <div className="font-extrabold text-gray-900">{po.name}</div>
+                            <div className="text-[10px] text-gray-400">Rek. BSI / BCA • {po.date}</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="font-black text-gray-900 text-xs">{po.amount}</span>
+                          <button
+                            onClick={() => {
+                              setPendingPayoutsList(prev => prev.filter(p => p.id !== po.id));
+                              alert(`Pencairan ${po.amount} untuk ${po.name} berhasil ditransfer!`);
+                            }}
+                            className="px-2.5 py-1 bg-[#114B44] text-white text-[10px] font-bold rounded-lg hover:bg-[#0D3B35] cursor-pointer"
+                          >
+                            Transfer
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsProcessPayoutModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      setPendingPayoutsList([]);
+                      setIsProcessPayoutModalOpen(false);
+                      alert('Seluruh 5 pencairan dana pengajar berhasil ditransfer massal!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>Proses Semua Pencairan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Adjust Commission */}
+          {isAdjustCommissionModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Settings className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Atur Komisi Platform</h3>
+                      <p className="text-xs text-gray-500">Persentase bagi hasil operasional madrasah</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsAdjustCommissionModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <div className="flex justify-between font-bold text-gray-700 mb-1">
+                      <span>Komisi Platform IlmuHub</span>
+                      <span className="font-black text-[#114B44] text-sm">{commissionRate}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="5"
+                      max="40"
+                      value={commissionRate}
+                      onChange={(e) => setCommissionRate(Number(e.target.value))}
+                      className="w-full accent-[#114B44] cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-gray-400 mt-1 font-bold">
+                      <span>Min 5%</span>
+                      <span>Bagi Hasil Pengajar: {100 - commissionRate}%</span>
+                      <span>Max 40%</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-1 text-blue-900 text-[11px]">
+                    <div className="font-black">Simulasi Perhitungan Kursus $100:</div>
+                    <div>• Pendapatan Pengajar: <strong>${(100 * (100 - commissionRate)) / 100}</strong></div>
+                    <div>• Komisi Platform: <strong>${(100 * commissionRate) / 100}</strong></div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsAdjustCommissionModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsAdjustCommissionModalOpen(false);
+                      alert(`Komisi platform berhasil diubah menjadi ${commissionRate}%!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>Simpan Perubahan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Export Earnings Report */}
+          {isExportEarningsReportModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Ekspor Laporan Keuangan</h3>
+                      <p className="text-xs text-gray-500">Unduh rekapitulasi omset, pajak, dan payout</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsExportEarningsReportModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Rentang Waktu</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]">
+                      <option>Bulan Ini (September 2026)</option>
+                      <option>Bulan Lalu (Agustus 2026)</option>
+                      <option>Kuartal 3 (Q3 2026)</option>
+                      <option>Tahun Ini (YTD 2026)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Format Berkas</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <label className="p-2.5 rounded-xl border-2 border-[#114B44] bg-emerald-50/40 text-center font-bold text-gray-800 cursor-pointer">
+                        PDF Resmi
+                      </label>
+                      <label className="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-center font-bold text-gray-600 cursor-pointer">
+                        Excel (.xlsx)
+                      </label>
+                      <label className="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-center font-bold text-gray-600 cursor-pointer">
+                        CSV
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsExportEarningsReportModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsExportEarningsReportModalOpen(false);
+                      alert('Laporan keuangan berhasil di-generate dan diunduh!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Laporan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Transaction Detail Receipt */}
+          {selectedTxForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center font-black">
+                      <Check className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Kuitansi Pembayaran Digital</h3>
+                      <p className="text-xs text-gray-500">ID Transaksi: {selectedTxForDetail.id.toUpperCase()}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedTxForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="p-4 bg-[#F8FAFC] rounded-2xl border border-gray-200 space-y-3 text-xs">
+                  <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                    <span className="text-gray-500 font-medium">Nominal Transaksi</span>
+                    <span className="text-lg font-black text-gray-900">{selectedTxForDetail.amount}</span>
+                  </div>
+
+                  <div className="space-y-1.5 text-[11px] text-gray-600">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400 font-bold">Keterangan:</span>
+                      <span className="font-bold text-gray-800">{selectedTxForDetail.description}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400 font-bold">Pengguna / Guru:</span>
+                      <span className="font-bold text-gray-800">{selectedTxForDetail.userName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400 font-bold">Metode Bayar:</span>
+                      <span className="font-bold text-gray-800">{selectedTxForDetail.method}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400 font-bold">Tanggal:</span>
+                      <span className="font-bold text-gray-800">{selectedTxForDetail.date}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400 font-bold">Status:</span>
+                      <span className="px-2 py-0.2 rounded-full text-[9px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        {selectedTxForDetail.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs">
+                  <button onClick={() => setSelectedTxForDetail(null)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      alert('Struk / Invoice PDF berhasil diunduh!');
+                      setSelectedTxForDetail(null);
+                    }}
+                    className="px-4 py-2 bg-[#114B44] text-white font-extrabold rounded-xl hover:bg-[#0D3B35] flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Struk</span>
                   </button>
                 </div>
               </div>
