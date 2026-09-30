@@ -20375,29 +20375,31 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               return (
                 <div className="space-y-5 animate-fadeIn">
                   {/* 1. TOP HEADER */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-11 h-11 rounded-2xl bg-rose-600 text-white flex items-center justify-center shadow-xs shrink-0 font-bold">
-                        <Heart className="w-6 h-6" />
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                    <div className="flex items-start sm:items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shadow-xs shrink-0 font-bold">
+                        <Heart className="w-6 h-6 fill-rose-100" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h1 className="text-xl font-black text-gray-900 tracking-tight">Health Check & Self-Healing</h1>
-                          <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 border border-emerald-200">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                            11/12 Probes Passing
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                          <h1 className="text-xl font-black text-gray-900 tracking-tight whitespace-nowrap">
+                            Health Check & Self-Healing
+                          </h1>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0 shadow-2xs">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>11/12 Probes Passing</span>
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 font-medium">
+                        <p className="text-xs text-gray-500 font-medium mt-1">
                           Automated liveness/readiness probes, database health, background worker heartbeats, and circuit breakers.
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                    <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
                       <button
                         onClick={() => setIsProbeConfigModalOpen(true)}
-                        className="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-3.5 py-2.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all hover:border-gray-300 cursor-pointer"
                       >
                         <Sliders className="w-3.5 h-3.5 text-gray-500" />
                         <span>Threshold Settings</span>
@@ -20405,7 +20407,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                       <button
                         onClick={() => setIsAutoHealingEnabled(!isAutoHealingEnabled)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer border ${
+                        className={`px-3.5 py-2.5 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer border ${
                           isAutoHealingEnabled
                             ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
                             : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
@@ -20417,7 +20419,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                       <button
                         onClick={() => setIsRunHealthCheckModalOpen(true)}
-                        className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                        className="px-4 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all hover:shadow-md cursor-pointer"
                       >
                         <Zap className="w-3.5 h-3.5" />
                         <span>Uji Semua Probe Sekarang</span>
@@ -20427,21 +20429,21 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                   {/* 2. HEALTH CHECK KPI CARDS */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
                       <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
                         <span>Global Health Score</span>
-                        <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                        <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
                           <CheckCircle2 className="w-4 h-4" />
                         </div>
                       </div>
-                      <div className="text-xl font-black text-emerald-600">99.98%</div>
+                      <div className="text-2xl font-black text-emerald-600">99.98%</div>
                       <div className="text-[11px] text-gray-400 font-medium">All critical tiers nominal</div>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
                       <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
                         <span>Active Probes Status</span>
-                        <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                        <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
                           <Activity className="w-4 h-4" />
                         </div>
                       </div>
@@ -20449,10 +20451,10 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       <div className="text-[11px] text-amber-600 font-bold">1 External probe warning (Midtrans)</div>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
                       <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
                         <span>Circuit Breaker State</span>
-                        <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                        <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
                           <Shield className="w-4 h-4" />
                         </div>
                       </div>
@@ -20460,16 +20462,16 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       <div className="text-[11px] text-gray-400 font-medium">Auto-isolation ready if error &gt; 5%</div>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
                       <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
                         <span>Mean Probe Latency</span>
-                        <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+                        <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
                           <Clock className="w-4 h-4" />
                         </div>
                       </div>
-                      <div className="text-xl font-black text-gray-900">18.2 ms</div>
+                      <div className="text-2xl font-black text-gray-900">18.2 ms</div>
                       <div className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
-                        <TrendingDown className="w-3 h-3" />
+                        <TrendingDown className="w-3.5 h-3.5" />
                         <span>Ultra-low latency across VPC</span>
                       </div>
                     </div>
@@ -20485,7 +20487,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                           value={healthCheckSearchQuery}
                           onChange={(e) => setHealthCheckSearchQuery(e.target.value)}
                           placeholder="Search probe name, target host, endpoint..."
-                          className="w-full pl-9 pr-8 py-2 bg-gray-50 hover:bg-gray-100/80 focus:bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#114B44] transition-colors"
+                          className="w-full pl-9 pr-8 py-2.5 bg-gray-50 hover:bg-gray-100/80 focus:bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#114B44] transition-colors"
                         />
                         {healthCheckSearchQuery && (
                           <button
