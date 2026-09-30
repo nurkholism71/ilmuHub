@@ -3757,6 +3757,110 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   ];
 
   // =========================================================
+  // SETTINGS DATASET & STATES (matching media_1790803383128.jpg)
+  // =========================================================
+  const [settingsActiveTab, setSettingsActiveTab] = useState('general'); // 'general' | 'platform' | 'payment' | 'email' | 'users' | 'appearance' | 'integrations' | 'security' | 'system'
+  const [settingsActiveSubNav, setSettingsActiveSubNav] = useState('general');
+  
+  // Platform Info State
+  const [platformInfo, setPlatformInfo] = useState({
+    name: 'IlmHub',
+    tagline: 'Learn • Teach • Grow',
+    url: 'https://ilmhub.com',
+    description: 'An online learning platform for Islamic and general education. Learn, teach, and grow together.',
+    logoUrl: '/images/ilmhub_logo.png'
+  });
+
+  // Language & Region State
+  const [langRegionSettings, setLangRegionSettings] = useState({
+    language: 'English',
+    timezone: '(UTC+02:00) Cairo',
+    dateFormat: 'DD MMM YYYY (23 Sep 2026)',
+    timeFormat: '24-hour (14:30)',
+    currency: 'USD ($)',
+    region: 'Global'
+  });
+
+  // Email & Notification Toggles
+  const [emailNotificationSettings, setEmailNotificationSettings] = useState({
+    sendWelcomeEmail: true,
+    sendClassEnrollmentEmail: true,
+    sendAssignmentSubmissionEmail: true,
+    sendQuizResultsEmail: true,
+    sendCertificateEmail: true,
+    sendMarketingUpdates: false,
+    sendSystemAlerts: true
+  });
+
+  // Platform Configuration Toggles
+  const [platformConfigToggles, setPlatformConfigToggles] = useState({
+    allowUserRegistration: true,
+    allowTeacherRegistration: true,
+    enableLiveClasses: true,
+    enableAssignments: true,
+    enableQuizzes: true,
+    enableCertificates: true,
+    enableDiscussionForum: true,
+    enableMobileAppAccess: true,
+    maintenanceMode: false
+  });
+
+  // User Registration Settings
+  const [userRegistrationSettings, setUserRegistrationSettings] = useState({
+    requireEmailVerification: true,
+    requirePhoneVerification: false,
+    allowGoogleLogin: true,
+    allowAppleLogin: true,
+    allowFacebookLogin: false,
+    defaultUserRole: 'Student',
+    autoApproveTeacher: true,
+    requireAdminApproval: false
+  });
+
+  // Security Settings
+  const [securitySettings, setSecuritySettings] = useState({
+    enable2FA: true,
+    enforceStrongPassword: true,
+    enableLoginAttemptLimit: true,
+    enableCaptcha: true,
+    enableIpRestriction: false,
+    sessionTimeout: '7 days'
+  });
+
+  // System Performance & Storage Settings
+  const [systemPerfSettings, setSystemPerfSettings] = useState({
+    fileUploadLimit: '50 MB',
+    allowedFileTypes: 'jpg, jpeg, png, pdf, doc, docx, mp4',
+    storageProvider: 'Supabase Storage',
+    enableCdn: true
+  });
+
+  // Backup & Maintenance Settings
+  const [backupSettings, setBackupSettings] = useState({
+    autoBackup: true,
+    backupFrequency: 'Daily',
+    lastBackupTime: '23 Sep 2026, 02:30',
+    backupStatus: 'Success'
+  });
+
+  // Settings Modals State
+  const [isSettingsDocsModalOpen, setIsSettingsDocsModalOpen] = useState(false);
+  const [isEditEmailTemplatesModalOpen, setIsEditEmailTemplatesModalOpen] = useState(false);
+  const [isViewBackupsModalOpen, setIsViewBackupsModalOpen] = useState(false);
+  const [isClearCacheConfirmModalOpen, setIsClearCacheConfirmModalOpen] = useState(false);
+  const [isRebuildIndexModalOpen, setIsRebuildIndexModalOpen] = useState(false);
+  const [isResetSettingsConfirmModalOpen, setIsResetSettingsConfirmModalOpen] = useState(false);
+  const [isSettingsSavedToast, setIsSettingsSavedToast] = useState(false);
+
+  // Backup History Dataset
+  const backupHistoryList = [
+    { id: 'bak-1', filename: 'ilmhub_backup_20260923_0230.tar.gz', date: '23 Sep 2026, 02:30', size: '1.42 GB', status: 'Success', type: 'Automated Daily' },
+    { id: 'bak-2', filename: 'ilmhub_backup_20260922_0230.tar.gz', date: '22 Sep 2026, 02:30', size: '1.40 GB', status: 'Success', type: 'Automated Daily' },
+    { id: 'bak-3', filename: 'ilmhub_backup_20260921_0230.tar.gz', date: '21 Sep 2026, 02:30', size: '1.38 GB', status: 'Success', type: 'Automated Daily' },
+    { id: 'bak-4', filename: 'ilmhub_backup_20260920_0230.tar.gz', date: '20 Sep 2026, 02:30', size: '1.35 GB', status: 'Success', type: 'Automated Daily' }
+  ];
+
+  // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
   const [vipTeachersList, setVipTeachersList] = useState([
@@ -4342,17 +4446,64 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 )}
               </div>
 
-              {/* Expandable Settings */}
-              <button
-                onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-gray-300 hover:bg-white/5 hover:text-white transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <Settings className="w-4 h-4 text-gray-400" />
-                  <span>Settings</span>
-                </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${settingsMenuOpen ? 'rotate-180' : ''}`} />
-              </button>
+              {/* Expandable Settings (matching media_1790803383128.jpg) */}
+              <div className="space-y-1">
+                <button
+                  onClick={() => {
+                    setSettingsMenuOpen(!settingsMenuOpen);
+                    setActiveNav('settings');
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeNav === 'settings'
+                      ? 'bg-[#114B44] text-white shadow-xs'
+                      : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Settings className={`w-4 h-4 ${activeNav === 'settings' ? 'text-white' : 'text-gray-400'}`} />
+                    <span>Settings</span>
+                  </div>
+                  <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${settingsMenuOpen || activeNav === 'settings' ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Sub-items Tree */}
+                {(settingsMenuOpen || activeNav === 'settings') && (
+                  <div className="pl-3.5 pr-1 py-1 space-y-0.5 border-l border-white/10 ml-3 animate-fadeIn">
+                    {[
+                      { id: 'general', label: 'General', icon: Sliders },
+                      { id: 'platform', label: 'Platform Configurations', icon: Monitor },
+                      { id: 'payment', label: 'Payment Settings', icon: CreditCard },
+                      { id: 'email', label: 'Email & Notifications', icon: Mail },
+                      { id: 'users', label: 'User & Access Control', icon: Users },
+                      { id: 'appearance', label: 'Appearance', icon: Sparkles },
+                      { id: 'integrations', label: 'Integrations', icon: Link2 },
+                      { id: 'security', label: 'Security', icon: Shield },
+                      { id: 'system', label: 'System', icon: HardDrive },
+                    ].map((sub) => {
+                      const SubIcon = sub.icon;
+                      const isSubActive = settingsActiveSubNav === sub.id && activeNav === 'settings';
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => {
+                            setSettingsActiveSubNav(sub.id);
+                            setSettingsActiveTab(sub.id);
+                            setActiveNav('settings');
+                          }}
+                          className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                            isSubActive
+                              ? 'bg-emerald-500/20 text-emerald-300 font-extrabold'
+                              : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                          }`}
+                        >
+                          <SubIcon className="w-3 h-3 shrink-0" />
+                          <span className="truncate">{sub.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* SYSTEM SECTION */}
@@ -14472,6 +14623,705 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'settings' ? (
+            (() => {
+              // Custom Toggle Switch Component
+              const ToggleSwitch = ({ checked, onChange }) => (
+                <button
+                  type="button"
+                  onClick={() => onChange(!checked)}
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors duration-200 ease-in-out cursor-pointer shrink-0 ${
+                    checked ? 'bg-[#10B981]' : 'bg-gray-300'
+                  }`}
+                >
+                  <div
+                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                      checked ? 'translate-x-4' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              );
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  {/* 1. TOP HEADER */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-md shrink-0">
+                        <Settings className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Settings</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Configure your platform, manage preferences, integrations, and security.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Top Action Buttons (matching media_1790803383128.jpg) */}
+                    <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+                      <button
+                        onClick={() => setIsSettingsDocsModalOpen(true)}
+                        className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-gray-500" />
+                        <span>View Documentation</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsClearCacheConfirmModalOpen(true)}
+                        className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Clear Cache</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          alert('Backup database snapshot baru berhasil dibuat!');
+                        }}
+                        className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                      >
+                        <HardDrive className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Backup Now</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setIsSettingsSavedToast(true);
+                          setTimeout(() => setIsSettingsSavedToast(false), 3000);
+                          alert('Seluruh pengaturan sistem berhasil disimpan!');
+                        }}
+                        className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-black shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Save Changes</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. HORIZONTAL SETTINGS TABS STRIP */}
+                  <div className="bg-white rounded-2xl p-2 sm:p-2.5 border border-gray-100 shadow-xs">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap min-w-0 py-0.5">
+                      {[
+                        { id: 'general', label: 'General', icon: Sliders },
+                        { id: 'platform', label: 'Platform', icon: Monitor },
+                        { id: 'payment', label: 'Payment', icon: CreditCard },
+                        { id: 'email', label: 'Email & Notifications', icon: Mail },
+                        { id: 'users', label: 'Users & Roles', icon: Users },
+                        { id: 'appearance', label: 'Appearance', icon: Sparkles },
+                        { id: 'integrations', label: 'Integrations', icon: Link2 },
+                        { id: 'security', label: 'Security', icon: Shield },
+                        { id: 'system', label: 'System', icon: HardDrive }
+                      ].map((tab) => {
+                        const TabIcon = tab.icon;
+                        const isActive = settingsActiveTab === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={() => {
+                              setSettingsActiveTab(tab.id);
+                              setSettingsActiveSubNav(tab.id);
+                            }}
+                            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              isActive
+                                ? 'bg-[#114B44] text-white shadow-xs font-black'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/80'
+                            }`}
+                          >
+                            <TabIcon className="w-3.5 h-3.5" />
+                            <span>{tab.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 3. SETTINGS MAIN 3x3 CARDS GRID (Matching media_1790803383128.jpg) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 min-w-0">
+                    
+                    {/* CARD 1: PLATFORM INFORMATION */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <FileText className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">Platform Information</h3>
+                            <p className="text-[11px] text-gray-500">Basic information about your platform.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 text-xs">
+                          <div className="grid grid-cols-2 gap-2.5">
+                            <div>
+                              <label className="block font-bold text-gray-700 mb-1 text-[11px]">Platform Name</label>
+                              <input
+                                type="text"
+                                value={platformInfo.name}
+                                onChange={(e) => setPlatformInfo({ ...platformInfo, name: e.target.value })}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                              />
+                            </div>
+                            <div>
+                              <label className="block font-bold text-gray-700 mb-1 text-[11px]">Tagline</label>
+                              <input
+                                type="text"
+                                value={platformInfo.tagline}
+                                onChange={(e) => setPlatformInfo({ ...platformInfo, tagline: e.target.value })}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Platform URL</label>
+                            <input
+                              type="text"
+                              value={platformInfo.url}
+                              onChange={(e) => setPlatformInfo({ ...platformInfo, url: e.target.value })}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-medium text-gray-600 focus:outline-none focus:border-[#114B44]"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Description</label>
+                            <textarea
+                              rows={2}
+                              value={platformInfo.description}
+                              onChange={(e) => setPlatformInfo({ ...platformInfo, description: e.target.value })}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-[11px] font-medium text-gray-600 focus:outline-none focus:border-[#114B44] resize-none"
+                            />
+                          </div>
+
+                          {/* Logo Preview & Upload */}
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1.5 text-[11px]">Platform Logo</label>
+                            <div className="flex items-center justify-between gap-2 p-2.5 bg-gray-50 rounded-xl border border-gray-200">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-lg bg-emerald-800 text-white flex items-center justify-center text-xs font-black shrink-0">
+                                  🕌
+                                </div>
+                                <div>
+                                  <div className="font-black text-gray-900 text-xs">IlmHub</div>
+                                  <div className="text-[9px] text-gray-400 font-bold">Learn • Teach • Grow</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={() => alert('Pilih logo baru dari penyimpanan lokal')}
+                                  className="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-[10px] font-extrabold cursor-pointer"
+                                >
+                                  Change Logo
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => alert('Logo default telah dipulihkan')}
+                                  className="px-2 py-1 border border-red-200 text-red-600 hover:bg-red-50 rounded-lg text-[10px] font-bold cursor-pointer"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                            <span className="text-[9px] text-gray-400 block mt-1">Recommended size: 512 × 512 px (PNG or SVG)</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CARD 2: LANGUAGE & REGION */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <Globe className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">Language & Region</h3>
+                            <p className="text-[11px] text-gray-500">Set default language, timezone, and regional settings.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 text-xs">
+                          <div className="grid grid-cols-2 gap-2.5">
+                            <div>
+                              <label className="block font-bold text-gray-700 mb-1 text-[11px]">Default Language</label>
+                              <select
+                                value={langRegionSettings.language}
+                                onChange={(e) => setLangRegionSettings({ ...langRegionSettings, language: e.target.value })}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                              >
+                                <option>English</option>
+                                <option>Bahasa Indonesia</option>
+                                <option>العربية (Arabic)</option>
+                                <option>Français</option>
+                              </select>
+                            </div>
+
+                            <div>
+                              <label className="block font-bold text-gray-700 mb-1 text-[11px]">Timezone</label>
+                              <select
+                                value={langRegionSettings.timezone}
+                                onChange={(e) => setLangRegionSettings({ ...langRegionSettings, timezone: e.target.value })}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                              >
+                                <option>(UTC+02:00) Cairo</option>
+                                <option>(UTC+07:00) Jakarta, WIB</option>
+                                <option>(UTC+03:00) Riyadh / Mecca</option>
+                                <option>(UTC+00:00) London / GMT</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2.5">
+                            <div>
+                              <label className="block font-bold text-gray-700 mb-1 text-[11px]">Date Format</label>
+                              <select
+                                value={langRegionSettings.dateFormat}
+                                onChange={(e) => setLangRegionSettings({ ...langRegionSettings, dateFormat: e.target.value })}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                              >
+                                <option>DD MMM YYYY (23 Sep 2026)</option>
+                                <option>YYYY-MM-DD (2026-09-23)</option>
+                                <option>MM/DD/YYYY (09/23/2026)</option>
+                              </select>
+                            </div>
+
+                            <div>
+                              <label className="block font-bold text-gray-700 mb-1 text-[11px]">Time Format</label>
+                              <select
+                                value={langRegionSettings.timeFormat}
+                                onChange={(e) => setLangRegionSettings({ ...langRegionSettings, timeFormat: e.target.value })}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                              >
+                                <option>24-hour (14:30)</option>
+                                <option>12-hour (02:30 PM)</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2.5">
+                            <div>
+                              <label className="block font-bold text-gray-700 mb-1 text-[11px]">Currency</label>
+                              <select
+                                value={langRegionSettings.currency}
+                                onChange={(e) => setLangRegionSettings({ ...langRegionSettings, currency: e.target.value })}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                              >
+                                <option>USD ($)</option>
+                                <option>IDR (Rp)</option>
+                                <option>SAR (﷼)</option>
+                                <option>EUR (€)</option>
+                              </select>
+                            </div>
+
+                            <div>
+                              <label className="block font-bold text-gray-700 mb-1 text-[11px]">Region</label>
+                              <select
+                                value={langRegionSettings.region}
+                                onChange={(e) => setLangRegionSettings({ ...langRegionSettings, region: e.target.value })}
+                                className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                              >
+                                <option>Global</option>
+                                <option>Southeast Asia</option>
+                                <option>Middle East & Africa</option>
+                                <option>North America</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CARD 3: EMAIL & NOTIFICATION SETTINGS */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <Mail className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">Email & Notification Settings</h3>
+                            <p className="text-[11px] text-gray-500">Configure system emails and notifications.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {[
+                            { key: 'sendWelcomeEmail', label: 'Send welcome email to new users' },
+                            { key: 'sendClassEnrollmentEmail', label: 'Send class enrollment email' },
+                            { key: 'sendAssignmentSubmissionEmail', label: 'Send assignment submission email' },
+                            { key: 'sendQuizResultsEmail', label: 'Send quiz results email' },
+                            { key: 'sendCertificateEmail', label: 'Send certificate email' },
+                            { key: 'sendMarketingUpdates', label: 'Send marketing updates' },
+                            { key: 'sendSystemAlerts', label: 'Send system alerts to admin' },
+                          ].map((item) => (
+                            <div key={item.key} className="flex items-center justify-between gap-2">
+                              <span className="text-gray-700 font-semibold text-[11px]">{item.label}</span>
+                              <ToggleSwitch
+                                checked={emailNotificationSettings[item.key]}
+                                onChange={(val) => setEmailNotificationSettings({ ...emailNotificationSettings, [item.key]: val })}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsEditEmailTemplatesModalOpen(true)}
+                        className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 font-extrabold text-[11px] transition-colors cursor-pointer"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 text-[#114B44]" />
+                        <span>Edit Email Templates</span>
+                      </button>
+                    </div>
+
+                    {/* CARD 4: PLATFORM CONFIGURATION */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <Monitor className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">Platform Configuration</h3>
+                            <p className="text-[11px] text-gray-500">Configure main platform features.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {[
+                            { key: 'allowUserRegistration', label: 'Allow user registration' },
+                            { key: 'allowTeacherRegistration', label: 'Allow teacher registration' },
+                            { key: 'enableLiveClasses', label: 'Enable live classes' },
+                            { key: 'enableAssignments', label: 'Enable assignments' },
+                            { key: 'enableQuizzes', label: 'Enable quizzes' },
+                            { key: 'enableCertificates', label: 'Enable certificates' },
+                            { key: 'enableDiscussionForum', label: 'Enable discussion forum' },
+                            { key: 'enableMobileAppAccess', label: 'Enable mobile app access' },
+                            { key: 'maintenanceMode', label: 'Maintenance mode' },
+                          ].map((item) => (
+                            <div key={item.key} className="flex items-center justify-between gap-2">
+                              <span className="text-gray-700 font-semibold text-[11px]">{item.label}</span>
+                              <ToggleSwitch
+                                checked={platformConfigToggles[item.key]}
+                                onChange={(val) => setPlatformConfigToggles({ ...platformConfigToggles, [item.key]: val })}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CARD 5: USER REGISTRATION SETTINGS */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <Users className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">User Registration Settings</h3>
+                            <p className="text-[11px] text-gray-500">Configure registration and verification options.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {[
+                            { key: 'requireEmailVerification', label: 'Require email verification' },
+                            { key: 'requirePhoneVerification', label: 'Require phone verification' },
+                            { key: 'allowGoogleLogin', label: 'Allow social login (Google)' },
+                            { key: 'allowAppleLogin', label: 'Allow social login (Apple)' },
+                            { key: 'allowFacebookLogin', label: 'Allow social login (Facebook)' },
+                          ].map((item) => (
+                            <div key={item.key} className="flex items-center justify-between gap-2">
+                              <span className="text-gray-700 font-semibold text-[11px]">{item.label}</span>
+                              <ToggleSwitch
+                                checked={userRegistrationSettings[item.key]}
+                                onChange={(val) => setUserRegistrationSettings({ ...userRegistrationSettings, [item.key]: val })}
+                              />
+                            </div>
+                          ))}
+
+                          <div className="pt-2 border-t border-gray-100">
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Default user role</label>
+                            <select
+                              value={userRegistrationSettings.defaultUserRole}
+                              onChange={(e) => setUserRegistrationSettings({ ...userRegistrationSettings, defaultUserRole: e.target.value })}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                            >
+                              <option>Student</option>
+                              <option>Teacher</option>
+                              <option>Guest</option>
+                            </select>
+                          </div>
+
+                          <div className="flex items-center justify-between gap-2 pt-1">
+                            <span className="text-gray-700 font-semibold text-[11px]">Auto-approve teacher registration</span>
+                            <ToggleSwitch
+                              checked={userRegistrationSettings.autoApproveTeacher}
+                              onChange={(val) => setUserRegistrationSettings({ ...userRegistrationSettings, autoApproveTeacher: val })}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-gray-700 font-semibold text-[11px]">Require admin approval for new users</span>
+                            <ToggleSwitch
+                              checked={userRegistrationSettings.requireAdminApproval}
+                              onChange={(val) => setUserRegistrationSettings({ ...userRegistrationSettings, requireAdminApproval: val })}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CARD 6: SECURITY SETTINGS */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <Shield className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">Security Settings</h3>
+                            <p className="text-[11px] text-gray-500">Manage security and access control.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {[
+                            { key: 'enable2FA', label: 'Enable two-factor authentication (2FA)' },
+                            { key: 'enforceStrongPassword', label: 'Enforce strong password policy' },
+                            { key: 'enableLoginAttemptLimit', label: 'Enable login attempt limit' },
+                            { key: 'enableCaptcha', label: 'Enable CAPTCHA for registration' },
+                            { key: 'enableIpRestriction', label: 'Enable IP restriction (Admin only)' },
+                          ].map((item) => (
+                            <div key={item.key} className="flex items-center justify-between gap-2">
+                              <span className="text-gray-700 font-semibold text-[11px]">{item.label}</span>
+                              <ToggleSwitch
+                                checked={securitySettings[item.key]}
+                                onChange={(val) => setSecuritySettings({ ...securitySettings, [item.key]: val })}
+                              />
+                            </div>
+                          ))}
+
+                          <div className="pt-2 border-t border-gray-100">
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Session timeout</label>
+                            <select
+                              value={securitySettings.sessionTimeout}
+                              onChange={(e) => setSecuritySettings({ ...securitySettings, sessionTimeout: e.target.value })}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                            >
+                              <option>7 days</option>
+                              <option>24 hours</option>
+                              <option>12 hours</option>
+                              <option>30 days</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CARD 7: SYSTEM SETTINGS */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <Sliders className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">System Settings</h3>
+                            <p className="text-[11px] text-gray-500">Manage system performance and storage.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 text-xs">
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">File upload limit</label>
+                            <select
+                              value={systemPerfSettings.fileUploadLimit}
+                              onChange={(e) => setSystemPerfSettings({ ...systemPerfSettings, fileUploadLimit: e.target.value })}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                            >
+                              <option>50 MB</option>
+                              <option>100 MB</option>
+                              <option>250 MB</option>
+                              <option>500 MB</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Allowed file types</label>
+                            <input
+                              type="text"
+                              value={systemPerfSettings.allowedFileTypes}
+                              onChange={(e) => setSystemPerfSettings({ ...systemPerfSettings, allowedFileTypes: e.target.value })}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-medium text-gray-700 focus:outline-none focus:border-[#114B44]"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Storage provider</label>
+                            <select
+                              value={systemPerfSettings.storageProvider}
+                              onChange={(e) => setSystemPerfSettings({ ...systemPerfSettings, storageProvider: e.target.value })}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                            >
+                              <option>Supabase Storage</option>
+                              <option>Amazon S3</option>
+                              <option>Google Cloud Storage</option>
+                              <option>Cloudflare R2</option>
+                            </select>
+                          </div>
+
+                          <div className="flex items-center justify-between gap-2 pt-1">
+                            <span className="text-gray-700 font-semibold text-[11px]">Enable CDN</span>
+                            <ToggleSwitch
+                              checked={systemPerfSettings.enableCdn}
+                              onChange={(val) => setSystemPerfSettings({ ...systemPerfSettings, enableCdn: val })}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CARD 8: BACKUP & MAINTENANCE */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <HardDrive className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">Backup & Maintenance</h3>
+                            <p className="text-[11px] text-gray-500">Manage backups and maintenance tools.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 text-xs">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-gray-700 font-semibold text-[11px]">Automatic backup</span>
+                            <ToggleSwitch
+                              checked={backupSettings.autoBackup}
+                              onChange={(val) => setBackupSettings({ ...backupSettings, autoBackup: val })}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Backup frequency</label>
+                            <select
+                              value={backupSettings.backupFrequency}
+                              onChange={(e) => setBackupSettings({ ...backupSettings, backupFrequency: e.target.value })}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                            >
+                              <option>Daily</option>
+                              <option>Weekly</option>
+                              <option>Monthly</option>
+                            </select>
+                          </div>
+
+                          <div className="flex items-center justify-between gap-2 p-2.5 bg-gray-50 rounded-xl border border-gray-200 text-[11px]">
+                            <span className="text-gray-500 font-bold">Last backup</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-gray-800">{backupSettings.lastBackupTime}</span>
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                Success
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 pt-2">
+                        <button
+                          type="button"
+                          onClick={() => alert('Snapshot backup baru telah dimulai!')}
+                          className="py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-extrabold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <HardDrive className="w-3.5 h-3.5" />
+                          <span>Backup Now</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsViewBackupsModalOpen(true)}
+                          className="py-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 font-extrabold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <FileText className="w-3.5 h-3.5 text-gray-500" />
+                          <span>View Backups</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* CARD 9: DANGER ZONE */}
+                    <div className="bg-white rounded-2xl p-5 border border-rose-100 shadow-xs space-y-4 flex flex-col justify-between">
+                      <div className="space-y-3.5">
+                        <div className="flex items-center gap-2.5 pb-2 border-b border-rose-100">
+                          <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                            <AlertCircle className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-rose-900">Danger Zone</h3>
+                            <p className="text-[11px] text-rose-500">Advanced actions and reset options.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {/* 1. Clear Application Cache */}
+                          <div className="p-2.5 rounded-xl bg-rose-50/50 border border-rose-100 flex items-center justify-between gap-2">
+                            <div>
+                              <div className="font-black text-gray-900 text-[11px]">Clear Application Cache</div>
+                              <div className="text-[10px] text-gray-500">Clear temporary files and cache data.</div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setIsClearCacheConfirmModalOpen(true)}
+                              className="px-2.5 py-1 rounded-lg border border-rose-300 text-rose-700 hover:bg-rose-100 font-extrabold text-[10px] cursor-pointer shrink-0 transition-colors"
+                            >
+                              Clear Cache
+                            </button>
+                          </div>
+
+                          {/* 2. Rebuild Search Index */}
+                          <div className="p-2.5 rounded-xl bg-rose-50/50 border border-rose-100 flex items-center justify-between gap-2">
+                            <div>
+                              <div className="font-black text-gray-900 text-[11px]">Rebuild Search Index</div>
+                              <div className="text-[10px] text-gray-500">Rebuild content search index.</div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setIsRebuildIndexModalOpen(true)}
+                              className="px-2.5 py-1 rounded-lg border border-rose-300 text-rose-700 hover:bg-rose-100 font-extrabold text-[10px] cursor-pointer shrink-0 transition-colors"
+                            >
+                              Rebuild
+                            </button>
+                          </div>
+
+                          {/* 3. Reset Platform Settings */}
+                          <div className="p-2.5 rounded-xl bg-rose-50/50 border border-rose-100 flex items-center justify-between gap-2">
+                            <div>
+                              <div className="font-black text-gray-900 text-[11px]">Reset Platform Settings</div>
+                              <div className="text-[10px] text-gray-500">Reset all settings to default (cannot be undone).</div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setIsResetSettingsConfirmModalOpen(true)}
+                              className="px-2.5 py-1 rounded-lg border border-rose-300 text-rose-700 hover:bg-rose-100 font-extrabold text-[10px] cursor-pointer shrink-0 transition-colors"
+                            >
+                              Reset All
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -19572,6 +20422,269 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                 <div className="flex items-center justify-end pt-3 border-t border-gray-100">
                   <button onClick={() => setIsViewAllUploadsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* SETTINGS INTERACTIVE MODALS                               */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal View Documentation */}
+          {isSettingsDocsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Dokumentasi Konfigurasi Platform</h3>
+                      <p className="text-xs text-gray-500">Panduan integrasi API, webhook, dan arsitektur server</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsSettingsDocsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs text-gray-700 leading-relaxed">
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
+                    <div className="font-black text-gray-900">Environment Variables</div>
+                    <code className="text-[11px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded block">
+                      VITE_SUPABASE_URL, VITE_MAYAR_API_KEY, VITE_ZOOM_SDK_KEY
+                    </code>
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
+                    <div className="font-black text-gray-900">Webhook Payouts & Subscriptions</div>
+                    <p className="text-[11px] text-gray-600">Endpoint Mayar Gateway dan Stripe Connect menerima callback otomatis status settlement dan disburse.</p>
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
+                    <div className="font-black text-gray-900">Keamanan & RBAC</div>
+                    <p className="text-[11px] text-gray-600">Role berbasis matriks Super Admin, Pengajar VIP, Santri, dan Wali Santri dengan otentikasi JWT.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsSettingsDocsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal Edit Email Templates */}
+          {isEditEmailTemplatesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Edit Template Email Notifikasi</h3>
+                      <p className="text-xs text-gray-500">Sesuaikan pesan email otomatis ke santri & pengajar</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsEditEmailTemplatesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Pilih Template Email</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]">
+                      <option>Email Selamat Datang (Welcome Email)</option>
+                      <option>Pendaftaran Kelas Berhasil (Enrollment Confirmation)</option>
+                      <option>Pengumuman Tugas / PR Baru</option>
+                      <option>Penerbitan Sertifikat Kelulusan</option>
+                      <option>Pengingat Kelas Live Zoom</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Subjek Email</label>
+                    <input
+                      type="text"
+                      defaultValue="Selamat Datang di IlmHub - Mulai Belajar Sekarang! 🎓"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Isi Pesan Email (HTML / Text)</label>
+                    <textarea
+                      rows={5}
+                      defaultValue={`Halo {{user_name}},\n\nSelamat bergabung di platform IlmHub! Akun Anda telah aktif dan siap digunakan untuk mengikuti berbagai kelas tholabul ilmi bersama para asatidz dan pengajar terbaik.\n\nSalam hangat,\nTim IlmHub`}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44] font-mono"
+                    />
+                  </div>
+
+                  <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800">
+                    Variabel dinamis: <code>{"{{user_name}}"}</code>, <code>{"{{class_title}}"}</code>, <code>{"{{login_url}}"}</code>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsEditEmailTemplatesModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsEditEmailTemplatesModalOpen(false);
+                      alert('Template email notifikasi berhasil diperbarui!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] text-white rounded-xl text-xs font-extrabold hover:bg-[#0D3B35] cursor-pointer shadow-xs"
+                  >
+                    <span>Simpan Template</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal View Backups */}
+          {isViewBackupsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <HardDrive className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Riwayat Backup Database</h3>
+                      <p className="text-xs text-gray-500">Daftar arsip snapshot otomatis dan manual</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewBackupsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {backupHistoryList.map((bak) => (
+                    <div key={bak.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between gap-2">
+                      <div className="space-y-0.5">
+                        <div className="font-extrabold text-gray-900">{bak.filename}</div>
+                        <div className="text-[10px] text-gray-400">{bak.date} • {bak.size} • {bak.type}</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          {bak.status}
+                        </span>
+                        <button
+                          onClick={() => alert(`Mengunduh file backup: ${bak.filename}`)}
+                          className="px-2.5 py-1 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-[10px] font-bold rounded-lg cursor-pointer shadow-2xs"
+                        >
+                          Download
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewBackupsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal Clear Cache Confirmation */}
+          {isClearCacheConfirmModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                    <Trash2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-gray-900">Bersihkan Cache Aplikasi?</h3>
+                    <p className="text-xs text-gray-500">Cache sementara browser & Redis akan dibersihkan</p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-600">
+                  Tindakan ini akan memuat ulang data terbaru dari server. Pengguna yang sedang aktif tidak akan terputus dari sesi.
+                </p>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100 text-xs">
+                  <button onClick={() => setIsClearCacheConfirmModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsClearCacheConfirmModalOpen(false);
+                      alert('Cache aplikasi dan query cache berhasil dikosongkan!');
+                    }}
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-extrabold rounded-xl cursor-pointer shadow-xs"
+                  >
+                    Ya, Bersihkan Cache
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal Rebuild Index */}
+          {isRebuildIndexModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                    <Search className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-gray-900">Rebuild Indeks Pencarian?</h3>
+                    <p className="text-xs text-gray-500">Membangun ulang full-text search index</p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-600">
+                  Sistem akan mengindeks ulang seluruh 2,856 materi, kursus, dan pengajar untuk memastikan hasil pencarian akurat.
+                </p>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100 text-xs">
+                  <button onClick={() => setIsRebuildIndexModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsRebuildIndexModalOpen(false);
+                      alert('Indeks pencarian berhasil dibangun ulang secara lengkap!');
+                    }}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl cursor-pointer shadow-xs"
+                  >
+                    Mulai Rebuild
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Modal Reset Platform Settings */}
+          {isResetSettingsConfirmModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                    <AlertCircle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-rose-900">Reset Semua Pengaturan?</h3>
+                    <p className="text-xs text-rose-500">Tindakan ini tidak dapat dibatalkan</p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-600">
+                  Semua preferensi platform, konfigurasi email, batasan file, dan pengaturan keamanan akan dikembalikan ke setelan default pabrik.
+                </p>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100 text-xs">
+                  <button onClick={() => setIsResetSettingsConfirmModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsResetSettingsConfirmModalOpen(false);
+                      alert('Seluruh konfigurasi platform telah berhasil di-reset ke default pabrik.');
+                    }}
+                    className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-xl cursor-pointer shadow-xs"
+                  >
+                    Ya, Reset Pengaturan
+                  </button>
                 </div>
               </div>
             </div>
