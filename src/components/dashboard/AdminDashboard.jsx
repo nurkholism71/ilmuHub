@@ -5078,106 +5078,103 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
                 {/* Total Classes */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/80">
                         <BookOpen className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Total Classes</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Total Classes</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">248</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>18% from last month</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-blue-100 rounded-full h-3"></div>
+                      <div className="w-1.5 bg-blue-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-blue-300 rounded-full h-4"></div>
+                      <div className="w-1.5 bg-blue-400 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-blue-600 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-blue-100 rounded-full h-4"></div>
-                    <div className="w-1.5 bg-blue-200 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-blue-300 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
-                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">248</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">18% from last month</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Enrolled Students */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/80">
                         <Users className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Class Enrollments</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Class Enrollments</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">18,450</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>22% enrollment growth</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-emerald-100 rounded-full h-2.5"></div>
+                      <div className="w-1.5 bg-emerald-200 rounded-full h-4.5"></div>
+                      <div className="w-1.5 bg-emerald-300 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-emerald-100 rounded-full h-3"></div>
-                    <div className="w-1.5 bg-emerald-200 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-emerald-300 rounded-full h-7"></div>
-                    <div className="w-1.5 bg-emerald-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-emerald-600 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">18,450</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">22% enrollment growth</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Live Sessions Completed */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100/80">
                         <Video className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Live Sessions Held</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Live Sessions Held</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">1,420</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>98.4% On-time Rate</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-purple-100 rounded-full h-3"></div>
+                      <div className="w-1.5 bg-purple-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-purple-300 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-purple-600 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-purple-100 rounded-full h-4"></div>
-                    <div className="w-1.5 bg-purple-200 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-purple-300 rounded-full h-8"></div>
-                    <div className="w-1.5 bg-purple-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-purple-600 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">1,420</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">98.4% On-time Rate</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Average Satisfaction */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100/80">
                         <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Class Rating Avg</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Class Rating Avg</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">4.9 <span className="text-xs font-bold text-gray-400">/ 5.0</span></div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>94% 5-Star Reviews</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-amber-100 rounded-full h-3.5"></div>
+                      <div className="w-1.5 bg-amber-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-amber-300 rounded-full h-4.5"></div>
+                      <div className="w-1.5 bg-amber-500 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-amber-100 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-amber-200 rounded-full h-7"></div>
-                    <div className="w-1.5 bg-amber-300 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-amber-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-amber-500 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">4.9 <span className="text-xs font-bold text-gray-400">/ 5.0</span></div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">94% 5-Star Reviews</span>
+                    </div>
                   </div>
                 </div>
 
@@ -5609,11 +5606,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </button>
                   </div>
 
-                  {/* 4 Detail Tabs */}
-                  <div className="flex border-b border-gray-100 text-xs font-bold text-gray-500 pt-1">
+                  {/* 4 Detail Tabs (Overview, Santri, Syllabus, Stats) - Single Row Horizontal Scrollable */}
+                  <div className="flex border-b border-gray-100 text-xs font-bold text-gray-500 pt-1 overflow-x-auto no-scrollbar">
                     <button
                       onClick={() => setSelectedClassDetailTab('overview')}
-                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                      className={`pb-2 px-2.5 sm:px-3 text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         selectedClassDetailTab === 'overview'
                           ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
                           : 'hover:text-gray-900'
@@ -5623,7 +5620,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </button>
                     <button
                       onClick={() => setSelectedClassDetailTab('students')}
-                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                      className={`pb-2 px-2.5 sm:px-3 text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         selectedClassDetailTab === 'students'
                           ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
                           : 'hover:text-gray-900'
@@ -5633,7 +5630,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </button>
                     <button
                       onClick={() => setSelectedClassDetailTab('syllabus')}
-                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                      className={`pb-2 px-2.5 sm:px-3 text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         selectedClassDetailTab === 'syllabus'
                           ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
                           : 'hover:text-gray-900'
@@ -5643,7 +5640,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </button>
                     <button
                       onClick={() => setSelectedClassDetailTab('grades')}
-                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                      className={`pb-2 px-2.5 sm:px-3 text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         selectedClassDetailTab === 'grades'
                           ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
                           : 'hover:text-gray-900'
