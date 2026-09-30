@@ -80,6 +80,7 @@ import {
   HardDrive,
   File,
   Send,
+  Wrench,
   Image as ImageIcon
 } from 'lucide-react';
 
@@ -142,6 +143,28 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 1, sender: 'bot', text: "Assalamu'alaikum! Selamat datang di Helpdesk Live Chat IlmHub. Ada yang bisa kami bantu hari ini?", time: 'Baru saja' }
   ]);
   const [liveChatInput, setLiveChatInput] = useState('');
+
+  // =========================================================
+  // ACTIVITY LOG STATES (matching media_1790805383784.jpg)
+  // =========================================================
+  const [activityLogSearchQuery, setActivityLogSearchQuery] = useState('');
+  const [activityLogDateRange, setActivityLogDateRange] = useState('1 Sep 2026 - 30 Sep 2026');
+  const [activityLogActionFilter, setActivityLogActionFilter] = useState('All Activities');
+  const [activityLogUserFilter, setActivityLogUserFilter] = useState('All Users');
+  const [activityLogModuleFilter, setActivityLogModuleFilter] = useState('All Modules');
+  const [activityLogStatusFilter, setActivityLogStatusFilter] = useState('All Status');
+  const [activityLogCurrentPage, setActivityLogCurrentPage] = useState(1);
+  const [activityLogPerPage, setActivityLogPerPage] = useState(15);
+  const [selectedActivityForDetail, setSelectedActivityForDetail] = useState(null);
+  const [isExportActivityModalOpen, setIsExportActivityModalOpen] = useState(false);
+  const [isScheduleActivityReportModalOpen, setIsScheduleActivityReportModalOpen] = useState(false);
+  const [isSetRetentionModalOpen, setIsSetRetentionModalOpen] = useState(false);
+  const [isClearOldLogsModalOpen, setIsClearOldLogsModalOpen] = useState(false);
+  const [selectedSecurityIncident, setSelectedSecurityIncident] = useState(null);
+  const [isViewAllSecurityEventsModalOpen, setIsViewAllSecurityEventsModalOpen] = useState(false);
+  const [activeActivityOverviewTooltip, setActiveActivityOverviewTooltip] = useState(null);
+  const [activeActivityDonutTooltip, setActiveActivityDonutTooltip] = useState(null);
+
 
   // =========================================================
   // VIP TEACHER APPLICATIONS STATES (Pendaftaran Guru VIP)
@@ -320,13 +343,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const adminEmail = user?.email || 'admin@ilmhub.com';
   const adminAvatar = user?.avatar || '/images/tutor_ahmed.jpg';
 
-  // Navigation Items matching media_1790730977291.jpg & media_1790731145724.jpg & media_1790731825631.jpg
+  // Navigation Items matching media_1790730977291.jpg & media_1790731145724.jpg & media_1790805383784.jpg
   const adminNavItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'users', label: 'Users', icon: Users },
-    { id: 'vip-teachers', label: 'VIP Teachers', icon: Award, badge: '24' },
     { id: 'teachers', label: 'Teachers', icon: GraduationCap },
-    { id: 'students', label: 'Students', icon: UserCheck },
     { id: 'classes', label: 'Classes', icon: BookOpen },
     { id: 'live', label: 'Live Classrooms', icon: Video },
     { id: 'schedules', label: 'Schedules', icon: Calendar },
@@ -336,13 +357,388 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 'messages', label: 'Messages', icon: MessageSquare },
     { id: 'earnings', label: 'Earnings', icon: DollarSign },
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
-  ];
-
-  const systemNavItems = [
     { id: 'integrations', label: 'Integrations', icon: Link2 },
     { id: 'reports', label: 'Reports', icon: FileBarChart },
     { id: 'help', label: 'Help & Support', icon: HelpCircle },
+    { id: 'activity-log', label: 'Activity Log', icon: Clock },
   ];
+
+  const systemNavItems = [
+    { id: 'system-status', label: 'System Status', icon: Activity },
+    { id: 'maintenance', label: 'Maintenance', icon: Wrench },
+  ];
+
+  // =========================================================
+  // ACTIVITY LOG DATASET (matching media_1790805383784.jpg)
+  // =========================================================
+  const activityLogMetrics = [
+    {
+      id: 'total',
+      title: 'Total Activities',
+      value: '12,856',
+      change: '28% from last month',
+      isPositive: true,
+      icon: User,
+      iconBg: 'bg-blue-100 text-blue-600',
+      bars: [35, 50, 45, 65, 60, 85, 100],
+      barColor: 'bg-blue-500'
+    },
+    {
+      id: 'user',
+      title: 'User Activities',
+      value: '8,642',
+      change: '24% from last month',
+      isPositive: true,
+      icon: Users,
+      iconBg: 'bg-emerald-100 text-emerald-600',
+      bars: [30, 45, 40, 60, 75, 80, 95],
+      barColor: 'bg-emerald-500'
+    },
+    {
+      id: 'admin',
+      title: 'Admin Activities',
+      value: '2,184',
+      change: '32% from last month',
+      isPositive: true,
+      icon: Settings,
+      iconBg: 'bg-amber-100 text-amber-600',
+      bars: [25, 35, 30, 50, 55, 70, 85],
+      barColor: 'bg-amber-500'
+    },
+    {
+      id: 'security',
+      title: 'Security Events',
+      value: '430',
+      change: '12% from last month',
+      isPositive: true,
+      icon: Shield,
+      iconBg: 'bg-rose-100 text-rose-600',
+      bars: [20, 25, 40, 30, 45, 55, 65],
+      barColor: 'bg-rose-500'
+    }
+  ];
+
+  const activityLogsList = [
+    {
+      id: 'act-log-1',
+      number: 1,
+      date: '30 Sep 2026, 14:32',
+      user: 'Ahmad Fauzi',
+      avatar: '/images/tutor_ahmed.jpg',
+      role: 'Teacher',
+      roleColor: 'bg-blue-100 text-blue-700',
+      action: 'Create',
+      actionColor: 'bg-blue-50 text-blue-600 border border-blue-200',
+      module: 'Classes',
+      moduleIcon: BookOpen,
+      moduleColor: 'bg-purple-50 text-purple-700',
+      description: 'Created new class "Islamic History"',
+      ip: '192.168.1.10',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-2',
+      number: 2,
+      date: '30 Sep 2026, 14:21',
+      user: 'Siti Aisyah',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Student',
+      roleColor: 'bg-emerald-100 text-emerald-700',
+      action: 'Submit',
+      actionColor: 'bg-emerald-50 text-emerald-600 border border-emerald-200',
+      module: 'Assignments',
+      moduleIcon: FileText,
+      moduleColor: 'bg-rose-50 text-rose-700',
+      description: 'Submitted assignment "Essay"',
+      ip: '192.168.1.24',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-3',
+      number: 3,
+      date: '30 Sep 2026, 13:56',
+      user: 'Omar Hassan',
+      avatar: '/images/student_ali.jpg',
+      role: 'Teacher',
+      roleColor: 'bg-blue-100 text-blue-700',
+      action: 'Update',
+      actionColor: 'bg-amber-50 text-amber-600 border border-amber-200',
+      module: 'Quizzes',
+      moduleIcon: HelpCircle,
+      moduleColor: 'bg-amber-50 text-amber-700',
+      description: 'Updated quiz "Chapter 3"',
+      ip: '192.168.1.11',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-4',
+      number: 4,
+      date: '30 Sep 2026, 13:40',
+      user: 'Admin',
+      avatar: '/images/tutor_ahmed.jpg',
+      role: 'Admin',
+      roleColor: 'bg-rose-100 text-rose-700',
+      action: 'Login',
+      actionColor: 'bg-sky-50 text-sky-600 border border-sky-200',
+      module: 'System',
+      moduleIcon: Settings,
+      moduleColor: 'bg-blue-50 text-blue-700',
+      description: 'Admin login successful',
+      ip: '192.168.1.5',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-5',
+      number: 5,
+      date: '30 Sep 2026, 12:18',
+      user: 'Layla Karim',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Teacher',
+      roleColor: 'bg-blue-100 text-blue-700',
+      action: 'Delete',
+      actionColor: 'bg-rose-50 text-rose-600 border border-rose-200',
+      module: 'Content',
+      moduleIcon: Folder,
+      moduleColor: 'bg-emerald-50 text-emerald-700',
+      description: 'Deleted material "Old Video.mp4"',
+      ip: '192.168.1.33',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-6',
+      number: 6,
+      date: '30 Sep 2026, 11:52',
+      user: 'Muhammad Khan',
+      avatar: '/images/student_ali.jpg',
+      role: 'Student',
+      roleColor: 'bg-emerald-100 text-emerald-700',
+      action: 'View',
+      actionColor: 'bg-indigo-50 text-indigo-600 border border-indigo-200',
+      module: 'Live Class',
+      moduleIcon: Video,
+      moduleColor: 'bg-rose-50 text-rose-700',
+      description: 'Joined live class "Arabic Basics"',
+      ip: '192.168.1.44',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-7',
+      number: 7,
+      date: '30 Sep 2026, 11:20',
+      user: 'Nadia Rahman',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Student',
+      roleColor: 'bg-emerald-100 text-emerald-700',
+      action: 'Download',
+      actionColor: 'bg-cyan-50 text-cyan-600 border border-cyan-200',
+      module: 'Certificates',
+      moduleIcon: Award,
+      moduleColor: 'bg-blue-50 text-blue-700',
+      description: 'Downloaded certificate "Level 1"',
+      ip: '192.168.1.27',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-8',
+      number: 8,
+      date: '30 Sep 2026, 10:43',
+      user: 'Admin',
+      avatar: '/images/tutor_ahmed.jpg',
+      role: 'Admin',
+      roleColor: 'bg-rose-100 text-rose-700',
+      action: 'Update',
+      actionColor: 'bg-amber-50 text-amber-600 border border-amber-200',
+      module: 'Settings',
+      moduleIcon: Sliders,
+      moduleColor: 'bg-gray-100 text-gray-700',
+      description: 'Updated platform settings',
+      ip: '192.168.1.5',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-9',
+      number: 9,
+      date: '30 Sep 2026, 10:12',
+      user: 'Zainab Ali',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Teacher',
+      roleColor: 'bg-blue-100 text-blue-700',
+      action: 'Create',
+      actionColor: 'bg-blue-50 text-blue-600 border border-blue-200',
+      module: 'Assignments',
+      moduleIcon: FileText,
+      moduleColor: 'bg-rose-50 text-rose-700',
+      description: 'Created new assignment "Quiz 2"',
+      ip: '192.168.1.18',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-10',
+      number: 10,
+      date: '30 Sep 2026, 09:58',
+      user: 'Dr. Ahmad Fauzi',
+      avatar: '/images/tutor_ahmed.jpg',
+      role: 'Teacher',
+      roleColor: 'bg-blue-100 text-blue-700',
+      action: 'Publish',
+      actionColor: 'bg-purple-50 text-purple-600 border border-purple-200',
+      module: 'Content',
+      moduleIcon: Folder,
+      moduleColor: 'bg-emerald-50 text-emerald-700',
+      description: 'Published article "Fiqh Basics"',
+      ip: '192.168.1.12',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-11',
+      number: 11,
+      date: '29 Sep 2026, 18:21',
+      user: 'Omar Hassan',
+      avatar: '/images/student_ali.jpg',
+      role: 'Teacher',
+      roleColor: 'bg-blue-100 text-blue-700',
+      action: 'Logout',
+      actionColor: 'bg-gray-100 text-gray-600 border border-gray-200',
+      module: 'System',
+      moduleIcon: LogOut,
+      moduleColor: 'bg-blue-50 text-blue-700',
+      description: 'User logout',
+      ip: '192.168.1.11',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-12',
+      number: 12,
+      date: '29 Sep 2026, 17:36',
+      user: 'Siti Aisyah',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Student',
+      roleColor: 'bg-emerald-100 text-emerald-700',
+      action: 'Payment',
+      actionColor: 'bg-amber-100 text-amber-800 border border-amber-300',
+      module: 'Earnings',
+      moduleIcon: DollarSign,
+      moduleColor: 'bg-amber-50 text-amber-700',
+      description: 'Completed course payment',
+      ip: '192.168.1.24',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-13',
+      number: 13,
+      date: '29 Sep 2026, 16:48',
+      user: 'Admin',
+      avatar: '/images/tutor_ahmed.jpg',
+      role: 'Admin',
+      roleColor: 'bg-rose-100 text-rose-700',
+      action: 'Create',
+      actionColor: 'bg-blue-50 text-blue-600 border border-blue-200',
+      module: 'Users',
+      moduleIcon: Users,
+      moduleColor: 'bg-cyan-50 text-cyan-700',
+      description: 'Created new user "Ali Musa"',
+      ip: '192.168.1.5',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-14',
+      number: 14,
+      date: '29 Sep 2026, 15:22',
+      user: 'Layla Karim',
+      avatar: '/images/student_fatimah.jpg',
+      role: 'Teacher',
+      roleColor: 'bg-blue-100 text-blue-700',
+      action: 'Update',
+      actionColor: 'bg-amber-50 text-amber-600 border border-amber-200',
+      module: 'Schedules',
+      moduleIcon: Calendar,
+      moduleColor: 'bg-purple-50 text-purple-700',
+      description: 'Updated class schedule',
+      ip: '192.168.1.33',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'act-log-15',
+      number: 15,
+      date: '29 Sep 2026, 14:19',
+      user: 'Muhammad Khan',
+      avatar: '/images/student_ali.jpg',
+      role: 'Student',
+      roleColor: 'bg-emerald-100 text-emerald-700',
+      action: 'View',
+      actionColor: 'bg-indigo-50 text-indigo-600 border border-indigo-200',
+      module: 'Content',
+      moduleIcon: Folder,
+      moduleColor: 'bg-emerald-50 text-emerald-700',
+      description: 'Viewed lesson "Tafsir Al-Fatihah"',
+      ip: '192.168.1.44',
+      status: 'Success',
+      statusColor: 'bg-emerald-100 text-emerald-700'
+    }
+  ];
+
+  const recentSecurityEventsList = [
+    {
+      id: 'sec-1',
+      title: 'Failed login attempt',
+      ip: '192.168.1.99',
+      date: '30 Sep 2026, 13:12',
+      severity: 'High',
+      desc: '5x failed attempts with invalid credentials on tutor portal.',
+      location: 'Jakarta, Indonesia'
+    },
+    {
+      id: 'sec-2',
+      title: 'Suspicious IP detected',
+      ip: '203.0.113.45',
+      date: '30 Sep 2026, 11:43',
+      severity: 'Medium',
+      desc: 'High frequency requests exceeding standard API throttle limit.',
+      location: 'Singapore (Proxy/VPN)'
+    },
+    {
+      id: 'sec-3',
+      title: 'Multiple failed logins',
+      ip: '192.168.1.77',
+      date: '29 Sep 2026, 20:18',
+      severity: 'High',
+      desc: 'Repeated unauthorized access attempts to admin dashboard.',
+      location: 'Surabaya, Indonesia'
+    },
+    {
+      id: 'sec-4',
+      title: 'Permission change',
+      ip: 'Admin role updated',
+      date: '29 Sep 2026, 16:02',
+      severity: 'Low',
+      desc: 'Super admin granted course management role to Layla Karim.',
+      location: 'Internal System (Audit OK)'
+    }
+  ];
+
+  const activityTypeBreakdownData = [
+    { label: 'Login / Logout', percentage: 32, count: 4114, color: '#3B82F6', bg: 'bg-[#3B82F6]' },
+    { label: 'Create', percentage: 18, count: 2314, color: '#10B981', bg: 'bg-[#10B981]' },
+    { label: 'Update', percentage: 16, count: 2057, color: '#F59E0B', bg: 'bg-[#F59E0B]' },
+    { label: 'Delete', percentage: 8, count: 1028, color: '#EF4444', bg: 'bg-[#EF4444]' },
+    { label: 'View', percentage: 14, count: 1800, color: '#8B5CF6', bg: 'bg-[#8B5CF6]' },
+    { label: 'Others', percentage: 12, count: 1543, color: '#06B6D4', bg: 'bg-[#06B6D4]' },
+  ];
+
 
   // Top 4 Main KPI Cards Data (Dashboard)
   const topMetrics = [
@@ -17768,6 +18164,735 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'activity-log' ? (
+            (() => {
+              // Filter activity logs
+              const filteredActivities = activityLogsList.filter(act => {
+                // Search query
+                if (activityLogSearchQuery.trim()) {
+                  const q = activityLogSearchQuery.toLowerCase();
+                  const match = act.user.toLowerCase().includes(q) ||
+                    act.description.toLowerCase().includes(q) ||
+                    act.ip.toLowerCase().includes(q) ||
+                    act.action.toLowerCase().includes(q) ||
+                    act.module.toLowerCase().includes(q);
+                  if (!match) return false;
+                }
+                // Action Filter
+                if (activityLogActionFilter !== 'All Activities' && act.action !== activityLogActionFilter) {
+                  return false;
+                }
+                // User / Role Filter
+                if (activityLogUserFilter !== 'All Users' && act.role !== activityLogUserFilter) {
+                  return false;
+                }
+                // Module Filter
+                if (activityLogModuleFilter !== 'All Modules' && act.module !== activityLogModuleFilter) {
+                  return false;
+                }
+                // Status Filter
+                if (activityLogStatusFilter !== 'All Status' && act.status !== activityLogStatusFilter) {
+                  return false;
+                }
+                return true;
+              });
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* 1. TOP ACTIVITY LOG HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                        <Clock className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl font-black text-gray-900 tracking-tight">Activity Log</h1>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Track all important system activities, user actions, and changes across the platform.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => setIsExportActivityModalOpen(true)}
+                      className="px-4 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-2 cursor-pointer transition-all shrink-0 self-start sm:self-auto"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Export Logs</span>
+                    </button>
+                  </div>
+
+                  {/* 2. FOUR KPI STAT CARDS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {activityLogMetrics.map((kpi) => {
+                      const KpiIcon = kpi.icon;
+                      return (
+                        <div
+                          key={kpi.id}
+                          className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs hover:shadow-sm transition-all flex items-center justify-between"
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-8 h-8 rounded-xl ${kpi.iconBg} flex items-center justify-center`}>
+                                <KpiIcon className="w-4 h-4" />
+                              </div>
+                              <span className="text-xs font-extrabold text-gray-500">{kpi.title}</span>
+                            </div>
+                            <div className="text-xl font-black text-gray-900">{kpi.value}</div>
+                            <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                              <span>↑ {kpi.change}</span>
+                            </div>
+                          </div>
+
+                          {/* Mini vertical sparkline bars */}
+                          <div className="flex items-end gap-1 h-9 px-1">
+                            {kpi.bars.map((bar, bIdx) => (
+                              <div
+                                key={bIdx}
+                                className={`w-1.5 rounded-full ${kpi.barColor} transition-all`}
+                                style={{ height: `${bar}%` }}
+                              ></div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* 3. MAIN 2-COLUMN LAYOUT: Table (Left) + Analytical Sidebar (Right) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    
+                    {/* LEFT COLUMN: FILTER BAR & TABLE (8 COLS) */}
+                    <div className="lg:col-span-8 space-y-4">
+                      
+                      {/* FILTER CONTROLS CONTAINER */}
+                      <div className="bg-white rounded-2xl p-3.5 border border-gray-100 shadow-2xs space-y-3">
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          
+                          {/* Date Range Selector */}
+                          <div className="relative">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const ranges = ['1 Sep 2026 - 30 Sep 2026', 'Last 7 Days', 'Last 30 Days', 'This Month', 'All Time'];
+                                const currIdx = ranges.indexOf(activityLogDateRange);
+                                const next = ranges[(currIdx + 1) % ranges.length];
+                                setActivityLogDateRange(next);
+                              }}
+                              className="flex items-center gap-1.5 bg-[#F8FAFC] border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                            >
+                              <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                              <span>{activityLogDateRange}</span>
+                              <ChevronDown className="w-3 h-3 text-gray-400 ml-1" />
+                            </button>
+                          </div>
+
+                          {/* Activity Action Filter */}
+                          <select
+                            value={activityLogActionFilter}
+                            onChange={(e) => setActivityLogActionFilter(e.target.value)}
+                            className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Activities">All Activities</option>
+                            <option value="Create">Create</option>
+                            <option value="Update">Update</option>
+                            <option value="Delete">Delete</option>
+                            <option value="Login">Login</option>
+                            <option value="Logout">Logout</option>
+                            <option value="Submit">Submit</option>
+                            <option value="View">View</option>
+                            <option value="Download">Download</option>
+                            <option value="Publish">Publish</option>
+                            <option value="Payment">Payment</option>
+                          </select>
+
+                          {/* User / Role Filter */}
+                          <select
+                            value={activityLogUserFilter}
+                            onChange={(e) => setActivityLogUserFilter(e.target.value)}
+                            className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Users">All Users</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Student">Student</option>
+                          </select>
+
+                          {/* Module Filter */}
+                          <select
+                            value={activityLogModuleFilter}
+                            onChange={(e) => setActivityLogModuleFilter(e.target.value)}
+                            className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Modules">All Modules</option>
+                            <option value="Classes">Classes</option>
+                            <option value="Assignments">Assignments</option>
+                            <option value="Quizzes">Quizzes</option>
+                            <option value="System">System</option>
+                            <option value="Content">Content</option>
+                            <option value="Live Class">Live Class</option>
+                            <option value="Certificates">Certificates</option>
+                            <option value="Settings">Settings</option>
+                            <option value="Earnings">Earnings</option>
+                            <option value="Users">Users</option>
+                            <option value="Schedules">Schedules</option>
+                          </select>
+
+                          {/* Status Filter */}
+                          <select
+                            value={activityLogStatusFilter}
+                            onChange={(e) => setActivityLogStatusFilter(e.target.value)}
+                            className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Status">All Status</option>
+                            <option value="Success">Success</option>
+                            <option value="Failed">Failed</option>
+                            <option value="Warning">Warning</option>
+                          </select>
+
+                          {/* Filters Button */}
+                          <button
+                            onClick={() => {
+                              setActivityLogActionFilter('All Activities');
+                              setActivityLogUserFilter('All Users');
+                              setActivityLogModuleFilter('All Modules');
+                              setActivityLogStatusFilter('All Status');
+                              setActivityLogSearchQuery('');
+                            }}
+                            className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-colors cursor-pointer ml-auto"
+                          >
+                            <Filter className="w-3.5 h-3.5" />
+                            <span>Filters</span>
+                          </button>
+
+                        </div>
+
+                        {/* Search Bar Input */}
+                        <div className="relative">
+                          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={activityLogSearchQuery}
+                            onChange={(e) => setActivityLogSearchQuery(e.target.value)}
+                            placeholder="Search by user name, action, IP address, or description..."
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:ring-1 focus:ring-[#114B44] transition-all"
+                          />
+                          {activityLogSearchQuery && (
+                            <button
+                              onClick={() => setActivityLogSearchQuery('')}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* ACTIVITY LOG TABLE */}
+                      <div className="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden">
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left text-xs text-gray-600">
+                            <thead className="bg-[#F8FAFC] text-gray-500 font-extrabold border-b border-gray-100 select-none">
+                              <tr>
+                                <th className="py-3 px-3 w-8 text-center">#</th>
+                                <th className="py-3 px-3 whitespace-nowrap">Date & Time</th>
+                                <th className="py-3 px-3">User</th>
+                                <th className="py-3 px-3">Role</th>
+                                <th className="py-3 px-3">Action</th>
+                                <th className="py-3 px-3">Module</th>
+                                <th className="py-3 px-3">Description</th>
+                                <th className="py-3 px-3 whitespace-nowrap">IP Address</th>
+                                <th className="py-3 px-3">Status</th>
+                                <th className="py-3 px-3 text-center">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 font-medium">
+                              {filteredActivities.length === 0 ? (
+                                <tr>
+                                  <td colSpan={10} className="py-12 text-center text-gray-400">
+                                    <Clock className="w-8 h-8 mx-auto text-gray-300 mb-2" />
+                                    <p className="font-bold">Tidak ada aktivitas yang sesuai dengan filter.</p>
+                                  </td>
+                                </tr>
+                              ) : (
+                                filteredActivities.map((act) => {
+                                  const ModIcon = act.moduleIcon;
+                                  return (
+                                    <tr key={act.id} className="hover:bg-gray-50/70 transition-colors">
+                                      <td className="py-3 px-3 text-center font-bold text-gray-400">{act.number}</td>
+                                      <td className="py-3 px-3 whitespace-nowrap text-gray-500 text-[11px] font-semibold">{act.date}</td>
+                                      <td className="py-3 px-3">
+                                        <div className="flex items-center gap-2">
+                                          <img
+                                            src={act.avatar}
+                                            alt={act.user}
+                                            className="w-6 h-6 rounded-full object-cover shrink-0 border border-gray-100"
+                                            onError={(e) => {
+                                              e.target.onerror = null;
+                                              e.target.src = '/images/tutor_ahmed.jpg';
+                                            }}
+                                          />
+                                          <span className="font-extrabold text-gray-900 whitespace-nowrap">{act.user}</span>
+                                        </div>
+                                      </td>
+                                      <td className="py-3 px-3 whitespace-nowrap">
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${act.roleColor}`}>
+                                          {act.role}
+                                        </span>
+                                      </td>
+                                      <td className="py-3 px-3 whitespace-nowrap">
+                                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${act.actionColor}`}>
+                                          {act.action}
+                                        </span>
+                                      </td>
+                                      <td className="py-3 px-3 whitespace-nowrap">
+                                        <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-extrabold ${act.moduleColor}`}>
+                                          <ModIcon className="w-3 h-3" />
+                                          <span>{act.module}</span>
+                                        </div>
+                                      </td>
+                                      <td className="py-3 px-3 min-w-[200px] text-gray-800 text-[11px] font-semibold">
+                                        {act.description}
+                                      </td>
+                                      <td className="py-3 px-3 whitespace-nowrap font-mono text-[11px] text-gray-500">
+                                        {act.ip}
+                                      </td>
+                                      <td className="py-3 px-3 whitespace-nowrap">
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${act.statusColor}`}>
+                                          {act.status}
+                                        </span>
+                                      </td>
+                                      <td className="py-3 px-3 text-center">
+                                        <button
+                                          onClick={() => setSelectedActivityForDetail(act)}
+                                          className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                                          title="Lihat Detail Log"
+                                        >
+                                          <MoreHorizontal className="w-4 h-4" />
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  );
+                                })
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* TABLE PAGINATION FOOTER */}
+                        <div className="p-3.5 bg-white border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500 font-medium">
+                          <div>
+                            Showing <span className="font-black text-gray-900">1</span> to <span className="font-black text-gray-900">{filteredActivities.length}</span> of <span className="font-black text-gray-900">12,856</span> activities
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 cursor-pointer disabled:opacity-40">
+                              &lt;
+                            </button>
+                            <button className="w-7 h-7 rounded-lg bg-[#114B44] text-white font-black flex items-center justify-center shadow-2xs">
+                              1
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                              2
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                              3
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                              4
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                              5
+                            </button>
+                            <span className="px-1 text-gray-400">...</span>
+                            <button className="px-2 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 font-bold cursor-pointer">
+                              858
+                            </button>
+                            <button className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 cursor-pointer">
+                              &gt;
+                            </button>
+
+                            <select
+                              value={activityLogPerPage}
+                              onChange={(e) => setActivityLogPerPage(Number(e.target.value))}
+                              className="ml-2 bg-[#F8FAFC] border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-gray-700 focus:outline-none cursor-pointer"
+                            >
+                              <option value={15}>15 per page</option>
+                              <option value={25}>25 per page</option>
+                              <option value={50}>50 per page</option>
+                              <option value={100}>100 per page</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* RIGHT COLUMN: ANALYTICS & QUICK ACTIONS (4 COLS) */}
+                    <div className="lg:col-span-4 space-y-4">
+                      
+                      {/* CARD 1: ACTIVITY OVERVIEW (MULTI-SERIES LINE CHART) */}
+                      <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xs font-black text-gray-900">Activity Overview</h3>
+                          <select className="bg-[#F8FAFC] border border-gray-200 rounded-lg px-2 py-1 text-[11px] font-bold text-gray-700 focus:outline-none cursor-pointer">
+                            <option>Last 30 Days</option>
+                            <option>Last 7 Days</option>
+                            <option>This Quarter</option>
+                          </select>
+                        </div>
+
+                        {/* Chart Legend */}
+                        <div className="flex flex-wrap items-center gap-3 text-[10px] font-bold">
+                          <div className="flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span className="text-gray-600">User</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span className="text-gray-600">Admin</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                            <span className="text-gray-600">System</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                            <span className="text-gray-600">Security</span>
+                          </div>
+                        </div>
+
+                        {/* SVG Line Chart */}
+                        <div className="relative h-44 w-full pt-2">
+                          <svg viewBox="0 0 320 150" className="w-full h-full overflow-visible">
+                            {/* Grid Lines */}
+                            <line x1="25" y1="20" x2="310" y2="20" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                            <line x1="25" y1="55" x2="310" y2="55" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                            <line x1="25" y1="90" x2="310" y2="90" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                            <line x1="25" y1="125" x2="310" y2="125" stroke="#E2E8F0" strokeWidth="1" />
+
+                            {/* Y-Axis Labels */}
+                            <text x="18" y="23" textAnchor="end" fontSize="9" fill="#94A3B8" fontWeight="bold">400</text>
+                            <text x="18" y="58" textAnchor="end" fontSize="9" fill="#94A3B8" fontWeight="bold">300</text>
+                            <text x="18" y="93" textAnchor="end" fontSize="9" fill="#94A3B8" fontWeight="bold">200</text>
+                            <text x="18" y="128" textAnchor="end" fontSize="9" fill="#94A3B8" fontWeight="bold">100</text>
+
+                            {/* 1. User Series (Blue) */}
+                            <path
+                              d="M 40 85 C 80 80, 120 60, 160 55 C 200 50, 240 30, 290 25"
+                              fill="none"
+                              stroke="#3B82F6"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                            />
+                            {/* Points */}
+                            {[{ x: 40, y: 85, val: '198' }, { x: 100, y: 72, val: '240' }, { x: 160, y: 55, val: '310' }, { x: 220, y: 40, val: '360' }, { x: 290, y: 25, val: '412' }].map((p, i) => (
+                              <circle
+                                key={`u-${i}`}
+                                cx={p.x}
+                                cy={p.y}
+                                r="3.5"
+                                fill="#3B82F6"
+                                stroke="#FFFFFF"
+                                strokeWidth="1.5"
+                                className="cursor-pointer hover:r-5 transition-all"
+                                onMouseEnter={() => setActiveActivityOverviewTooltip({ text: `User Activities: ${p.val}`, x: p.x, y: p.y })}
+                                onMouseLeave={() => setActiveActivityOverviewTooltip(null)}
+                              />
+                            ))}
+
+                            {/* 2. Admin Series (Green) */}
+                            <path
+                              d="M 40 100 C 80 95, 120 85, 160 80 C 200 75, 240 65, 290 60"
+                              fill="none"
+                              stroke="#10B981"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                            />
+                            {[{ x: 40, y: 100, val: '140' }, { x: 100, y: 92, val: '165' }, { x: 160, y: 80, val: '210' }, { x: 220, y: 70, val: '255' }, { x: 290, y: 60, val: '280' }].map((p, i) => (
+                              <circle
+                                key={`a-${i}`}
+                                cx={p.x}
+                                cy={p.y}
+                                r="3.5"
+                                fill="#10B981"
+                                stroke="#FFFFFF"
+                                strokeWidth="1.5"
+                                className="cursor-pointer hover:r-5 transition-all"
+                                onMouseEnter={() => setActiveActivityOverviewTooltip({ text: `Admin Activities: ${p.val}`, x: p.x, y: p.y })}
+                                onMouseLeave={() => setActiveActivityOverviewTooltip(null)}
+                              />
+                            ))}
+
+                            {/* 3. System Series (Amber) */}
+                            <path
+                              d="M 40 115 C 80 110, 120 105, 160 100 C 200 95, 240 90, 290 85"
+                              fill="none"
+                              stroke="#F59E0B"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                            />
+                            {[{ x: 40, y: 115, val: '95' }, { x: 100, y: 110, val: '108' }, { x: 160, y: 100, val: '135' }, { x: 220, y: 92, val: '150' }, { x: 290, y: 85, val: '175' }].map((p, i) => (
+                              <circle
+                                key={`s-${i}`}
+                                cx={p.x}
+                                cy={p.y}
+                                r="3"
+                                fill="#F59E0B"
+                                stroke="#FFFFFF"
+                                strokeWidth="1.5"
+                                className="cursor-pointer hover:r-5 transition-all"
+                                onMouseEnter={() => setActiveActivityOverviewTooltip({ text: `System Events: ${p.val}`, x: p.x, y: p.y })}
+                                onMouseLeave={() => setActiveActivityOverviewTooltip(null)}
+                              />
+                            ))}
+
+                            {/* 4. Security Series (Rose) */}
+                            <path
+                              d="M 40 120 C 80 118, 120 115, 160 116 C 200 112, 240 110, 290 108"
+                              fill="none"
+                              stroke="#EF4444"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                            />
+                            {[{ x: 40, y: 120, val: '24' }, { x: 100, y: 118, val: '31' }, { x: 160, y: 116, val: '28' }, { x: 220, y: 112, val: '42' }, { x: 290, y: 108, val: '38' }].map((p, i) => (
+                              <circle
+                                key={`sec-${i}`}
+                                cx={p.x}
+                                cy={p.y}
+                                r="3"
+                                fill="#EF4444"
+                                stroke="#FFFFFF"
+                                strokeWidth="1.5"
+                                className="cursor-pointer hover:r-5 transition-all"
+                                onMouseEnter={() => setActiveActivityOverviewTooltip({ text: `Security Alerts: ${p.val}`, x: p.x, y: p.y })}
+                                onMouseLeave={() => setActiveActivityOverviewTooltip(null)}
+                              />
+                            ))}
+
+                            {/* X-Axis Labels */}
+                            <text x="40" y="142" textAnchor="middle" fontSize="9" fill="#94A3B8" fontWeight="bold">1 Sep</text>
+                            <text x="100" y="142" textAnchor="middle" fontSize="9" fill="#94A3B8" fontWeight="bold">8 Sep</text>
+                            <text x="160" y="142" textAnchor="middle" fontSize="9" fill="#94A3B8" fontWeight="bold">15 Sep</text>
+                            <text x="220" y="142" textAnchor="middle" fontSize="9" fill="#94A3B8" fontWeight="bold">22 Sep</text>
+                            <text x="290" y="142" textAnchor="middle" fontSize="9" fill="#94A3B8" fontWeight="bold">30 Sep</text>
+                          </svg>
+
+                          {/* Hover Tooltip */}
+                          {activeActivityOverviewTooltip && (
+                            <div
+                              className="absolute z-10 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg pointer-events-none -translate-x-1/2 -translate-y-full"
+                              style={{ left: `${(activeActivityOverviewTooltip.x / 320) * 100}%`, top: `${(activeActivityOverviewTooltip.y / 150) * 100}%` }}
+                            >
+                              {activeActivityOverviewTooltip.text}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* CARD 2: ACTIVITY TYPE BREAKDOWN (DONUT CHART) */}
+                      <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                        <h3 className="text-xs font-black text-gray-900">Activity Type Breakdown</h3>
+
+                        <div className="flex items-center gap-4">
+                          {/* SVG Donut */}
+                          <div className="relative w-28 h-28 shrink-0 flex items-center justify-center">
+                            <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                              {/* Circle segments */}
+                              {/* 1. Login/Logout 32% (circumference ~ 251.2 -> 80.38) */}
+                              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="18" strokeDasharray="80.38 251.2" strokeDashoffset="0" />
+                              {/* 2. Create 18% (45.2) */}
+                              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10B981" strokeWidth="18" strokeDasharray="45.2 251.2" strokeDashoffset="-80.38" />
+                              {/* 3. Update 16% (40.2) */}
+                              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="18" strokeDasharray="40.2 251.2" strokeDashoffset="-125.58" />
+                              {/* 4. Delete 8% (20.1) */}
+                              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#EF4444" strokeWidth="18" strokeDasharray="20.1 251.2" strokeDashoffset="-165.78" />
+                              {/* 5. View 14% (35.1) */}
+                              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8B5CF6" strokeWidth="18" strokeDasharray="35.1 251.2" strokeDashoffset="-185.88" />
+                              {/* 6. Others 12% (30.1) */}
+                              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#06B6D4" strokeWidth="18" strokeDasharray="30.1 251.2" strokeDashoffset="-220.98" />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                              <span className="text-xs font-black text-gray-900 leading-tight">12,856</span>
+                              <span className="text-[8px] font-bold text-gray-400 uppercase">Total Activities</span>
+                            </div>
+                          </div>
+
+                          {/* Legend list */}
+                          <div className="flex-1 space-y-1.5 text-[11px]">
+                            {activityTypeBreakdownData.map((item, idx) => (
+                              <div key={idx} className="flex items-center justify-between">
+                                <div className="flex items-center gap-1.5">
+                                  <span className={`w-2 h-2 rounded-full ${item.bg}`}></span>
+                                  <span className="text-gray-700 font-semibold">{item.label}</span>
+                                </div>
+                                <span className="font-extrabold text-gray-900">{item.percentage}%</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CARD 3: RECENT SECURITY EVENTS */}
+                      <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xs font-black text-gray-900">Recent Security Events</h3>
+                          <button
+                            onClick={() => setIsViewAllSecurityEventsModalOpen(true)}
+                            className="text-[11px] font-bold text-[#114B44] hover:text-[#0D3B35] flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ChevronRight className="w-3 h-3" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2 text-xs">
+                          {recentSecurityEventsList.map((sec) => (
+                            <div
+                              key={sec.id}
+                              onClick={() => setSelectedSecurityIncident(sec)}
+                              className="p-2.5 bg-rose-50/40 hover:bg-rose-50/80 rounded-xl border border-rose-100/60 transition-all cursor-pointer flex items-start gap-2.5 group"
+                            >
+                              <div className="w-6 h-6 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                                <Shield className="w-3.5 h-3.5" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-extrabold text-gray-900 text-[11px] group-hover:text-rose-700 transition-colors">{sec.title}</span>
+                                  <span className="text-[10px] text-gray-400">{sec.date}</span>
+                                </div>
+                                <div className="text-[10px] font-mono text-gray-500 truncate">{sec.ip}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* CARD 4: QUICK ACTIONS */}
+                      <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                        <h3 className="text-xs font-black text-gray-900">Quick Actions</h3>
+
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <button
+                            onClick={() => setIsExportActivityModalOpen(true)}
+                            className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-bold flex items-center gap-2 cursor-pointer transition-all text-left"
+                          >
+                            <Download className="w-3.5 h-3.5 text-[#114B44]" />
+                            <span className="text-[11px]">Export Activity Log</span>
+                          </button>
+
+                          <button
+                            onClick={() => setIsScheduleActivityReportModalOpen(true)}
+                            className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-bold flex items-center gap-2 cursor-pointer transition-all text-left"
+                          >
+                            <Calendar className="w-3.5 h-3.5 text-purple-600" />
+                            <span className="text-[11px]">Schedule Report</span>
+                          </button>
+
+                          <button
+                            onClick={() => setIsSetRetentionModalOpen(true)}
+                            className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-bold flex items-center gap-2 cursor-pointer transition-all text-left"
+                          >
+                            <Sliders className="w-3.5 h-3.5 text-blue-600" />
+                            <span className="text-[11px]">Set Log Retention</span>
+                          </button>
+
+                          <button
+                            onClick={() => setIsClearOldLogsModalOpen(true)}
+                            className="p-2.5 bg-rose-50/50 hover:bg-rose-50 rounded-xl border border-rose-200 text-rose-700 font-bold flex items-center gap-2 cursor-pointer transition-all text-left"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                            <span className="text-[11px]">Clear Old Logs</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              );
+            })()
+          ) : activeNav === 'system-status' ? (
+            <div className="space-y-5 animate-fadeIn">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-xs shrink-0">
+                    <Activity className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-black text-gray-900 tracking-tight">System Status & Infrastructure</h1>
+                    <p className="text-xs text-gray-500 font-medium">Real-time health monitoring of servers, APIs, and databases.</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsSystemStatusModalOpen(true)}
+                  className="px-4 py-2 bg-[#114B44] text-white rounded-xl text-xs font-bold hover:bg-[#0D3B35] cursor-pointer"
+                >
+                  Run Full Diagnostic
+                </button>
+              </div>
+
+              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-2xs space-y-4">
+                <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span className="text-sm font-black text-emerald-900">All Core Systems Operational (99.98% Uptime)</span>
+                  </div>
+                  <span className="text-xs font-mono text-emerald-700 font-bold">Latency: 42ms</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                  {helpSystemStatusList.map((st) => (
+                    <div key={st.id} className="p-3.5 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span className="font-extrabold text-gray-800">{st.name}</span>
+                      </div>
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">{st.status}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : activeNav === 'maintenance' ? (
+            <div className="space-y-5 animate-fadeIn">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shadow-xs shrink-0">
+                    <Wrench className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-black text-gray-900 tracking-tight">Platform Maintenance & Tuning</h1>
+                    <p className="text-xs text-gray-500 font-medium">Database index vacuuming, CDN cache flushing, and maintenance mode scheduler.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-2xs space-y-4 text-xs">
+                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
+                  <div>
+                    <div className="font-black text-gray-900">Maintenance Mode</div>
+                    <div className="text-gray-500 text-[11px]">Ketika aktif, santri dan guru akan melihat halaman pemeliharaan sistem sementara.</div>
+                  </div>
+                  <span className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full font-bold text-[11px]">Disabled (Normal Ops)</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <button onClick={() => alert('Cache CDN & Redis berhasil dibersihkan!')} className="p-3.5 bg-[#F8FAFC] hover:bg-gray-100 border border-gray-200 rounded-xl font-extrabold text-gray-800 text-center cursor-pointer">
+                    🧹 Purge Redis Cache
+                  </button>
+                  <button onClick={() => alert('Indeks database PostgreSQL berhasil dioptimasi!')} className="p-3.5 bg-[#F8FAFC] hover:bg-gray-100 border border-gray-200 rounded-xl font-extrabold text-gray-800 text-center cursor-pointer">
+                    ⚡ Reindex Database
+                  </button>
+                  <button onClick={() => alert('Log rotasi 30 hari berhasil dijalankan!')} className="p-3.5 bg-[#F8FAFC] hover:bg-gray-100 border border-gray-200 rounded-xl font-extrabold text-gray-800 text-center cursor-pointer">
+                    📦 Archive S3 Logs
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -24663,6 +25788,416 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   >
                     <span>Kirim Laporan</span>
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* ACTIVITY LOG INTERACTIVE MODALS                           */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal View Activity Detail */}
+          {selectedActivityForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Detail Aktivitas Log #{selectedActivityForDetail.number}</h3>
+                      <p className="text-xs text-gray-500">Audit trail lengkap transaksi dan eksekusi platform</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedActivityForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  {/* User & Action Meta */}
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 grid grid-cols-2 gap-2">
+                    <div>
+                      <span className="text-[10px] text-gray-400 font-bold block">Pelaku Aktivitas</span>
+                      <span className="font-extrabold text-gray-900 text-xs">{selectedActivityForDetail.user}</span>
+                      <span className={`inline-block px-2 py-0.2 rounded-full text-[9px] font-black mt-0.5 ${selectedActivityForDetail.roleColor}`}>{selectedActivityForDetail.role}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-gray-400 font-bold block">Waktu Eksekusi</span>
+                      <span className="font-extrabold text-gray-900">{selectedActivityForDetail.date}</span>
+                      <span className="text-[10px] text-gray-500 block">Status: <strong className="text-emerald-700">{selectedActivityForDetail.status}</strong></span>
+                    </div>
+                  </div>
+
+                  {/* Action & Module */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                      <span className="text-[10px] text-gray-400 font-bold block mb-1">Aksi & Modul</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${selectedActivityForDetail.actionColor}`}>{selectedActivityForDetail.action}</span>
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold ${selectedActivityForDetail.moduleColor}`}>{selectedActivityForDetail.module}</span>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                      <span className="text-[10px] text-gray-400 font-bold block mb-1">IP Address & Latensi</span>
+                      <span className="font-mono font-bold text-gray-800 text-xs">{selectedActivityForDetail.ip}</span>
+                      <span className="text-[10px] text-emerald-700 font-bold block">18ms • HTTPS TLS 1.3</span>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <span className="font-bold text-gray-700 block mb-1">Keterangan Aktivitas:</span>
+                    <p className="p-3 bg-white border border-gray-200 rounded-xl text-xs text-gray-800 font-semibold leading-relaxed">
+                      {selectedActivityForDetail.description}
+                    </p>
+                  </div>
+
+                  {/* Audit Payload JSON */}
+                  <div>
+                    <span className="font-bold text-gray-700 block mb-1">Payload Metadata (JSON Diff):</span>
+                    <pre className="p-3 bg-slate-900 text-emerald-400 rounded-xl text-[11px] font-mono overflow-x-auto leading-relaxed">
+{`{
+  "event_id": "evt_${selectedActivityForDetail.id}",
+  "module": "${selectedActivityForDetail.module}",
+  "action": "${selectedActivityForDetail.action}",
+  "actor": {
+    "name": "${selectedActivityForDetail.user}",
+    "role": "${selectedActivityForDetail.role}",
+    "ip": "${selectedActivityForDetail.ip}"
+  },
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  "status_code": 200,
+  "checksum": "sha256_${Math.random().toString(36).substring(2, 12)}"
+}`}
+                    </pre>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setSelectedActivityForDetail(null)} className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      alert(`Salinan log #${selectedActivityForDetail.number} berhasil disalin ke clipboard!`);
+                      setSelectedActivityForDetail(null);
+                    }}
+                    className="px-4 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer"
+                  >
+                    Salin Log Audit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal Export Activity Log */}
+          {isExportActivityModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center font-black">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Export Activity Logs</h3>
+                      <p className="text-xs text-gray-500">Unduh riwayat audit aktivitas sistem</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsExportActivityModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Rentang Tanggal Log</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#114B44]">
+                      <option>1 Sep 2026 - 30 Sep 2026 (Bulan Ini - 12,856 baris)</option>
+                      <option>7 Hari Terakhir</option>
+                      <option>Kuartal Ini (Q3 2026)</option>
+                      <option>Semua Riwayat (All Time)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Format File Unduhan</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['CSV Spreadsheet', 'Excel (.xlsx)', 'JSON Data'].map((fmt, fIdx) => (
+                        <label key={fIdx} className="p-2.5 rounded-xl border border-gray-200 hover:border-[#114B44] bg-white text-gray-800 text-[11px] font-bold flex items-center gap-2 cursor-pointer">
+                          <input type="radio" name="exportFormat" defaultChecked={fIdx === 0} className="text-[#114B44]" />
+                          <span>{fmt}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Opsi Metadata Tambahan</label>
+                    <div className="space-y-1.5">
+                      <label className="flex items-center gap-2 font-medium text-gray-700 cursor-pointer">
+                        <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                        <span>Sertakan IP Address dan User-Agent</span>
+                      </label>
+                      <label className="flex items-center gap-2 font-medium text-gray-700 cursor-pointer">
+                        <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                        <span>Sertakan Hash Checksum Integritas Data</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsExportActivityModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsExportActivityModalOpen(false);
+                      alert('File Activity_Logs_Sep2026.csv berhasil diexport dan diunduh!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-2 cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Sekarang</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal Schedule Activity Report */}
+          {isScheduleActivityReportModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Calendar className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Jadwalkan Laporan Log Berkala</h3>
+                      <p className="text-xs text-gray-500">Kirimkan ringkasan aktivitas log via email otomatis</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsScheduleActivityReportModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Frekuensi Jadwal</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-bold text-gray-700 focus:outline-none">
+                      <option>Harian (Setiap Pukul 00:00 WIB)</option>
+                      <option>Mingguan (Setiap Hari Senin)</option>
+                      <option>Bulanan (Tanggal 1 Awal Bulan)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Email Penerima</label>
+                    <input
+                      type="text"
+                      defaultValue="security@ilmhub.com, admin@ilmhub.com"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsScheduleActivityReportModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsScheduleActivityReportModalOpen(false);
+                      alert('Jadwal pengiriman laporan log berkala berhasil disimpan!');
+                    }}
+                    className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Simpan Jadwal
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal Set Log Retention */}
+          {isSetRetentionModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Sliders className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Kebijakan Retensi Log (Log Retention)</h3>
+                      <p className="text-xs text-gray-500">Atur masa simpan dan rotasi database log</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsSetRetentionModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Masa Simpan Database Utama</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-bold text-gray-700 focus:outline-none">
+                      <option>90 Hari (Rekomendasi Standar)</option>
+                      <option>30 Hari</option>
+                      <option>180 Hari (6 Bulan)</option>
+                      <option>365 Hari (1 Tahun)</option>
+                      <option>Tanpa Batas (Keep Indefinitely)</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3 bg-blue-50 rounded-xl border border-blue-100 space-y-2">
+                    <label className="flex items-center gap-2 font-bold text-blue-900 cursor-pointer">
+                      <input type="checkbox" defaultChecked className="rounded text-blue-600" />
+                      <span>Arsipkan Otomatis ke Cloud Storage (Cold S3)</span>
+                    </label>
+                    <p className="text-[11px] text-blue-700 leading-relaxed">
+                      Log yang telah melewati batas hari akan dipindahkan ke penyimpanan jangka panjang terkompresi guna menghemat beban database.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsSetRetentionModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsSetRetentionModalOpen(false);
+                      alert('Kebijakan retensi log berhasil diperbarui!');
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Terapkan Kebijakan
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal Clear Old Logs */}
+          {isClearOldLogsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black">
+                      <Trash2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-rose-900">Bersihkan Riwayat Log Lama</h3>
+                      <p className="text-xs text-gray-500">Tindakan pembersihan log audit permanen</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsClearOldLogsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs leading-relaxed">
+                    <strong>Peringatan Keamanan:</strong> Menghapus log audit akan menghapus data jejak aktivitas secara permanen dan tidak dapat dipulihkan.
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Pilih Kriteria Pembersihan</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-bold text-gray-700 focus:outline-none">
+                      <option>Hapus log yang lebih lama dari 180 hari</option>
+                      <option>Hapus log yang lebih lama dari 90 hari</option>
+                      <option>Hapus log yang lebih lama dari 30 hari</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsClearOldLogsModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsClearOldLogsModalOpen(false);
+                      alert('Proses pembersihan log lama berhasil diselesaikan.');
+                    }}
+                    className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Hapus Permanen
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Modal Security Incident Detail & IP Block */}
+          {selectedSecurityIncident && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black">
+                      <Shield className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">{selectedSecurityIncident.title}</h3>
+                      <p className="text-xs text-gray-500">{selectedSecurityIncident.date}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedSecurityIncident(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 bg-rose-50 rounded-xl border border-rose-100 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-extrabold text-rose-900">Tingkat Ancaman: {selectedSecurityIncident.severity}</span>
+                      <span className="font-mono text-xs font-bold text-gray-700">{selectedSecurityIncident.ip}</span>
+                    </div>
+                    <p className="text-gray-600 text-[11px]">{selectedSecurityIncident.desc}</p>
+                    <div className="text-[10px] text-gray-400 mt-1">Lokasi Geografis: {selectedSecurityIncident.location}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setSelectedSecurityIncident(null)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      alert(`IP Address ${selectedSecurityIncident.ip} berhasil dimasukkan ke Firewall Blacklist!`);
+                      setSelectedSecurityIncident(null);
+                    }}
+                    className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Blokir IP Address
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. Modal View All Security Events */}
+          {isViewAllSecurityEventsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black">
+                      <Shield className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Semua Insiden & Security Alerts</h3>
+                      <p className="text-xs text-gray-500">Log anomali keamanan 30 hari terakhir</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllSecurityEventsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2.5 text-xs">
+                  {recentSecurityEventsList.map((sec) => (
+                    <div key={sec.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-start justify-between gap-3">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-gray-900 text-xs">{sec.title}</span>
+                          <span className={`px-2 py-0.2 rounded-full text-[9px] font-black ${sec.severity === 'High' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>{sec.severity}</span>
+                        </div>
+                        <p className="text-gray-600 text-[11px]">{sec.desc}</p>
+                        <div className="font-mono text-[10px] text-gray-400">{sec.ip} • {sec.location}</div>
+                      </div>
+                      <span className="text-[10px] text-gray-400 whitespace-nowrap shrink-0">{sec.date}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllSecurityEventsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
                 </div>
               </div>
             </div>
