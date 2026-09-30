@@ -189,8 +189,24 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isClearTempFilesModalOpen, setIsClearTempFilesModalOpen] = useState(false);
   const [autoUpdateMinor, setAutoUpdateMinor] = useState(true);
   const [securityUpdatesOnly, setSecurityUpdatesOnly] = useState(true);
-  const [notifyBeforeUpdates, setNotifyBeforeUpdates] = useState(true);
   const [activeMaintenancePerformanceTooltip, setActiveMaintenancePerformanceTooltip] = useState(null);
+
+  // =========================================================
+  // SYSTEM STATUS STATES (matching media_1790805425473.jpg)
+  // =========================================================
+  const [systemStatusServiceFilter, setSystemStatusServiceFilter] = useState('all'); // 'all' (24) | 'operational' (20) | 'degraded' (2) | 'outage' (0) | 'maintenance' (2)
+  const [systemStatusResponseTimeRange, setSystemStatusResponseTimeRange] = useState('Last 30 Days');
+  const [systemStatusResourceRange, setSystemStatusResourceRange] = useState('Last 24 Hours');
+  const [isSubscribeStatusUpdatesModalOpen, setIsSubscribeStatusUpdatesModalOpen] = useState(false);
+  const [selectedServiceForDetail, setSelectedServiceForDetail] = useState(null);
+  const [selectedStatusIncidentForDetail, setSelectedStatusIncidentForDetail] = useState(null);
+  const [isViewAllStatusIncidentsModalOpen, setIsViewAllStatusIncidentsModalOpen] = useState(false);
+  const [isRunHealthCheckModalOpen, setIsRunHealthCheckModalOpen] = useState(false);
+  const [isStatusPublicPageModalOpen, setIsStatusPublicPageModalOpen] = useState(false);
+  const [activeSystemStatusResponseTimeTooltip, setActiveSystemStatusResponseTimeTooltip] = useState(null);
+  const [statusSubscriberEmail, setStatusSubscriberEmail] = useState('');
+  const [statusSubscriberChannel, setStatusSubscriberChannel] = useState('email');
+
 
 
 
@@ -390,12 +406,114 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 'help', label: 'Help & Support', icon: HelpCircle },
     { id: 'activity-log', label: 'Activity Log', icon: Clock },
     { id: 'maintenance', label: 'Maintenance', icon: Wrench },
+    { id: 'system-status', label: 'System Status', icon: Activity },
   ];
 
   const systemNavItems = [
-    { id: 'system-status', label: 'System Status', icon: Activity },
     { id: 'logs', label: 'Logs', icon: FileText },
+    { id: 'health-check', label: 'Health Check', icon: Heart },
   ];
+
+  // =========================================================
+  // SYSTEM STATUS DATASET (matching media_1790805425473.jpg)
+  // =========================================================
+  const systemStatusMetrics = [
+    {
+      id: 'uptime',
+      title: 'Uptime (Last 30 Days)',
+      value: '99.98%',
+      change: '↑ 0.01% from last month',
+      isPositive: true,
+      icon: CheckCircle2,
+      iconBg: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'services',
+      title: 'Total Services',
+      value: '24',
+      change: '20 Operational • 4 Third-party',
+      isPositive: true,
+      icon: Database,
+      iconBg: 'bg-blue-100 text-blue-700'
+    },
+    {
+      id: 'incidents',
+      title: 'Active Incidents',
+      value: '0',
+      change: 'No ongoing issues',
+      isPositive: true,
+      icon: AlertCircle,
+      iconBg: 'bg-amber-100 text-amber-700'
+    },
+    {
+      id: 'response',
+      title: 'Average Response Time',
+      value: '45 ms',
+      change: '↓ 12% from last month',
+      isPositive: true,
+      icon: Clock,
+      iconBg: 'bg-emerald-100 text-emerald-700'
+    }
+  ];
+
+  const systemServicesList = [
+    { id: 'srv-1', name: 'Website / Frontend', status: 'Operational', statusType: 'operational', latency: '45 ms', icon: CheckCircle2, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-2', name: 'API / Backend', status: 'Operational', statusType: 'operational', latency: '62 ms', icon: CheckCircle2, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-3', name: 'Database (PostgreSQL)', status: 'Operational', statusType: 'operational', latency: '12 ms', icon: Database, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-4', name: 'Authentication', status: 'Operational', statusType: 'operational', latency: '58 ms', icon: ShieldCheck, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-5', name: 'Storage (Supabase)', status: 'Operational', statusType: 'operational', latency: '85 ms', icon: HardDrive, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-6', name: 'CDN (Cloudflare)', status: 'Operational', statusType: 'operational', latency: '32 ms', icon: Globe, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-7', name: 'Payment Gateway', status: 'Degraded', statusType: 'degraded', latency: '210 ms', icon: CreditCard, iconColor: 'text-amber-600 bg-amber-50' },
+    { id: 'srv-8', name: 'Email Service', status: 'Operational', statusType: 'operational', latency: '120 ms', icon: Mail, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-9', name: 'Live Streaming', status: 'Operational', statusType: 'operational', latency: '180 ms', icon: Video, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-10', name: 'Push Notifications', status: 'Operational', statusType: 'operational', latency: '95 ms', icon: Bell, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-11', name: 'Search Index', status: 'Maintenance', statusType: 'maintenance', latency: 'Until 16:00 UTC', icon: Search, iconColor: 'text-blue-600 bg-blue-50' },
+    { id: 'srv-12', name: 'AI Services', status: 'Operational', statusType: 'operational', latency: '210 ms', icon: Sparkles, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-13', name: 'File Processing', status: 'Operational', statusType: 'operational', latency: '75 ms', icon: FileText, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-14', name: 'Background Jobs', status: 'Operational', statusType: 'operational', latency: '30 ms', icon: RefreshCw, iconColor: 'text-emerald-600 bg-emerald-50' },
+    { id: 'srv-15', name: 'Analytics', status: 'Degraded', statusType: 'degraded', latency: '250 ms', icon: BarChart2, iconColor: 'text-amber-600 bg-amber-50' },
+    { id: 'srv-16', name: 'Third-party Integrations', status: 'Maintenance', statusType: 'maintenance', latency: 'Until 17:00 UTC', icon: Link2, iconColor: 'text-purple-600 bg-purple-50' },
+  ];
+
+  const systemStatusIncidentsList = [
+    {
+      id: 'inc-1',
+      title: 'Search service maintenance',
+      status: 'Maintenance',
+      statusType: 'maintenance',
+      time: '23 Sep 2026, 12:00 - 16:00',
+      desc: 'Scheduled maintenance to improve search performance.',
+      color: 'bg-blue-100 text-blue-700'
+    },
+    {
+      id: 'inc-2',
+      title: 'Payment gateway latency',
+      status: 'Degraded',
+      statusType: 'degraded',
+      time: '22 Sep 2026, 10:15 - 12:40',
+      desc: 'Increased response time from payment provider.',
+      color: 'bg-amber-100 text-amber-700'
+    },
+    {
+      id: 'inc-3',
+      title: 'Scheduled database maintenance',
+      status: 'Maintenance',
+      statusType: 'maintenance',
+      time: '20 Sep 2026, 02:00 - 04:00',
+      desc: 'Routine database optimization.',
+      color: 'bg-blue-100 text-blue-700'
+    },
+    {
+      id: 'inc-4',
+      title: 'Temporary CDN issue',
+      status: 'Degraded',
+      statusType: 'degraded',
+      time: '18 Sep 2026, 14:23 - 15:10',
+      desc: 'Some users experienced slow image loading.',
+      color: 'bg-amber-100 text-amber-700'
+    }
+  ];
+
 
   // =========================================================
   // MAINTENANCE DATASETS (matching media_1790805407476.jpg)
@@ -18934,44 +19052,622 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               );
             })()
           ) : activeNav === 'system-status' ? (
+            (() => {
+              // Filter system services based on status filter
+              const filteredServices = systemServicesList.filter(srv => {
+                if (systemStatusServiceFilter === 'all') return true;
+                return srv.statusType === systemStatusServiceFilter;
+              });
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* 1. TOP SYSTEM STATUS HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-[#0A1822] text-emerald-400 flex items-center justify-center shadow-xs shrink-0 font-bold border border-white/10">
+                        <Activity className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl font-black text-gray-900 tracking-tight">System Status</h1>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Real-time status of all platform services, infrastructure, and third-party integrations.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 shrink-0 flex-wrap">
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span>All Systems Operational</span>
+                        <span className="text-[10px] text-emerald-600 font-normal ml-1">Last: 23 Sep 2026, 14:32 (UTC)</span>
+                      </div>
+
+                      <button
+                        onClick={() => setIsSubscribeStatusUpdatesModalOpen(true)}
+                        className="px-4 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <Bell className="w-3.5 h-3.5" />
+                        <span>Subscribe to Updates</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. TOP 4 STATUS METRIC CARDS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {systemStatusMetrics.map((kpi) => {
+                      const KpiIcon = kpi.icon;
+                      return (
+                        <div
+                          key={kpi.id}
+                          className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs hover:shadow-sm transition-all flex items-center gap-3.5"
+                        >
+                          <div className={`w-11 h-11 rounded-2xl ${kpi.iconBg} flex items-center justify-center shrink-0`}>
+                            <KpiIcon className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <span className="text-[11px] font-bold text-gray-400 block">{kpi.title}</span>
+                            <div className="text-xl font-black text-gray-900 leading-tight">{kpi.value}</div>
+                            <span className={`text-[11px] font-bold ${kpi.isPositive ? 'text-emerald-600' : 'text-gray-500'}`}>
+                              {kpi.change}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* 3. SERVICE STATUS SECTION (16 CARDS + FILTER TABS) */}
+                  <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-2xs space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <h3 className="text-sm font-black text-gray-900">Service Status</h3>
+                        <p className="text-xs text-gray-400">Status of all core services and integrations.</p>
+                      </div>
+
+                      {/* Filter Pills */}
+                      <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                        {[
+                          { id: 'all', label: 'All (24)', dot: null },
+                          { id: 'operational', label: 'Operational (20)', dot: 'bg-emerald-500' },
+                          { id: 'degraded', label: 'Degraded (2)', dot: 'bg-amber-500' },
+                          { id: 'outage', label: 'Outage (0)', dot: 'bg-rose-500' },
+                          { id: 'maintenance', label: 'Maintenance (2)', dot: 'bg-blue-500' }
+                        ].map((flt) => {
+                          const isSel = systemStatusServiceFilter === flt.id;
+                          return (
+                            <button
+                              key={flt.id}
+                              onClick={() => setSystemStatusServiceFilter(flt.id)}
+                              className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                                isSel
+                                  ? 'bg-[#114B44] text-white shadow-2xs'
+                                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                              }`}
+                            >
+                              {flt.dot && <span className={`w-1.5 h-1.5 rounded-full ${flt.dot}`}></span>}
+                              <span>{flt.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* 16 Services Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {filteredServices.map((srv) => {
+                        const SrvIcon = srv.icon;
+                        const isOp = srv.status === 'Operational';
+                        const isDeg = srv.status === 'Degraded';
+                        const isMaint = srv.status === 'Maintenance';
+
+                        return (
+                          <div
+                            key={srv.id}
+                            onClick={() => setSelectedServiceForDetail(srv)}
+                            className="p-3.5 bg-[#F8FAFC] hover:bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-2xs transition-all cursor-pointer space-y-2 group"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <div className={`w-6 h-6 rounded-lg ${srv.iconColor} flex items-center justify-center`}>
+                                  <SrvIcon className="w-3.5 h-3.5" />
+                                </div>
+                                <span className="font-extrabold text-gray-900 text-xs group-hover:text-[#114B44] transition-colors">{srv.name}</span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between pt-1 border-t border-gray-100">
+                              <span className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold ${
+                                isOp ? 'bg-emerald-100 text-emerald-700' :
+                                isDeg ? 'bg-amber-100 text-amber-700' :
+                                'bg-blue-100 text-blue-700'
+                              }`}>
+                                {srv.status}
+                              </span>
+                              <span className="font-mono text-[11px] text-gray-400 font-semibold">{srv.latency}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 4. MIDDLE ROW: RESPONSE TIME (CHART) + SYSTEM RESOURCE USAGE (PROGRESS CARDS) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    
+                    {/* RESPONSE TIME MULTI-LINE CHART - 6 COLS */}
+                    <div className="lg:col-span-6 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-xs font-black text-gray-900">Response Time</h3>
+                          <p className="text-[10px] text-gray-400">Average response time for key services.</p>
+                        </div>
+                        <select
+                          value={systemStatusResponseTimeRange}
+                          onChange={(e) => setSystemStatusResponseTimeRange(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-lg px-2 py-1 text-[11px] font-bold text-gray-700 focus:outline-none cursor-pointer"
+                        >
+                          <option>Last 30 Days</option>
+                          <option>Last 7 Days</option>
+                          <option>Last 24 Hours</option>
+                        </select>
+                      </div>
+
+                      {/* Legend */}
+                      <div className="flex items-center gap-3 text-[10px] font-bold">
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                          <span className="text-gray-600">API</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          <span className="text-gray-600">Database</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                          <span className="text-gray-600">Storage</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                          <span className="text-gray-600">External Services</span>
+                        </div>
+                      </div>
+
+                      {/* Multi-Series Line Chart SVG */}
+                      <div className="relative h-44 w-full pt-1">
+                        <svg viewBox="0 0 350 140" className="w-full h-full overflow-visible">
+                          <line x1="25" y1="15" x2="340" y2="15" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                          <line x1="25" y1="45" x2="340" y2="45" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                          <line x1="25" y1="75" x2="340" y2="75" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                          <line x1="25" y1="105" x2="340" y2="105" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                          <line x1="25" y1="120" x2="340" y2="120" stroke="#E2E8F0" strokeWidth="1" />
+
+                          <text x="18" y="18" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">400 ms</text>
+                          <text x="18" y="48" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">300 ms</text>
+                          <text x="18" y="78" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">200 ms</text>
+                          <text x="18" y="108" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">100 ms</text>
+                          <text x="18" y="123" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">0 ms</text>
+
+                          {/* 1. External Services (Orange) */}
+                          <path
+                            d="M 40 70 L 90 60 L 140 75 L 190 68 L 240 72 L 280 45 L 330 65"
+                            fill="none"
+                            stroke="#F59E0B"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          {[{ x: 40, y: 70, val: '210 ms' }, { x: 90, y: 60, val: '250 ms' }, { x: 140, y: 75, val: '190 ms' }, { x: 190, y: 68, val: '220 ms' }, { x: 240, y: 72, val: '205 ms' }, { x: 280, y: 45, val: '310 ms' }, { x: 330, y: 65, val: '230 ms' }].map((p, i) => (
+                            <circle
+                              key={`ext-${i}`}
+                              cx={p.x}
+                              cy={p.y}
+                              r="3"
+                              fill="#F59E0B"
+                              stroke="#FFFFFF"
+                              strokeWidth="1"
+                              className="cursor-pointer hover:r-4 transition-all"
+                              onMouseEnter={() => setActiveSystemStatusResponseTimeTooltip({ text: `External Services: ${p.val}`, x: p.x, y: p.y })}
+                              onMouseLeave={() => setActiveSystemStatusResponseTimeTooltip(null)}
+                            />
+                          ))}
+
+                          {/* 2. Storage (Purple) */}
+                          <path
+                            d="M 40 95 L 90 92 L 140 90 L 190 94 L 240 92 L 280 88 L 330 90"
+                            fill="none"
+                            stroke="#8B5CF6"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          {[{ x: 40, y: 95, val: '85 ms' }, { x: 90, y: 92, val: '88 ms' }, { x: 140, y: 90, val: '82 ms' }, { x: 190, y: 94, val: '86 ms' }, { x: 240, y: 92, val: '85 ms' }, { x: 280, y: 88, val: '92 ms' }, { x: 330, y: 90, val: '85 ms' }].map((p, i) => (
+                            <circle
+                              key={`stg-${i}`}
+                              cx={p.x}
+                              cy={p.y}
+                              r="3"
+                              fill="#8B5CF6"
+                              stroke="#FFFFFF"
+                              strokeWidth="1"
+                              className="cursor-pointer hover:r-4 transition-all"
+                              onMouseEnter={() => setActiveSystemStatusResponseTimeTooltip({ text: `Storage: ${p.val}`, x: p.x, y: p.y })}
+                              onMouseLeave={() => setActiveSystemStatusResponseTimeTooltip(null)}
+                            />
+                          ))}
+
+                          {/* 3. API (Blue) */}
+                          <path
+                            d="M 40 102 L 90 100 L 140 101 L 190 99 L 240 100 L 280 98 L 330 101"
+                            fill="none"
+                            stroke="#3B82F6"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          {[{ x: 40, y: 102, val: '62 ms' }, { x: 90, y: 100, val: '60 ms' }, { x: 140, y: 101, val: '64 ms' }, { x: 190, y: 99, val: '59 ms' }, { x: 240, y: 100, val: '62 ms' }, { x: 280, y: 98, val: '65 ms' }, { x: 330, y: 101, val: '62 ms' }].map((p, i) => (
+                            <circle
+                              key={`api-${i}`}
+                              cx={p.x}
+                              cy={p.y}
+                              r="3"
+                              fill="#3B82F6"
+                              stroke="#FFFFFF"
+                              strokeWidth="1"
+                              className="cursor-pointer hover:r-4 transition-all"
+                              onMouseEnter={() => setActiveSystemStatusResponseTimeTooltip({ text: `API: ${p.val}`, x: p.x, y: p.y })}
+                              onMouseLeave={() => setActiveSystemStatusResponseTimeTooltip(null)}
+                            />
+                          ))}
+
+                          {/* 4. Database (Green) */}
+                          <path
+                            d="M 40 115 L 90 116 L 140 114 L 190 115 L 240 116 L 280 114 L 330 115"
+                            fill="none"
+                            stroke="#10B981"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          {[{ x: 40, y: 115, val: '12 ms' }, { x: 90, y: 116, val: '14 ms' }, { x: 140, y: 114, val: '11 ms' }, { x: 190, y: 115, val: '13 ms' }, { x: 240, y: 116, val: '15 ms' }, { x: 280, y: 114, val: '12 ms' }, { x: 330, y: 115, val: '12 ms' }].map((p, i) => (
+                            <circle
+                              key={`db-${i}`}
+                              cx={p.x}
+                              cy={p.y}
+                              r="3"
+                              fill="#10B981"
+                              stroke="#FFFFFF"
+                              strokeWidth="1"
+                              className="cursor-pointer hover:r-4 transition-all"
+                              onMouseEnter={() => setActiveSystemStatusResponseTimeTooltip({ text: `Database: ${p.val}`, x: p.x, y: p.y })}
+                              onMouseLeave={() => setActiveSystemStatusResponseTimeTooltip(null)}
+                            />
+                          ))}
+
+                          <text x="40" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">23 Aug</text>
+                          <text x="90" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">30 Aug</text>
+                          <text x="140" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">6 Sep</text>
+                          <text x="190" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">13 Sep</text>
+                          <text x="240" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">20 Sep</text>
+                        </svg>
+
+                        {activeSystemStatusResponseTimeTooltip && (
+                          <div
+                            className="absolute z-10 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg pointer-events-none -translate-x-1/2 -translate-y-full"
+                            style={{ left: `${(activeSystemStatusResponseTimeTooltip.x / 350) * 100}%`, top: `${(activeSystemStatusResponseTimeTooltip.y / 140) * 100}%` }}
+                          >
+                            {activeSystemStatusResponseTimeTooltip.text}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* SYSTEM RESOURCE USAGE (4 PROGRESS CARDS) - 6 COLS */}
+                    <div className="lg:col-span-6 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-xs font-black text-gray-900">System Resource Usage</h3>
+                          <p className="text-[10px] text-gray-400">Live infrastructure metrics.</p>
+                        </div>
+                        <select
+                          value={systemStatusResourceRange}
+                          onChange={(e) => setSystemStatusResourceRange(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-lg px-2 py-1 text-[11px] font-bold text-gray-700 focus:outline-none cursor-pointer"
+                        >
+                          <option>Last 24 Hours</option>
+                          <option>Last 7 Days</option>
+                          <option>Real-time</option>
+                        </select>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        {/* 1. CPU Usage */}
+                        <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                              <Server className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-700">CPU Usage</span>
+                          </div>
+                          <div className="text-lg font-black text-gray-900">28%</div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                            <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: '28%' }}></div>
+                          </div>
+                        </div>
+
+                        {/* 2. Memory Usage */}
+                        <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                              <Database className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-700">Memory Usage</span>
+                          </div>
+                          <div className="text-lg font-black text-gray-900">62%</div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                            <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: '62%' }}></div>
+                          </div>
+                        </div>
+
+                        {/* 3. Disk Usage */}
+                        <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                              <HardDrive className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-700">Disk Usage</span>
+                          </div>
+                          <div className="text-lg font-black text-gray-900">45%</div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                            <div className="bg-purple-500 h-1.5 rounded-full" style={{ width: '45%' }}></div>
+                          </div>
+                        </div>
+
+                        {/* 4. Network Traffic */}
+                        <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                              <Activity className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="text-xs font-bold text-gray-700">Network Traffic</span>
+                          </div>
+                          <div className="text-lg font-black text-gray-900">120 Mbps</div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                            <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: '35%' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 5. BOTTOM 3-COLUMN SECTION: Uptime Overview + Incident History + Quick Actions */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    
+                    {/* CARD 1: UPTIME OVERVIEW (4 COLS) */}
+                    <div className="lg:col-span-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xs font-black text-gray-900">Uptime Overview</h3>
+                        <select className="bg-[#F8FAFC] border border-gray-200 rounded-lg px-2 py-1 text-[11px] font-bold text-gray-700 focus:outline-none cursor-pointer">
+                          <option>Last 30 Days</option>
+                          <option>Last 90 Days</option>
+                          <option>This Year</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span className="text-sm font-black text-gray-900">99.98%</span>
+                        <span className="text-xs text-gray-500 font-semibold">Platform Uptime</span>
+                      </div>
+
+                      {/* Daily Uptime Bar Visualizer */}
+                      <div className="space-y-1.5 pt-1">
+                        <div className="flex items-end gap-1 h-12">
+                          {[
+                            100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+                            100, 100, 100, 100, 100, 100, 100, 99.8, 100, 100,
+                            100, 99.8, 100, 100, 100, 100, 100, 100, 100, 100
+                          ].map((val, idx) => (
+                            <div
+                              key={idx}
+                              title={`Day ${idx + 1}: ${val}% Uptime`}
+                              className={`flex-1 rounded-sm transition-all cursor-pointer ${
+                                val === 100 ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-amber-400 hover:bg-amber-500'
+                              }`}
+                              style={{ height: `${val === 100 ? '100%' : '80%'}` }}
+                            ></div>
+                          ))}
+                        </div>
+
+                        {/* Scale markers */}
+                        <div className="flex items-center justify-between text-[8px] text-gray-400 font-bold">
+                          <span>24 Aug</span>
+                          <span>31 Aug</span>
+                          <span>7 Sep</span>
+                          <span>14 Sep</span>
+                          <span>21 Sep</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CARD 2: INCIDENT HISTORY (5 COLS) */}
+                    <div className="lg:col-span-5 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xs font-black text-gray-900">Incident History</h3>
+                        <button
+                          onClick={() => setIsViewAllStatusIncidentsModalOpen(true)}
+                          className="text-[11px] font-bold text-[#114B44] hover:underline cursor-pointer"
+                        >
+                          View All →
+                        </button>
+                      </div>
+
+                      <div className="space-y-2 text-xs">
+                        {systemStatusIncidentsList.map((inc) => (
+                          <div
+                            key={inc.id}
+                            onClick={() => setSelectedStatusIncidentForDetail(inc)}
+                            className="p-2.5 bg-[#F8FAFC] hover:bg-white rounded-xl border border-gray-200 hover:border-gray-300 transition-all cursor-pointer flex items-center justify-between gap-2 group"
+                          >
+                            <div className="space-y-0.5 min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className={`w-2 h-2 rounded-full shrink-0 ${inc.status === 'Maintenance' ? 'bg-blue-500' : 'bg-amber-500'}`}></span>
+                                <span className="font-extrabold text-gray-900 text-[11px] truncate group-hover:text-[#114B44] transition-colors">{inc.title}</span>
+                                <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold shrink-0 ${inc.color}`}>{inc.status}</span>
+                              </div>
+                              <div className="text-[10px] text-gray-400">{inc.time}</div>
+                              <p className="text-[10px] text-gray-600 truncate">{inc.desc}</p>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-700 shrink-0" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* CARD 3: QUICK ACTIONS (3 COLS) */}
+                    <div className="lg:col-span-3 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <h3 className="text-xs font-black text-gray-900">Quick Actions</h3>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <button
+                          onClick={() => setIsRunHealthCheckModalOpen(true)}
+                          className="p-2 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1 transition-all text-center cursor-pointer"
+                        >
+                          <Activity className="w-4 h-4 text-emerald-600" />
+                          <span className="text-[10px]">Run Health Check</span>
+                        </button>
+
+                        <button
+                          onClick={() => setActiveNav('activity-log')}
+                          className="p-2 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1 transition-all text-center cursor-pointer"
+                        >
+                          <FileText className="w-4 h-4 text-blue-600" />
+                          <span className="text-[10px]">View Logs</span>
+                        </button>
+
+                        <button
+                          onClick={() => alert('Semua 24 layanan mikro telah diuji: 20 OK, 2 Degraded, 2 Scheduled Maintenance.')}
+                          className="p-2 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1 transition-all text-center cursor-pointer"
+                        >
+                          <Play className="w-4 h-4 text-purple-600 fill-current" />
+                          <span className="text-[10px]">Test All Services</span>
+                        </button>
+
+                        <button
+                          onClick={() => alert('Cache global Redis & Cloudflare berhasil dibersihkan!')}
+                          className="p-2 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1 transition-all text-center cursor-pointer"
+                        >
+                          <Zap className="w-4 h-4 text-amber-600" />
+                          <span className="text-[10px]">Clear Cache</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsRestartServicesModalOpen(true)}
+                          className="p-2 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1 transition-all text-center cursor-pointer"
+                        >
+                          <RefreshCw className="w-4 h-4 text-sky-600" />
+                          <span className="text-[10px]">Restart Services</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsManageCronModalOpen(true)}
+                          className="p-2 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1 transition-all text-center cursor-pointer"
+                        >
+                          <Calendar className="w-4 h-4 text-rose-600" />
+                          <span className="text-[10px]">Schedule Maintenance</span>
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 6. BOTTOM FULL-WIDTH OPERATIONAL BANNER */}
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">
+                        <CheckCircle className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-black text-emerald-950">All Systems Operational</h4>
+                        <p className="text-xs text-emerald-800">Our platform is running smoothly. We'll notify you here if there are any updates.</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span className="text-[11px] font-semibold text-emerald-700">Last checked: 23 Sep 2026, 14:32 (UTC)</span>
+                      <button
+                        onClick={() => setIsStatusPublicPageModalOpen(true)}
+                        className="px-3.5 py-2 bg-white hover:bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+                      >
+                        <span>View Status Page</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })()
+          ) : activeNav === 'logs' ? (
             <div className="space-y-5 animate-fadeIn">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-xs shrink-0">
-                    <Activity className="w-6 h-6" />
+                  <div className="w-11 h-11 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shadow-xs shrink-0">
+                    <FileText className="w-6 h-6" />
                   </div>
                   <div>
-                    <h1 className="text-xl font-black text-gray-900 tracking-tight">System Status & Infrastructure</h1>
-                    <p className="text-xs text-gray-500 font-medium">Real-time health monitoring of servers, APIs, and databases.</p>
+                    <h1 className="text-xl font-black text-gray-900 tracking-tight">System Audit & Access Logs</h1>
+                    <p className="text-xs text-gray-500 font-medium">Real-time syslog, access stream, and server runtime journals.</p>
                   </div>
                 </div>
                 <button
-                  onClick={() => setIsSystemStatusModalOpen(true)}
+                  onClick={() => setActiveNav('activity-log')}
                   className="px-4 py-2 bg-[#114B44] text-white rounded-xl text-xs font-bold hover:bg-[#0D3B35] cursor-pointer"
                 >
-                  Run Full Diagnostic
+                  Buka Activity Log Table →
                 </button>
               </div>
 
-              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-2xs space-y-4">
-                <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span className="text-sm font-black text-emerald-900">All Core Systems Operational (99.98% Uptime)</span>
+              <div className="p-4 bg-slate-900 text-emerald-400 rounded-2xl font-mono text-xs space-y-1.5 overflow-x-auto max-h-96">
+                <div>[2026-09-23 14:32:01 UTC] [INFO] system.core: Worker pool healthy (10 workers ready).</div>
+                <div>[2026-09-23 14:31:55 UTC] [HTTP] GET /api/v1/classes - 200 OK - 18ms</div>
+                <div>[2026-09-23 14:31:40 UTC] [HTTP] POST /api/v1/auth/login - 200 OK - 45ms</div>
+                <div>[2026-09-23 14:30:12 UTC] [CRON] daily_backup_task completed in 14.2s (1.2 GB stored).</div>
+                <div>[2026-09-23 14:28:00 UTC] [INFO] redis.cache: Cache hit ratio 94.2% over 100,000 ops.</div>
+              </div>
+            </div>
+          ) : activeNav === 'health-check' ? (
+            <div className="space-y-5 animate-fadeIn">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shadow-xs shrink-0">
+                    <Heart className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-mono text-emerald-700 font-bold">Latency: 42ms</span>
+                  <div>
+                    <h1 className="text-xl font-black text-gray-900 tracking-tight">Health Check & Self-Healing</h1>
+                    <p className="text-xs text-gray-500 font-medium">Automated health probes, readiness checks, and circuit breakers.</p>
+                  </div>
                 </div>
+                <button
+                  onClick={() => setIsRunHealthCheckModalOpen(true)}
+                  className="px-4 py-2 bg-[#114B44] text-white rounded-xl text-xs font-bold hover:bg-[#0D3B35] cursor-pointer"
+                >
+                  Uji Health Check Sekarang
+                </button>
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-                  {helpSystemStatusList.map((st) => (
-                    <div key={st.id} className="p-3.5 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        <span className="font-extrabold text-gray-800">{st.name}</span>
-                      </div>
-                      <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">{st.status}</span>
-                    </div>
-                  ))}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-2xs space-y-2">
+                  <div className="font-black text-gray-900 text-sm">Liveness Probe</div>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-700">Healthy (200 OK)</span>
+                  <p className="text-xs text-gray-400">Ping interval: 10 detik</p>
+                </div>
+                <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-2xs space-y-2">
+                  <div className="font-black text-gray-900 text-sm">Readiness Probe</div>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-700">Ready to Serve</span>
+                  <p className="text-xs text-gray-400">DB connection pool: 24/50 active</p>
+                </div>
+                <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-2xs space-y-2">
+                  <div className="font-black text-gray-900 text-sm">Circuit Breaker</div>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-700">Closed (Normal)</span>
+                  <p className="text-xs text-gray-400">Error threshold: &lt; 0.05%</p>
                 </div>
               </div>
             </div>
@@ -27377,6 +28073,310 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   >
                     Bersihkan Sekarang
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* SYSTEM STATUS INTERACTIVE MODALS                          */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal Subscribe to Status Updates */}
+          {isSubscribeStatusUpdatesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <Bell className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Langganan Notifikasi Status (Subscribe)</h3>
+                      <p className="text-xs text-gray-500">Dapatkan update insiden & jadwal pemeliharaan</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsSubscribeStatusUpdatesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Saluran Notifikasi</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { id: 'email', label: 'Email' },
+                        { id: 'webhook', label: 'Webhook' },
+                        { id: 'whatsapp', label: 'WhatsApp' }
+                      ].map((ch) => (
+                        <button
+                          key={ch.id}
+                          type="button"
+                          onClick={() => setStatusSubscriberChannel(ch.id)}
+                          className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                            statusSubscriberChannel === ch.id
+                              ? 'border-[#114B44] bg-emerald-50 text-[#114B44]'
+                              : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          {ch.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">
+                      {statusSubscriberChannel === 'email' ? 'Alamat Email Penerima' : statusSubscriberChannel === 'webhook' ? 'Webhook Endpoint URL' : 'Nomor WhatsApp'}
+                    </label>
+                    <input
+                      type="text"
+                      value={statusSubscriberEmail}
+                      onChange={(e) => setStatusSubscriberEmail(e.target.value)}
+                      placeholder={statusSubscriberChannel === 'email' ? 'nama@domain.com' : statusSubscriberChannel === 'webhook' ? 'https://api.domain.com/status-webhook' : '+62 812-3456-7890'}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-[11px] text-gray-600 space-y-1">
+                    <div className="font-bold text-gray-800">Tipe Notifikasi yang Dikirimkan:</div>
+                    <ul className="list-disc list-inside space-y-0.5 text-gray-500">
+                      <li>Pemberitahuan insiden baru (Degraded / Outage)</li>
+                      <li>Update berkala status perbaikan teknis</li>
+                      <li>Jadwal maintenance terjadwal di luar jam sibuk</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsSubscribeStatusUpdatesModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (!statusSubscriberEmail.trim()) {
+                        alert('Silakan masukkan kontak penerima terlebih dahulu.');
+                        return;
+                      }
+                      setIsSubscribeStatusUpdatesModalOpen(false);
+                      setStatusSubscriberEmail('');
+                      alert('Berhasil berlangganan notifikasi status sistem IlmHub!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Langganan Sekarang
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal Service Detail */}
+          {selectedServiceForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-9 h-9 rounded-xl ${selectedServiceForDetail.iconColor} flex items-center justify-center font-black`}>
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">{selectedServiceForDetail.name}</h3>
+                      <p className="text-xs text-gray-500">Metrik operasional & SLA performa</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedServiceForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] text-gray-400 font-bold block">Status Operasional</span>
+                      <span className="font-extrabold text-gray-900 text-xs">{selectedServiceForDetail.status}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[10px] text-gray-400 font-bold block">Latensi Respon</span>
+                      <span className="font-mono font-bold text-gray-900 text-xs">{selectedServiceForDetail.latency}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    {[
+                      { label: 'Uptime 30 Hari Terakhir', val: '99.99% (SLA Guaranteed)' },
+                      { label: 'Tingkat Kegagalan (Error Rate)', val: '0.001% (Normal)' },
+                      { label: 'Wilayah Hosting (Region)', val: 'ap-southeast-1 (Singapore Edge)' },
+                      { label: 'Protokol Jaringan', val: 'HTTP/3 over QUIC with TLS 1.3' },
+                    ].map((row, rIdx) => (
+                      <div key={rIdx} className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-100 flex items-center justify-between">
+                        <span className="text-gray-500 font-semibold">{row.label}</span>
+                        <span className="font-mono font-bold text-gray-900 text-[11px]">{row.val}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setSelectedServiceForDetail(null)} className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal Status Incident Detail */}
+          {selectedStatusIncidentForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-9 h-9 rounded-xl ${selectedStatusIncidentForDetail.status === 'Maintenance' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'} flex items-center justify-center font-black`}>
+                      {selectedStatusIncidentForDetail.status === 'Maintenance' ? <Wrench className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">{selectedStatusIncidentForDetail.title}</h3>
+                      <p className="text-xs text-gray-500">{selectedStatusIncidentForDetail.time}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedStatusIncidentForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-extrabold text-gray-900">Status: {selectedStatusIncidentForDetail.status}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${selectedStatusIncidentForDetail.color}`}>{selectedStatusIncidentForDetail.status}</span>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed text-[11px] pt-1">{selectedStatusIncidentForDetail.desc}</p>
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5 text-[11px] text-gray-600">
+                    <div className="font-black text-gray-900">Timeline Analisis Insiden:</div>
+                    <div>• <strong>Identifikasi:</strong> Sistem monitoring mendeteksi kenaikan latensi respon.</div>
+                    <div>• <strong>Tindakan:</strong> Tim engineering mengisolasi request dan melakukan scale-out node.</div>
+                    <div>• <strong>Resolusi:</strong> Status kembali normal dalam rentang SLA yang ditargetkan.</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setSelectedStatusIncidentForDetail(null)} className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal View All Status Incidents */}
+          {isViewAllStatusIncidentsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Riwayat Insiden & Pemeliharaan Lengkap</h3>
+                      <p className="text-xs text-gray-500">Log insiden 30 hari terakhir</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllStatusIncidentsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {systemStatusIncidentsList.map((inc) => (
+                    <div key={inc.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-extrabold text-gray-900">{inc.title}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${inc.color}`}>{inc.status}</span>
+                      </div>
+                      <div className="text-[10px] text-gray-400">{inc.time}</div>
+                      <p className="text-gray-600 text-[11px]">{inc.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllStatusIncidentsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal Run Health Check Probe */}
+          {isRunHealthCheckModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black">
+                      <Heart className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Health Check & Diagnostic Probes</h3>
+                      <p className="text-xs text-gray-500">Pengujian mandiri konektivitas seluruh subsistem</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsRunHealthCheckModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {[
+                    { target: 'Core REST API Health (/healthz)', status: 'HTTP 200 OK (22ms)', icon: CheckCircle, color: 'text-emerald-600' },
+                    { target: 'PostgreSQL Database Connection Pool', status: 'Healthy (24/50 active)', icon: CheckCircle, color: 'text-emerald-600' },
+                    { target: 'Redis Cache Read/Write Check', status: 'PONG (0.9ms)', icon: CheckCircle, color: 'text-emerald-600' },
+                    { target: 'Mayar Payment Gateway Webhook Listener', status: 'Listening (Ready)', icon: CheckCircle, color: 'text-emerald-600' },
+                    { target: 'Zoom Live Streaming JWT Server', status: 'Token Active (Valid)', icon: CheckCircle, color: 'text-emerald-600' },
+                  ].map((probe, pIdx) => {
+                    const ProbeIcon = probe.icon;
+                    return (
+                      <div key={pIdx} className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                        <span className="font-semibold text-gray-700">{probe.target}</span>
+                        <div className="flex items-center gap-1.5">
+                          <ProbeIcon className={`w-3.5 h-3.5 ${probe.color}`} />
+                          <span className="font-bold text-gray-900 text-[11px] font-mono">{probe.status}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsRunHealthCheckModalOpen(false)} className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs cursor-pointer">
+                    Selesai
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Modal Public Status Page Preview */}
+          {isStatusPublicPageModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Preview Public Status Page (status.ilmhub.com)</h3>
+                      <p className="text-xs text-gray-500">Tampilan status publik yang dapat diakses oleh santri & guru</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsStatusPublicPageModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-center space-y-1">
+                  <span className="text-base font-black text-emerald-950 block">All Systems Are Fully Operational</span>
+                  <p className="text-xs text-emerald-800">Semua layanan pembelajaran IlmHub berjalan lancar tanpa kendala.</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {systemServicesList.slice(0, 8).map((srv) => (
+                    <div key={srv.id} className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                      <span className="font-bold text-gray-800">{srv.name}</span>
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-100 text-emerald-700">{srv.status}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsStatusPublicPageModalOpen(false)} className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
                 </div>
               </div>
             </div>
