@@ -7728,27 +7728,27 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   </div>
 
                   {/* 2. TOP 4 KPI CARDS FOR ASSIGNMENTS */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
                     
                     {/* Total Assignments */}
-                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0 border border-blue-100/80">
-                            <FileText className="w-5 h-5" />
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0 border border-blue-100/80">
+                            <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
                           </div>
                           <span className="text-xs font-bold text-gray-500 truncate">Total Assignments</span>
                         </div>
-                        <div className="flex items-end gap-1 h-8 shrink-0">
+                        <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                           <div className="w-1.5 bg-blue-100 rounded-full h-2.5"></div>
                           <div className="w-1.5 bg-blue-200 rounded-full h-4.5"></div>
                           <div className="w-1.5 bg-blue-300 rounded-full h-6"></div>
-                          <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
+                          <div className="w-1.5 bg-blue-500 rounded-full h-7 sm:h-8"></div>
                         </div>
                       </div>
                       <div className="mt-3">
-                        <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">284</div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none">284</div>
+                        <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-2">
                           <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                           <span className="truncate">↑ 18% from last month</span>
                         </div>
@@ -7756,24 +7756,24 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </div>
 
                     {/* Submitted */}
-                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100/80">
-                            <CheckSquare className="w-5 h-5" />
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100/80">
+                            <CheckSquare className="w-4 h-4 sm:w-5 sm:h-5" />
                           </div>
                           <span className="text-xs font-bold text-gray-500 truncate">Submitted</span>
                         </div>
-                        <div className="flex items-end gap-1 h-8 shrink-0">
+                        <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                           <div className="w-1.5 bg-emerald-100 rounded-full h-2.5"></div>
                           <div className="w-1.5 bg-emerald-200 rounded-full h-4.5"></div>
                           <div className="w-1.5 bg-emerald-300 rounded-full h-6"></div>
-                          <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
+                          <div className="w-1.5 bg-emerald-500 rounded-full h-7 sm:h-8"></div>
                         </div>
                       </div>
                       <div className="mt-3">
-                        <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">2,416</div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none">2,416</div>
+                        <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-2">
                           <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                           <span className="truncate">↑ 24% from last month</span>
                         </div>
@@ -7781,24 +7781,24 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </div>
 
                     {/* Pending Review */}
-                    <div className="bg-white rounded-2xl border border-amber-200/90 bg-gradient-to-br from-white to-amber-50/30 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                    <div className="bg-white rounded-2xl border border-amber-200/90 bg-gradient-to-br from-white to-amber-50/30 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
-                            <Clock className="w-5 h-5" />
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
                           </div>
                           <span className="text-xs font-bold text-amber-900 truncate">Pending Review</span>
                         </div>
-                        <div className="flex items-end gap-1 h-8 shrink-0">
+                        <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                           <div className="w-1.5 bg-purple-100 rounded-full h-2.5"></div>
                           <div className="w-1.5 bg-purple-200 rounded-full h-4.5"></div>
                           <div className="w-1.5 bg-purple-300 rounded-full h-6"></div>
-                          <div className="w-1.5 bg-purple-500 rounded-full h-8"></div>
+                          <div className="w-1.5 bg-purple-500 rounded-full h-7 sm:h-8"></div>
                         </div>
                       </div>
                       <div className="mt-3">
-                        <div className="text-2xl font-black text-amber-950 tracking-tight leading-none">156</div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 mt-2">
+                        <div className="text-xl sm:text-2xl font-black text-amber-950 tracking-tight leading-none">156</div>
+                        <div className="flex items-center gap-1 text-[11px] font-bold text-rose-600 mt-2">
                           <TrendingUp className="w-3.5 h-3.5 shrink-0 rotate-180 text-rose-500" />
                           <span className="truncate">↓ 12% from last month</span>
                         </div>
@@ -7806,24 +7806,24 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </div>
 
                     {/* Graded */}
-                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-100/80">
-                            <Star className="w-5 h-5" />
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-100/80">
+                            <Star className="w-4 h-4 sm:w-5 sm:h-5" />
                           </div>
                           <span className="text-xs font-bold text-gray-500 truncate">Graded</span>
                         </div>
-                        <div className="flex items-end gap-1 h-8 shrink-0">
+                        <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                           <div className="w-1.5 bg-amber-100 rounded-full h-2.5"></div>
                           <div className="w-1.5 bg-amber-200 rounded-full h-4.5"></div>
                           <div className="w-1.5 bg-amber-300 rounded-full h-6"></div>
-                          <div className="w-1.5 bg-amber-500 rounded-full h-8"></div>
+                          <div className="w-1.5 bg-amber-500 rounded-full h-7 sm:h-8"></div>
                         </div>
                       </div>
                       <div className="mt-3">
-                        <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">2,260</div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                        <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none">2,260</div>
+                        <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-2">
                           <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                           <span className="truncate">↑ 28% from last month</span>
                         </div>
@@ -7833,7 +7833,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   </div>
 
                   {/* 3. STATUS FILTER PILLS (matching media_1790785679753.jpg) */}
-                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 min-w-0">
                     {[
                       { id: 'all', label: 'All Assignments', count: 284 },
                       { id: 'active', label: 'Active', count: 201 },
@@ -7863,97 +7863,109 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     ))}
                   </div>
 
-                  {/* 4. SEARCH & SECONDARY FILTERS BAR */}
-                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
-                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+                  {/* 4. SEARCH & SECONDARY FILTERS BAR (Side scrollable filters on narrow screens) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 sm:p-4 shadow-2xs space-y-3 min-w-0">
+                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 min-w-0">
                       
                       {/* Search Bar */}
-                      <div className="relative flex-1 min-w-[280px]">
+                      <div className="relative flex-1 min-w-0">
                         <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                         <input
                           type="text"
                           value={assignmentSearchQuery}
                           onChange={(e) => setAssignmentSearchQuery(e.target.value)}
                           placeholder="Search assignments by title, class, or subject..."
-                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-xs font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#114B44]/20 focus:border-[#114B44]"
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-xs font-semibold text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#114B44]/20 focus:border-[#114B44]"
                         />
                       </div>
 
-                      {/* Dropdown Filters */}
-                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                      {/* Dropdown Filters (Horizontal side scrollable) */}
+                      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 shrink-0 min-w-0">
                         {/* Class Dropdown */}
-                        <select
-                          value={assignmentClassFilter}
-                          onChange={(e) => setAssignmentClassFilter(e.target.value)}
-                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
-                        >
-                          <option value="All Classes">All Classes</option>
-                          <option value="Grade 10A">Grade 10A</option>
-                          <option value="Grade 8B">Grade 8B</option>
-                          <option value="Grade 11A">Grade 11A</option>
-                          <option value="Grade 9A">Grade 9A</option>
-                          <option value="Grade 10B">Grade 10B</option>
-                          <option value="Grade 12A">Grade 12A</option>
-                          <option value="Grade 11B">Grade 11B</option>
-                          <option value="Grade 9B">Grade 9B</option>
-                          <option value="Grade 12B">Grade 12B</option>
-                          <option value="Grade 8A">Grade 8A</option>
-                        </select>
+                        <div className="relative shrink-0">
+                          <select
+                            value={assignmentClassFilter}
+                            onChange={(e) => setAssignmentClassFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl pl-3 pr-7 py-2 shadow-2xs focus:outline-none cursor-pointer whitespace-nowrap"
+                          >
+                            <option value="All Classes">All Classes</option>
+                            <option value="Grade 10A">Grade 10A</option>
+                            <option value="Grade 8B">Grade 8B</option>
+                            <option value="Grade 11A">Grade 11A</option>
+                            <option value="Grade 9A">Grade 9A</option>
+                            <option value="Grade 10B">Grade 10B</option>
+                            <option value="Grade 12A">Grade 12A</option>
+                            <option value="Grade 11B">Grade 11B</option>
+                            <option value="Grade 9B">Grade 9B</option>
+                            <option value="Grade 12B">Grade 12B</option>
+                            <option value="Grade 8A">Grade 8A</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
 
                         {/* Subject Dropdown */}
-                        <select
-                          value={assignmentSubjectFilter}
-                          onChange={(e) => setAssignmentSubjectFilter(e.target.value)}
-                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
-                        >
-                          <option value="All Subjects">All Subjects</option>
-                          <option value="Science">Science</option>
-                          <option value="Islamic Studies">Islamic Studies</option>
-                          <option value="Mathematics">Mathematics</option>
-                          <option value="Arabic">Arabic</option>
-                          <option value="History">History</option>
-                          <option value="Computer Science">Computer Science</option>
-                          <option value="Business">Business</option>
-                          <option value="Environmental">Environmental</option>
-                          <option value="Psychology">Psychology</option>
-                          <option value="English">English</option>
-                        </select>
+                        <div className="relative shrink-0">
+                          <select
+                            value={assignmentSubjectFilter}
+                            onChange={(e) => setAssignmentSubjectFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl pl-3 pr-7 py-2 shadow-2xs focus:outline-none cursor-pointer whitespace-nowrap"
+                          >
+                            <option value="All Subjects">All Subjects</option>
+                            <option value="Science">Science</option>
+                            <option value="Islamic Studies">Islamic Studies</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="History">History</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Business">Business</option>
+                            <option value="Environmental">Environmental</option>
+                            <option value="Psychology">Psychology</option>
+                            <option value="English">English</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
 
                         {/* Teacher Dropdown */}
-                        <select
-                          value={assignmentTeacherFilter}
-                          onChange={(e) => setAssignmentTeacherFilter(e.target.value)}
-                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
-                        >
-                          <option value="All Teachers">All Teachers</option>
-                          <option value="Dr. Ahmad Fauzi">Dr. Ahmad Fauzi</option>
-                          <option value="Siti Aisyah">Siti Aisyah</option>
-                          <option value="Layla Karim">Layla Karim</option>
-                          <option value="Zainab Ali">Zainab Ali</option>
-                          <option value="Fatimah Nur">Fatimah Nur</option>
-                          <option value="Muhammad Khan">Muhammad Khan</option>
-                          <option value="Ali Reza">Ali Reza</option>
-                          <option value="Nadia Rahman">Nadia Rahman</option>
-                          <option value="Hassan Malik">Hassan Malik</option>
-                          <option value="Omar Hassan">Omar Hassan</option>
-                        </select>
+                        <div className="relative shrink-0">
+                          <select
+                            value={assignmentTeacherFilter}
+                            onChange={(e) => setAssignmentTeacherFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl pl-3 pr-7 py-2 shadow-2xs focus:outline-none cursor-pointer whitespace-nowrap"
+                          >
+                            <option value="All Teachers">All Teachers</option>
+                            <option value="Dr. Ahmad Fauzi">Dr. Ahmad Fauzi</option>
+                            <option value="Siti Aisyah">Siti Aisyah</option>
+                            <option value="Layla Karim">Layla Karim</option>
+                            <option value="Zainab Ali">Zainab Ali</option>
+                            <option value="Fatimah Nur">Fatimah Nur</option>
+                            <option value="Muhammad Khan">Muhammad Khan</option>
+                            <option value="Ali Reza">Ali Reza</option>
+                            <option value="Nadia Rahman">Nadia Rahman</option>
+                            <option value="Hassan Malik">Hassan Malik</option>
+                            <option value="Omar Hassan">Omar Hassan</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
 
                         {/* Status Dropdown */}
-                        <select
-                          value={assignmentStatusFilter}
-                          onChange={(e) => setAssignmentStatusFilter(e.target.value)}
-                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
-                        >
-                          <option value="All Status">All Status</option>
-                          <option value="Active">Active</option>
-                          <option value="Pending">Pending</option>
-                          <option value="Graded">Graded</option>
-                        </select>
+                        <div className="relative shrink-0">
+                          <select
+                            value={assignmentStatusFilter}
+                            onChange={(e) => setAssignmentStatusFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl pl-3 pr-7 py-2 shadow-2xs focus:outline-none cursor-pointer whitespace-nowrap"
+                          >
+                            <option value="All Status">All Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Graded">Graded</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
 
                         {/* Date Range Button */}
                         <button
                           onClick={() => alert('Filter rentang tanggal tugas')}
-                          className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                          className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
                         >
                           <Calendar className="w-3.5 h-3.5 text-gray-500" />
                           <span>Date Range</span>
@@ -7969,7 +7981,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                             setAssignmentTeacherFilter('All Teachers');
                             setAssignmentStatusFilter('All Status');
                           }}
-                          className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                          className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
                           title="Reset Filters"
                         >
                           <Filter className="w-3.5 h-3.5 text-gray-500" />
@@ -7982,25 +7994,25 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                   {/* Batch Selection Action Bar (if checkboxes checked) */}
                   {selectedAssignmentCheckboxes.length > 0 && (
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 animate-fadeIn font-bold">
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 animate-fadeIn font-bold min-w-0">
                       <div className="flex items-center gap-2">
-                        <CheckSquare className="w-4 h-4 text-amber-700" />
-                        <span>{selectedAssignmentCheckboxes.length} Tugas Dipilih</span>
+                        <CheckSquare className="w-4 h-4 text-amber-700 shrink-0" />
+                        <span className="truncate">{selectedAssignmentCheckboxes.length} Tugas Dipilih</span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
                         <button
                           onClick={() => {
                             setAssignmentsList(prev => prev.map(a => selectedAssignmentCheckboxes.includes(a.id) ? { ...a, status: 'Graded', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' } : a));
                             setSelectedAssignmentCheckboxes([]);
                             alert('Tugas terpilih berhasil ditandai sebagai Selesai Dinilai!');
                           }}
-                          className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                          className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition-colors cursor-pointer whitespace-nowrap"
                         >
                           Tandai Selesai Dinilai
                         </button>
                         <button
                           onClick={() => setSelectedAssignmentCheckboxes([])}
-                          className="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                          className="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition-colors cursor-pointer whitespace-nowrap"
                         >
                           Batal Pilihan
                         </button>
@@ -8009,12 +8021,12 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   )}
 
                   {/* 5. MAIN 2-COLUMN LAYOUT: 8-COLS TABLE + 4-COLS SIDE DOSSIER */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start min-w-0">
                     
-                    {/* LEFT 8-COLS: ASSIGNMENTS TABLE */}
-                    <div className="lg:col-span-8 bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden flex flex-col justify-between">
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs text-gray-600 min-w-[700px]">
+                    {/* LEFT 8-COLS: ASSIGNMENTS TABLE (Smooth internal horizontal scroll) */}
+                    <div className="lg:col-span-8 bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden flex flex-col justify-between min-w-0">
+                      <div className="overflow-x-auto w-full min-w-0">
+                        <table className="w-full text-left text-xs text-gray-600 min-w-[780px] whitespace-nowrap">
                           <thead className="bg-[#F8FAFC] border-b border-gray-200/80 text-[11px] font-black text-gray-500 uppercase tracking-wider">
                             <tr>
                               <th className="p-3.5 pl-4 w-10">
@@ -8032,14 +8044,14 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                 />
                               </th>
                               <th className="py-3.5 px-2 w-8 text-center">#</th>
-                              <th className="py-3.5 px-3 min-w-[200px]">Title</th>
-                              <th className="py-3.5 px-2 min-w-[90px]">Class</th>
+                              <th className="py-3.5 px-3 min-w-[180px]">Title</th>
+                              <th className="py-3.5 px-2 min-w-[85px]">Class</th>
                               <th className="py-3.5 px-2 min-w-[110px]">Subject</th>
-                              <th className="py-3.5 px-2 min-w-[130px]">Teacher</th>
-                              <th className="py-3.5 px-2 min-w-[120px]">Due Date</th>
-                              <th className="py-3.5 px-2 text-center min-w-[90px]">Submissions</th>
-                              <th className="py-3.5 px-2 text-center min-w-[90px]">Status</th>
-                              <th className="py-3.5 pr-4 text-center min-w-[90px]">Actions</th>
+                              <th className="py-3.5 px-2 min-w-[125px]">Teacher</th>
+                              <th className="py-3.5 px-2 min-w-[115px]">Due Date</th>
+                              <th className="py-3.5 px-2 text-center min-w-[85px]">Submissions</th>
+                              <th className="py-3.5 px-2 text-center min-w-[85px]">Status</th>
+                              <th className="py-3.5 pr-4 text-center min-w-[85px]">Actions</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100">
@@ -8098,10 +8110,10 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                           <FileText className="w-4 h-4" />
                                         </div>
                                         <div className="min-w-0">
-                                          <div className="font-extrabold text-gray-900 text-xs truncate max-w-[200px]" title={asg.title}>
+                                          <div className="font-extrabold text-gray-900 text-xs truncate max-w-[190px]" title={asg.title}>
                                             {asg.title}
                                           </div>
-                                          <div className="text-[10px] text-gray-400 font-medium">
+                                          <div className="text-[10px] text-gray-400 font-medium truncate">
                                             {asg.type}
                                           </div>
                                         </div>
@@ -8131,7 +8143,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                           className="w-6 h-6 rounded-full object-cover shrink-0"
                                           onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
                                         />
-                                        <span className="font-bold text-gray-900 text-xs whitespace-nowrap truncate max-w-[110px]">
+                                        <span className="font-bold text-gray-900 text-xs whitespace-nowrap truncate max-w-[100px]">
                                           {asg.teacher}
                                         </span>
                                       </div>
@@ -8199,12 +8211,12 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       </div>
 
                       {/* Bottom Pagination */}
-                      <div className="p-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                        <span className="text-gray-500 font-bold">
+                      <div className="p-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs min-w-0">
+                        <span className="text-gray-500 font-bold truncate">
                           Showing <span className="text-gray-900 font-black">1 to 10</span> of <span className="text-gray-900 font-black">284</span> assignments
                         </span>
 
-                        <div className="flex items-center gap-1 self-center sm:self-auto">
+                        <div className="flex items-center gap-1 self-center sm:self-auto shrink-0">
                           <button onClick={() => alert('Halaman sebelumnya')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
                             &lt;
                           </button>
@@ -8235,10 +8247,10 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </div>
 
                     {/* RIGHT 4-COLS: ASSIGNMENT DOSSIER & SUBMISSIONS */}
-                    <aside className="lg:col-span-4 space-y-4">
+                    <aside className="lg:col-span-4 space-y-4 min-w-0">
                       
                       {/* 1. Assignment Details Card */}
-                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4 min-w-0">
                         <div className="flex items-center justify-between">
                           <h3 className="text-sm font-black text-gray-900">Assignment Details</h3>
                           <button
@@ -8274,56 +8286,56 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                         {/* Metadata List */}
                         <div className="space-y-2.5 text-xs text-gray-600">
-                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
-                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100 gap-2">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold shrink-0">
                               <GraduationCap className="w-3.5 h-3.5 text-gray-400" />
                               <span>Class</span>
                             </div>
-                            <span className="font-black text-gray-900">{currentSelectedAssignment.class}</span>
+                            <span className="font-black text-gray-900 truncate">{currentSelectedAssignment.class}</span>
                           </div>
 
-                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
-                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100 gap-2">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold shrink-0">
                               <BookOpen className="w-3.5 h-3.5 text-gray-400" />
                               <span>Subject</span>
                             </div>
-                            <span className="font-black text-gray-900">{currentSelectedAssignment.subject}</span>
+                            <span className="font-black text-gray-900 truncate">{currentSelectedAssignment.subject}</span>
                           </div>
 
-                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
-                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100 gap-2">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold shrink-0">
                               <User className="w-3.5 h-3.5 text-gray-400" />
                               <span>Teacher</span>
                             </div>
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-1.5 min-w-0">
                               <img
                                 src={currentSelectedAssignment.teacherAvatar}
                                 alt={currentSelectedAssignment.teacher}
-                                className="w-4 h-4 rounded-full object-cover"
+                                className="w-4 h-4 rounded-full object-cover shrink-0"
                                 onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
                               />
-                              <span className="font-black text-gray-900">{currentSelectedAssignment.teacher}</span>
+                              <span className="font-black text-gray-900 truncate">{currentSelectedAssignment.teacher}</span>
                             </div>
                           </div>
 
-                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
-                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100 gap-2">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold shrink-0">
                               <Calendar className="w-3.5 h-3.5 text-gray-400" />
                               <span>Due Date</span>
                             </div>
-                            <span className="font-black text-gray-900">{currentSelectedAssignment.dueDate}</span>
+                            <span className="font-black text-gray-900 truncate">{currentSelectedAssignment.dueDate}</span>
                           </div>
 
-                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
-                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100 gap-2">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold shrink-0">
                               <FileText className="w-3.5 h-3.5 text-gray-400" />
                               <span>Type</span>
                             </div>
-                            <span className="font-black text-gray-900">{currentSelectedAssignment.type}</span>
+                            <span className="font-black text-gray-900 truncate">{currentSelectedAssignment.type}</span>
                           </div>
 
-                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
-                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100 gap-2">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold shrink-0">
                               <Award className="w-3.5 h-3.5 text-gray-400" />
                               <span>Total Points</span>
                             </div>
@@ -8343,7 +8355,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       </div>
 
                       {/* 2. Submission Overview Card */}
-                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4 min-w-0">
                         <div className="flex items-center justify-between">
                           <h3 className="text-sm font-black text-gray-900">Submission Overview</h3>
                           <button
@@ -8357,7 +8369,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                         {/* Donut Progress Chart */}
                         <div className="flex items-center justify-around gap-4 pt-1">
-                          <div className="relative w-28 h-28 flex items-center justify-center">
+                          <div className="relative w-28 h-28 flex items-center justify-center shrink-0">
                             <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                               <circle
                                 cx="18"
@@ -8410,13 +8422,13 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                           </div>
 
                           {/* Legends */}
-                          <div className="space-y-2 text-xs">
+                          <div className="space-y-2 text-xs min-w-0">
                             <div className="flex items-center justify-between gap-3">
                               <div className="flex items-center gap-1.5">
                                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
-                                <span className="font-bold text-gray-600 text-[11px]">Submitted</span>
+                                <span className="font-bold text-gray-600 text-[11px] truncate">Submitted</span>
                               </div>
-                              <span className="font-black text-gray-900 text-xs">
+                              <span className="font-black text-gray-900 text-xs shrink-0">
                                 {currentSelectedAssignment.overview.submitted} ({currentSelectedAssignment.overview.submittedPct}%)
                               </span>
                             </div>
@@ -8424,9 +8436,9 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                             <div className="flex items-center justify-between gap-3">
                               <div className="flex items-center gap-1.5">
                                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
-                                <span className="font-bold text-gray-600 text-[11px]">Pending</span>
+                                <span className="font-bold text-gray-600 text-[11px] truncate">Pending</span>
                               </div>
-                              <span className="font-black text-gray-900 text-xs">
+                              <span className="font-black text-gray-900 text-xs shrink-0">
                                 {currentSelectedAssignment.overview.pending} ({currentSelectedAssignment.overview.pendingPct}%)
                               </span>
                             </div>
@@ -8434,9 +8446,9 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                             <div className="flex items-center justify-between gap-3">
                               <div className="flex items-center gap-1.5">
                                 <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
-                                <span className="font-bold text-gray-600 text-[11px]">Late</span>
+                                <span className="font-bold text-gray-600 text-[11px] truncate">Late</span>
                               </div>
-                              <span className="font-black text-gray-900 text-xs">
+                              <span className="font-black text-gray-900 text-xs shrink-0">
                                 {currentSelectedAssignment.overview.late} ({currentSelectedAssignment.overview.latePct}%)
                               </span>
                             </div>
@@ -8445,7 +8457,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       </div>
 
                       {/* 3. Recent Submissions Card */}
-                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5 min-w-0">
                         <div className="flex items-center justify-between">
                           <h3 className="text-sm font-black text-gray-900">Recent Submissions</h3>
                           <button
@@ -8466,7 +8478,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                 setGradeInput(sub.gradedScore ? String(sub.gradedScore) : '90');
                                 setIsGradeModalOpen(true);
                               }}
-                              className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] hover:bg-emerald-50/40 hover:border-emerald-200 transition-all flex items-center justify-between gap-2.5 cursor-pointer group"
+                              className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] hover:bg-emerald-50/40 hover:border-emerald-200 transition-all flex items-center justify-between gap-2.5 cursor-pointer group min-w-0"
                             >
                               <div className="flex items-center gap-2.5 min-w-0 flex-1">
                                 <img
