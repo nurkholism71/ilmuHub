@@ -4276,106 +4276,103 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
                 {/* Total Students */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/80">
                         <Users className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Total Students</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Total Students</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">8,156</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>14% from last month</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-blue-100 rounded-full h-3"></div>
+                      <div className="w-1.5 bg-blue-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-blue-300 rounded-full h-4"></div>
+                      <div className="w-1.5 bg-blue-400 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-blue-600 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-blue-100 rounded-full h-4"></div>
-                    <div className="w-1.5 bg-blue-200 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-blue-300 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
-                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">8,156</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">14% from last month</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Active Learners */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/80">
                         <CheckCircle2 className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Active Learners</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Active Learners</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">7,420</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>91% Active Rate</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-emerald-100 rounded-full h-2.5"></div>
+                      <div className="w-1.5 bg-emerald-200 rounded-full h-4.5"></div>
+                      <div className="w-1.5 bg-emerald-300 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-emerald-100 rounded-full h-3"></div>
-                    <div className="w-1.5 bg-emerald-200 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-emerald-300 rounded-full h-7"></div>
-                    <div className="w-1.5 bg-emerald-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-emerald-600 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">7,420</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">91% Active Rate</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Course Completions */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100/80">
                         <Award className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Certificates Issued</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Certificates Issued</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">3,862</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>24% from last month</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-purple-100 rounded-full h-3"></div>
+                      <div className="w-1.5 bg-purple-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-purple-300 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-purple-600 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-purple-100 rounded-full h-4"></div>
-                    <div className="w-1.5 bg-purple-200 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-purple-300 rounded-full h-8"></div>
-                    <div className="w-1.5 bg-purple-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-purple-600 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">3,862</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">24% from last month</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Average Score / GPA */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100/80">
                         <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Average GPA Score</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Average GPA Score</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">3.82 <span className="text-xs font-bold text-gray-400">/ 4.0</span></div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>4.2% Mumtaz Rate</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-amber-100 rounded-full h-3.5"></div>
+                      <div className="w-1.5 bg-amber-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-amber-300 rounded-full h-4.5"></div>
+                      <div className="w-1.5 bg-amber-500 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-amber-100 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-amber-200 rounded-full h-7"></div>
-                    <div className="w-1.5 bg-amber-300 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-amber-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-amber-500 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">3.82 <span className="text-xs font-bold text-gray-400">/ 4.0</span></div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">4.2% Mumtaz Rate</span>
+                    </div>
                   </div>
                 </div>
 
@@ -4512,7 +4509,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   {/* Table of Students */}
                   <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
                     <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse text-xs min-w-[760px]">
+                      <table className="w-full text-left border-collapse text-xs min-w-[880px]">
                         <thead>
                           <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
                             <th className="p-3.5 pl-4 w-8">
@@ -4523,13 +4520,13 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                 className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
                               />
                             </th>
-                            <th className="py-3.5 px-3">Student Name</th>
-                            <th className="py-3.5 px-3">Program & Level</th>
-                            <th className="py-3.5 px-3">Progres & GPA</th>
-                            <th className="py-3.5 px-3">Attendance</th>
-                            <th className="py-3.5 px-3">Status</th>
-                            <th className="py-3.5 px-3">Join Date</th>
-                            <th className="py-3.5 px-3 text-right pr-4">Actions</th>
+                            <th className="py-3.5 px-3 min-w-[210px] whitespace-nowrap">Student Name</th>
+                            <th className="py-3.5 px-3 min-w-[170px] whitespace-nowrap">Program & Level</th>
+                            <th className="py-3.5 px-3 min-w-[140px] whitespace-nowrap">Progres & GPA</th>
+                            <th className="py-3.5 px-3 min-w-[100px] whitespace-nowrap">Attendance</th>
+                            <th className="py-3.5 px-3 min-w-[100px] whitespace-nowrap">Status</th>
+                            <th className="py-3.5 px-3 min-w-[110px] whitespace-nowrap">Join Date</th>
+                            <th className="py-3.5 px-3 text-right pr-4 min-w-[90px] whitespace-nowrap">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -4585,7 +4582,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                   </td>
 
                                   {/* Student Name & ID */}
-                                  <td className="py-3 px-3">
+                                  <td className="py-3 px-3 whitespace-nowrap">
                                     <div className="flex items-center gap-3">
                                       {student.avatar ? (
                                         <img
@@ -4599,17 +4596,17 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                         </div>
                                       )}
                                       <div className="min-w-0">
-                                        <div className="flex items-center gap-1.5 flex-wrap">
-                                          <span className="font-extrabold text-gray-900 text-xs hover:text-[#114B44]">
+                                        <div className="flex items-center gap-1.5 whitespace-nowrap">
+                                          <span className="font-extrabold text-gray-900 text-xs hover:text-[#114B44] whitespace-nowrap">
                                             {student.name}
                                           </span>
                                           {student.vipMentorship && (
-                                            <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-100 text-amber-800 border border-amber-300">
+                                            <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-100 text-amber-800 border border-amber-300 shrink-0 whitespace-nowrap">
                                               VIP
                                             </span>
                                           )}
                                         </div>
-                                        <div className="text-[11px] text-gray-400 font-mono">
+                                        <div className="text-[11px] text-gray-400 font-mono whitespace-nowrap">
                                           {student.studentId} • {student.city}
                                         </div>
                                       </div>
@@ -4619,11 +4616,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                   {/* Program & Level */}
                                   <td className="py-3 px-3 whitespace-nowrap">
                                     <div className="space-y-0.5">
-                                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
                                         {student.program}
                                       </span>
-                                      <div className="text-[10px] text-gray-500 font-semibold pl-0.5">
-                                        Level: <span className="text-gray-700">{student.level}</span>
+                                      <div className="text-[10px] text-gray-500 font-semibold pl-0.5 whitespace-nowrap">
+                                        Level: <span className="text-gray-700 font-bold">{student.level}</span>
                                       </div>
                                     </div>
                                   </td>
@@ -4631,7 +4628,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                   {/* Progress & GPA */}
                                   <td className="py-3 px-3 whitespace-nowrap min-w-[130px]">
                                     <div className="space-y-1">
-                                      <div className="flex items-center justify-between text-[11px]">
+                                      <div className="flex items-center justify-between text-[11px] whitespace-nowrap">
                                         <span className="font-bold text-gray-700">{student.progress}%</span>
                                         <span className="font-mono text-emerald-700 font-black">GPA {student.gpa}</span>
                                       </div>
@@ -4652,7 +4649,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                                   {/* Attendance */}
                                   <td className="py-3 px-3 whitespace-nowrap">
-                                    <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md text-[11px] border border-emerald-200">
+                                    <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md text-[11px] border border-emerald-200 whitespace-nowrap">
                                       {student.attendance}
                                     </span>
                                   </td>
@@ -4660,22 +4657,22 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                   {/* Status */}
                                   <td className="py-3 px-3 whitespace-nowrap">
                                     {student.status === 'Active' && (
-                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                                         Active
                                       </span>
                                     )}
                                     {student.status === 'Graduated' && (
-                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200 whitespace-nowrap">
                                         Graduated
                                       </span>
                                     )}
                                     {student.status === 'Pending' && (
-                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
                                         Pending
                                       </span>
                                     )}
                                     {student.status === 'Inactive' && (
-                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
                                         Inactive
                                       </span>
                                     )}
@@ -4817,10 +4814,10 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   </div>
 
                   {/* 4 Detail Tabs */}
-                  <div className="flex border-b border-gray-100 text-xs font-bold text-gray-500 pt-1">
+                  <div className="flex border-b border-gray-100 text-xs font-bold text-gray-500 pt-1 overflow-x-auto no-scrollbar">
                     <button
                       onClick={() => setSelectedStudentDetailTab('profile')}
-                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                      className={`pb-2 px-2.5 sm:px-3 text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         selectedStudentDetailTab === 'profile'
                           ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
                           : 'hover:text-gray-900'
@@ -4830,7 +4827,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </button>
                     <button
                       onClick={() => setSelectedStudentDetailTab('courses')}
-                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                      className={`pb-2 px-2.5 sm:px-3 text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         selectedStudentDetailTab === 'courses'
                           ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
                           : 'hover:text-gray-900'
@@ -4840,7 +4837,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </button>
                     <button
                       onClick={() => setSelectedStudentDetailTab('certificates')}
-                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                      className={`pb-2 px-2.5 sm:px-3 text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         selectedStudentDetailTab === 'certificates'
                           ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
                           : 'hover:text-gray-900'
@@ -4850,7 +4847,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </button>
                     <button
                       onClick={() => setSelectedStudentDetailTab('payments')}
-                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                      className={`pb-2 px-2.5 sm:px-3 text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         selectedStudentDetailTab === 'payments'
                           ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
                           : 'hover:text-gray-900'
