@@ -8196,34 +8196,28 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                       {/* Bottom Pagination */}
                       <div className="p-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs min-w-0">
-                        <span className="text-gray-500 font-bold truncate">
+                        <span className="text-gray-500 font-bold whitespace-nowrap">
                           Showing <span className="text-gray-900 font-black">1 to 10</span> of <span className="text-gray-900 font-black">284</span> assignments
                         </span>
 
-                        <div className="flex items-center gap-1 self-center sm:self-auto shrink-0">
-                          <button onClick={() => alert('Halaman sebelumnya')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                        <div className="flex items-center gap-1 self-center sm:self-auto shrink-0 overflow-x-auto no-scrollbar py-0.5">
+                          <button onClick={() => alert('Halaman sebelumnya')} className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer shadow-2xs text-xs">
                             &lt;
                           </button>
-                          <button className="w-8 h-8 rounded-xl bg-[#114B44] text-white font-extrabold flex items-center justify-center shadow-xs cursor-pointer">
+                          <button className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#114B44] text-white font-extrabold flex items-center justify-center shadow-xs cursor-pointer text-xs">
                             1
                           </button>
-                          <button onClick={() => alert('Halaman 2')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                          <button onClick={() => alert('Halaman 2')} className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs text-xs">
                             2
                           </button>
-                          <button onClick={() => alert('Halaman 3')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                          <button onClick={() => alert('Halaman 3')} className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs text-xs">
                             3
                           </button>
-                          <button onClick={() => alert('Halaman 4')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
-                            4
-                          </button>
-                          <button onClick={() => alert('Halaman 5')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
-                            5
-                          </button>
-                          <span className="px-1 text-gray-400 font-bold">...</span>
-                          <button onClick={() => alert('Halaman 29')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                          <span className="px-1 text-gray-400 font-bold text-xs">...</span>
+                          <button onClick={() => alert('Halaman 29')} className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs text-xs">
                             29
                           </button>
-                          <button onClick={() => alert('Halaman berikutnya')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                          <button onClick={() => alert('Halaman berikutnya')} className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer shadow-2xs text-xs">
                             &gt;
                           </button>
                         </div>
@@ -8323,7 +8317,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                               <Award className="w-3.5 h-3.5 text-gray-400" />
                               <span>Total Points</span>
                             </div>
-                            <span className="font-black text-emerald-700">{currentSelectedAssignment.totalPoints}</span>
+                            <span className="font-black text-emerald-700 truncate">{currentSelectedAssignment.totalPoints}</span>
                           </div>
 
                           <div className="pt-1">
@@ -8339,7 +8333,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       </div>
 
                       {/* 2. Submission Overview Card */}
-                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4 min-w-0">
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs space-y-3.5 min-w-0">
                         <div className="flex items-center justify-between">
                           <h3 className="text-sm font-black text-gray-900">Submission Overview</h3>
                           <button
@@ -8351,9 +8345,9 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                           </button>
                         </div>
 
-                        {/* Donut Progress Chart */}
-                        <div className="flex items-center justify-around gap-4 pt-1">
-                          <div className="relative w-28 h-28 flex items-center justify-center shrink-0">
+                        {/* Donut Progress Chart & Compact Legends */}
+                        <div className="flex items-center justify-between gap-3 pt-1 min-w-0">
+                          <div className="relative w-20 h-20 sm:w-22 sm:h-22 flex items-center justify-center shrink-0">
                             <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                               <circle
                                 cx="18"
@@ -8398,42 +8392,42 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                               />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                              <span className="text-xs font-black text-gray-900 leading-tight">
+                              <span className="text-[11px] sm:text-xs font-black text-gray-900 leading-tight">
                                 {currentSelectedAssignment.overview.submitted} / {currentSelectedAssignment.totalStudents}
                               </span>
-                              <span className="text-[9px] font-bold text-gray-400">Submitted</span>
+                              <span className="text-[8px] sm:text-[9px] font-bold text-gray-400">Submitted</span>
                             </div>
                           </div>
 
-                          {/* Legends */}
-                          <div className="space-y-2 text-xs min-w-0">
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                          {/* Legends (Clean Responsive Rows) */}
+                          <div className="space-y-1.5 text-xs flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1.5 min-w-0">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                                 <span className="font-bold text-gray-600 text-[11px] truncate">Submitted</span>
                               </div>
-                              <span className="font-black text-gray-900 text-xs shrink-0">
-                                {currentSelectedAssignment.overview.submitted} ({currentSelectedAssignment.overview.submittedPct}%)
+                              <span className="font-black text-gray-900 text-[11px] shrink-0 whitespace-nowrap">
+                                {currentSelectedAssignment.overview.submitted} <span className="text-[10px] text-gray-400 font-semibold">({currentSelectedAssignment.overview.submittedPct}%)</span>
                               </span>
                             </div>
 
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                            <div className="flex items-center justify-between gap-1.5 min-w-0">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
                                 <span className="font-bold text-gray-600 text-[11px] truncate">Pending</span>
                               </div>
-                              <span className="font-black text-gray-900 text-xs shrink-0">
-                                {currentSelectedAssignment.overview.pending} ({currentSelectedAssignment.overview.pendingPct}%)
+                              <span className="font-black text-gray-900 text-[11px] shrink-0 whitespace-nowrap">
+                                {currentSelectedAssignment.overview.pending} <span className="text-[10px] text-gray-400 font-semibold">({currentSelectedAssignment.overview.pendingPct}%)</span>
                               </span>
                             </div>
 
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                            <div className="flex items-center justify-between gap-1.5 min-w-0">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
                                 <span className="font-bold text-gray-600 text-[11px] truncate">Late</span>
                               </div>
-                              <span className="font-black text-gray-900 text-xs shrink-0">
-                                {currentSelectedAssignment.overview.late} ({currentSelectedAssignment.overview.latePct}%)
+                              <span className="font-black text-gray-900 text-[11px] shrink-0 whitespace-nowrap">
+                                {currentSelectedAssignment.overview.late} <span className="text-[10px] text-gray-400 font-semibold">({currentSelectedAssignment.overview.latePct}%)</span>
                               </span>
                             </div>
                           </div>
