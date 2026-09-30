@@ -5910,103 +5910,104 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
                 {/* Live Now */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100/80">
                         <Radio className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Live Now</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Live Now</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">12</div>
-                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600 shrink-0"></span>
-                        <span>3 more than usual</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-rose-100 rounded-full h-3"></div>
+                      <div className="w-1.5 bg-rose-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-rose-300 rounded-full h-4"></div>
+                      <div className="w-1.5 bg-rose-400 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-rose-500 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-rose-100 rounded-full h-3"></div>
-                    <div className="w-1.5 bg-rose-200 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-rose-300 rounded-full h-7"></div>
-                    <div className="w-1.5 bg-rose-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-rose-500 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">12</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 mt-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-600 shrink-0"></span>
+                      <span className="truncate">3 more than usual</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Total Sessions (Today) */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/80">
                         <Users className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Total Sessions (Today)</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Total Sessions (Today)</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">48</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <span>↑ 20% from yesterday</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-blue-100 rounded-full h-3"></div>
+                      <div className="w-1.5 bg-blue-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-blue-300 rounded-full h-4"></div>
+                      <div className="w-1.5 bg-blue-400 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-blue-600 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-blue-100 rounded-full h-4"></div>
-                    <div className="w-1.5 bg-blue-200 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-blue-300 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-blue-400 rounded-full h-8"></div>
-                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">48</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">↑ 20% from yesterday</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Total Attendees */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100/80">
                         <Users className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Total Attendees</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Total Attendees</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">2,856</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <span>↑ 28% from yesterday</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-purple-100 rounded-full h-2.5"></div>
+                      <div className="w-1.5 bg-purple-200 rounded-full h-4.5"></div>
+                      <div className="w-1.5 bg-purple-300 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-purple-500 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-purple-100 rounded-full h-3"></div>
-                    <div className="w-1.5 bg-purple-200 rounded-full h-5"></div>
-                    <div className="w-1.5 bg-purple-300 rounded-full h-7"></div>
-                    <div className="w-1.5 bg-purple-400 rounded-full h-8"></div>
-                    <div className="w-1.5 bg-purple-600 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">2,856</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">↑ 28% from yesterday</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Average Duration */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/80">
                         <Clock className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-gray-500">Average Duration</span>
+                      <span className="text-xs font-bold text-gray-500 truncate">Average Duration</span>
                     </div>
-                    <div className="pt-2">
-                      <div className="text-2xl font-black text-gray-900 leading-tight">52 min</div>
-                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
-                        <span>↑ 12% from last week</span>
-                      </div>
+                    <div className="flex items-end gap-1 h-8 shrink-0">
+                      <div className="w-1.5 bg-emerald-100 rounded-full h-3"></div>
+                      <div className="w-1.5 bg-emerald-200 rounded-full h-5"></div>
+                      <div className="w-1.5 bg-emerald-300 rounded-full h-6"></div>
+                      <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
                     </div>
                   </div>
-                  <div className="flex items-end gap-1 h-10 pb-1">
-                    <div className="w-1.5 bg-emerald-100 rounded-full h-4"></div>
-                    <div className="w-1.5 bg-emerald-200 rounded-full h-6"></div>
-                    <div className="w-1.5 bg-emerald-300 rounded-full h-7"></div>
-                    <div className="w-1.5 bg-emerald-400 rounded-full h-9"></div>
-                    <div className="w-1.5 bg-emerald-500 rounded-full h-10"></div>
+                  <div className="mt-3">
+                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">52 min</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                      <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">↑ 12% from last week</span>
+                    </div>
                   </div>
                 </div>
 
@@ -6552,64 +6553,64 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </div>
 
                     <div className="space-y-2.5 text-xs">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-gray-800">
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-2 text-gray-800 min-w-0 flex-1">
                           <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                             <User className="w-3.5 h-3.5" />
                           </div>
-                          <span className="font-semibold text-[11px]">Ahmad joined the room</span>
+                          <span className="font-semibold text-[11px] truncate">Ahmad joined the room</span>
                         </div>
-                        <span className="text-[10px] text-gray-400">2 minutes ago</span>
+                        <span className="text-[10px] text-gray-400 font-medium shrink-0 whitespace-nowrap">2m ago</span>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-gray-800">
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-2 text-gray-800 min-w-0 flex-1">
                           <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
                             <MessageSquare className="w-3.5 h-3.5" />
                           </div>
-                          <span className="font-semibold text-[11px]">New message in chat</span>
+                          <span className="font-semibold text-[11px] truncate">New message in chat</span>
                         </div>
-                        <span className="text-[10px] text-gray-400">5 minutes ago</span>
+                        <span className="text-[10px] text-gray-400 font-medium shrink-0 whitespace-nowrap">5m ago</span>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-gray-800">
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-2 text-gray-800 min-w-0 flex-1">
                           <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                             <HelpCircle className="w-3.5 h-3.5" />
                           </div>
-                          <span className="font-semibold text-[11px]">Hana asked a question</span>
+                          <span className="font-semibold text-[11px] truncate">Hana asked a question</span>
                         </div>
-                        <span className="text-[10px] text-gray-400">8 minutes ago</span>
+                        <span className="text-[10px] text-gray-400 font-medium shrink-0 whitespace-nowrap">8m ago</span>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-gray-800">
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-2 text-gray-800 min-w-0 flex-1">
                           <div className="w-6 h-6 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center shrink-0">
                             <Heart className="w-3.5 h-3.5" />
                           </div>
-                          <span className="font-semibold text-[11px]">25 reactions</span>
+                          <span className="font-semibold text-[11px] truncate">25 reactions</span>
                         </div>
-                        <span className="text-[10px] text-gray-400">12 minutes ago</span>
+                        <span className="text-[10px] text-gray-400 font-medium shrink-0 whitespace-nowrap">12m ago</span>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-gray-800">
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-2 text-gray-800 min-w-0 flex-1">
                           <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
                             <User className="w-3.5 h-3.5" />
                           </div>
-                          <span className="font-semibold text-[11px]">Zaid joined the room</span>
+                          <span className="font-semibold text-[11px] truncate">Zaid joined the room</span>
                         </div>
-                        <span className="text-[10px] text-gray-400">15 minutes ago</span>
+                        <span className="text-[10px] text-gray-400 font-medium shrink-0 whitespace-nowrap">15m ago</span>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-gray-800">
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-2 text-gray-800 min-w-0 flex-1">
                           <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
                             <FileText className="w-3.5 h-3.5" />
                           </div>
-                          <span className="font-semibold text-[11px] truncate max-w-[170px]">File shared: Tajweed_Guide.pdf</span>
+                          <span className="font-semibold text-[11px] truncate" title="File shared: Tajweed_Guide.pdf">File shared: Tajweed_Guide.pdf</span>
                         </div>
-                        <span className="text-[10px] text-gray-400 shrink-0">18 minutes ago</span>
+                        <span className="text-[10px] text-gray-400 font-medium shrink-0 whitespace-nowrap">18m ago</span>
                       </div>
                     </div>
                   </div>
@@ -6623,34 +6624,34 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                           navigator.clipboard?.writeText(window.location.href);
                           alert('Tautan Live Room berhasil disalin ke papan klip!');
                         }}
-                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer"
+                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer min-w-0"
                       >
                         <Copy className="w-3.5 h-3.5 text-gray-500 shrink-0" />
-                        <span className="truncate">Copy Room Link</span>
+                        <span className="truncate">Copy Link</span>
                       </button>
 
                       <button
                         onClick={() => alert('Buka panel moderasi percakapan live')}
-                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer"
+                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer min-w-0"
                       >
                         <MessageSquare className="w-3.5 h-3.5 text-gray-500 shrink-0" />
-                        <span className="truncate">Moderate Chat</span>
+                        <span className="truncate">Moderate</span>
                       </button>
 
                       <button
                         onClick={() => alert(`Kelola ${currentSelectedLiveRoom.attendees} peserta di ${currentSelectedLiveRoom.title}`)}
-                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer"
+                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer min-w-0"
                       >
                         <Users className="w-3.5 h-3.5 text-gray-500 shrink-0" />
-                        <span className="truncate">Manage Participants</span>
+                        <span className="truncate">Participants</span>
                       </button>
 
                       <button
                         onClick={() => alert(`Pengaturan ruang live ${currentSelectedLiveRoom.title}`)}
-                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer"
+                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center gap-2 text-gray-700 font-bold transition-colors cursor-pointer min-w-0"
                       >
                         <Settings className="w-3.5 h-3.5 text-gray-500 shrink-0" />
-                        <span className="truncate">Room Settings</span>
+                        <span className="truncate">Settings</span>
                       </button>
                     </div>
                   </div>
