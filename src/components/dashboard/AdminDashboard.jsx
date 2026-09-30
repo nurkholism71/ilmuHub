@@ -221,6 +221,34 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     room: 'Live Room 1'
   });
 
+  // =========================================================
+  // ASSIGNMENTS ROOM STATES (matching media_1790785679753.jpg)
+  // =========================================================
+  const [assignmentTabFilter, setAssignmentTabFilter] = useState('all'); // 'all' (284) | 'active' (201) | 'pending' (156) | 'graded' (2260) | 'drafts' (83) | 'archived' (22)
+  const [assignmentSearchQuery, setAssignmentSearchQuery] = useState('');
+  const [assignmentClassFilter, setAssignmentClassFilter] = useState('All Classes');
+  const [assignmentSubjectFilter, setAssignmentSubjectFilter] = useState('All Subjects');
+  const [assignmentTeacherFilter, setAssignmentTeacherFilter] = useState('All Teachers');
+  const [assignmentStatusFilter, setAssignmentStatusFilter] = useState('All Status');
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState('asg-1');
+  const [selectedAssignmentCheckboxes, setSelectedAssignmentCheckboxes] = useState([]);
+  const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState(false);
+  const [isImportAssignmentModalOpen, setIsImportAssignmentModalOpen] = useState(false);
+  const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
+  const [selectedSubmissionToGrade, setSelectedSubmissionToGrade] = useState(null);
+  const [gradeInput, setGradeInput] = useState('95');
+  const [feedbackInput, setFeedbackInput] = useState('Kerja bagus! Analisis sangat mendalam dan terstruktur.');
+  const [newAssignment, setNewAssignment] = useState({
+    title: '',
+    type: 'Essay',
+    class: 'Grade 10A',
+    subject: 'Science',
+    teacher: 'Dr. Ahmad Fauzi',
+    dueDate: '25 Sep 2026, 23:59',
+    totalPoints: 100,
+    description: ''
+  });
+
   const adminName = user?.name || 'Admin';
   const adminRole = 'Super Admin';
   const adminEmail = user?.email || 'admin@ilmhub.com';
@@ -2014,6 +2042,320 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
       dotColor: 'bg-emerald-600',
       room: 'Live Room 1',
       status: 'Upcoming'
+    }
+  ]);
+
+  // =========================================================
+  // ASSIGNMENTS MOCK DATA (matching media_1790785679753.jpg)
+  // =========================================================
+  const [assignmentsList, setAssignmentsList] = useState([
+    {
+      id: 'asg-1',
+      num: 1,
+      title: 'Essay: Benefits of Renewable Energy',
+      type: 'Essay',
+      class: 'Grade 10A',
+      subject: 'Science',
+      subjectColor: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+      teacher: 'Dr. Ahmad Fauzi',
+      teacherAvatar: '/images/teacher_ahmad.jpg',
+      dueDate: '25 Sep 2026, 23:59',
+      submissionsCount: 28,
+      totalStudents: 32,
+      status: 'Pending',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      imageBanner: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Write a 500-800 word essay about the benefits of renewable energy and its impact on the environment.',
+      overview: {
+        submitted: 28,
+        submittedPct: 88,
+        pending: 4,
+        pendingPct: 12,
+        late: 2,
+        latePct: 6
+      },
+      recentSubmissions: [
+        { id: 'sub-1', name: 'Ali Reza', avatar: '/images/student_ali.jpg', timeAgo: 'Submitted 2 hours ago', score: '85/100', status: 'graded', gradedScore: 85 },
+        { id: 'sub-2', name: 'Nadia Rahman', avatar: '/images/student_fatimah.jpg', timeAgo: 'Submitted 3 hours ago', score: '92/100', status: 'graded', gradedScore: 92 },
+        { id: 'sub-3', name: 'Hassan Malik', avatar: '/images/student_omar.jpg', timeAgo: 'Submitted 5 hours ago', score: '78/100', status: 'pending', gradedScore: 78 },
+        { id: 'sub-4', name: 'Zainab Ali', avatar: '/images/student_maryam.jpg', timeAgo: 'Submitted 6 hours ago', score: '88/100', status: 'graded', gradedScore: 88 },
+        { id: 'sub-5', name: 'Layla Karim', avatar: '/images/student_fatimah.jpg', timeAgo: 'Submitted 8 hours ago', score: '90/100', status: 'graded', gradedScore: 90 }
+      ]
+    },
+    {
+      id: 'asg-2',
+      num: 2,
+      title: 'Quran Recitation Recording',
+      type: 'Video Submission',
+      class: 'Grade 8B',
+      subject: 'Islamic Studies',
+      subjectColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      teacher: 'Siti Aisyah',
+      teacherAvatar: '/images/tutor_sarah.jpg',
+      dueDate: '24 Sep 2026, 23:59',
+      submissionsCount: 26,
+      totalStudents: 28,
+      status: 'Graded',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      imageBanner: 'https://images.unsplash.com/photo-1585036156171-384164a8c675?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Record video recitation of Surah Al-Mulk verses 1-15 with proper tajweed rules and makhraj.',
+      overview: {
+        submitted: 26,
+        submittedPct: 93,
+        pending: 2,
+        pendingPct: 7,
+        late: 1,
+        latePct: 4
+      },
+      recentSubmissions: [
+        { id: 'sub-6', name: 'Muhammad Khan', avatar: '/images/student_ali.jpg', timeAgo: 'Submitted 1 hour ago', score: '96/100', status: 'graded', gradedScore: 96 },
+        { id: 'sub-7', name: 'Khadijah Nur', avatar: '/images/student_maryam.jpg', timeAgo: 'Submitted 4 hours ago', score: '94/100', status: 'graded', gradedScore: 94 },
+        { id: 'sub-8', name: 'Zaid Ibrahim', avatar: '/images/student_omar.jpg', timeAgo: 'Submitted 5 hours ago', score: '90/100', status: 'graded', gradedScore: 90 }
+      ]
+    },
+    {
+      id: 'asg-3',
+      num: 3,
+      title: 'Mathematics Problem Set',
+      type: 'Document',
+      class: 'Grade 11A',
+      subject: 'Mathematics',
+      subjectColor: 'bg-purple-50 text-purple-700 border-purple-200',
+      teacher: 'Layla Karim',
+      teacherAvatar: '/images/tutor_sarah.jpg',
+      dueDate: '23 Sep 2026, 23:59',
+      submissionsCount: 30,
+      totalStudents: 30,
+      status: 'Graded',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      imageBanner: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Complete problems 1 through 20 on advanced quadratic functions and calculus integration.',
+      overview: {
+        submitted: 30,
+        submittedPct: 100,
+        pending: 0,
+        pendingPct: 0,
+        late: 0,
+        latePct: 0
+      },
+      recentSubmissions: [
+        { id: 'sub-9', name: 'Ali Reza', avatar: '/images/student_ali.jpg', timeAgo: 'Submitted yesterday', score: '100/100', status: 'graded', gradedScore: 100 },
+        { id: 'sub-10', name: 'Omar Hassan', avatar: '/images/student_omar.jpg', timeAgo: 'Submitted yesterday', score: '95/100', status: 'graded', gradedScore: 95 }
+      ]
+    },
+    {
+      id: 'asg-4',
+      num: 4,
+      title: 'Arabic Writing Practice',
+      type: 'Document',
+      class: 'Grade 9A',
+      subject: 'Arabic',
+      subjectColor: 'bg-amber-50 text-amber-700 border-amber-200',
+      teacher: 'Zainab Ali',
+      teacherAvatar: '/images/tutor_sarah.jpg',
+      dueDate: '22 Sep 2026, 23:59',
+      submissionsCount: 24,
+      totalStudents: 28,
+      status: 'Pending',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      imageBanner: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Write a short composition (Insha) about your daily routine in Arabic with diacritics (harakat).',
+      overview: {
+        submitted: 24,
+        submittedPct: 86,
+        pending: 4,
+        pendingPct: 14,
+        late: 1,
+        latePct: 4
+      },
+      recentSubmissions: [
+        { id: 'sub-11', name: 'Fatimah Nur', avatar: '/images/student_maryam.jpg', timeAgo: 'Submitted 6 hours ago', score: '88/100', status: 'pending', gradedScore: 88 },
+        { id: 'sub-12', name: 'Nurul Hidayah', avatar: '/images/student_fatimah.jpg', timeAgo: 'Submitted 8 hours ago', score: '92/100', status: 'graded', gradedScore: 92 }
+      ]
+    },
+    {
+      id: 'asg-5',
+      num: 5,
+      title: 'History Research Project',
+      type: 'Project',
+      class: 'Grade 10B',
+      subject: 'History',
+      subjectColor: 'bg-rose-50 text-rose-700 border-rose-200',
+      teacher: 'Fatimah Nur',
+      teacherAvatar: '/images/tutor_sarah.jpg',
+      dueDate: '20 Sep 2026, 23:59',
+      submissionsCount: 18,
+      totalStudents: 25,
+      status: 'Active',
+      statusBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      imageBanner: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Research report on the Golden Age of Islamic Civilization in Baghdad and Andalusia.',
+      overview: {
+        submitted: 18,
+        submittedPct: 72,
+        pending: 7,
+        pendingPct: 28,
+        late: 3,
+        latePct: 12
+      },
+      recentSubmissions: [
+        { id: 'sub-13', name: 'Hamzah Al-Farisi', avatar: '/images/student_ali.jpg', timeAgo: 'Submitted 12 hours ago', score: '84/100', status: 'pending', gradedScore: 84 }
+      ]
+    },
+    {
+      id: 'asg-6',
+      num: 6,
+      title: 'Web Development Mini Project',
+      type: 'Project',
+      class: 'Grade 12A',
+      subject: 'Computer Science',
+      subjectColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+      teacher: 'Muhammad Khan',
+      teacherAvatar: '/images/teacher_muhammad.jpg',
+      dueDate: '18 Sep 2026, 23:59',
+      submissionsCount: 22,
+      totalStudents: 24,
+      status: 'Graded',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      imageBanner: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Build a responsive single-page portfolio website using HTML, CSS, and modern JavaScript.',
+      overview: {
+        submitted: 22,
+        submittedPct: 92,
+        pending: 2,
+        pendingPct: 8,
+        late: 0,
+        latePct: 0
+      },
+      recentSubmissions: [
+        { id: 'sub-14', name: 'Zaid Ibrahim', avatar: '/images/student_omar.jpg', timeAgo: 'Submitted 2 days ago', score: '98/100', status: 'graded', gradedScore: 98 }
+      ]
+    },
+    {
+      id: 'asg-7',
+      num: 7,
+      title: 'Business Case Study',
+      type: 'Document',
+      class: 'Grade 11B',
+      subject: 'Business',
+      subjectColor: 'bg-orange-50 text-orange-700 border-orange-200',
+      teacher: 'Ali Reza',
+      teacherAvatar: '/images/teacher_ali.jpg',
+      dueDate: '15 Sep 2026, 23:59',
+      submissionsCount: 20,
+      totalStudents: 28,
+      status: 'Pending',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      imageBanner: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Analyze the business model and sharia compliance strategy of a contemporary FinTech startup.',
+      overview: {
+        submitted: 20,
+        submittedPct: 71,
+        pending: 8,
+        pendingPct: 29,
+        late: 2,
+        latePct: 7
+      },
+      recentSubmissions: [
+        { id: 'sub-15', name: 'Maryam Abdullah', avatar: '/images/student_maryam.jpg', timeAgo: 'Submitted 3 days ago', score: '89/100', status: 'pending', gradedScore: 89 }
+      ]
+    },
+    {
+      id: 'asg-8',
+      num: 8,
+      title: 'Environmental Awareness Poster',
+      type: 'Image',
+      class: 'Grade 9B',
+      subject: 'Environmental',
+      subjectColor: 'bg-teal-50 text-teal-700 border-teal-200',
+      teacher: 'Nadia Rahman',
+      teacherAvatar: '/images/tutor_sarah.jpg',
+      dueDate: '12 Sep 2026, 23:59',
+      submissionsCount: 27,
+      totalStudents: 30,
+      status: 'Graded',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      imageBanner: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Design a digital poster promoting water conservation and green energy practices in schools.',
+      overview: {
+        submitted: 27,
+        submittedPct: 90,
+        pending: 3,
+        pendingPct: 10,
+        late: 1,
+        latePct: 3
+      },
+      recentSubmissions: [
+        { id: 'sub-16', name: 'Nurul Hidayah', avatar: '/images/student_fatimah.jpg', timeAgo: 'Submitted 4 days ago', score: '95/100', status: 'graded', gradedScore: 95 }
+      ]
+    },
+    {
+      id: 'asg-9',
+      num: 9,
+      title: 'Psychology Reflection',
+      type: 'Essay',
+      class: 'Grade 12B',
+      subject: 'Psychology',
+      subjectColor: 'bg-violet-50 text-violet-700 border-violet-200',
+      teacher: 'Hassan Malik',
+      teacherAvatar: '/images/tutor_ahmed.jpg',
+      dueDate: '10 Sep 2026, 23:59',
+      submissionsCount: 18,
+      totalStudents: 24,
+      status: 'Active',
+      statusBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      imageBanner: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Write a self-reflection essay connecting cognitive behavioral concepts to daily emotional resilience.',
+      overview: {
+        submitted: 18,
+        submittedPct: 75,
+        pending: 6,
+        pendingPct: 25,
+        late: 0,
+        latePct: 0
+      },
+      recentSubmissions: [
+        { id: 'sub-17', name: 'Omar Hassan', avatar: '/images/student_omar.jpg', timeAgo: 'Submitted 5 days ago', score: '82/100', status: 'pending', gradedScore: 82 }
+      ]
+    },
+    {
+      id: 'asg-10',
+      num: 10,
+      title: 'English Speaking Presentation',
+      type: 'Video Submission',
+      class: 'Grade 8A',
+      subject: 'English',
+      subjectColor: 'bg-blue-50 text-blue-700 border-blue-200',
+      teacher: 'Omar Hassan',
+      teacherAvatar: '/images/student_omar.jpg',
+      dueDate: '8 Sep 2026, 23:59',
+      submissionsCount: 25,
+      totalStudents: 28,
+      status: 'Pending',
+      statusBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      imageBanner: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&auto=format&fit=crop&q=80',
+      totalPoints: 100,
+      description: 'Prepare a 3-minute video presentation explaining global cultural exchange and diplomacy.',
+      overview: {
+        submitted: 25,
+        submittedPct: 89,
+        pending: 3,
+        pendingPct: 11,
+        late: 1,
+        latePct: 4
+      },
+      recentSubmissions: [
+        { id: 'sub-18', name: 'Zahra Putri', avatar: '/images/student_fatimah.jpg', timeAgo: 'Submitted 1 week ago', score: '88/100', status: 'pending', gradedScore: 88 }
+      ]
     }
   ]);
 
@@ -7289,6 +7631,865 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
             </div>
+          ) : activeNav === 'assignments' ? (
+            (() => {
+              const currentSelectedAssignment = assignmentsList.find(a => a.id === selectedAssignmentId) || assignmentsList[0];
+              
+              // Filtering
+              const filteredAssignments = assignmentsList.filter(item => {
+                // Tab filter
+                if (assignmentTabFilter === 'active' && item.status.toLowerCase() !== 'active') return false;
+                if (assignmentTabFilter === 'pending' && item.status.toLowerCase() !== 'pending') return false;
+                if (assignmentTabFilter === 'graded' && item.status.toLowerCase() !== 'graded') return false;
+                if (assignmentTabFilter === 'drafts' && item.status.toLowerCase() !== 'draft') return false;
+                if (assignmentTabFilter === 'archived' && item.status.toLowerCase() !== 'archived') return false;
+
+                // Search query
+                if (assignmentSearchQuery.trim()) {
+                  const q = assignmentSearchQuery.toLowerCase();
+                  const matchTitle = item.title.toLowerCase().includes(q);
+                  const matchClass = item.class.toLowerCase().includes(q);
+                  const matchSubject = item.subject.toLowerCase().includes(q);
+                  const matchTeacher = item.teacher.toLowerCase().includes(q);
+                  if (!matchTitle && !matchClass && !matchSubject && !matchTeacher) return false;
+                }
+
+                // Class filter
+                if (assignmentClassFilter !== 'All Classes' && item.class !== assignmentClassFilter) return false;
+
+                // Subject filter
+                if (assignmentSubjectFilter !== 'All Subjects' && item.subject !== assignmentSubjectFilter) return false;
+
+                // Teacher filter
+                if (assignmentTeacherFilter !== 'All Teachers' && item.teacher !== assignmentTeacherFilter) return false;
+
+                // Status filter
+                if (assignmentStatusFilter !== 'All Status' && item.status.toLowerCase() !== assignmentStatusFilter.toLowerCase()) return false;
+
+                return true;
+              });
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* 1. TOP ASSIGNMENTS HEADER */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shadow-xs shrink-0">
+                        <FileText className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight whitespace-nowrap">Assignments</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Create, manage, and track assignments. Review submissions and provide feedback.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Action Buttons */}
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <button
+                        onClick={() => setIsCreateAssignmentModalOpen(true)}
+                        className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                      >
+                        <Plus className="w-4 h-4 shrink-0" />
+                        <span>Create Assignment</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsImportAssignmentModalOpen(true)}
+                        className="h-10 px-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                      >
+                        <Download className="w-4 h-4 text-gray-500 shrink-0" />
+                        <span>Import Assignments</span>
+                      </button>
+
+                      <button 
+                        onClick={() => alert('Opsi lanjutan tugas')}
+                        className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs flex items-center justify-center transition-all cursor-pointer shrink-0"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. TOP 4 KPI CARDS FOR ASSIGNMENTS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    {/* Total Assignments */}
+                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0 border border-blue-100/80">
+                            <FileText className="w-5 h-5" />
+                          </div>
+                          <span className="text-xs font-bold text-gray-500 truncate">Total Assignments</span>
+                        </div>
+                        <div className="flex items-end gap-1 h-8 shrink-0">
+                          <div className="w-1.5 bg-blue-100 rounded-full h-2.5"></div>
+                          <div className="w-1.5 bg-blue-200 rounded-full h-4.5"></div>
+                          <div className="w-1.5 bg-blue-300 rounded-full h-6"></div>
+                          <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">284</div>
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                          <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                          <span className="truncate">↑ 18% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Submitted */}
+                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100/80">
+                            <CheckSquare className="w-5 h-5" />
+                          </div>
+                          <span className="text-xs font-bold text-gray-500 truncate">Submitted</span>
+                        </div>
+                        <div className="flex items-end gap-1 h-8 shrink-0">
+                          <div className="w-1.5 bg-emerald-100 rounded-full h-2.5"></div>
+                          <div className="w-1.5 bg-emerald-200 rounded-full h-4.5"></div>
+                          <div className="w-1.5 bg-emerald-300 rounded-full h-6"></div>
+                          <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">2,416</div>
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                          <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                          <span className="truncate">↑ 24% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Pending Review */}
+                    <div className="bg-white rounded-2xl border border-amber-200/90 bg-gradient-to-br from-white to-amber-50/30 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <Clock className="w-5 h-5" />
+                          </div>
+                          <span className="text-xs font-bold text-amber-900 truncate">Pending Review</span>
+                        </div>
+                        <div className="flex items-end gap-1 h-8 shrink-0">
+                          <div className="w-1.5 bg-purple-100 rounded-full h-2.5"></div>
+                          <div className="w-1.5 bg-purple-200 rounded-full h-4.5"></div>
+                          <div className="w-1.5 bg-purple-300 rounded-full h-6"></div>
+                          <div className="w-1.5 bg-purple-500 rounded-full h-8"></div>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <div className="text-2xl font-black text-amber-950 tracking-tight leading-none">156</div>
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 mt-2">
+                          <TrendingUp className="w-3.5 h-3.5 shrink-0 rotate-180 text-rose-500" />
+                          <span className="truncate">↓ 12% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Graded */}
+                    <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-100/80">
+                            <Star className="w-5 h-5" />
+                          </div>
+                          <span className="text-xs font-bold text-gray-500 truncate">Graded</span>
+                        </div>
+                        <div className="flex items-end gap-1 h-8 shrink-0">
+                          <div className="w-1.5 bg-amber-100 rounded-full h-2.5"></div>
+                          <div className="w-1.5 bg-amber-200 rounded-full h-4.5"></div>
+                          <div className="w-1.5 bg-amber-300 rounded-full h-6"></div>
+                          <div className="w-1.5 bg-amber-500 rounded-full h-8"></div>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">2,260</div>
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                          <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+                          <span className="truncate">↑ 28% from last month</span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 3. STATUS FILTER PILLS (matching media_1790785679753.jpg) */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                    {[
+                      { id: 'all', label: 'All Assignments', count: 284 },
+                      { id: 'active', label: 'Active', count: 201 },
+                      { id: 'pending', label: 'Pending', count: 156 },
+                      { id: 'graded', label: 'Graded', count: '2,260' },
+                      { id: 'drafts', label: 'Drafts', count: 83 },
+                      { id: 'archived', label: 'Archived', count: 22 }
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setAssignmentTabFilter(tab.id)}
+                        className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 shrink-0 transition-all cursor-pointer whitespace-nowrap ${
+                          assignmentTabFilter === tab.id
+                            ? 'bg-[#114B44] text-white shadow-xs'
+                            : 'bg-white hover:bg-gray-100 text-gray-700 border border-gray-200/80 shadow-2xs'
+                        }`}
+                      >
+                        <span>{tab.label}</span>
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${
+                          assignmentTabFilter === tab.id
+                            ? 'bg-white/20 text-white'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {tab.count}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* 4. SEARCH & SECONDARY FILTERS BAR */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+                      
+                      {/* Search Bar */}
+                      <div className="relative flex-1 min-w-[280px]">
+                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          value={assignmentSearchQuery}
+                          onChange={(e) => setAssignmentSearchQuery(e.target.value)}
+                          placeholder="Search assignments by title, class, or subject..."
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-xs font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#114B44]/20 focus:border-[#114B44]"
+                        />
+                      </div>
+
+                      {/* Dropdown Filters */}
+                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                        {/* Class Dropdown */}
+                        <select
+                          value={assignmentClassFilter}
+                          onChange={(e) => setAssignmentClassFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Classes">All Classes</option>
+                          <option value="Grade 10A">Grade 10A</option>
+                          <option value="Grade 8B">Grade 8B</option>
+                          <option value="Grade 11A">Grade 11A</option>
+                          <option value="Grade 9A">Grade 9A</option>
+                          <option value="Grade 10B">Grade 10B</option>
+                          <option value="Grade 12A">Grade 12A</option>
+                          <option value="Grade 11B">Grade 11B</option>
+                          <option value="Grade 9B">Grade 9B</option>
+                          <option value="Grade 12B">Grade 12B</option>
+                          <option value="Grade 8A">Grade 8A</option>
+                        </select>
+
+                        {/* Subject Dropdown */}
+                        <select
+                          value={assignmentSubjectFilter}
+                          onChange={(e) => setAssignmentSubjectFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Subjects">All Subjects</option>
+                          <option value="Science">Science</option>
+                          <option value="Islamic Studies">Islamic Studies</option>
+                          <option value="Mathematics">Mathematics</option>
+                          <option value="Arabic">Arabic</option>
+                          <option value="History">History</option>
+                          <option value="Computer Science">Computer Science</option>
+                          <option value="Business">Business</option>
+                          <option value="Environmental">Environmental</option>
+                          <option value="Psychology">Psychology</option>
+                          <option value="English">English</option>
+                        </select>
+
+                        {/* Teacher Dropdown */}
+                        <select
+                          value={assignmentTeacherFilter}
+                          onChange={(e) => setAssignmentTeacherFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Teachers">All Teachers</option>
+                          <option value="Dr. Ahmad Fauzi">Dr. Ahmad Fauzi</option>
+                          <option value="Siti Aisyah">Siti Aisyah</option>
+                          <option value="Layla Karim">Layla Karim</option>
+                          <option value="Zainab Ali">Zainab Ali</option>
+                          <option value="Fatimah Nur">Fatimah Nur</option>
+                          <option value="Muhammad Khan">Muhammad Khan</option>
+                          <option value="Ali Reza">Ali Reza</option>
+                          <option value="Nadia Rahman">Nadia Rahman</option>
+                          <option value="Hassan Malik">Hassan Malik</option>
+                          <option value="Omar Hassan">Omar Hassan</option>
+                        </select>
+
+                        {/* Status Dropdown */}
+                        <select
+                          value={assignmentStatusFilter}
+                          onChange={(e) => setAssignmentStatusFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Status">All Status</option>
+                          <option value="Active">Active</option>
+                          <option value="Pending">Pending</option>
+                          <option value="Graded">Graded</option>
+                        </select>
+
+                        {/* Date Range Button */}
+                        <button
+                          onClick={() => alert('Filter rentang tanggal tugas')}
+                          className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                          <span>Date Range</span>
+                          <ChevronDown className="w-3 h-3 text-gray-400" />
+                        </button>
+
+                        {/* Filters Button */}
+                        <button
+                          onClick={() => {
+                            setAssignmentSearchQuery('');
+                            setAssignmentClassFilter('All Classes');
+                            setAssignmentSubjectFilter('All Subjects');
+                            setAssignmentTeacherFilter('All Teachers');
+                            setAssignmentStatusFilter('All Status');
+                          }}
+                          className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                          title="Reset Filters"
+                        >
+                          <Filter className="w-3.5 h-3.5 text-gray-500" />
+                          <span>Filters</span>
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {/* Batch Selection Action Bar (if checkboxes checked) */}
+                  {selectedAssignmentCheckboxes.length > 0 && (
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 animate-fadeIn font-bold">
+                      <div className="flex items-center gap-2">
+                        <CheckSquare className="w-4 h-4 text-amber-700" />
+                        <span>{selectedAssignmentCheckboxes.length} Tugas Dipilih</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            setAssignmentsList(prev => prev.map(a => selectedAssignmentCheckboxes.includes(a.id) ? { ...a, status: 'Graded', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' } : a));
+                            setSelectedAssignmentCheckboxes([]);
+                            alert('Tugas terpilih berhasil ditandai sebagai Selesai Dinilai!');
+                          }}
+                          className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                        >
+                          Tandai Selesai Dinilai
+                        </button>
+                        <button
+                          onClick={() => setSelectedAssignmentCheckboxes([])}
+                          className="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                        >
+                          Batal Pilihan
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 5. MAIN 2-COLUMN LAYOUT: 8-COLS TABLE + 4-COLS SIDE DOSSIER */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    
+                    {/* LEFT 8-COLS: ASSIGNMENTS TABLE */}
+                    <div className="lg:col-span-8 bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden flex flex-col justify-between">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs text-gray-600 min-w-[700px]">
+                          <thead className="bg-[#F8FAFC] border-b border-gray-200/80 text-[11px] font-black text-gray-500 uppercase tracking-wider">
+                            <tr>
+                              <th className="p-3.5 pl-4 w-10">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedAssignmentCheckboxes.length === filteredAssignments.length && filteredAssignments.length > 0}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedAssignmentCheckboxes(filteredAssignments.map(a => a.id));
+                                    } else {
+                                      setSelectedAssignmentCheckboxes([]);
+                                    }
+                                  }}
+                                  className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                />
+                              </th>
+                              <th className="py-3.5 px-2 w-8 text-center">#</th>
+                              <th className="py-3.5 px-3 min-w-[200px]">Title</th>
+                              <th className="py-3.5 px-2 min-w-[90px]">Class</th>
+                              <th className="py-3.5 px-2 min-w-[110px]">Subject</th>
+                              <th className="py-3.5 px-2 min-w-[130px]">Teacher</th>
+                              <th className="py-3.5 px-2 min-w-[120px]">Due Date</th>
+                              <th className="py-3.5 px-2 text-center min-w-[90px]">Submissions</th>
+                              <th className="py-3.5 px-2 text-center min-w-[90px]">Status</th>
+                              <th className="py-3.5 pr-4 text-center min-w-[90px]">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {filteredAssignments.length === 0 ? (
+                              <tr>
+                                <td colSpan="10" className="p-8 text-center text-gray-400 font-bold">
+                                  Tidak ada tugas yang sesuai dengan filter.
+                                </td>
+                              </tr>
+                            ) : (
+                              filteredAssignments.map((asg) => {
+                                const isSelected = selectedAssignmentId === asg.id;
+                                const isChecked = selectedAssignmentCheckboxes.includes(asg.id);
+
+                                return (
+                                  <tr
+                                    key={asg.id}
+                                    onClick={() => setSelectedAssignmentId(asg.id)}
+                                    className={`transition-colors cursor-pointer group ${
+                                      isSelected
+                                        ? 'bg-emerald-50/40 border-l-4 border-l-[#114B44]'
+                                        : 'hover:bg-gray-50/80'
+                                    }`}
+                                  >
+                                    {/* Checkbox */}
+                                    <td className="p-3.5 pl-4" onClick={(e) => e.stopPropagation()}>
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={(e) => {
+                                          if (e.target.checked) {
+                                            setSelectedAssignmentCheckboxes(prev => [...prev, asg.id]);
+                                          } else {
+                                            setSelectedAssignmentCheckboxes(prev => prev.filter(id => id !== asg.id));
+                                          }
+                                        }}
+                                        className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                      />
+                                    </td>
+
+                                    {/* Number */}
+                                    <td className="py-3.5 px-2 text-center text-gray-400 font-bold text-xs">
+                                      {asg.num}
+                                    </td>
+
+                                    {/* Title with Type icon */}
+                                    <td className="py-3.5 px-3">
+                                      <div className="flex items-center gap-2.5">
+                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                                          asg.type === 'Essay' ? 'bg-blue-100 text-blue-600' :
+                                          asg.type === 'Video Submission' ? 'bg-emerald-100 text-emerald-600' :
+                                          asg.type === 'Project' ? 'bg-purple-100 text-purple-600' :
+                                          asg.type === 'Image' ? 'bg-amber-100 text-amber-600' :
+                                          'bg-rose-100 text-rose-600'
+                                        }`}>
+                                          <FileText className="w-4 h-4" />
+                                        </div>
+                                        <div className="min-w-0">
+                                          <div className="font-extrabold text-gray-900 text-xs truncate max-w-[200px]" title={asg.title}>
+                                            {asg.title}
+                                          </div>
+                                          <div className="text-[10px] text-gray-400 font-medium">
+                                            {asg.type}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+
+                                    {/* Class */}
+                                    <td className="py-3.5 px-2">
+                                      <span className="px-2.5 py-1 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-100 whitespace-nowrap">
+                                        {asg.class}
+                                      </span>
+                                    </td>
+
+                                    {/* Subject */}
+                                    <td className="py-3.5 px-2">
+                                      <span className={`px-2.5 py-1 rounded-md text-[10px] font-black border whitespace-nowrap ${asg.subjectColor}`}>
+                                        {asg.subject}
+                                      </span>
+                                    </td>
+
+                                    {/* Teacher */}
+                                    <td className="py-3.5 px-2">
+                                      <div className="flex items-center gap-2">
+                                        <img
+                                          src={asg.teacherAvatar}
+                                          alt={asg.teacher}
+                                          className="w-6 h-6 rounded-full object-cover shrink-0"
+                                          onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                                        />
+                                        <span className="font-bold text-gray-900 text-xs whitespace-nowrap truncate max-w-[110px]">
+                                          {asg.teacher}
+                                        </span>
+                                      </div>
+                                    </td>
+
+                                    {/* Due Date */}
+                                    <td className="py-3.5 px-2 text-xs font-bold text-gray-700 whitespace-nowrap">
+                                      {asg.dueDate}
+                                    </td>
+
+                                    {/* Submissions */}
+                                    <td className="py-3.5 px-2 text-center whitespace-nowrap">
+                                      <span className="font-black text-gray-900 text-xs">{asg.submissionsCount}</span>
+                                      <span className="text-gray-400 font-bold text-[11px]"> / {asg.totalStudents}</span>
+                                    </td>
+
+                                    {/* Status */}
+                                    <td className="py-3.5 px-2 text-center">
+                                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border whitespace-nowrap ${
+                                        asg.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                                        asg.status === 'Graded' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                        'bg-blue-50 text-blue-700 border-blue-200'
+                                      }`}>
+                                        {asg.status}
+                                      </span>
+                                    </td>
+
+                                    {/* Actions */}
+                                    <td className="py-3.5 pr-4 text-center" onClick={(e) => e.stopPropagation()}>
+                                      <div className="flex items-center justify-center gap-1">
+                                        <button
+                                          onClick={() => {
+                                            setSelectedAssignmentId(asg.id);
+                                          }}
+                                          title="View Assignment"
+                                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+                                        >
+                                          <Eye className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => {
+                                            setSelectedAssignmentId(asg.id);
+                                            setIsCreateAssignmentModalOpen(true);
+                                          }}
+                                          title="Edit Assignment"
+                                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+                                        >
+                                          <Edit3 className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => alert(`Opsi tugas: ${asg.title}`)}
+                                          title="More Options"
+                                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+                                        >
+                                          <MoreHorizontal className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Bottom Pagination */}
+                      <div className="p-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                        <span className="text-gray-500 font-bold">
+                          Showing <span className="text-gray-900 font-black">1 to 10</span> of <span className="text-gray-900 font-black">284</span> assignments
+                        </span>
+
+                        <div className="flex items-center gap-1 self-center sm:self-auto">
+                          <button onClick={() => alert('Halaman sebelumnya')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                            &lt;
+                          </button>
+                          <button className="w-8 h-8 rounded-xl bg-[#114B44] text-white font-extrabold flex items-center justify-center shadow-xs cursor-pointer">
+                            1
+                          </button>
+                          <button onClick={() => alert('Halaman 2')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                            2
+                          </button>
+                          <button onClick={() => alert('Halaman 3')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                            3
+                          </button>
+                          <button onClick={() => alert('Halaman 4')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                            4
+                          </button>
+                          <button onClick={() => alert('Halaman 5')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                            5
+                          </button>
+                          <span className="px-1 text-gray-400 font-bold">...</span>
+                          <button onClick={() => alert('Halaman 29')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                            29
+                          </button>
+                          <button onClick={() => alert('Halaman berikutnya')} className="w-8 h-8 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold flex items-center justify-center cursor-pointer shadow-2xs">
+                            &gt;
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* RIGHT 4-COLS: ASSIGNMENT DOSSIER & SUBMISSIONS */}
+                    <aside className="lg:col-span-4 space-y-4">
+                      
+                      {/* 1. Assignment Details Card */}
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Assignment Details</h3>
+                          <button
+                            onClick={() => alert(`Detail lengkap tugas: ${currentSelectedAssignment.title}`)}
+                            className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* Banner Image */}
+                        <div className="relative h-32 w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200/80 shadow-2xs">
+                          <img
+                            src={currentSelectedAssignment.imageBanner}
+                            alt={currentSelectedAssignment.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&auto=format&fit=crop&q=80'; }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                          <div className="absolute bottom-2.5 left-3 right-3 text-white">
+                            <h4 className="font-extrabold text-xs leading-snug line-clamp-2 drop-shadow-xs">
+                              {currentSelectedAssignment.title}
+                            </h4>
+                            <div className="flex items-center gap-1.5 mt-1">
+                              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                              <span className="text-[10px] font-bold text-blue-100">
+                                {currentSelectedAssignment.status}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Metadata List */}
+                        <div className="space-y-2.5 text-xs text-gray-600">
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                              <GraduationCap className="w-3.5 h-3.5 text-gray-400" />
+                              <span>Class</span>
+                            </div>
+                            <span className="font-black text-gray-900">{currentSelectedAssignment.class}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                              <BookOpen className="w-3.5 h-3.5 text-gray-400" />
+                              <span>Subject</span>
+                            </div>
+                            <span className="font-black text-gray-900">{currentSelectedAssignment.subject}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                              <User className="w-3.5 h-3.5 text-gray-400" />
+                              <span>Teacher</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <img
+                                src={currentSelectedAssignment.teacherAvatar}
+                                alt={currentSelectedAssignment.teacher}
+                                className="w-4 h-4 rounded-full object-cover"
+                                onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                              />
+                              <span className="font-black text-gray-900">{currentSelectedAssignment.teacher}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                              <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                              <span>Due Date</span>
+                            </div>
+                            <span className="font-black text-gray-900">{currentSelectedAssignment.dueDate}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                              <FileText className="w-3.5 h-3.5 text-gray-400" />
+                              <span>Type</span>
+                            </div>
+                            <span className="font-black text-gray-900">{currentSelectedAssignment.type}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between py-1 border-b border-gray-100">
+                            <div className="flex items-center gap-2 text-gray-500 font-bold">
+                              <Award className="w-3.5 h-3.5 text-gray-400" />
+                              <span>Total Points</span>
+                            </div>
+                            <span className="font-black text-emerald-700">{currentSelectedAssignment.totalPoints}</span>
+                          </div>
+
+                          <div className="pt-1">
+                            <div className="flex items-center gap-1.5 text-gray-500 font-bold mb-1">
+                              <Edit3 className="w-3.5 h-3.5 text-gray-400" />
+                              <span>Description</span>
+                            </div>
+                            <p className="text-[11px] text-gray-600 leading-relaxed bg-[#F8FAFC] p-2.5 rounded-xl border border-gray-100">
+                              {currentSelectedAssignment.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 2. Submission Overview Card */}
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Submission Overview</h3>
+                          <button
+                            onClick={() => alert(`Analisis pengumpulan: ${currentSelectedAssignment.title}`)}
+                            className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View Details</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* Donut Progress Chart */}
+                        <div className="flex items-center justify-around gap-4 pt-1">
+                          <div className="relative w-28 h-28 flex items-center justify-center">
+                            <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                              <circle
+                                cx="18"
+                                cy="18"
+                                r="15.915"
+                                fill="transparent"
+                                stroke="#E2E8F0"
+                                strokeWidth="3.5"
+                              />
+                              <circle
+                                cx="18"
+                                cy="18"
+                                r="15.915"
+                                fill="transparent"
+                                stroke="#10B981"
+                                strokeWidth="3.5"
+                                strokeDasharray={`${currentSelectedAssignment.overview.submittedPct} 100`}
+                                strokeDashoffset="0"
+                                strokeLinecap="round"
+                              />
+                              <circle
+                                cx="18"
+                                cy="18"
+                                r="15.915"
+                                fill="transparent"
+                                stroke="#F59E0B"
+                                strokeWidth="3.5"
+                                strokeDasharray={`${currentSelectedAssignment.overview.pendingPct} 100`}
+                                strokeDashoffset={`-${currentSelectedAssignment.overview.submittedPct}`}
+                                strokeLinecap="round"
+                              />
+                              <circle
+                                cx="18"
+                                cy="18"
+                                r="15.915"
+                                fill="transparent"
+                                stroke="#EF4444"
+                                strokeWidth="3.5"
+                                strokeDasharray={`${currentSelectedAssignment.overview.latePct} 100`}
+                                strokeDashoffset={`-${currentSelectedAssignment.overview.submittedPct + currentSelectedAssignment.overview.pendingPct}`}
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                              <span className="text-xs font-black text-gray-900 leading-tight">
+                                {currentSelectedAssignment.overview.submitted} / {currentSelectedAssignment.totalStudents}
+                              </span>
+                              <span className="text-[9px] font-bold text-gray-400">Submitted</span>
+                            </div>
+                          </div>
+
+                          {/* Legends */}
+                          <div className="space-y-2 text-xs">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-1.5">
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span className="font-bold text-gray-600 text-[11px]">Submitted</span>
+                              </div>
+                              <span className="font-black text-gray-900 text-xs">
+                                {currentSelectedAssignment.overview.submitted} ({currentSelectedAssignment.overview.submittedPct}%)
+                              </span>
+                            </div>
+
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-1.5">
+                                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                                <span className="font-bold text-gray-600 text-[11px]">Pending</span>
+                              </div>
+                              <span className="font-black text-gray-900 text-xs">
+                                {currentSelectedAssignment.overview.pending} ({currentSelectedAssignment.overview.pendingPct}%)
+                              </span>
+                            </div>
+
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-1.5">
+                                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                                <span className="font-bold text-gray-600 text-[11px]">Late</span>
+                              </div>
+                              <span className="font-black text-gray-900 text-xs">
+                                {currentSelectedAssignment.overview.late} ({currentSelectedAssignment.overview.latePct}%)
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 3. Recent Submissions Card */}
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Recent Submissions</h3>
+                          <button
+                            onClick={() => alert(`Lihat semua santri yang telah mengumpulkan: ${currentSelectedAssignment.title}`)}
+                            className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {currentSelectedAssignment.recentSubmissions.map((sub) => (
+                            <div
+                              key={sub.id}
+                              onClick={() => {
+                                setSelectedSubmissionToGrade(sub);
+                                setGradeInput(sub.gradedScore ? String(sub.gradedScore) : '90');
+                                setIsGradeModalOpen(true);
+                              }}
+                              className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] hover:bg-emerald-50/40 hover:border-emerald-200 transition-all flex items-center justify-between gap-2.5 cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                <img
+                                  src={sub.avatar}
+                                  alt={sub.name}
+                                  className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200"
+                                  onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <div className="font-extrabold text-gray-900 text-xs truncate group-hover:text-emerald-800 transition-colors">
+                                    {sub.name}
+                                  </div>
+                                  <div className="text-[10px] text-gray-400 font-medium truncate">
+                                    {sub.timeAgo}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <span className={`px-2 py-0.5 rounded-md text-[10px] font-black shrink-0 whitespace-nowrap border ${
+                                sub.status === 'graded'
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  : 'bg-amber-50 text-amber-700 border-amber-200'
+                              }`}>
+                                {sub.score}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -9857,6 +11058,349 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Mulai Import</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* MODALS FOR ASSIGNMENTS ROOM                              */}
+          {/* ========================================================= */}
+          
+          {/* Modal Create Assignment */}
+          {isCreateAssignmentModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200 my-8">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Buat Tugas Baru (Create Assignment)</h3>
+                      <p className="text-xs text-gray-500">Tugaskan latihan, essay, atau proyek untuk santri</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsCreateAssignmentModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul Tugas *</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Essay: Benefits of Renewable Energy"
+                      value={newAssignment.title}
+                      onChange={(e) => setNewAssignment({ ...newAssignment, title: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Tipe Pengumpulan</label>
+                      <select
+                        value={newAssignment.type}
+                        onChange={(e) => setNewAssignment({ ...newAssignment, type: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Essay">Essay</option>
+                        <option value="Video Submission">Video Submission</option>
+                        <option value="Document">Document (PDF/Doc)</option>
+                        <option value="Project">Project / Code</option>
+                        <option value="Image">Image / Poster</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Target Kelas</label>
+                      <select
+                        value={newAssignment.class}
+                        onChange={(e) => setNewAssignment({ ...newAssignment, class: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Grade 10A">Grade 10A</option>
+                        <option value="Grade 8B">Grade 8B</option>
+                        <option value="Grade 11A">Grade 11A</option>
+                        <option value="Grade 9A">Grade 9A</option>
+                        <option value="Grade 10B">Grade 10B</option>
+                        <option value="Grade 12A">Grade 12A</option>
+                        <option value="Grade 11B">Grade 11B</option>
+                        <option value="Grade 9B">Grade 9B</option>
+                        <option value="Grade 12B">Grade 12B</option>
+                        <option value="Grade 8A">Grade 8A</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Mata Pelajaran</label>
+                      <select
+                        value={newAssignment.subject}
+                        onChange={(e) => setNewAssignment({ ...newAssignment, subject: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Science">Science</option>
+                        <option value="Islamic Studies">Islamic Studies</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="History">History</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Business">Business</option>
+                        <option value="Environmental">Environmental</option>
+                        <option value="Psychology">Psychology</option>
+                        <option value="English">English</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Guru / Pengampu</label>
+                      <select
+                        value={newAssignment.teacher}
+                        onChange={(e) => setNewAssignment({ ...newAssignment, teacher: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Dr. Ahmad Fauzi">Dr. Ahmad Fauzi</option>
+                        <option value="Siti Aisyah">Siti Aisyah</option>
+                        <option value="Layla Karim">Layla Karim</option>
+                        <option value="Zainab Ali">Zainab Ali</option>
+                        <option value="Fatimah Nur">Fatimah Nur</option>
+                        <option value="Muhammad Khan">Muhammad Khan</option>
+                        <option value="Ali Reza">Ali Reza</option>
+                        <option value="Nadia Rahman">Nadia Rahman</option>
+                        <option value="Hassan Malik">Hassan Malik</option>
+                        <option value="Omar Hassan">Omar Hassan</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Batas Waktu (Due Date)</label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: 30 Sep 2026, 23:59"
+                        value={newAssignment.dueDate}
+                        onChange={(e) => setNewAssignment({ ...newAssignment, dueDate: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Total Poin Maksimal</label>
+                      <input
+                        type="number"
+                        placeholder="100"
+                        value={newAssignment.totalPoints}
+                        onChange={(e) => setNewAssignment({ ...newAssignment, totalPoints: Number(e.target.value) })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Deskripsi & Instruksi Pengerjaan</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Jelaskan petunjuk teknis pengerjaan tugas ini secara lengkap..."
+                      value={newAssignment.description}
+                      onChange={(e) => setNewAssignment({ ...newAssignment, description: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsCreateAssignmentModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (!newAssignment.title.trim()) {
+                        alert('Silakan masukkan judul tugas terlebih dahulu.');
+                        return;
+                      }
+
+                      const newId = `asg-${Date.now()}`;
+                      const createdItem = {
+                        id: newId,
+                        num: assignmentsList.length + 1,
+                        title: newAssignment.title,
+                        type: newAssignment.type,
+                        class: newAssignment.class,
+                        subject: newAssignment.subject,
+                        subjectColor: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+                        teacher: newAssignment.teacher,
+                        teacherAvatar: '/images/teacher_ahmad.jpg',
+                        dueDate: newAssignment.dueDate || '30 Sep 2026, 23:59',
+                        submissionsCount: 0,
+                        totalStudents: 30,
+                        status: 'Active',
+                        statusBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+                        imageBanner: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&auto=format&fit=crop&q=80',
+                        totalPoints: newAssignment.totalPoints || 100,
+                        description: newAssignment.description || 'Instruksi pengerjaan tugas telah diterbitkan oleh pengampu.',
+                        overview: {
+                          submitted: 0,
+                          submittedPct: 0,
+                          pending: 30,
+                          pendingPct: 100,
+                          late: 0,
+                          latePct: 0
+                        },
+                        recentSubmissions: []
+                      };
+
+                      setAssignmentsList([createdItem, ...assignmentsList]);
+                      setSelectedAssignmentId(newId);
+                      setIsCreateAssignmentModalOpen(false);
+                      setNewAssignment({
+                        title: '',
+                        type: 'Essay',
+                        class: 'Grade 10A',
+                        subject: 'Science',
+                        teacher: 'Dr. Ahmad Fauzi',
+                        dueDate: '25 Sep 2026, 23:59',
+                        totalPoints: 100,
+                        description: ''
+                      });
+                      alert('Tugas baru berhasil dibuat dan didistribusikan ke kelas!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Terbitkan Tugas</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Import Assignments */}
+          {isImportAssignmentModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                      <Download className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Import Tugas (Excel / CSV)</h3>
+                      <p className="text-xs text-gray-500">Unggah kumpulan soal atau bank tugas secara masal</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsImportAssignmentModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div className="border-2 border-dashed border-gray-200 hover:border-[#114B44] transition-colors rounded-2xl p-6 text-center bg-gray-50/60 cursor-pointer flex flex-col items-center justify-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-purple-100/60 text-purple-600 flex items-center justify-center">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div className="font-extrabold text-gray-800">Klik untuk upload file spreadsheet tugas</div>
+                    <div className="text-[11px] text-gray-400">Mendukung format .XLSX, .XLS, atau .CSV (Maks. 10MB)</div>
+                  </div>
+
+                  <div className="p-3 bg-purple-50 border border-purple-100 rounded-xl text-purple-900 text-[11px] space-y-1">
+                    <div className="font-black">Format Kolom yang Dibutuhkan:</div>
+                    <div>Judul, Tipe, Kelas, Mata Pelajaran, Pengampu, Batas Waktu, Poin Maksimal, Deskripsi</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsImportAssignmentModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsImportAssignmentModalOpen(false);
+                      alert('Proses import data tugas berhasil! 8 tugas baru siap ditugaskan.');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Mulai Import</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Grade Student Submission */}
+          {isGradeModalOpen && selectedSubmissionToGrade && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <img
+                      src={selectedSubmissionToGrade.avatar}
+                      alt={selectedSubmissionToGrade.name}
+                      className="w-10 h-10 rounded-xl object-cover border border-gray-200"
+                      onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                    />
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Penilaian Tugas: {selectedSubmissionToGrade.name}</h3>
+                      <p className="text-xs text-gray-500">{selectedSubmissionToGrade.timeAgo}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsGradeModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Skor Nilai (0 - 100)</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={gradeInput}
+                        onChange={(e) => setGradeInput(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-black text-[#114B44] focus:outline-none focus:border-[#114B44]"
+                      />
+                      <span className="absolute right-3.5 top-1/2 -translate-y-1/2 font-bold text-gray-400 text-xs">/ 100</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Catatan & Masukan Ustadz / Feedback</label>
+                    <textarea
+                      rows={3}
+                      value={feedbackInput}
+                      onChange={(e) => setFeedbackInput(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-[11px] flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Nilai dan feedback akan otomatis dikirimkan ke dashboard santri.</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsGradeModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      // Update submission score
+                      setAssignmentsList(prev => prev.map(a => {
+                        if (a.id === selectedAssignmentId) {
+                          const updatedRecent = a.recentSubmissions.map(s => {
+                            if (s.id === selectedSubmissionToGrade.id) {
+                              return { ...s, score: `${gradeInput}/100`, status: 'graded', gradedScore: Number(gradeInput) };
+                            }
+                            return s;
+                          });
+                          return { ...a, recentSubmissions: updatedRecent };
+                        }
+                        return a;
+                      }));
+                      setIsGradeModalOpen(false);
+                      alert(`Nilai ${gradeInput}/100 untuk ${selectedSubmissionToGrade.name} berhasil disimpan!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Simpan Nilai</span>
                   </button>
                 </div>
               </div>
