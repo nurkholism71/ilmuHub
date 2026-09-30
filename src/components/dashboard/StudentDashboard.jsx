@@ -47,7 +47,11 @@ import {
   Send,
   Paperclip,
   Smile,
-  Phone
+  Phone,
+  Wallet,
+  CreditCard,
+  TrendingUp,
+  ArrowUpRight
 } from 'lucide-react';
 
 export default function StudentDashboard({ user, onJoinLive, onExploreCourses, onBackToHome, onLogout, onSwitchRole }) {
@@ -106,6 +110,14 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   const [chatInputText, setChatInputText] = useState('');
   const [activeChatMessages, setActiveChatMessages] = useState([]);
   const [isNewMessageModalOpen, setIsNewMessageModalOpen] = useState(false);
+
+  // Earnings View States (matching media_1790728958033.jpg)
+  const [earningsPeriod, setEarningsPeriod] = useState('Month'); // 'Week' | 'Month' | 'Year'
+  const [earningsMonth, setEarningsMonth] = useState('September 2026');
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
+  const [withdrawAmountInput, setWithdrawAmountInput] = useState('86.50');
+  const [selectedWithdrawMethod, setSelectedWithdrawMethod] = useState('PayPal');
 
   // Browse Classes View States (matching media_1790726478349.jpg)
   const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
@@ -1499,6 +1511,190 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
         }
       ],
       sharedFiles: []
+    }
+  ];
+
+  // Earnings Datasets (Matching media_1790728958033.jpg)
+  const earningsDailyChart = [
+    { day: '1', date: 'Sep 1', amount: 2.5, heightPct: 15 },
+    { day: '2', date: 'Sep 2', amount: 3.0, heightPct: 18 },
+    { day: '3', date: 'Sep 3', amount: 1.5, heightPct: 10 },
+    { day: '4', date: 'Sep 4', amount: 2.0, heightPct: 14 },
+    { day: '5', date: 'Sep 5', amount: 12.0, heightPct: 52 },
+    { day: '6', date: 'Sep 6', amount: 8.5, heightPct: 38 },
+    { day: '7', date: 'Sep 7', amount: 6.0, heightPct: 28 },
+    { day: '8', date: 'Sep 8', amount: 3.5, heightPct: 18 },
+    { day: '9', date: 'Sep 9', amount: 2.0, heightPct: 12 },
+    { day: '10', date: 'Sep 10', amount: 3.0, heightPct: 16 },
+    { day: '11', date: 'Sep 11', amount: 14.5, heightPct: 62 },
+    { day: '12', date: 'Sep 12', amount: 4.0, heightPct: 20 },
+    { day: '13', date: 'Sep 13', amount: 2.5, heightPct: 14 },
+    { day: '14', date: 'Sep 14', amount: 7.5, heightPct: 34 },
+    { day: '15', date: 'Sep 15', amount: 6.0, heightPct: 28 },
+    { day: '16', date: 'Sep 16', amount: 8.0, heightPct: 36 },
+    { day: '17', date: 'Sep 17', amount: 5.5, heightPct: 26 },
+    { day: '18', date: 'Sep 18', amount: 9.0, heightPct: 40 },
+    { day: '19', date: 'Sep 19', amount: 3.5, heightPct: 18 },
+    { day: '20', date: 'Sep 20', amount: 12.0, heightPct: 50 },
+    { day: '21', date: 'Sep 21', amount: 6.5, heightPct: 30 },
+    { day: '22', date: 'Sep 22', amount: 10.0, heightPct: 44 },
+    { day: '23', date: 'Sep 23', amount: 9.0, heightPct: 40 },
+    { day: '24', date: 'Sep 24', amount: 24.5, heightPct: 95, isPeak: true },
+    { day: '25', date: 'Sep 25', amount: 14.0, heightPct: 60 },
+    { day: '26', date: 'Sep 26', amount: 9.5, heightPct: 42 },
+    { day: '27', date: 'Sep 27', amount: 4.0, heightPct: 20 },
+    { day: '28', date: 'Sep 28', amount: 7.5, heightPct: 34 },
+    { day: '29', date: 'Sep 29', amount: 12.0, heightPct: 50 },
+    { day: '30', date: 'Sep 30', amount: 8.0, heightPct: 36 }
+  ];
+
+  const earningsActivitiesList = [
+    {
+      id: 'act-1',
+      title: 'Classes',
+      amount: '$52.00',
+      pct: 60,
+      icon: GraduationCap,
+      color: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+      barColor: 'bg-[#114B44]'
+    },
+    {
+      id: 'act-2',
+      title: 'Quizzes',
+      amount: '$18.50',
+      pct: 21,
+      icon: FileText,
+      color: 'bg-blue-50 text-blue-700 border-blue-100',
+      barColor: 'bg-blue-600'
+    },
+    {
+      id: 'act-3',
+      title: 'Assignments',
+      amount: '$16.00',
+      pct: 19,
+      icon: Award,
+      color: 'bg-amber-50 text-amber-700 border-amber-100',
+      barColor: 'bg-amber-600'
+    },
+    {
+      id: 'act-4',
+      title: 'Achievements',
+      amount: '$0.00',
+      pct: 0,
+      icon: Trophy,
+      color: 'bg-purple-50 text-purple-700 border-purple-100',
+      barColor: 'bg-purple-600'
+    }
+  ];
+
+  const recentEarningsList = [
+    {
+      id: 're-1',
+      date: '25 Sep 2026',
+      activity: 'Quiz Completed',
+      activityIcon: '📄',
+      activityIconBg: 'bg-blue-50 text-blue-600 border-blue-100',
+      class: 'Islamic History',
+      amount: '+$2.50',
+      status: 'Completed'
+    },
+    {
+      id: 're-2',
+      date: '22 Sep 2026',
+      activity: 'Assignment',
+      activityIcon: '📄',
+      activityIconBg: 'bg-amber-50 text-amber-600 border-amber-100',
+      class: 'Academic Writing',
+      amount: '+$4.00',
+      status: 'Completed'
+    },
+    {
+      id: 're-3',
+      date: '20 Sep 2026',
+      activity: 'Class Completed',
+      activityIcon: '🎓',
+      activityIconBg: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+      class: 'Arabic Conversation',
+      amount: '+$12.00',
+      status: 'Completed'
+    },
+    {
+      id: 're-4',
+      date: '18 Sep 2026',
+      activity: 'Quiz Completed',
+      activityIcon: '📄',
+      activityIconBg: 'bg-blue-50 text-blue-600 border-blue-100',
+      class: 'Environmental Management',
+      amount: '+$2.00',
+      status: 'Completed'
+    },
+    {
+      id: 're-5',
+      date: '15 Sep 2026',
+      activity: 'Assignment',
+      activityIcon: '📄',
+      activityIconBg: 'bg-amber-50 text-amber-600 border-amber-100',
+      class: 'Nahwu for Beginners',
+      amount: '+$3.50',
+      status: 'Completed'
+    }
+  ];
+
+  const paymentMethodsList = [
+    {
+      id: 'pm-1',
+      name: 'PayPal',
+      account: 'aisha.rahman@example.com',
+      isPrimary: true,
+      iconType: 'paypal',
+      iconColor: 'bg-blue-50 text-blue-600 border-blue-100'
+    },
+    {
+      id: 'pm-2',
+      name: 'Bank Transfer',
+      account: '•••• 1234',
+      isPrimary: false,
+      iconType: 'bank',
+      iconColor: 'bg-slate-50 text-slate-700 border-slate-200'
+    },
+    {
+      id: 'pm-3',
+      name: 'Wise',
+      account: 'aisha.rahman@wise.com',
+      isPrimary: false,
+      iconType: 'wise',
+      iconColor: 'bg-emerald-50 text-emerald-600 border-emerald-100'
+    }
+  ];
+
+  const topEarningClassesList = [
+    {
+      id: 'tec-1',
+      title: 'Arabic Conversation',
+      rewards: '3 rewards',
+      amount: '$24.00',
+      image: '/images/class_conversation.jpg'
+    },
+    {
+      id: 'tec-2',
+      title: 'Academic Writing',
+      rewards: '2 rewards',
+      amount: '$16.00',
+      image: '/images/login_lms_desk_bg.jpg'
+    },
+    {
+      id: 'tec-3',
+      title: 'Nahwu for Beginners',
+      rewards: '2 rewards',
+      amount: '$12.00',
+      image: '/images/class_nahwu.jpg'
+    },
+    {
+      id: 'tec-4',
+      title: 'Islamic History',
+      rewards: '1 reward',
+      amount: '$8.50',
+      image: '/images/class_nahwu.jpg'
     }
   ];
 
@@ -5532,6 +5728,565 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                         className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
                       >
                         Send Message
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          ) : activeNav === 'earnings' ? (
+            /* ========================================================= */
+            /* VIEW: EARNINGS ROOM (MATCHING media_1790728958033.jpg)   */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* 1. PAGE TOP HEADER */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <Star className="w-5 h-5 fill-current" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Earnings</h1>
+                    <p className="text-xs text-gray-500 font-medium">Track your earnings from completed classes, quizzes, assignments, and achievements.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <select
+                      value={earningsMonth}
+                      onChange={(e) => setEarningsMonth(e.target.value)}
+                      className="appearance-none bg-white border border-gray-200/90 hover:border-gray-300 rounded-xl pl-3.5 pr-8 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="September 2026">📅 September 2026</option>
+                      <option value="August 2026">📅 August 2026</option>
+                      <option value="July 2026">📅 July 2026</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. TOP 4 KPI CARDS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* Total Earnings */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center shrink-0">
+                    <DollarSign className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-400 block">Total Earnings</span>
+                    <span className="text-xl font-black text-gray-900 leading-tight">$86.50</span>
+                    <span className="text-[10px] font-bold text-emerald-600 block mt-0.5">
+                      ↑ +12% this month
+                    </span>
+                  </div>
+                </div>
+
+                {/* Class Rewards */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                    <GraduationCap className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-400 block">Class Rewards</span>
+                    <span className="text-xl font-black text-gray-900 leading-tight">$52.00</span>
+                    <span className="text-[10px] font-semibold text-gray-400 block mt-0.5">
+                      6 classes completed
+                    </span>
+                  </div>
+                </div>
+
+                {/* Quiz Rewards */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-400 block">Quiz Rewards</span>
+                    <span className="text-xl font-black text-gray-900 leading-tight">$18.50</span>
+                    <span className="text-[10px] font-semibold text-gray-400 block mt-0.5">
+                      8 quizzes completed
+                    </span>
+                  </div>
+                </div>
+
+                {/* Assignment Rewards */}
+                <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                    <Award className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-400 block">Assignment Rewards</span>
+                    <span className="text-xl font-black text-gray-900 leading-tight">$16.00</span>
+                    <span className="text-[10px] font-semibold text-gray-400 block mt-0.5">
+                      4 assignments completed
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* 3. MAIN TWO-COLUMN LAYOUT */}
+              <div className="flex flex-col lg:flex-row gap-5 items-start">
+                
+                {/* LEFT CANVAS: CHART + ACTIVITY + RECENT EARNINGS */}
+                <div className="flex-1 min-w-0 space-y-5 w-full">
+                  
+                  {/* SECTION 1: Earnings Overview Chart */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-extrabold text-base text-gray-900 tracking-tight">Earnings Overview</h3>
+                      
+                      {/* Period Pill Switcher: Week / Month / Year */}
+                      <div className="flex items-center bg-[#F1F5F9] p-1 rounded-xl">
+                        {['Week', 'Month', 'Year'].map((p) => {
+                          const isActive = earningsPeriod === p;
+                          return (
+                            <button
+                              key={p}
+                              onClick={() => setEarningsPeriod(p)}
+                              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                                isActive
+                                  ? 'bg-[#114B44] text-white shadow-2xs'
+                                  : 'text-gray-600 hover:text-gray-900'
+                              }`}
+                            >
+                              {p}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Bar Chart Canvas */}
+                    <div className="pt-2">
+                      <div className="flex items-end gap-2 h-48 w-full">
+                        {/* Y-Axis Scale */}
+                        <div className="flex flex-col justify-between h-full text-[10px] font-bold text-gray-400 pr-1 shrink-0 pb-6 select-none">
+                          <span>$30</span>
+                          <span>$20</span>
+                          <span>$10</span>
+                          <span>$0</span>
+                        </div>
+
+                        {/* Chart Area with Gridlines & Columns */}
+                        <div className="relative flex-1 h-full flex flex-col justify-end">
+                          {/* Horizontal Background Gridlines */}
+                          <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40 pb-6">
+                            <div className="border-b border-gray-200 w-full"></div>
+                            <div className="border-b border-gray-100 w-full"></div>
+                            <div className="border-b border-gray-100 w-full"></div>
+                            <div className="border-b border-gray-200 w-full"></div>
+                          </div>
+
+                          {/* Daily Bars */}
+                          <div className="relative z-0 h-[80%] flex items-end justify-between gap-1 sm:gap-1.5 px-1">
+                            {earningsDailyChart.map((item, i) => (
+                              <div key={i} className="flex-1 h-full flex flex-col items-center justify-end group relative cursor-pointer">
+                                {/* Tooltip */}
+                                <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-gray-900 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap z-10 pointer-events-none">
+                                  {item.date}: ${item.amount.toFixed(2)}
+                                </div>
+                                <div
+                                  className={`w-full rounded-t-sm transition-all duration-300 ${
+                                    item.isPeak
+                                      ? 'bg-emerald-500 hover:bg-emerald-600'
+                                      : 'bg-emerald-300/80 hover:bg-emerald-400'
+                                  }`}
+                                  style={{ height: `${item.heightPct}%` }}
+                                ></div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* X-Axis Labels */}
+                          <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 pt-2 px-1 border-t border-gray-200 select-none">
+                            <span>Sep 1</span>
+                            <span>Sep 5</span>
+                            <span>Sep 10</span>
+                            <span>Sep 15</span>
+                            <span>Sep 20</span>
+                            <span>Sep 25</span>
+                            <span>Sep 30</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SECTION 2: Earnings by Activity (4 Cards Grid) */}
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-base text-gray-900 tracking-tight">Earnings by Activity</h3>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5">
+                      {earningsActivitiesList.map((act) => {
+                        const Icon = act.icon;
+                        return (
+                          <div
+                            key={act.id}
+                            className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs space-y-3"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center border shrink-0 ${act.color}`}>
+                                <Icon className="w-4 h-4" />
+                              </div>
+                              <span className="font-extrabold text-xs text-gray-800">{act.title}</span>
+                            </div>
+
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-base font-black text-gray-900">{act.amount}</span>
+                                <span className="text-xs font-bold text-gray-400">{act.pct}%</span>
+                              </div>
+
+                              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full ${act.barColor}`}
+                                  style={{ width: `${act.pct}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* SECTION 3: Recent Earnings Table */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-extrabold text-base text-gray-900 tracking-tight">Recent Earnings</h3>
+                      <button
+                        onClick={() => alert('Melihat seluruh riwayat pendapatan...')}
+                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-wider border-b border-gray-100 pb-2">
+                            <th className="pb-2.5 font-extrabold">Date</th>
+                            <th className="pb-2.5 font-extrabold">Activity</th>
+                            <th className="pb-2.5 font-extrabold">Class</th>
+                            <th className="pb-2.5 font-extrabold">Amount</th>
+                            <th className="pb-2.5 font-extrabold text-right">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100/80 font-medium">
+                          {recentEarningsList.map((row) => (
+                            <tr key={row.id} className="hover:bg-gray-50/70 transition-colors">
+                              <td className="py-3 text-gray-500 font-semibold">{row.date}</td>
+                              <td className="py-3">
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs border ${row.activityIconBg}`}>
+                                    {row.activityIcon}
+                                  </span>
+                                  <span className="font-bold text-gray-900">{row.activity}</span>
+                                </div>
+                              </td>
+                              <td className="py-3 text-gray-600">{row.class}</td>
+                              <td className="py-3 font-black text-emerald-700">{row.amount}</td>
+                              <td className="py-3 text-right">
+                                <span className="inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                  {row.status}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR (MATCHING media_1790728958033.jpg) */}
+                <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
+                  
+                  {/* CARD 1: Withdraw Earnings */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3.5">
+                    <h3 className="font-extrabold text-xs text-gray-900 tracking-tight pb-1 border-b border-gray-100">
+                      Withdraw Earnings
+                    </h3>
+
+                    {/* Available Balance Box */}
+                    <div className="p-3 bg-emerald-50/60 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center shrink-0">
+                        <Wallet className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold text-gray-400 block">Available Balance</span>
+                        <span className="text-lg font-black text-gray-900 leading-tight">$86.50</span>
+                      </div>
+                    </div>
+
+                    {/* Withdraw Button */}
+                    <button
+                      onClick={() => setIsWithdrawModalOpen(true)}
+                      className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5 rotate-180" />
+                      <span>Withdraw Now</span>
+                    </button>
+
+                    <p className="text-[10px] text-gray-400 text-center font-medium -mt-1">
+                      Minimum withdrawal: $10.00
+                    </p>
+                  </div>
+
+                  {/* CARD 2: Payment Method */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Payment Method</h3>
+                      <button
+                        onClick={() => setIsAddPaymentModalOpen(true)}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline cursor-pointer"
+                      >
+                        Manage
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {paymentMethodsList.map((pm) => (
+                        <div
+                          key={pm.id}
+                          className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] flex items-center justify-between gap-2.5 hover:bg-gray-100/60 transition-colors"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs border shrink-0 ${pm.iconColor}`}>
+                              {pm.iconType === 'paypal' ? 'P' : pm.iconType === 'bank' ? '🏦' : 'W'}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <h5 className="font-extrabold text-[11px] text-gray-900 leading-tight truncate">{pm.name}</h5>
+                                {pm.isPrimary && (
+                                  <span className="text-[8px] font-black px-1.5 py-0.2 rounded-md bg-emerald-100 text-emerald-800">
+                                    Primary
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-[10px] text-gray-400 truncate block">{pm.account}</span>
+                            </div>
+                          </div>
+
+                          <button className="p-1 text-gray-400 hover:text-gray-600 rounded-md cursor-pointer shrink-0">
+                            <MoreVertical className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setIsAddPaymentModalOpen(true)}
+                      className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5 text-gray-500" />
+                      <span>Add Payment Method</span>
+                    </button>
+                  </div>
+
+                  {/* CARD 3: Top Earning Classes */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Top Earning Classes</h3>
+                      <button
+                        onClick={() => setActiveNav('classes')}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {topEarningClassesList.map((cls) => (
+                        <div key={cls.id} className="flex items-center justify-between gap-2.5">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-9 h-9 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                              <img
+                                src={cls.image}
+                                alt={cls.title}
+                                className="w-full h-full object-cover"
+                                onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <h5 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">{cls.title}</h5>
+                              <span className="text-[10px] text-gray-400 block">{cls.rewards}</span>
+                            </div>
+                          </div>
+
+                          <span className="text-xs font-black text-[#114B44] shrink-0">{cls.amount}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </aside>
+
+              </div>
+
+              {/* WITHDRAW MODAL POPUP */}
+              {isWithdrawModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <Wallet className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">Withdraw Earnings</h3>
+                          <p className="text-xs text-gray-500">Transfer your earnings to your payment method</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsWithdrawModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs cursor-pointer font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-between">
+                        <span className="text-gray-600 font-bold">Available Balance</span>
+                        <span className="text-base font-black text-[#114B44]">$86.50</span>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Withdrawal Amount ($)</label>
+                        <input
+                          type="number"
+                          value={withdrawAmountInput}
+                          onChange={(e) => setWithdrawAmountInput(e.target.value)}
+                          max="86.50"
+                          min="10"
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-bold text-gray-900 focus:outline-none focus:border-[#114B44]"
+                        />
+                        <span className="text-[10px] text-gray-400 mt-1 block">Min: $10.00 • Max: $86.50</span>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Payment Method</label>
+                        <select
+                          value={selectedWithdrawMethod}
+                          onChange={(e) => setSelectedWithdrawMethod(e.target.value)}
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]"
+                        >
+                          <option value="PayPal">PayPal (aisha.rahman@example.com) [Primary]</option>
+                          <option value="Bank Transfer">Bank Transfer (•••• 1234)</option>
+                          <option value="Wise">Wise (aisha.rahman@wise.com)</option>
+                        </select>
+                      </div>
+
+                      <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 text-[11px] space-y-1">
+                        <div className="flex items-center justify-between text-gray-500">
+                          <span>Transfer Fee</span>
+                          <span className="font-bold text-emerald-600">Free ($0.00)</span>
+                        </div>
+                        <div className="flex items-center justify-between text-gray-900 font-extrabold border-t border-gray-200 pt-1">
+                          <span>Total to Receive</span>
+                          <span>${withdrawAmountInput || '0.00'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsWithdrawModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsWithdrawModalOpen(false);
+                          alert(`Permintaan penarikan $${withdrawAmountInput} ke ${selectedWithdrawMethod} berhasil diajukan!`);
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Confirm Withdrawal
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ADD PAYMENT METHOD MODAL POPUP */}
+              {isAddPaymentModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <CreditCard className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">Add Payment Method</h3>
+                          <p className="text-xs text-gray-500">Connect a new payout account</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsAddPaymentModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs cursor-pointer font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Method Type</label>
+                        <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]">
+                          <option value="paypal">PayPal</option>
+                          <option value="bank">Bank Transfer (SWIFT / IBAN)</option>
+                          <option value="wise">Wise Account</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Account Email / IBAN</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. yourname@paypal.com"
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Account Holder Name</label>
+                        <input
+                          type="text"
+                          defaultValue={studentName}
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsAddPaymentModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsAddPaymentModalOpen(false);
+                          alert('Metode pembayaran baru berhasil disimpan!');
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Save Method
                       </button>
                     </div>
                   </div>
