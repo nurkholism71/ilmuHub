@@ -2360,6 +2360,264 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   ]);
 
   // =========================================================
+  // QUIZZES DATASET (matching media_1790787882133.jpg)
+  // =========================================================
+  const [quizzesList, setQuizzesList] = useState([
+    {
+      id: 'qz-1',
+      number: 1,
+      title: 'Islamic History Quiz',
+      subtitle: 'The life of Prophet Muhammad',
+      subject: 'Islamic Studies',
+      subjectColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      iconBg: 'bg-emerald-600 text-white',
+      class: 'Grade 10A',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Medium',
+      difficultyBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      questions: 15,
+      attempts: 324,
+      avgScore: '86%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 30,
+      passingScore: 75,
+      creator: 'Dr. Ahmad Fauzi',
+      createdDate: '15 Sep 2026',
+      description: 'Comprehensive assessment covering Makki and Madani periods, major events, and ethical teachings.'
+    },
+    {
+      id: 'qz-2',
+      number: 2,
+      title: 'Mathematics Quiz',
+      subtitle: 'Algebra and Functions',
+      subject: 'Mathematics',
+      subjectColor: 'bg-purple-50 text-purple-700 border-purple-200',
+      iconBg: 'bg-purple-600 text-white',
+      class: 'Grade 8B',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Hard',
+      difficultyBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      questions: 20,
+      attempts: 287,
+      avgScore: '72%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 45,
+      passingScore: 70,
+      creator: 'Layla Karim',
+      createdDate: '14 Sep 2026',
+      description: 'Quadratic equations, polynomials, function graphing, and algebraic inequalities problem set.'
+    },
+    {
+      id: 'qz-3',
+      number: 3,
+      title: 'Science Quiz',
+      subtitle: 'Life and Living Things',
+      subject: 'Science',
+      subjectColor: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+      iconBg: 'bg-blue-500 text-white',
+      class: 'Grade 7A',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Medium',
+      difficultyBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      questions: 15,
+      attempts: 412,
+      avgScore: '80%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 25,
+      passingScore: 75,
+      creator: 'Dr. Ahmad Fauzi',
+      createdDate: '12 Sep 2026',
+      description: 'Cell biology, ecosystems, photosynthesis, and basic human body systems.'
+    },
+    {
+      id: 'qz-4',
+      number: 4,
+      title: 'English Quiz',
+      subtitle: 'Reading Comprehension',
+      subject: 'English',
+      subjectColor: 'bg-rose-50 text-rose-700 border-rose-200',
+      iconBg: 'bg-orange-500 text-white',
+      class: 'Grade 9C',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Easy',
+      difficultyBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      questions: 10,
+      attempts: 256,
+      avgScore: '91%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 20,
+      passingScore: 80,
+      creator: 'Omar Hassan',
+      createdDate: '10 Sep 2026',
+      description: 'Reading passages with inference, vocabulary in context, and main idea multiple-choice questions.'
+    },
+    {
+      id: 'qz-5',
+      number: 5,
+      title: 'Computer Science Quiz',
+      subtitle: 'Basic Programming',
+      subject: 'Computer Science',
+      subjectColor: 'bg-purple-50 text-purple-700 border-purple-200',
+      iconBg: 'bg-purple-700 text-white',
+      class: 'Grade 11B',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Medium',
+      difficultyBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      questions: 18,
+      attempts: 198,
+      avgScore: '76%',
+      status: 'Draft',
+      statusBadge: 'bg-gray-100 text-gray-700 border-gray-200',
+      durationMinutes: 35,
+      passingScore: 70,
+      creator: 'Ali Reza',
+      createdDate: '08 Sep 2026',
+      description: 'Algorithms, variables, conditional logic, loops, and basic Python syntax.'
+    },
+    {
+      id: 'qz-6',
+      number: 6,
+      title: 'Arabic Quiz',
+      subtitle: 'Vocabulary and Grammar',
+      subject: 'Arabic',
+      subjectColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      iconBg: 'bg-emerald-700 text-white',
+      class: 'Grade 8A',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Medium',
+      difficultyBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      questions: 12,
+      attempts: 203,
+      avgScore: '83%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 25,
+      passingScore: 75,
+      creator: 'Siti Aisyah',
+      createdDate: '06 Sep 2026',
+      description: 'Isim, fiil, harf recognition, mubtada khobar matching, and daily conversational vocabulary.'
+    },
+    {
+      id: 'qz-7',
+      number: 7,
+      title: 'Business Studies Quiz',
+      subtitle: 'Business Principles',
+      subject: 'Business',
+      subjectColor: 'bg-pink-50 text-pink-700 border-pink-200',
+      iconBg: 'bg-pink-500 text-white',
+      class: 'Grade 10B',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Hard',
+      difficultyBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      questions: 20,
+      attempts: 146,
+      avgScore: '68%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 40,
+      passingScore: 65,
+      creator: 'Zainab Ali',
+      createdDate: '04 Sep 2026',
+      description: 'Market dynamics, cash flow fundamentals, sharia business ethics, and financial analysis.'
+    },
+    {
+      id: 'qz-8',
+      number: 8,
+      title: 'Psychology Quiz',
+      subtitle: 'Human Behavior',
+      subject: 'Psychology',
+      subjectColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+      iconBg: 'bg-indigo-500 text-white',
+      class: 'Grade 12A',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Medium',
+      difficultyBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      questions: 15,
+      attempts: 177,
+      avgScore: '82%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 30,
+      passingScore: 75,
+      creator: 'Hassan Malik',
+      createdDate: '02 Sep 2026',
+      description: 'Cognitive development theories, memory retention, motivation, and behavioral psychology.'
+    },
+    {
+      id: 'qz-9',
+      number: 9,
+      title: 'History Quiz',
+      subtitle: 'World History Overview',
+      subject: 'History',
+      subjectColor: 'bg-sky-50 text-sky-700 border-sky-200',
+      iconBg: 'bg-blue-600 text-white',
+      class: 'Grade 9A',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Easy',
+      difficultyBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      questions: 10,
+      attempts: 222,
+      avgScore: '88%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 20,
+      passingScore: 75,
+      creator: 'Fatimah Nur',
+      createdDate: '31 Aug 2026',
+      description: 'Ancient civilizations, trade routes, the Islamic Golden Age, and early modern transitions.'
+    },
+    {
+      id: 'qz-10',
+      number: 10,
+      title: 'Environmental Quiz',
+      subtitle: 'Climate and Nature',
+      subject: 'Environmental',
+      subjectColor: 'bg-teal-50 text-teal-700 border-teal-200',
+      iconBg: 'bg-teal-500 text-white',
+      class: 'Grade 7B',
+      classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      difficulty: 'Medium',
+      difficultyBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      questions: 14,
+      attempts: 165,
+      avgScore: '77%',
+      status: 'Published',
+      statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      durationMinutes: 25,
+      passingScore: 70,
+      creator: 'Nadia Rahman',
+      createdDate: '28 Aug 2026',
+      description: 'Renewable energy, waste management, climate awareness, and environmental stewardship.'
+    }
+  ]);
+
+  const [quizTabFilter, setQuizTabFilter] = useState('all'); // 'all' | 'published' | 'draft' | 'archived'
+  const [quizSearchQuery, setQuizSearchQuery] = useState('');
+  const [quizSubjectFilter, setQuizSubjectFilter] = useState('All Subjects');
+  const [quizClassFilter, setQuizClassFilter] = useState('All Classes');
+  const [quizDifficultyFilter, setQuizDifficultyFilter] = useState('All Difficulty');
+  const [selectedQuizCheckboxes, setSelectedQuizCheckboxes] = useState([]);
+  const [isCreateQuizModalOpen, setIsCreateQuizModalOpen] = useState(false);
+  const [isImportQuizModalOpen, setIsImportQuizModalOpen] = useState(false);
+  const [isPreviewQuizModalOpen, setIsPreviewQuizModalOpen] = useState(false);
+  const [selectedQuizForPreview, setSelectedQuizForPreview] = useState(null);
+
+  // Form states for Create Quiz
+  const [newQuizTitle, setNewQuizTitle] = useState('');
+  const [newQuizSubtitle, setNewQuizSubtitle] = useState('');
+  const [newQuizSubject, setNewQuizSubject] = useState('Islamic Studies');
+  const [newQuizClass, setNewQuizClass] = useState('Grade 10A');
+  const [newQuizDifficulty, setNewQuizDifficulty] = useState('Medium');
+  const [newQuizQuestionsCount, setNewQuizQuestionsCount] = useState('15');
+  const [newQuizDuration, setNewQuizDuration] = useState('30');
+  const [newQuizPassingScore, setNewQuizPassingScore] = useState('75');
+  const [newQuizDescription, setNewQuizDescription] = useState('');
+
+  // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
   const [vipTeachersList, setVipTeachersList] = useState([
@@ -8486,6 +8744,797 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'quizzes' ? (
+            (() => {
+              const filteredQuizzes = quizzesList.filter(quiz => {
+                if (quizTabFilter === 'published' && quiz.status.toLowerCase() !== 'published') return false;
+                if (quizTabFilter === 'draft' && quiz.status.toLowerCase() !== 'draft') return false;
+                if (quizTabFilter === 'archived' && quiz.status.toLowerCase() !== 'archived') return false;
+                if (quizSubjectFilter !== 'All Subjects' && quiz.subject !== quizSubjectFilter) return false;
+                if (quizClassFilter !== 'All Classes' && quiz.class !== quizClassFilter) return false;
+                if (quizDifficultyFilter !== 'All Difficulty' && quiz.difficulty !== quizDifficultyFilter) return false;
+                if (quizSearchQuery.trim()) {
+                  const q = quizSearchQuery.toLowerCase();
+                  const matchTitle = quiz.title.toLowerCase().includes(q);
+                  const matchSub = quiz.subtitle.toLowerCase().includes(q);
+                  const matchSubject = quiz.subject.toLowerCase().includes(q);
+                  const matchClass = quiz.class.toLowerCase().includes(q);
+                  if (!matchTitle && !matchSub && !matchSubject && !matchClass) return false;
+                }
+                return true;
+              });
+
+              const isAllSelected = filteredQuizzes.length > 0 && selectedQuizCheckboxes.length === filteredQuizzes.length;
+              const toggleSelectAll = () => {
+                if (isAllSelected) {
+                  setSelectedQuizCheckboxes([]);
+                } else {
+                  setSelectedQuizCheckboxes(filteredQuizzes.map(q => q.id));
+                }
+              };
+              const toggleSelectQuiz = (id) => {
+                if (selectedQuizCheckboxes.includes(id)) {
+                  setSelectedQuizCheckboxes(selectedQuizCheckboxes.filter(item => item !== id));
+                } else {
+                  setSelectedQuizCheckboxes([...selectedQuizCheckboxes, id]);
+                }
+              };
+
+              const allCount = quizzesList.length;
+              const publishedCount = quizzesList.filter(q => q.status.toLowerCase() === 'published').length;
+              const draftCount = quizzesList.filter(q => q.status.toLowerCase() === 'draft').length;
+              const archivedCount = quizzesList.filter(q => q.status.toLowerCase() === 'archived').length;
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* 1. TOP QUIZZES HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shadow-xs shrink-0">
+                        <HelpCircle className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Quizzes</h1>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                          Create and manage quizzes, assessments, and question banks.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <button
+                        onClick={() => setIsImportQuizModalOpen(true)}
+                        className="px-3.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Import Quiz</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsCreateQuizModalOpen(true)}
+                        className="px-4 py-2 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>+ Create Quiz</span>
+                      </button>
+
+                      <button
+                        onClick={() => alert('Opsi Pengaturan Kuis & Bank Soal')}
+                        className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 transition-colors cursor-pointer shadow-xs"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. KPI METRICS (4 CARDS) */}
+                  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
+                    
+                    {/* Card 1: Total Quizzes */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Total Quizzes</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">142</div>
+                        <div className="text-[10px] font-bold text-purple-600 mt-1 flex items-center gap-1">
+                          <Plus className="w-2.5 h-2.5" />
+                          <span>12 this month</span>
+                        </div>
+                      </div>
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                        <HelpCircle className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    {/* Card 2: Total Attempts */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Total Attempts</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">8,642</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>+18% from last month</span>
+                        </div>
+                      </div>
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    {/* Card 3: Average Score */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Average Score</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">78%</div>
+                        <div className="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          <span>+3.2% improvement</span>
+                        </div>
+                      </div>
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Award className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    {/* Card 4: Pass Rate */}
+                    <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between min-w-0">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-bold text-gray-500">Pass Rate</div>
+                        <div className="text-2xl font-black text-gray-900 mt-0.5">92%</div>
+                        <button
+                          onClick={() => alert('Membuka Laporan Analitik Kuis & Tingkat Kelulusan Santri')}
+                          className="text-[10px] font-bold text-purple-700 hover:text-purple-800 mt-1 flex items-center gap-0.5 cursor-pointer"
+                        >
+                          <span>View Analytics</span>
+                          <ChevronRight className="w-2.5 h-2.5" />
+                        </button>
+                      </div>
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 3. STATUS TABS & FILTERS */}
+                  <div className="space-y-3">
+                    {/* Status Tabs */}
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 w-full min-w-0">
+                      <button
+                        onClick={() => setQuizTabFilter('all')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                          quizTabFilter === 'all'
+                            ? 'bg-purple-600 text-white shadow-xs'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>All Quizzes</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          quizTabFilter === 'all' ? 'bg-purple-800 text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {allCount}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setQuizTabFilter('published')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                          quizTabFilter === 'published'
+                            ? 'bg-purple-600 text-white shadow-xs'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>Published</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          quizTabFilter === 'published' ? 'bg-purple-800 text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {publishedCount}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setQuizTabFilter('draft')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                          quizTabFilter === 'draft'
+                            ? 'bg-purple-600 text-white shadow-xs'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>Draft</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          quizTabFilter === 'draft' ? 'bg-purple-800 text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {draftCount}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setQuizTabFilter('archived')}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                          quizTabFilter === 'archived'
+                            ? 'bg-purple-600 text-white shadow-xs'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>Archived</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          quizTabFilter === 'archived' ? 'bg-purple-800 text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {archivedCount}
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Search & Side-Scrollable Dropdowns */}
+                    <div className="space-y-2">
+                      <div className="relative w-full">
+                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          placeholder="Search quizzes by title, subject, or class..."
+                          value={quizSearchQuery}
+                          onChange={(e) => setQuizSearchQuery(e.target.value)}
+                          className="w-full bg-white border border-gray-200 rounded-xl pl-9 pr-4 py-2 text-xs font-medium text-gray-800 focus:outline-none focus:border-purple-500 shadow-xs"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 w-full min-w-0">
+                        <select
+                          value={quizSubjectFilter}
+                          onChange={(e) => setQuizSubjectFilter(e.target.value)}
+                          aria-label="Filter Mata Pelajaran Kuis"
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap focus:outline-none focus:border-purple-500 cursor-pointer"
+                        >
+                          <option>All Subjects</option>
+                          <option>Islamic Studies</option>
+                          <option>Mathematics</option>
+                          <option>Science</option>
+                          <option>English</option>
+                          <option>Computer Science</option>
+                          <option>Arabic</option>
+                          <option>Business</option>
+                          <option>Psychology</option>
+                          <option>History</option>
+                          <option>Environmental</option>
+                        </select>
+
+                        <select
+                          value={quizClassFilter}
+                          onChange={(e) => setQuizClassFilter(e.target.value)}
+                          aria-label="Filter Kelas Kuis"
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap focus:outline-none focus:border-purple-500 cursor-pointer"
+                        >
+                          <option>All Classes</option>
+                          <option>Grade 7A</option>
+                          <option>Grade 7B</option>
+                          <option>Grade 8A</option>
+                          <option>Grade 8B</option>
+                          <option>Grade 9A</option>
+                          <option>Grade 9C</option>
+                          <option>Grade 10A</option>
+                          <option>Grade 10B</option>
+                          <option>Grade 11B</option>
+                          <option>Grade 12A</option>
+                        </select>
+
+                        <select
+                          value={quizDifficultyFilter}
+                          onChange={(e) => setQuizDifficultyFilter(e.target.value)}
+                          aria-label="Filter Tingkat Kesulitan Kuis"
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap focus:outline-none focus:border-purple-500 cursor-pointer"
+                        >
+                          <option>All Difficulty</option>
+                          <option>Easy</option>
+                          <option>Medium</option>
+                          <option>Hard</option>
+                        </select>
+
+                        <button
+                          onClick={() => {
+                            setQuizSubjectFilter('All Subjects');
+                            setQuizClassFilter('All Classes');
+                            setQuizDifficultyFilter('All Difficulty');
+                            setQuizSearchQuery('');
+                          }}
+                          className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-xs font-bold text-gray-700 shadow-xs shrink-0 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Filter className="w-3 h-3 text-gray-500" />
+                          <span>Reset Filters</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. MAIN CONTENT GRID (8 COLS TABLE + 4 COLS SIDEBAR) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    
+                    {/* LEFT COLUMN: QUIZZES DATA TABLE (8 COLS) */}
+                    <div className="lg:col-span-8 space-y-4 min-w-0">
+                      
+                      {/* Table Card */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
+                        
+                        {/* Table Header Bar if checkboxes selected */}
+                        {selectedQuizCheckboxes.length > 0 && (
+                          <div className="bg-purple-50 px-4 py-2.5 border-b border-purple-100 flex items-center justify-between text-xs">
+                            <span className="font-bold text-purple-900">
+                              {selectedQuizCheckboxes.length} kuis dipilih
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  alert(`Mempublikasikan ${selectedQuizCheckboxes.length} kuis terpilih.`);
+                                  setQuizzesList(prev => prev.map(q => selectedQuizCheckboxes.includes(q.id) ? { ...q, status: 'Published', statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200' } : q));
+                                  setSelectedQuizCheckboxes([]);
+                                }}
+                                className="px-2.5 py-1 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-colors cursor-pointer"
+                              >
+                                Terbitkan
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Hapus ${selectedQuizCheckboxes.length} kuis terpilih?`)) {
+                                    setQuizzesList(prev => prev.filter(q => !selectedQuizCheckboxes.includes(q.id)));
+                                    setSelectedQuizCheckboxes([]);
+                                  }
+                                }}
+                                className="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 font-bold rounded-lg hover:bg-rose-100 transition-colors cursor-pointer"
+                              >
+                                Hapus
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Scrollable Table View */}
+                        <div className="overflow-x-auto w-full min-w-0">
+                          <table className="w-full text-left text-xs text-gray-600 min-w-[860px] whitespace-nowrap">
+                            <thead className="bg-[#F8FAFC] text-[11px] font-black text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              <tr>
+                                <th className="px-4 py-3.5 w-12 text-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={isAllSelected}
+                                    onChange={toggleSelectAll}
+                                    aria-label="Pilih Semua Kuis"
+                                    className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
+                                  />
+                                </th>
+                                <th className="px-2 py-3.5 w-8 font-extrabold text-gray-400">#</th>
+                                <th className="px-4 py-3.5 font-extrabold text-gray-700">Quiz Title</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Subject</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Class</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700">Difficulty</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700 text-center">Questions</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700 text-center">Attempts</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700 text-center">Avg Score</th>
+                                <th className="px-3 py-3.5 font-extrabold text-gray-700 text-center">Status</th>
+                                <th className="px-4 py-3.5 font-extrabold text-gray-700 text-right">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                              {filteredQuizzes.length === 0 ? (
+                                <tr>
+                                  <td colSpan={11} className="py-12 text-center text-gray-400">
+                                    <HelpCircle className="w-10 h-10 mx-auto text-gray-300 mb-2" />
+                                    <div className="font-bold text-sm text-gray-600">Tidak ada kuis ditemukan</div>
+                                    <div className="text-xs text-gray-400 mt-1">Coba sesuaikan filter pencarian atau buat kuis baru</div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                filteredQuizzes.map((quiz) => (
+                                  <tr
+                                    key={quiz.id}
+                                    className={`hover:bg-purple-50/30 transition-colors ${
+                                      selectedQuizCheckboxes.includes(quiz.id) ? 'bg-purple-50/40' : ''
+                                    }`}
+                                  >
+                                    <td className="px-4 py-3.5 text-center">
+                                      <input
+                                        type="checkbox"
+                                        checked={selectedQuizCheckboxes.includes(quiz.id)}
+                                        onChange={() => toggleSelectQuiz(quiz.id)}
+                                        aria-label={`Pilih Kuis ${quiz.title}`}
+                                        className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
+                                      />
+                                    </td>
+                                    <td className="px-2 py-3.5 font-bold text-gray-400">{quiz.number}</td>
+                                    
+                                    {/* Quiz Title with Icon & Subtitle */}
+                                    <td className="px-4 py-3.5">
+                                      <div className="flex items-center gap-3">
+                                        <div className={`w-8 h-8 rounded-xl ${quiz.iconBg} flex items-center justify-center shrink-0 shadow-xs font-black text-xs`}>
+                                          <HelpCircle className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                          <div className="font-extrabold text-gray-900 hover:text-purple-700 transition-colors cursor-pointer"
+                                            onClick={() => {
+                                              setSelectedQuizForPreview(quiz);
+                                              setIsPreviewQuizModalOpen(true);
+                                            }}
+                                          >
+                                            {quiz.title}
+                                          </div>
+                                          <div className="text-[11px] text-gray-400 font-medium">
+                                            {quiz.subtitle}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+
+                                    {/* Subject */}
+                                    <td className="px-3 py-3.5">
+                                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-extrabold border ${quiz.subjectColor}`}>
+                                        {quiz.subject}
+                                      </span>
+                                    </td>
+
+                                    {/* Class */}
+                                    <td className="px-3 py-3.5">
+                                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-extrabold border ${quiz.classBadge}`}>
+                                        {quiz.class}
+                                      </span>
+                                    </td>
+
+                                    {/* Difficulty */}
+                                    <td className="px-3 py-3.5">
+                                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-extrabold border ${quiz.difficultyBadge}`}>
+                                        {quiz.difficulty}
+                                      </span>
+                                    </td>
+
+                                    {/* Questions */}
+                                    <td className="px-3 py-3.5 text-center font-bold text-gray-700">
+                                      {quiz.questions}
+                                    </td>
+
+                                    {/* Attempts */}
+                                    <td className="px-3 py-3.5 text-center font-bold text-gray-700">
+                                      {quiz.attempts}
+                                    </td>
+
+                                    {/* Avg Score */}
+                                    <td className="px-3 py-3.5 text-center">
+                                      <span className="font-black text-gray-900">
+                                        {quiz.avgScore}
+                                      </span>
+                                    </td>
+
+                                    {/* Status */}
+                                    <td className="px-3 py-3.5 text-center">
+                                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${quiz.statusBadge}`}>
+                                        {quiz.status}
+                                      </span>
+                                    </td>
+
+                                    {/* Actions */}
+                                    <td className="px-4 py-3.5 text-right">
+                                      <div className="flex items-center justify-end gap-1">
+                                        <button
+                                          onClick={() => {
+                                            setSelectedQuizForPreview(quiz);
+                                            setIsPreviewQuizModalOpen(true);
+                                          }}
+                                          title="Preview Kuis"
+                                          className="p-1.5 rounded-lg hover:bg-purple-50 text-gray-400 hover:text-purple-600 transition-colors cursor-pointer"
+                                        >
+                                          <Eye className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => alert(`Edit Kuis: ${quiz.title}`)}
+                                          title="Edit Kuis"
+                                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                                        >
+                                          <Edit className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          onClick={() => {
+                                            if (confirm(`Hapus kuis ${quiz.title}?`)) {
+                                              setQuizzesList(prev => prev.filter(q => q.id !== quiz.id));
+                                            }
+                                          }}
+                                          title="Hapus Kuis"
+                                          className="p-1.5 rounded-lg hover:bg-rose-50 text-gray-400 hover:text-rose-600 transition-colors cursor-pointer"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Pagination Footer */}
+                        <div className="px-4 py-3 bg-[#F8FAFC] border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500">
+                          <div>
+                            Showing <span className="font-bold text-gray-800">1</span> to <span className="font-bold text-gray-800">{filteredQuizzes.length}</span> of <span className="font-bold text-gray-800">142</span> quizzes
+                          </div>
+                          
+                          <div className="flex items-center gap-1.5 self-center sm:self-auto">
+                            <button
+                              onClick={() => alert('Halaman Sebelumnya')}
+                              className="px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs shadow-xs transition-colors cursor-pointer"
+                            >
+                              Previous
+                            </button>
+                            <button className="px-2.5 py-1.5 rounded-lg bg-purple-600 text-white font-black text-xs shadow-xs">
+                              1
+                            </button>
+                            <button className="px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs shadow-xs transition-colors cursor-pointer">
+                              2
+                            </button>
+                            <button className="px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs shadow-xs transition-colors cursor-pointer">
+                              3
+                            </button>
+                            <span className="px-1 text-gray-400">...</span>
+                            <button className="px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs shadow-xs transition-colors cursor-pointer">
+                              15
+                            </button>
+                            <button
+                              onClick={() => alert('Halaman Selanjutnya')}
+                              className="px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-bold text-xs shadow-xs transition-colors cursor-pointer"
+                            >
+                              Next
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* RIGHT COLUMN: ANALYTICS & SIDEBAR (4 COLS) */}
+                    <aside className="lg:col-span-4 space-y-4 min-w-0">
+                      
+                      {/* Card 1: Quiz Performance (Donut Chart & Distribution) */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Quiz Performance</h3>
+                          <select 
+                            aria-label="Periode Kinerja Kuis"
+                            className="bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 text-[11px] font-bold text-gray-600 focus:outline-none cursor-pointer"
+                          >
+                            <option>This Term</option>
+                            <option>Last Term</option>
+                            <option>This Year</option>
+                          </select>
+                        </div>
+
+                        {/* Donut Chart Visual */}
+                        <div className="flex items-center justify-center py-2">
+                          <div className="relative w-36 h-36 flex items-center justify-center">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                              {/* Background ring */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#F1F5F9" strokeWidth="12" />
+                              {/* Segment 1: 90-100% (35%) -> Emerald */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#10B981" strokeWidth="12" strokeDasharray="83.5 155.5" strokeDashoffset="0" />
+                              {/* Segment 2: 75-89% (42%) -> Blue */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#3B82F6" strokeWidth="12" strokeDasharray="100.2 138.8" strokeDashoffset="-83.5" />
+                              {/* Segment 3: 60-74% (15%) -> Amber */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#F59E0B" strokeWidth="12" strokeDasharray="35.8 203.2" strokeDashoffset="-183.7" />
+                              {/* Segment 4: <60% (8%) -> Rose */}
+                              <circle cx="50" cy="50" r="38" fill="none" stroke="#EF4444" strokeWidth="12" strokeDasharray="19.1 219.9" strokeDashoffset="-219.5" />
+                            </svg>
+                            <div className="absolute flex flex-col items-center justify-center text-center">
+                              <span className="text-xl font-black text-gray-900">78%</span>
+                              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Avg. Score</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Legend */}
+                        <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-gray-100">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                            <span className="text-gray-600 font-medium text-[11px]">90-100%: <strong className="text-gray-900">35%</strong></span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0"></span>
+                            <span className="text-gray-600 font-medium text-[11px]">75-89%: <strong className="text-gray-900">42%</strong></span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                            <span className="text-gray-600 font-medium text-[11px]">60-74%: <strong className="text-gray-900">15%</strong></span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                            <span className="text-gray-600 font-medium text-[11px]">&lt;60%: <strong className="text-gray-900">8%</strong></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card 2: Popular Subjects */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Popular Subjects</h3>
+                          <span className="text-[11px] font-bold text-gray-400">By Quizzes</span>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {/* Subject 1 */}
+                          <div>
+                            <div className="flex justify-between font-bold text-gray-700 text-xs mb-1">
+                              <span>Islamic Studies</span>
+                              <span className="text-gray-500 font-semibold">38 quizzes</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-2">
+                              <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '85%' }}></div>
+                            </div>
+                          </div>
+
+                          {/* Subject 2 */}
+                          <div>
+                            <div className="flex justify-between font-bold text-gray-700 text-xs mb-1">
+                              <span>Mathematics</span>
+                              <span className="text-gray-500 font-semibold">28 quizzes</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-2">
+                              <div className="bg-purple-500 h-2 rounded-full" style={{ width: '65%' }}></div>
+                            </div>
+                          </div>
+
+                          {/* Subject 3 */}
+                          <div>
+                            <div className="flex justify-between font-bold text-gray-700 text-xs mb-1">
+                              <span>Science</span>
+                              <span className="text-gray-500 font-semibold">24 quizzes</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-2">
+                              <div className="bg-cyan-500 h-2 rounded-full" style={{ width: '55%' }}></div>
+                            </div>
+                          </div>
+
+                          {/* Subject 4 */}
+                          <div>
+                            <div className="flex justify-between font-bold text-gray-700 text-xs mb-1">
+                              <span>English</span>
+                              <span className="text-gray-500 font-semibold">20 quizzes</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-2">
+                              <div className="bg-rose-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                            </div>
+                          </div>
+
+                          {/* Subject 5 */}
+                          <div>
+                            <div className="flex justify-between font-bold text-gray-700 text-xs mb-1">
+                              <span>Computer Science</span>
+                              <span className="text-gray-500 font-semibold">18 quizzes</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-2">
+                              <div className="bg-indigo-500 h-2 rounded-full" style={{ width: '38%' }}></div>
+                            </div>
+                          </div>
+
+                          {/* Subject 6 */}
+                          <div>
+                            <div className="flex justify-between font-bold text-gray-700 text-xs mb-1">
+                              <span>Arabic</span>
+                              <span className="text-gray-500 font-semibold">14 quizzes</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-2">
+                              <div className="bg-teal-500 h-2 rounded-full" style={{ width: '30%' }}></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card 3: Recent Quiz Activity */}
+                      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Recent Quiz Activity</h3>
+                          <button
+                            onClick={() => alert('Melihat seluruh log aktivitas kuis santri')}
+                            className="text-xs font-bold text-purple-700 hover:text-purple-800 flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          
+                          <div className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] flex items-center justify-between gap-2.5">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <img
+                                src="/images/student_aisha.jpg"
+                                alt="Aisha Rahman"
+                                className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200"
+                                onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                              />
+                              <div className="min-w-0 flex-1">
+                                <div className="font-extrabold text-gray-900 text-xs truncate">
+                                  Aisha Rahman
+                                </div>
+                                <div className="text-[10px] text-gray-400 font-medium truncate">
+                                  Completed Islamic History Quiz • 10m ago
+                                </div>
+                              </div>
+                            </div>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                              95%
+                            </span>
+                          </div>
+
+                          <div className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] flex items-center justify-between gap-2.5">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <img
+                                src="/images/student_omar.jpg"
+                                alt="Omar Hassan"
+                                className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200"
+                                onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                              />
+                              <div className="min-w-0 flex-1">
+                                <div className="font-extrabold text-gray-900 text-xs truncate">
+                                  Omar Hassan
+                                </div>
+                                <div className="text-[10px] text-gray-400 font-medium truncate">
+                                  Completed Mathematics Quiz • 25m ago
+                                </div>
+                              </div>
+                            </div>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                              88%
+                            </span>
+                          </div>
+
+                          <div className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] flex items-center justify-between gap-2.5">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <img
+                                src="/images/student_fatimah.jpg"
+                                alt="Fatimah Ali"
+                                className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200"
+                                onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                              />
+                              <div className="min-w-0 flex-1">
+                                <div className="font-extrabold text-gray-900 text-xs truncate">
+                                  Fatimah Ali
+                                </div>
+                                <div className="text-[10px] text-gray-400 font-medium truncate">
+                                  Created Web Dev Quiz (Draft) • 1h ago
+                                </div>
+                              </div>
+                            </div>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-gray-100 text-gray-600 border border-gray-200 shrink-0">
+                              Draft
+                            </span>
+                          </div>
+
+                          <div className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] flex items-center justify-between gap-2.5">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <img
+                                src="/images/student_maryam.jpg"
+                                alt="Maryam Abdullah"
+                                className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200"
+                                onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                              />
+                              <div className="min-w-0 flex-1">
+                                <div className="font-extrabold text-gray-900 text-xs truncate">
+                                  Maryam Abdullah
+                                </div>
+                                <div className="text-[10px] text-gray-400 font-medium truncate">
+                                  Completed Arabic Quiz • 2h ago
+                                </div>
+                              </div>
+                            </div>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                              92%
+                            </span>
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -11398,6 +12447,363 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     <Check className="w-3.5 h-3.5" />
                     <span>Simpan Nilai</span>
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Create Quiz */}
+          {isCreateQuizModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-black">
+                      <HelpCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Buat Kuis Baru</h3>
+                      <p className="text-xs text-gray-500">Rancang kuis asesmen dan bank soal untuk santri</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsCreateQuizModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul Kuis</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Islamic History Quiz"
+                      value={newQuizTitle}
+                      onChange={(e) => setNewQuizTitle(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Subjudul / Topik Pembahasan</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: The life of Prophet Muhammad"
+                      value={newQuizSubtitle}
+                      onChange={(e) => setNewQuizSubtitle(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-500"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Mata Pelajaran</label>
+                      <select
+                        value={newQuizSubject}
+                        onChange={(e) => setNewQuizSubject(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-500"
+                      >
+                        <option>Islamic Studies</option>
+                        <option>Mathematics</option>
+                        <option>Science</option>
+                        <option>English</option>
+                        <option>Computer Science</option>
+                        <option>Arabic</option>
+                        <option>Business</option>
+                        <option>Psychology</option>
+                        <option>History</option>
+                        <option>Environmental</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Kelas Target</label>
+                      <select
+                        value={newQuizClass}
+                        onChange={(e) => setNewQuizClass(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-500"
+                      >
+                        <option>Grade 7A</option>
+                        <option>Grade 7B</option>
+                        <option>Grade 8A</option>
+                        <option>Grade 8B</option>
+                        <option>Grade 9A</option>
+                        <option>Grade 9C</option>
+                        <option>Grade 10A</option>
+                        <option>Grade 10B</option>
+                        <option>Grade 11B</option>
+                        <option>Grade 12A</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Tingkat Kesulitan</label>
+                      <select
+                        value={newQuizDifficulty}
+                        onChange={(e) => setNewQuizDifficulty(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-500"
+                      >
+                        <option>Easy</option>
+                        <option>Medium</option>
+                        <option>Hard</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Jumlah Soal</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="100"
+                        value={newQuizQuestionsCount}
+                        onChange={(e) => setNewQuizQuestionsCount(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Waktu (Menit)</label>
+                      <input
+                        type="number"
+                        min="5"
+                        max="180"
+                        value={newQuizDuration}
+                        onChange={(e) => setNewQuizDuration(e.target.value)}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Petunjuk / Deskripsi Kuis</label>
+                    <textarea
+                      rows={2}
+                      placeholder="Tuliskan petunjuk pengerjaan kuis bagi santri..."
+                      value={newQuizDescription}
+                      onChange={(e) => setNewQuizDescription(e.target.value)}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsCreateQuizModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (!newQuizTitle.trim()) {
+                        alert('Silakan masukkan judul kuis!');
+                        return;
+                      }
+                      const diffColors = {
+                        Easy: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        Medium: 'bg-amber-50 text-amber-700 border-amber-200',
+                        Hard: 'bg-rose-50 text-rose-700 border-rose-200'
+                      };
+                      const subjColors = {
+                        'Islamic Studies': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        'Mathematics': 'bg-purple-50 text-purple-700 border-purple-200',
+                        'Science': 'bg-cyan-50 text-cyan-700 border-cyan-200',
+                        'English': 'bg-rose-50 text-rose-700 border-rose-200',
+                        'Computer Science': 'bg-purple-50 text-purple-700 border-purple-200',
+                        'Arabic': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        'Business': 'bg-pink-50 text-pink-700 border-pink-200',
+                        'Psychology': 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                        'History': 'bg-sky-50 text-sky-700 border-sky-200',
+                        'Environmental': 'bg-teal-50 text-teal-700 border-teal-200'
+                      };
+                      const newQ = {
+                        id: `qz-${Date.now()}`,
+                        number: quizzesList.length + 1,
+                        title: newQuizTitle,
+                        subtitle: newQuizSubtitle || 'Topik Asesmen Santri',
+                        subject: newQuizSubject,
+                        subjectColor: subjColors[newQuizSubject] || 'bg-purple-50 text-purple-700 border-purple-200',
+                        iconBg: 'bg-purple-600 text-white',
+                        class: newQuizClass,
+                        classBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+                        difficulty: newQuizDifficulty,
+                        difficultyBadge: diffColors[newQuizDifficulty] || diffColors.Medium,
+                        questions: parseInt(newQuizQuestionsCount) || 15,
+                        attempts: 0,
+                        avgScore: '-',
+                        status: 'Published',
+                        statusBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        durationMinutes: parseInt(newQuizDuration) || 30,
+                        passingScore: parseInt(newQuizPassingScore) || 75,
+                        creator: 'Admin Madrasah',
+                        createdDate: 'Hari Ini',
+                        description: newQuizDescription || 'Kuis asesmen baru telah diterbitkan.'
+                      };
+                      setQuizzesList(prev => [newQ, ...prev]);
+                      setIsCreateQuizModalOpen(false);
+                      setNewQuizTitle('');
+                      setNewQuizSubtitle('');
+                      setNewQuizDescription('');
+                      alert('Kuis baru berhasil diterbitkan dan siap diakses oleh santri!');
+                    }}
+                    className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Terbitkan Kuis</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Import Quiz */}
+          {isImportQuizModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                      <Download className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Import Kuis & Bank Soal</h3>
+                      <p className="text-xs text-gray-500">Unggah kumpulan soal kuis secara masal (.XLSX / .CSV)</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsImportQuizModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div className="border-2 border-dashed border-gray-200 hover:border-purple-500 transition-colors rounded-2xl p-6 text-center bg-gray-50/60 cursor-pointer flex flex-col items-center justify-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-purple-100/60 text-purple-600 flex items-center justify-center">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div className="font-extrabold text-gray-800">Klik untuk upload file spreadsheet kuis</div>
+                    <div className="text-[11px] text-gray-400">Mendukung format .XLSX, .XLS, atau .CSV (Maks. 10MB)</div>
+                  </div>
+
+                  <div className="p-3 bg-purple-50 border border-purple-100 rounded-xl text-purple-900 text-[11px] space-y-1">
+                    <div className="font-black">Format Kolom Spreadsheet:</div>
+                    <div>Judul, Topik, Mata Pelajaran, Kelas, Kesulitan, Jumlah Soal, Durasi Menit, Kunci Jawaban</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsImportQuizModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsImportQuizModalOpen(false);
+                      alert('Proses import bank soal berhasil! 5 kuis baru telah ditambahkan.');
+                    }}
+                    className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Mulai Import</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal Preview Quiz */}
+          {isPreviewQuizModalOpen && selectedQuizForPreview && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-10 h-10 rounded-xl ${selectedQuizForPreview.iconBg} flex items-center justify-center font-black shadow-xs`}>
+                      <HelpCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">{selectedQuizForPreview.title}</h3>
+                      <p className="text-xs text-gray-500">{selectedQuizForPreview.subtitle}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsPreviewQuizModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  {/* Quick Info Badges */}
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-100">
+                      <div className="text-[10px] text-gray-400 font-bold">Mata Pelajaran</div>
+                      <div className="font-black text-gray-800 mt-0.5">{selectedQuizForPreview.subject}</div>
+                    </div>
+                    <div className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-100">
+                      <div className="text-[10px] text-gray-400 font-bold">Kelas Target</div>
+                      <div className="font-black text-gray-800 mt-0.5">{selectedQuizForPreview.class}</div>
+                    </div>
+                    <div className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-100">
+                      <div className="text-[10px] text-gray-400 font-bold">Tingkat Kesulitan</div>
+                      <div className="font-black text-gray-800 mt-0.5">{selectedQuizForPreview.difficulty}</div>
+                    </div>
+                  </div>
+
+                  {/* Metrics */}
+                  <div className="grid grid-cols-4 gap-2 text-center">
+                    <div className="p-2 bg-purple-50/60 rounded-xl border border-purple-100">
+                      <div className="text-[10px] text-purple-700 font-bold">Soal</div>
+                      <div className="font-black text-purple-900 text-sm mt-0.5">{selectedQuizForPreview.questions}</div>
+                    </div>
+                    <div className="p-2 bg-blue-50/60 rounded-xl border border-blue-100">
+                      <div className="text-[10px] text-blue-700 font-bold">Durasi</div>
+                      <div className="font-black text-blue-900 text-sm mt-0.5">{selectedQuizForPreview.durationMinutes || 30}m</div>
+                    </div>
+                    <div className="p-2 bg-emerald-50/60 rounded-xl border border-emerald-100">
+                      <div className="text-[10px] text-emerald-700 font-bold">Passing</div>
+                      <div className="font-black text-emerald-900 text-sm mt-0.5">{selectedQuizForPreview.passingScore || 75}%</div>
+                    </div>
+                    <div className="p-2 bg-amber-50/60 rounded-xl border border-amber-100">
+                      <div className="text-[10px] text-amber-700 font-bold">Peserta</div>
+                      <div className="font-black text-amber-900 text-sm mt-0.5">{selectedQuizForPreview.attempts}</div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 space-y-1">
+                    <div className="font-black text-gray-800">Deskripsi & Cakupan Materi:</div>
+                    <div className="text-gray-600 leading-relaxed">{selectedQuizForPreview.description}</div>
+                  </div>
+
+                  {/* Sample Question Preview */}
+                  <div className="p-3.5 bg-purple-50/40 border border-purple-100 rounded-xl space-y-2.5">
+                    <div className="font-black text-purple-900 flex items-center justify-between">
+                      <span>Pratinjau Soal #1</span>
+                      <span className="text-[10px] font-bold text-purple-600">Pilihan Ganda</span>
+                    </div>
+                    <div className="text-gray-800 font-bold">
+                      Berapakah jumlah rukun iman dalam ajaran Islam yang wajib diyakini setiap muslim?
+                    </div>
+                    <div className="space-y-1.5 pl-2 text-[11px] text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-white border border-gray-200 flex items-center justify-center font-bold text-gray-500">A</span>
+                        <span>4 Rukun</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-white border border-gray-200 flex items-center justify-center font-bold text-gray-500">B</span>
+                        <span>5 Rukun</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">C</span>
+                        <span className="font-bold text-purple-900">6 Rukun (Jawaban Benar)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-white border border-gray-200 flex items-center justify-center font-bold text-gray-500">D</span>
+                        <span>7 Rukun</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div className="text-[11px] text-gray-400">
+                    Dibuat oleh: <strong className="text-gray-700">{selectedQuizForPreview.creator}</strong> ({selectedQuizForPreview.createdDate})
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setIsPreviewQuizModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                    <button
+                      onClick={() => {
+                        setIsPreviewQuizModalOpen(false);
+                        alert(`Memulai mode simulasi pengerjaan kuis: ${selectedQuizForPreview.title}`);
+                      }}
+                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer flex items-center gap-1"
+                    >
+                      <span>Mulai Simulasi</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
