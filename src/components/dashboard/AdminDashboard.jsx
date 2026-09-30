@@ -106,6 +106,17 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
 
+  // =========================================================
+  // FACULTY & TEACHERS ROOM STATES
+  // =========================================================
+  const [teacherSearchQuery, setTeacherSearchQuery] = useState('');
+  const [teacherDepartmentFilter, setTeacherDepartmentFilter] = useState('All Departments');
+  const [teacherStatusFilter, setTeacherStatusFilter] = useState('All Status');
+  const [selectedFacultyId, setSelectedFacultyId] = useState('tea-1');
+  const [selectedFacultyDetailTab, setSelectedFacultyDetailTab] = useState('overview'); // 'overview' | 'classes' | 'performance'
+  const [selectedFacultyCheckboxes, setSelectedFacultyCheckboxes] = useState([]);
+  const [isAddFacultyModalOpen, setIsAddFacultyModalOpen] = useState(false);
+
   const adminName = user?.name || 'Admin';
   const adminRole = 'Super Admin';
   const adminEmail = user?.email || 'admin@ilmhub.com';
@@ -115,7 +126,8 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const adminNavItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'users', label: 'Users', icon: Users },
-    { id: 'teachers', label: 'Teachers', icon: GraduationCap, badge: '24' },
+    { id: 'vip-teachers', label: 'VIP Teachers', icon: Award, badge: '24' },
+    { id: 'teachers', label: 'Teachers', icon: GraduationCap },
     { id: 'classes', label: 'Classes', icon: BookOpen },
     { id: 'live', label: 'Live Classrooms', icon: Video },
     { id: 'schedules', label: 'Schedules', icon: Calendar },
@@ -561,6 +573,148 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
       setSelectedUserCheckboxes([]);
     } else {
       setSelectedUserCheckboxes(adminUsersList.map(u => u.id));
+    }
+  };
+
+  // =========================================================
+  // FACULTY & REGULAR TEACHERS DATASET
+  // =========================================================
+  const [facultyTeachersList, setFacultyTeachersList] = useState([
+    {
+      id: 'tea-1',
+      name: 'Dr. Farhan Kamil, Lc., M.A.',
+      email: 'farhan.kamil@ilmhub.com',
+      avatar: '/images/tutor_ahmed.jpg',
+      phone: '+62 811-2345-6789',
+      department: 'Bahasa Arab & Sastra',
+      specialty: 'Nahwu, Sharaf & Balaghah',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '15 Jan 2025',
+      classesCount: 12,
+      totalStudents: 840,
+      rating: 4.9,
+      reviewsCount: 312,
+      hourlyRate: 'Rp 350.000 / sesi',
+      monthlyRevenue: 'Rp 24.500.000',
+      university: 'Universitas Al-Azhar Kairo (S1 & S2)',
+      bio: 'Dosen Bahasa Arab dengan pengalaman lebih dari 12 tahun mengajar nahwu-shorof aplikatif untuk membaca kitab kuning.',
+      activeCourses: [
+        { id: 'c-1', name: 'Nahwu Jurumiyyah Aplikatif', students: 342, schedule: 'Senin & Kamis, 20.00 WIB' },
+        { id: 'c-2', name: 'Kupas Tuntas Alfiyyah Ibn Malik', students: 280, schedule: 'Sabtu, 09.00 WIB' },
+        { id: 'c-3', name: 'Balaghah & Keindahan Sastra Arab', students: 218, schedule: 'Ahad, 16.00 WIB' }
+      ]
+    },
+    {
+      id: 'tea-2',
+      name: 'Dr. Layla Ahmad, Ph.D.',
+      email: 'layla.ahmad@ilmhub.com',
+      avatar: '/images/student_fatimah.jpg',
+      phone: '+62 812-3456-7890',
+      department: 'Ulumul Quran & Hadits',
+      specialty: 'Tafsir Tematik & Musthalah Hadits',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '10 Feb 2025',
+      classesCount: 8,
+      totalStudents: 620,
+      rating: 4.8,
+      reviewsCount: 245,
+      hourlyRate: 'Rp 300.000 / sesi',
+      monthlyRevenue: 'Rp 18.600.000',
+      university: 'Islamic University of Madinah',
+      bio: 'Doktor bidang studi Islam memfokuskan pengajaran pada kajian tafsir ayat ahkam dan metodologi takhrij hadits.',
+      activeCourses: [
+        { id: 'c-4', name: 'Tafsir Ayat-Ayat Ahkam', students: 254, schedule: 'Selasa, 19.30 WIB' },
+        { id: 'c-5', name: 'Metodologi Takhrij Hadits Digital', students: 366, schedule: 'Jumat, 20.00 WIB' }
+      ]
+    },
+    {
+      id: 'tea-3',
+      name: 'Ustadz Ahmad Fauzi, Lc.',
+      email: 'ahmad.fauzi@ilmhub.com',
+      avatar: '/images/tutor_ahmed.jpg',
+      phone: '+62 813-9876-5432',
+      department: 'Kaidah Fiqh & Muamalah',
+      specialty: 'Fiqh Muamalah Kontemporer',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '1 Mar 2025',
+      classesCount: 10,
+      totalStudents: 1248,
+      rating: 5.0,
+      reviewsCount: 489,
+      hourlyRate: 'Rp 400.000 / sesi',
+      monthlyRevenue: 'Rp 32.800.000',
+      university: 'LIPIA Jakarta (Syariah)',
+      bio: 'Praktisi dan pengajar fikih muamalah kontemporer, konsultan perbankan syariah dan zakat corporate.',
+      activeCourses: [
+        { id: 'c-6', name: 'Fiqh Transaksi Modern & Crypto', students: 490, schedule: 'Rabu, 20.00 WIB' },
+        { id: 'c-7', name: 'Qawaid Fiqhiyyah Finansial', students: 758, schedule: 'Ahad, 08.00 WIB' }
+      ]
+    },
+    {
+      id: 'tea-4',
+      name: 'Ustadzah Fatimah Ali, S.Pd.I.',
+      email: 'fatimah.ali@ilmhub.com',
+      avatar: '/images/student_aisha.jpg',
+      phone: '+62 821-4567-8901',
+      department: 'Tahsin & Qiraat',
+      specialty: 'Tahsin Bersanad Jazariyyah',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '15 Mar 2025',
+      classesCount: 6,
+      totalStudents: 450,
+      rating: 4.9,
+      reviewsCount: 198,
+      hourlyRate: 'Rp 250.000 / sesi',
+      monthlyRevenue: 'Rp 14.200.000',
+      university: 'Institut Ilmu Al-Quran (IIQ)',
+      bio: 'Pemegang sanad Matn Al-Jazariyyah dan Tuhfatul Athfal, membimbing ratusan santriwati dalam tajwid presisi.',
+      activeCourses: [
+        { id: 'c-8', name: 'Daurah Matn Jazariyyah Bersanad', students: 230, schedule: 'Sabtu, 14.00 WIB' },
+        { id: 'c-9', name: 'Tahsin Talaqqi Khusus Akhwat', students: 220, schedule: 'Senin, 16.00 WIB' }
+      ]
+    },
+    {
+      id: 'tea-5',
+      name: 'Ustadz Khalid Mansoor, M.E.I.',
+      email: 'khalid.mansoor@ilmhub.com',
+      avatar: '/images/student_ali.jpg',
+      phone: '+62 857-1234-9876',
+      department: 'Ekonomi Syariah',
+      specialty: 'Islamic Wealth Management',
+      status: 'On Leave',
+      statusType: 'pending',
+      joinDate: '5 Apr 2025',
+      classesCount: 4,
+      totalStudents: 280,
+      rating: 4.7,
+      reviewsCount: 112,
+      hourlyRate: 'Rp 300.000 / sesi',
+      monthlyRevenue: 'Rp 9.500.000',
+      university: 'UIN Sunan Kalijaga',
+      bio: 'Konsultan perencanaan keuangan keluarga muslim berbasis syariah dan filantropi Islam.',
+      activeCourses: [
+        { id: 'c-10', name: 'Manajemen Waris & Wasiat Syar\'i', students: 280, schedule: 'Kamis, 19.30 WIB' }
+      ]
+    }
+  ]);
+
+  const currentSelectedFaculty = facultyTeachersList.find(f => f.id === selectedFacultyId) || facultyTeachersList[0];
+
+  const toggleSelectFacultyCheckbox = (id) => {
+    setSelectedFacultyCheckboxes(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllFaculty = () => {
+    if (selectedFacultyCheckboxes.length === facultyTeachersList.length) {
+      setSelectedFacultyCheckboxes([]);
+    } else {
+      setSelectedFacultyCheckboxes(facultyTeachersList.map(f => f.id));
     }
   };
 
@@ -1162,14 +1316,14 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
           {/* ========================================================= */}
           {/* VIEW 0: VIP TEACHERS & APPROVALS ROOM (Pendaftaran Guru VIP) */}
           {/* ========================================================= */}
-          {activeNav === 'teachers' ? (
+          {activeNav === 'vip-teachers' ? (
             <div className="space-y-5 animate-fadeIn">
               
               {/* 1. TOP VIP TEACHERS HEADER */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
                   <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                    <GraduationCap className="w-5 h-5" />
+                    <Award className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap">
@@ -1450,9 +1604,9 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   {/* VIP TEACHERS CRM TABLE */}
                   <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
                     <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse text-xs">
+                      <table className="w-full text-left border-collapse text-xs min-w-[980px]">
                         <thead>
-                          <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider">
+                          <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
                             <th className="p-3.5 pl-4 w-10">
                               <input
                                 type="checkbox"
@@ -1461,12 +1615,12 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                 className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
                               />
                             </th>
-                            <th className="py-3.5 px-3">Guru / Ustadz</th>
-                            <th className="py-3.5 px-3">Spesialisasi & Sanad</th>
-                            <th className="py-3.5 px-3">Tarif VIP Diajukan</th>
-                            <th className="py-3.5 px-3">Berkas & Bukti</th>
-                            <th className="py-3.5 px-3">Status Pengajuan</th>
-                            <th className="py-3.5 px-3 text-right pr-4">Aksi Cepat</th>
+                            <th className="py-3.5 px-3 min-w-[200px]">Guru / Ustadz</th>
+                            <th className="py-3.5 px-3 min-w-[200px]">Spesialisasi & Sanad</th>
+                            <th className="py-3.5 px-3 min-w-[190px]">Tarif VIP Diajukan</th>
+                            <th className="py-3.5 px-3 min-w-[180px]">Berkas & Bukti</th>
+                            <th className="py-3.5 px-3 min-w-[140px]">Status Pengajuan</th>
+                            <th className="py-3.5 px-3 text-right pr-4 min-w-[120px]">Aksi Cepat</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -1537,11 +1691,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                       </div>
                                       <div className="min-w-0">
                                         <div className="flex items-center gap-1.5">
-                                          <span className="font-extrabold text-gray-900 group-hover:text-[#114B44] transition-colors truncate">
+                                          <span className="font-extrabold text-gray-900 group-hover:text-[#114B44] transition-colors truncate whitespace-nowrap">
                                             {teacher.name}
                                           </span>
                                         </div>
-                                        <div className="text-[11px] text-gray-500 truncate flex items-center gap-1.5 mt-0.5">
+                                        <div className="text-[11px] text-gray-500 truncate flex items-center gap-1.5 mt-0.5 whitespace-nowrap">
                                           <span>{teacher.location}</span>
                                           <span>•</span>
                                           <span className="text-gray-400 font-mono text-[10px]">{teacher.phone}</span>
@@ -1552,33 +1706,33 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                                   {/* Specialty & Sanad Column */}
                                   <td className="py-3 px-3">
-                                    <div className="space-y-1 max-w-[200px]">
-                                      <span className="inline-block px-2 py-0.5 rounded-md font-bold text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                    <div className="space-y-1">
+                                      <span className="inline-block px-2 py-0.5 rounded-md font-bold text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 whitespace-nowrap">
                                         {teacher.specialty}
                                       </span>
-                                      <p className="text-[11px] text-gray-600 truncate font-medium">
+                                      <p className="text-[11px] text-gray-600 truncate font-medium max-w-[200px]" title={teacher.credentials}>
                                         {teacher.credentials}
                                       </p>
                                     </div>
                                   </td>
 
                                   {/* Proposed VIP Pricing */}
-                                  <td className="py-3 px-3">
-                                    <div className="space-y-0.5 text-[11px]">
-                                      <div className="font-extrabold text-gray-900 flex items-center gap-1">
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="space-y-1 text-[11px]">
+                                      <div className="font-extrabold text-gray-900 flex items-center gap-1.5 whitespace-nowrap">
                                         <span className="text-gray-400 font-normal">Halakah:</span>
-                                        <span className="text-emerald-700">{teacher.pricingTiers.halakah.price}</span>
+                                        <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 font-mono font-bold">{teacher.pricingTiers.halakah.price}</span>
                                       </div>
-                                      <div className="text-gray-600 font-semibold flex items-center gap-1">
+                                      <div className="text-gray-700 font-semibold flex items-center gap-1.5 whitespace-nowrap">
                                         <span className="text-gray-400 font-normal">1-on-1:</span>
-                                        <span>{teacher.pricingTiers.mentorship.price}</span>
+                                        <span className="text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100 font-mono font-bold">{teacher.pricingTiers.mentorship.price}</span>
                                       </div>
                                     </div>
                                   </td>
 
                                   {/* Documents & Sanad Badge */}
-                                  <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
-                                    <div className="flex flex-wrap gap-1 items-center max-w-[170px]">
+                                  <td className="py-3 px-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex flex-wrap gap-1.5 items-center max-w-[200px]">
                                       {teacher.documents.map((doc) => (
                                         <button
                                           key={doc.id}
@@ -1586,50 +1740,50 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                                             setActiveDocPreview({ ...doc, teacherName: teacher.name });
                                             setIsDocViewerModalOpen(true);
                                           }}
-                                          className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer ${
+                                          className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer whitespace-nowrap ${
                                             doc.isVerified
                                               ? 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
                                               : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
                                           }`}
                                           title={`Lihat ${doc.name}`}
                                         >
-                                          <FileCheck className="w-3 h-3 text-blue-600" />
-                                          <span className="truncate max-w-[90px]">{doc.name}</span>
+                                          <FileCheck className="w-3 h-3 text-blue-600 shrink-0" />
+                                          <span className="truncate max-w-[85px]">{doc.name}</span>
                                         </button>
                                       ))}
                                     </div>
                                   </td>
 
                                   {/* Status Column */}
-                                  <td className="py-3 px-3">
+                                  <td className="py-3 px-3 whitespace-nowrap">
                                     {teacher.status === 'Approved VIP' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                                        <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
                                         <span>VIP Aktif</span>
                                       </span>
                                     )}
                                     {teacher.status === 'Sanad Verified' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200">
-                                        <ShieldCheck className="w-3 h-3 text-blue-600" />
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
+                                        <ShieldCheck className="w-3 h-3 text-blue-600 shrink-0" />
                                         <span>Sanad Valid</span>
                                       </span>
                                     )}
                                     {teacher.status === 'Pending Review' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
-                                        <Clock className="w-3 h-3 text-amber-600" />
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
+                                        <Clock className="w-3 h-3 text-amber-600 shrink-0" />
                                         <span>Menunggu Review</span>
                                       </span>
                                     )}
                                     {teacher.status === 'Needs Revision' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200">
-                                        <AlertCircle className="w-3 h-3 text-rose-600" />
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
+                                        <AlertCircle className="w-3 h-3 text-rose-600 shrink-0" />
                                         <span>Butuh Revisi</span>
                                       </span>
                                     )}
                                   </td>
 
                                   {/* Quick Actions Column */}
-                                  <td className="py-3 px-3 text-right pr-4" onClick={(e) => e.stopPropagation()}>
+                                  <td className="py-3 px-3 text-right pr-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                     <div className="flex items-center justify-end gap-1">
                                       {teacher.status !== 'Approved VIP' && (
                                         <button
@@ -2019,6 +2173,539 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     >
                       <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
                       <span>Minta Revisi Berkas / Sanad</span>
+                    </button>
+                  </div>
+
+                </aside>
+
+              </div>
+
+            </div>
+          ) : activeNav === 'teachers' ? (
+            <div className="space-y-5 animate-fadeIn">
+              
+              {/* 1. TOP TEACHERS HEADER */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-[#114B44] text-white flex items-center justify-center shadow-xs shrink-0">
+                    <GraduationCap className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Teachers & Faculty</h1>
+                      <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300/80 flex items-center gap-1 shrink-0">
+                        <BookOpen className="w-3 h-3 text-emerald-700" />
+                        <span>Faculty Management</span>
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                      Kelola daftar seluruh pengajar aktif, departemen keilmuan, kelas yang diampu, serta rating evaluasi santri.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Action Buttons */}
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <button
+                    onClick={() => setIsAddFacultyModalOpen(true)}
+                    className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                  >
+                    <UserPlus className="w-4 h-4 shrink-0" />
+                    <span>+ Tambah Pengajar</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsExportModalOpen(true)}
+                    className="h-10 px-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <Download className="w-4 h-4 text-gray-500" />
+                    <span>Ekspor Data Guru</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. TOP 4 KPI CARDS FOR TEACHERS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* Total Faculty */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                        <GraduationCap className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Total Pengajar</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">1,248</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>+8% dari bulan lalu</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-emerald-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-emerald-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-emerald-300 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-emerald-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Active Teaching Faculty */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Pengajar Aktif</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">1,120</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>90% tingkat keaktifan</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-blue-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-blue-200 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-blue-300 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-blue-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Classes Taught */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                        <BookOpen className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Total Kelas Dibuka</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">248 Kelas</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>+18% semester ini</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-purple-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-purple-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-purple-300 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-purple-500 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Avg Satisfaction Rating */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                        <Award className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Rata-Rata Rating</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">4.9 / 5.0</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-amber-600 mt-0.5">
+                        <Sparkles className="w-3 h-3" />
+                        <span>1,350+ Ulasan Santri</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-amber-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-amber-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-amber-300 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-amber-500 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* 3. MAIN SECTION: Two-Column Layout (70% Table, 30% Right Dossier) */}
+              <div className="flex flex-col xl:flex-row gap-5 items-start">
+                
+                {/* LEFT MAIN AREA: SEARCH & FILTER + TABLE */}
+                <div className="flex-1 w-full min-w-0 space-y-4">
+                  
+                  {/* Search and Filters */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3">
+                    <div className="flex flex-col md:flex-row gap-2.5 items-center justify-between">
+                      <div className="relative w-full md:flex-1">
+                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          value={teacherSearchQuery}
+                          onChange={(e) => setTeacherSearchQuery(e.target.value)}
+                          placeholder="Cari nama pengajar, universitas, keahlian, email..."
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all shadow-2xs"
+                        />
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        <select
+                          value={teacherDepartmentFilter}
+                          onChange={(e) => setTeacherDepartmentFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Departments">Semua Departemen</option>
+                          <option value="Bahasa Arab & Sastra">Bahasa Arab & Sastra</option>
+                          <option value="Ulumul Quran & Hadits">Ulumul Quran & Hadits</option>
+                          <option value="Kaidah Fiqh & Muamalah">Kaidah Fiqh & Muamalah</option>
+                          <option value="Tahsin & Qiraat">Tahsin & Qiraat</option>
+                          <option value="Ekonomi Syariah">Ekonomi Syariah</option>
+                        </select>
+
+                        <select
+                          value={teacherStatusFilter}
+                          onChange={(e) => setTeacherStatusFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Status">Semua Status</option>
+                          <option value="Active">Aktif Mengajar</option>
+                          <option value="On Leave">Cuti / Non-Aktif</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* TEACHERS CRM TABLE */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs min-w-[900px]">
+                        <thead>
+                          <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
+                            <th className="p-3.5 pl-4 w-10">
+                              <input
+                                type="checkbox"
+                                checked={selectedFacultyCheckboxes.length === facultyTeachersList.length && facultyTeachersList.length > 0}
+                                onChange={toggleSelectAllFaculty}
+                                className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                              />
+                            </th>
+                            <th className="py-3.5 px-3 min-w-[200px]">Pengajar / Ustadz</th>
+                            <th className="py-3.5 px-3 min-w-[190px]">Departemen & Keahlian</th>
+                            <th className="py-3.5 px-3 min-w-[150px]">Kelas & Santri</th>
+                            <th className="py-3.5 px-3 min-w-[130px]">Rating & Ulasan</th>
+                            <th className="py-3.5 px-3 min-w-[120px]">Status</th>
+                            <th className="py-3.5 px-3 text-right pr-4 min-w-[110px]">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {facultyTeachersList
+                            .filter((f) => {
+                              if (teacherDepartmentFilter !== 'All Departments') return f.department === teacherDepartmentFilter;
+                              return true;
+                            })
+                            .filter((f) => {
+                              if (teacherStatusFilter !== 'All Status') return f.status === teacherStatusFilter;
+                              return true;
+                            })
+                            .filter((f) => {
+                              if (!teacherSearchQuery) return true;
+                              const q = teacherSearchQuery.toLowerCase();
+                              return (
+                                f.name.toLowerCase().includes(q) ||
+                                f.email.toLowerCase().includes(q) ||
+                                f.department.toLowerCase().includes(q) ||
+                                f.specialty.toLowerCase().includes(q) ||
+                                f.university.toLowerCase().includes(q)
+                              );
+                            })
+                            .map((teacher) => {
+                              const isSelected = selectedFacultyId === teacher.id;
+                              const isChecked = selectedFacultyCheckboxes.includes(teacher.id);
+
+                              return (
+                                <tr
+                                  key={teacher.id}
+                                  onClick={() => setSelectedFacultyId(teacher.id)}
+                                  className={`transition-colors cursor-pointer group ${
+                                    isSelected
+                                      ? 'bg-emerald-50/50'
+                                      : 'hover:bg-gray-50/80'
+                                  }`}
+                                >
+                                  {/* Checkbox */}
+                                  <td className="p-3.5 pl-4" onClick={(e) => e.stopPropagation()}>
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={() => toggleSelectFacultyCheckbox(teacher.id)}
+                                      className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Teacher Column */}
+                                  <td className="py-3 px-3">
+                                    <div className="flex items-center gap-3">
+                                      <img
+                                        src={teacher.avatar}
+                                        alt={teacher.name}
+                                        className="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0"
+                                        onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                                      />
+                                      <div className="min-w-0">
+                                        <div className="font-extrabold text-gray-900 group-hover:text-[#114B44] transition-colors truncate whitespace-nowrap">
+                                          {teacher.name}
+                                        </div>
+                                        <div className="text-[11px] text-gray-500 truncate flex items-center gap-1.5 mt-0.5 whitespace-nowrap">
+                                          <span>{teacher.email}</span>
+                                          <span>•</span>
+                                          <span className="text-gray-400 font-mono text-[10px]">{teacher.phone}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Department & Specialty */}
+                                  <td className="py-3 px-3">
+                                    <div className="space-y-1">
+                                      <span className="inline-block px-2 py-0.5 rounded-md font-bold text-[10px] bg-blue-50 text-blue-800 border border-blue-200 whitespace-nowrap">
+                                        {teacher.department}
+                                      </span>
+                                      <p className="text-[11px] text-gray-600 truncate font-medium">
+                                        {teacher.specialty}
+                                      </p>
+                                    </div>
+                                  </td>
+
+                                  {/* Classes & Students */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="space-y-0.5 text-[11px]">
+                                      <div className="font-bold text-gray-900 flex items-center gap-1">
+                                        <BookOpen className="w-3.5 h-3.5 text-[#114B44]" />
+                                        <span>{teacher.classesCount} Kelas Diampu</span>
+                                      </div>
+                                      <div className="text-gray-500 flex items-center gap-1">
+                                        <Users className="w-3.5 h-3.5 text-gray-400" />
+                                        <span>{teacher.totalStudents} Total Santri</span>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Rating & Reviews */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-extrabold text-amber-600 text-xs">★ {teacher.rating}</span>
+                                      <span className="text-gray-400 text-[10px]">({teacher.reviewsCount} ulasan)</span>
+                                    </div>
+                                  </td>
+
+                                  {/* Status */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    {teacher.status === 'Active' ? (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                        <span>Aktif Mengajar</span>
+                                      </span>
+                                    ) : (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
+                                        <Clock className="w-3 h-3 text-amber-600" />
+                                        <span>Cuti Sementara</span>
+                                      </span>
+                                    )}
+                                  </td>
+
+                                  {/* Quick Actions */}
+                                  <td className="py-3 px-3 text-right pr-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex items-center justify-end gap-1.5">
+                                      <button
+                                        onClick={() => {
+                                          window.open(`https://wa.me/${teacher.phone.replace(/[^0-9]/g, '')}?text=Assalamu'alaikum%20${encodeURIComponent(teacher.name)},%20kami%20dari%20Akademik%20IlmuHub...`, '_blank');
+                                        }}
+                                        className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                        title="Chat WhatsApp"
+                                      >
+                                        <Phone className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => alert(`Membuka profil pengajar ${teacher.name}`)}
+                                        className="p-1.5 hover:bg-gray-100 text-gray-600 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                        title="Lihat Detail"
+                                      >
+                                        <Edit3 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="p-3.5 border-t border-gray-100 bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500 font-semibold">
+                      <div className="flex items-center gap-1">
+                        <span>Menampilkan</span>
+                        <span className="font-extrabold text-gray-900">1-{facultyTeachersList.length}</span>
+                        <span>dari</span>
+                        <span className="font-extrabold text-gray-900">1,248 Guru Terdaftar</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold cursor-pointer">&lt;</button>
+                        <button className="px-3 py-1 rounded-lg bg-[#114B44] text-white font-bold cursor-pointer">1</button>
+                        <button className="px-3 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold cursor-pointer">2</button>
+                        <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold cursor-pointer">&gt;</button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT TEACHER DOSSIER PANEL */}
+                <aside className="w-full xl:w-96 shrink-0 bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-5 animate-fadeIn">
+                  
+                  {/* Selected Teacher Header Profile */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={currentSelectedFaculty.avatar}
+                        alt={currentSelectedFaculty.name}
+                        className="w-13 h-13 rounded-2xl object-cover border-2 border-[#114B44]/20 shadow-xs shrink-0"
+                        onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                      />
+                      <div>
+                        <h2 className="font-extrabold text-sm text-gray-900 leading-tight">
+                          {currentSelectedFaculty.name}
+                        </h2>
+                        <p className="text-gray-500 text-xs truncate max-w-[170px]">{currentSelectedFaculty.email}</p>
+                        <div className="mt-1 flex items-center gap-1.5">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            {currentSelectedFaculty.status}
+                          </span>
+                          <span className="text-[10px] font-bold text-amber-600">
+                            ★ {currentSelectedFaculty.rating}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Detail Sub-Tabs */}
+                  <div className="flex items-center justify-between border-b border-gray-100 text-xs font-bold text-gray-500">
+                    {[
+                      { id: 'overview', label: 'Ringkasan & Bio' },
+                      { id: 'classes', label: 'Kelas Aktif' },
+                      { id: 'performance', label: 'Finansial & Honor' },
+                    ].map((tab) => {
+                      const isActive = selectedFacultyDetailTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setSelectedFacultyDetailTab(tab.id)}
+                          className={`pb-2.5 transition-colors cursor-pointer relative ${
+                            isActive ? 'text-[#114B44] font-extrabold' : 'hover:text-gray-900'
+                          }`}
+                        >
+                          <span>{tab.label}</span>
+                          {isActive && (
+                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#114B44] rounded-full"></span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* TAB 1: OVERVIEW */}
+                  {selectedFacultyDetailTab === 'overview' && (
+                    <div className="space-y-3.5 text-xs animate-fadeIn">
+                      <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1">
+                        <span className="text-[10px] font-bold uppercase text-gray-400 block">Biografi Pengajar</span>
+                        <p className="text-gray-700 leading-relaxed text-[11px] font-medium">
+                          {currentSelectedFaculty.bio}
+                        </p>
+                      </div>
+
+                      <div className="space-y-2 p-3 rounded-xl border border-gray-200 bg-[#F8FAFC]">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Almamater:</span>
+                          <span className="font-extrabold text-gray-900 truncate max-w-[180px]">{currentSelectedFaculty.university}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Bergabung Sejak:</span>
+                          <span className="font-semibold text-gray-800">{currentSelectedFaculty.joinDate}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Total Santri:</span>
+                          <span className="font-bold text-emerald-700">{currentSelectedFaculty.totalStudents} Santri</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 2: ACTIVE CLASSES */}
+                  {selectedFacultyDetailTab === 'classes' && (
+                    <div className="space-y-2.5 text-xs animate-fadeIn">
+                      <span className="font-extrabold text-gray-800 block text-[11px]">Daftar Kelas Semester Ini:</span>
+                      {currentSelectedFaculty.activeCourses.map((course) => (
+                        <div key={course.id} className="p-2.5 rounded-xl bg-[#F8FAFC] border border-gray-200 space-y-1">
+                          <div className="font-bold text-gray-900 flex items-center justify-between">
+                            <span>{course.name}</span>
+                            <span className="text-[10px] font-black px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
+                              {course.students} Santri
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-gray-400" />
+                            <span>{course.schedule}</span>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* TAB 3: PERFORMANCE & FINANCIAL */}
+                  {selectedFacultyDetailTab === 'performance' && (
+                    <div className="space-y-3 text-xs animate-fadeIn">
+                      <div className="p-3 rounded-xl border border-gray-200 bg-[#F8FAFC] space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Tarif Sesi Standar:</span>
+                          <span className="font-extrabold text-gray-900">{currentSelectedFaculty.hourlyRate}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Estimasi Honor Bln Ini:</span>
+                          <span className="font-bold text-emerald-700">{currentSelectedFaculty.monthlyRevenue}</span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-200 text-[11px] space-y-1">
+                        <span className="font-black text-blue-950 block">Status Pembayaran Honor:</span>
+                        <p className="text-blue-900">
+                          Honor terbayar otomatis setiap tanggal 1 lewat transfer bank / Mayar.id.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons Footer */}
+                  <div className="space-y-2 pt-3 border-t border-gray-100">
+                    <button
+                      onClick={() => {
+                        window.open(`https://wa.me/${currentSelectedFaculty.phone.replace(/[^0-9]/g, '')}?text=Assalamu'alaikum%20${encodeURIComponent(currentSelectedFaculty.name)},%20kami%20dari%20Akademik%20IlmuHub...`, '_blank');
+                      }}
+                      className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
+                    >
+                      <Phone className="w-4 h-4 text-emerald-300" />
+                      <span>Hubungi Pengajar via WhatsApp</span>
+                    </button>
+
+                    <button
+                      onClick={() => alert(`Buka formulir penugasan kelas baru untuk ${currentSelectedFaculty.name}`)}
+                      className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                    >
+                      + Tugaskan Kelas Baru
                     </button>
                   </div>
 
