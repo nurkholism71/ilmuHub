@@ -57,7 +57,10 @@ import {
   Sliders,
   CheckSquare,
   X,
-  CreditCard
+  CreditCard,
+  Edit2,
+  User,
+  MoreHorizontal
 } from 'lucide-react';
 
 export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, onLogout, onSwitchRole }) {
