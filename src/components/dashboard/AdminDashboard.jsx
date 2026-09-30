@@ -6249,28 +6249,26 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
               {/* 2. TOP 4 KPI CARDS FOR LIVE ROOMS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
                 
                 {/* Live Now */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100/80">
-                        <Radio className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500 truncate">Live Now</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100/80">
+                      <Radio className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex items-end gap-1 h-8 shrink-0">
+                    <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                       <div className="w-1.5 bg-rose-100 rounded-full h-3"></div>
                       <div className="w-1.5 bg-rose-200 rounded-full h-5"></div>
                       <div className="w-1.5 bg-rose-300 rounded-full h-4"></div>
                       <div className="w-1.5 bg-rose-400 rounded-full h-6"></div>
-                      <div className="w-1.5 bg-rose-500 rounded-full h-8"></div>
+                      <div className="w-1.5 bg-rose-500 rounded-full h-7 sm:h-8"></div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">12</div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 mt-2">
+                  <div className="mt-3 min-w-0">
+                    <span className="text-xs font-bold text-gray-500 block truncate">Live Now</span>
+                    <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-1">12</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 mt-2 min-w-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-rose-600 shrink-0"></span>
                       <span className="truncate">3 more than usual</span>
                     </div>
@@ -6278,25 +6276,23 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
 
                 {/* Total Sessions (Today) */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/80">
-                        <Users className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500 truncate">Total Sessions (Today)</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/80">
+                      <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex items-end gap-1 h-8 shrink-0">
+                    <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                       <div className="w-1.5 bg-blue-100 rounded-full h-3"></div>
                       <div className="w-1.5 bg-blue-200 rounded-full h-5"></div>
                       <div className="w-1.5 bg-blue-300 rounded-full h-4"></div>
                       <div className="w-1.5 bg-blue-400 rounded-full h-6"></div>
-                      <div className="w-1.5 bg-blue-600 rounded-full h-8"></div>
+                      <div className="w-1.5 bg-blue-600 rounded-full h-7 sm:h-8"></div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">48</div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                  <div className="mt-3 min-w-0">
+                    <span className="text-xs font-bold text-gray-500 block truncate">Total Sessions (Today)</span>
+                    <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-1">48</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2 min-w-0">
                       <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">↑ 20% from yesterday</span>
                     </div>
@@ -6304,24 +6300,22 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
 
                 {/* Total Attendees */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100/80">
-                        <Users className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500 truncate">Total Attendees</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100/80">
+                      <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex items-end gap-1 h-8 shrink-0">
+                    <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                       <div className="w-1.5 bg-purple-100 rounded-full h-2.5"></div>
                       <div className="w-1.5 bg-purple-200 rounded-full h-4.5"></div>
                       <div className="w-1.5 bg-purple-300 rounded-full h-6"></div>
-                      <div className="w-1.5 bg-purple-500 rounded-full h-8"></div>
+                      <div className="w-1.5 bg-purple-500 rounded-full h-7 sm:h-8"></div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">2,856</div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                  <div className="mt-3 min-w-0">
+                    <span className="text-xs font-bold text-gray-500 block truncate">Total Attendees</span>
+                    <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-1">2,856</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2 min-w-0">
                       <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">↑ 28% from yesterday</span>
                     </div>
@@ -6329,24 +6323,22 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
 
                 {/* Average Duration */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/80">
-                        <Clock className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500 truncate">Average Duration</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/80">
+                      <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex items-end gap-1 h-8 shrink-0">
+                    <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                       <div className="w-1.5 bg-emerald-100 rounded-full h-3"></div>
                       <div className="w-1.5 bg-emerald-200 rounded-full h-5"></div>
                       <div className="w-1.5 bg-emerald-300 rounded-full h-6"></div>
-                      <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
+                      <div className="w-1.5 bg-emerald-500 rounded-full h-7 sm:h-8"></div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">52 min</div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                  <div className="mt-3 min-w-0">
+                    <span className="text-xs font-bold text-gray-500 block truncate">Average Duration</span>
+                    <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-1">52 min</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2 min-w-0">
                       <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">↑ 12% from last week</span>
                     </div>
@@ -6356,7 +6348,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
               {/* 3. STATUS FILTER PILLS */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold min-w-0">
                 <button
                   onClick={() => setLiveTabFilter('all')}
                   className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
@@ -6409,14 +6401,14 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
               {/* 4. MAIN 2-COLUMN VIEW: LEFT TABLE + RIGHT DOSSIER */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start min-w-0">
                 
                 {/* 4A. LEFT 8-COLS (SEARCH & TABLE) */}
-                <div className="lg:col-span-8 space-y-4">
+                <div className="lg:col-span-8 space-y-4 min-w-0">
                   
                   {/* Search & Filters Bar */}
-                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3">
-                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3 min-w-0">
+                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 min-w-0">
                       
                       {/* Search Input */}
                       <div className="relative flex-1 min-w-0">
@@ -6430,14 +6422,14 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                         />
                       </div>
 
-                      {/* Filter Dropdowns */}
-                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                      {/* Filter Dropdowns (Horizontal Side Scrollable) */}
+                      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 shrink-0 min-w-0">
                         {/* Subject */}
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <select
                             value={liveSubjectFilter}
                             onChange={(e) => setLiveSubjectFilter(e.target.value)}
-                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer whitespace-nowrap"
                           >
                             <option value="All Subjects">All Subjects</option>
                             <option value="Islamic Studies">Islamic Studies</option>
@@ -6455,11 +6447,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                         </div>
 
                         {/* Teachers */}
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <select
                             value={liveTeacherFilter}
                             onChange={(e) => setLiveTeacherFilter(e.target.value)}
-                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer whitespace-nowrap"
                           >
                             <option value="All Teachers">All Teachers</option>
                             <option value="Siti Aisyah">Siti Aisyah</option>
@@ -6477,11 +6469,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                         </div>
 
                         {/* Status */}
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <select
                             value={liveStatusFilter}
                             onChange={(e) => setLiveStatusFilter(e.target.value)}
-                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer whitespace-nowrap"
                           >
                             <option value="All Status">All Status</option>
                             <option value="Live">Live</option>
@@ -6499,10 +6491,10 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                             setLiveTeacherFilter('All Teachers');
                             setLiveStatusFilter('All Status');
                           }}
-                          className="py-2 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-gray-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer shrink-0"
+                          className="py-2 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-gray-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer shrink-0 whitespace-nowrap"
                           title="Reset Filters"
                         >
-                          <Sliders className="w-3.5 h-3.5 text-gray-500" />
+                          <Sliders className="w-3.5 h-3.5 text-gray-500 shrink-0" />
                           <span>Filters</span>
                         </button>
                       </div>
@@ -7031,27 +7023,25 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
               {/* 2. TOP 4 KPI CARDS FOR SCHEDULES */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4 min-w-0">
                 
                 {/* Total Classes */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0 border border-blue-100/80">
-                        <Calendar className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500 truncate">Total Classes</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0 border border-blue-100/80">
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex items-end gap-1 h-8 shrink-0">
+                    <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                       <div className="w-1.5 bg-blue-100 rounded-full h-2.5"></div>
                       <div className="w-1.5 bg-blue-200 rounded-full h-4.5"></div>
                       <div className="w-1.5 bg-blue-300 rounded-full h-6"></div>
-                      <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
+                      <div className="w-1.5 bg-blue-500 rounded-full h-7 sm:h-8"></div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">248</div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                  <div className="mt-3 min-w-0">
+                    <span className="text-xs font-bold text-gray-500 block truncate">Total Classes</span>
+                    <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-1">248</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2 min-w-0">
                       <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">↑ 18% from last month</span>
                     </div>
@@ -7059,24 +7049,22 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
 
                 {/* Scheduled Sessions */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100/80">
-                        <Users className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500 truncate">Scheduled Sessions</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100/80">
+                      <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex items-end gap-1 h-8 shrink-0">
+                    <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                       <div className="w-1.5 bg-emerald-100 rounded-full h-2.5"></div>
                       <div className="w-1.5 bg-emerald-200 rounded-full h-4.5"></div>
                       <div className="w-1.5 bg-emerald-300 rounded-full h-6"></div>
-                      <div className="w-1.5 bg-emerald-500 rounded-full h-8"></div>
+                      <div className="w-1.5 bg-emerald-500 rounded-full h-7 sm:h-8"></div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">1,248</div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                  <div className="mt-3 min-w-0">
+                    <span className="text-xs font-bold text-gray-500 block truncate">Scheduled Sessions</span>
+                    <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-1">1,248</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2 min-w-0">
                       <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">↑ 24% from last month</span>
                     </div>
@@ -7084,24 +7072,22 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
 
                 {/* Active Teachers */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 border border-purple-100/80">
-                        <UserCheck className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500 truncate">Active Teachers</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 border border-purple-100/80">
+                      <UserCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex items-end gap-1 h-8 shrink-0">
+                    <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                       <div className="w-1.5 bg-purple-100 rounded-full h-2.5"></div>
                       <div className="w-1.5 bg-purple-200 rounded-full h-4.5"></div>
                       <div className="w-1.5 bg-purple-300 rounded-full h-6"></div>
-                      <div className="w-1.5 bg-purple-500 rounded-full h-8"></div>
+                      <div className="w-1.5 bg-purple-500 rounded-full h-7 sm:h-8"></div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">186</div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                  <div className="mt-3 min-w-0">
+                    <span className="text-xs font-bold text-gray-500 block truncate">Active Teachers</span>
+                    <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-1">186</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2 min-w-0">
                       <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">↑ 12% from last month</span>
                     </div>
@@ -7109,24 +7095,22 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
 
                 {/* Total Students */}
-                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow">
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex flex-col justify-between hover:shadow-xs transition-shadow min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-100/80">
-                        <Users className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500 truncate">Total Students</span>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-100/80">
+                      <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="flex items-end gap-1 h-8 shrink-0">
+                    <div className="flex items-end gap-1 h-7 sm:h-8 shrink-0">
                       <div className="w-1.5 bg-amber-100 rounded-full h-2.5"></div>
                       <div className="w-1.5 bg-amber-200 rounded-full h-4.5"></div>
                       <div className="w-1.5 bg-amber-300 rounded-full h-6"></div>
-                      <div className="w-1.5 bg-amber-500 rounded-full h-8"></div>
+                      <div className="w-1.5 bg-amber-500 rounded-full h-7 sm:h-8"></div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <div className="text-2xl font-black text-gray-900 tracking-tight leading-none">9,856</div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2">
+                  <div className="mt-3 min-w-0">
+                    <span className="text-xs font-bold text-gray-500 block truncate">Total Students</span>
+                    <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mt-1">9,856</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mt-2 min-w-0">
                       <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">↑ 20% from last month</span>
                     </div>
@@ -7136,13 +7120,13 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
               {/* 3. VIEW MODE BUTTONS & DATE NAVIGATOR (matching media_1790735024374.png) */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
                 
                 {/* Left View Mode Tabs */}
-                <div className="flex items-center gap-1 bg-white p-1 rounded-2xl border border-gray-200 shadow-2xs">
+                <div className="flex items-center gap-1 bg-white p-1 rounded-2xl border border-gray-200 shadow-2xs overflow-x-auto no-scrollbar shrink-0 min-w-0">
                   <button
                     onClick={() => setScheduleViewMode('calendar')}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                       scheduleViewMode === 'calendar'
                         ? 'bg-[#114B44] text-white shadow-xs'
                         : 'text-gray-600 hover:bg-gray-100'
@@ -7152,7 +7136,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   </button>
                   <button
                     onClick={() => setScheduleViewMode('list')}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                       scheduleViewMode === 'list'
                         ? 'bg-[#114B44] text-white shadow-xs'
                         : 'text-gray-600 hover:bg-gray-100'
@@ -7162,7 +7146,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   </button>
                   <button
                     onClick={() => setScheduleViewMode('teacher')}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                       scheduleViewMode === 'teacher'
                         ? 'bg-[#114B44] text-white shadow-xs'
                         : 'text-gray-600 hover:bg-gray-100'
@@ -7172,7 +7156,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   </button>
                   <button
                     onClick={() => setScheduleViewMode('room')}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                       scheduleViewMode === 'room'
                         ? 'bg-[#114B44] text-white shadow-xs'
                         : 'text-gray-600 hover:bg-gray-100'
@@ -7183,7 +7167,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
 
                 {/* Right Date Navigator */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <div className="flex items-center bg-white border border-gray-200 rounded-2xl p-1 shadow-2xs">
                     <button
                       onClick={() => alert('Previous week')}
@@ -7204,7 +7188,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                   <button
                     onClick={() => alert('Navigated to Today: 23 Sep 2026')}
-                    className="h-10 px-4 rounded-2xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold shadow-2xs cursor-pointer"
+                    className="h-10 px-4 rounded-2xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold shadow-2xs cursor-pointer whitespace-nowrap"
                   >
                     Today
                   </button>
@@ -7213,14 +7197,14 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
               {/* 4. MAIN 2-COLUMN VIEW: TIMETABLE CANVAS + RIGHT SIDEBAR */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start min-w-0">
                 
                 {/* 4A. LEFT 8-COLS (FILTERS & TIMETABLE CALENDAR GRID) */}
-                <div className="lg:col-span-8 space-y-4">
+                <div className="lg:col-span-8 space-y-4 min-w-0">
                   
                   {/* Filter Dropdowns Bar */}
-                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3">
-                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3 min-w-0">
+                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 min-w-0">
                       
                       {/* Search by class, teacher */}
                       <div className="relative flex-1 min-w-0">
@@ -7234,14 +7218,14 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                         />
                       </div>
 
-                      {/* Dropdowns */}
-                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                      {/* Dropdowns (Smooth horizontal scrollable with shrink-0 items) */}
+                      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 shrink-0 min-w-0">
                         {/* Class Filter */}
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <select
                             value={scheduleClassFilter}
                             onChange={(e) => setScheduleClassFilter(e.target.value)}
-                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer whitespace-nowrap"
                           >
                             <option value="All Classes">All Classes</option>
                             <option value="Quran Recitation">Quran Recitation</option>
@@ -7254,11 +7238,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                         </div>
 
                         {/* Teacher Filter */}
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <select
                             value={scheduleTeacherFilter}
                             onChange={(e) => setScheduleTeacherFilter(e.target.value)}
-                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer whitespace-nowrap"
                           >
                             <option value="All Teachers">All Teachers</option>
                             <option value="Siti Aisyah">Siti Aisyah</option>
@@ -7271,11 +7255,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                         </div>
 
                         {/* Subject Filter */}
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <select
                             value={scheduleSubjectFilter}
                             onChange={(e) => setScheduleSubjectFilter(e.target.value)}
-                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer whitespace-nowrap"
                           >
                             <option value="All Subjects">All Subjects</option>
                             <option value="Islamic Studies">Islamic Studies</option>
@@ -7291,11 +7275,11 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                         </div>
 
                         {/* Status Filter */}
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <select
                             value={scheduleStatusFilter}
                             onChange={(e) => setScheduleStatusFilter(e.target.value)}
-                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer whitespace-nowrap"
                           >
                             <option value="All Status">All Status</option>
                             <option value="Live Now">Live Now</option>
