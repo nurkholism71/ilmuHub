@@ -6415,89 +6415,98 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 <div className="lg:col-span-8 space-y-4">
                   
                   {/* Search & Filters Bar */}
-                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-                    
-                    {/* Search Input */}
-                    <div className="relative flex-1">
-                      <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        placeholder="Search by title, teacher, or subject..."
-                        value={liveSearchQuery}
-                        onChange={(e) => setLiveSearchQuery(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2 bg-[#F8FAFC] border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#114B44]"
-                      />
-                    </div>
-
-                    {/* Filter Dropdowns */}
-                    <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                      {/* Subject */}
-                      <div className="relative">
-                        <select
-                          value={liveSubjectFilter}
-                          onChange={(e) => setLiveSubjectFilter(e.target.value)}
-                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
-                        >
-                          <option value="All Subjects">All Subjects</option>
-                          <option value="Islamic Studies">Islamic Studies</option>
-                          <option value="English">English</option>
-                          <option value="Mathematics">Mathematics</option>
-                          <option value="Arabic">Arabic</option>
-                          <option value="Science">Science</option>
-                          <option value="History">History</option>
-                          <option value="Computer Science">Computer Science</option>
-                          <option value="Environmental">Environmental</option>
-                          <option value="Business">Business</option>
-                          <option value="Psychology">Psychology</option>
-                        </select>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3">
+                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
+                      
+                      {/* Search Input */}
+                      <div className="relative flex-1 min-w-0">
+                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          placeholder="Search by title, teacher, or subject..."
+                          value={liveSearchQuery}
+                          onChange={(e) => setLiveSearchQuery(e.target.value)}
+                          className="w-full pl-9 pr-4 py-2 bg-[#F8FAFC] border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                        />
                       </div>
 
-                      {/* Teachers */}
-                      <div className="relative">
-                        <select
-                          value={liveTeacherFilter}
-                          onChange={(e) => setLiveTeacherFilter(e.target.value)}
-                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                      {/* Filter Dropdowns */}
+                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                        {/* Subject */}
+                        <div className="relative">
+                          <select
+                            value={liveSubjectFilter}
+                            onChange={(e) => setLiveSubjectFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Subjects">All Subjects</option>
+                            <option value="Islamic Studies">Islamic Studies</option>
+                            <option value="English">English</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Science">Science</option>
+                            <option value="History">History</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Environmental">Environmental</option>
+                            <option value="Business">Business</option>
+                            <option value="Psychology">Psychology</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+
+                        {/* Teachers */}
+                        <div className="relative">
+                          <select
+                            value={liveTeacherFilter}
+                            onChange={(e) => setLiveTeacherFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Teachers">All Teachers</option>
+                            <option value="Siti Aisyah">Siti Aisyah</option>
+                            <option value="Omar Hassan">Omar Hassan</option>
+                            <option value="Layla Karim">Layla Karim</option>
+                            <option value="Zainab Ali">Zainab Ali</option>
+                            <option value="Dr. Ahmad Fauzi">Dr. Ahmad Fauzi</option>
+                            <option value="Fatimah Nur">Fatimah Nur</option>
+                            <option value="Muhammad Khan">Muhammad Khan</option>
+                            <option value="Nadia Rahman">Nadia Rahman</option>
+                            <option value="Ali Reza">Ali Reza</option>
+                            <option value="Hassan Malik">Hassan Malik</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+
+                        {/* Status */}
+                        <div className="relative">
+                          <select
+                            value={liveStatusFilter}
+                            onChange={(e) => setLiveStatusFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Status">All Status</option>
+                            <option value="Live">Live</option>
+                            <option value="Upcoming">Upcoming</option>
+                            <option value="Ended">Ended</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+
+                        {/* Filter Reset Button */}
+                        <button
+                          onClick={() => {
+                            setLiveSearchQuery('');
+                            setLiveSubjectFilter('All Subjects');
+                            setLiveTeacherFilter('All Teachers');
+                            setLiveStatusFilter('All Status');
+                          }}
+                          className="py-2 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-gray-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer shrink-0"
+                          title="Reset Filters"
                         >
-                          <option value="All Teachers">All Teachers</option>
-                          <option value="Siti Aisyah">Siti Aisyah</option>
-                          <option value="Omar Hassan">Omar Hassan</option>
-                          <option value="Layla Karim">Layla Karim</option>
-                          <option value="Zainab Ali">Zainab Ali</option>
-                          <option value="Dr. Ahmad Fauzi">Dr. Ahmad Fauzi</option>
-                          <option value="Fatimah Nur">Fatimah Nur</option>
-                          <option value="Muhammad Khan">Muhammad Khan</option>
-                          <option value="Nadia Rahman">Nadia Rahman</option>
-                          <option value="Ali Reza">Ali Reza</option>
-                          <option value="Hassan Malik">Hassan Malik</option>
-                        </select>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          <Sliders className="w-3.5 h-3.5 text-gray-500" />
+                          <span>Filters</span>
+                        </button>
                       </div>
 
-                      {/* Status */}
-                      <div className="relative">
-                        <select
-                          value={liveStatusFilter}
-                          onChange={(e) => setLiveStatusFilter(e.target.value)}
-                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
-                        >
-                          <option value="All Status">All Status</option>
-                          <option value="Live">Live</option>
-                          <option value="Upcoming">Upcoming</option>
-                          <option value="Ended">Ended</option>
-                        </select>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                      </div>
-
-                      {/* Filter Button */}
-                      <button
-                        onClick={() => alert('Filter options')}
-                        className="p-2 border border-gray-200 hover:bg-gray-50 rounded-xl text-gray-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer shrink-0"
-                      >
-                        <Sliders className="w-3.5 h-3.5 text-gray-500" />
-                        <span className="hidden sm:inline">Filters</span>
-                      </button>
                     </div>
                   </div>
 
@@ -7210,87 +7219,92 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 <div className="lg:col-span-8 space-y-4">
                   
                   {/* Filter Dropdowns Bar */}
-                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3 shadow-2xs flex flex-wrap items-center justify-between gap-2.5">
-                    <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap flex-1">
-                      {/* Class Filter */}
-                      <div className="relative">
-                        <select
-                          value={scheduleClassFilter}
-                          onChange={(e) => setScheduleClassFilter(e.target.value)}
-                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
-                        >
-                          <option value="All Classes">All Classes</option>
-                          <option value="Quran Recitation">Quran Recitation</option>
-                          <option value="Arabic Language">Arabic Language</option>
-                          <option value="Mathematics">Mathematics</option>
-                          <option value="English Conversation">English Conversation</option>
-                          <option value="Science Exploration">Science Exploration</option>
-                        </select>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3">
+                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
+                      
+                      {/* Search by class, teacher */}
+                      <div className="relative flex-1 min-w-0">
+                        <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          placeholder="Search by class, teacher, or subject..."
+                          value={scheduleSearchQuery}
+                          onChange={(e) => setScheduleSearchQuery(e.target.value)}
+                          className="w-full pl-8 pr-3 py-2 bg-[#F8FAFC] border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                        />
                       </div>
 
-                      {/* Teacher Filter */}
-                      <div className="relative">
-                        <select
-                          value={scheduleTeacherFilter}
-                          onChange={(e) => setScheduleTeacherFilter(e.target.value)}
-                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
-                        >
-                          <option value="All Teachers">All Teachers</option>
-                          <option value="Siti Aisyah">Siti Aisyah</option>
-                          <option value="Omar Hassan">Omar Hassan</option>
-                          <option value="Muhammad Khan">Muhammad Khan</option>
-                          <option value="Zainab Ali">Zainab Ali</option>
-                          <option value="Layla Karim">Layla Karim</option>
-                        </select>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      {/* Dropdowns */}
+                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                        {/* Class Filter */}
+                        <div className="relative">
+                          <select
+                            value={scheduleClassFilter}
+                            onChange={(e) => setScheduleClassFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Classes">All Classes</option>
+                            <option value="Quran Recitation">Quran Recitation</option>
+                            <option value="Arabic Language">Arabic Language</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="English Conversation">English Conversation</option>
+                            <option value="Science Exploration">Science Exploration</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+
+                        {/* Teacher Filter */}
+                        <div className="relative">
+                          <select
+                            value={scheduleTeacherFilter}
+                            onChange={(e) => setScheduleTeacherFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Teachers">All Teachers</option>
+                            <option value="Siti Aisyah">Siti Aisyah</option>
+                            <option value="Omar Hassan">Omar Hassan</option>
+                            <option value="Muhammad Khan">Muhammad Khan</option>
+                            <option value="Zainab Ali">Zainab Ali</option>
+                            <option value="Layla Karim">Layla Karim</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+
+                        {/* Subject Filter */}
+                        <div className="relative">
+                          <select
+                            value={scheduleSubjectFilter}
+                            onChange={(e) => setScheduleSubjectFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Subjects">All Subjects</option>
+                            <option value="Islamic Studies">Islamic Studies</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="English">English</option>
+                            <option value="Science">Science</option>
+                            <option value="History">History</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Business">Business</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+
+                        {/* Status Filter */}
+                        <div className="relative">
+                          <select
+                            value={scheduleStatusFilter}
+                            onChange={(e) => setScheduleStatusFilter(e.target.value)}
+                            className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="All Status">All Status</option>
+                            <option value="Live Now">Live Now</option>
+                            <option value="Upcoming">Upcoming</option>
+                          </select>
+                          <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
                       </div>
 
-                      {/* Subject Filter */}
-                      <div className="relative">
-                        <select
-                          value={scheduleSubjectFilter}
-                          onChange={(e) => setScheduleSubjectFilter(e.target.value)}
-                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
-                        >
-                          <option value="All Subjects">All Subjects</option>
-                          <option value="Islamic Studies">Islamic Studies</option>
-                          <option value="Arabic">Arabic</option>
-                          <option value="Mathematics">Mathematics</option>
-                          <option value="English">English</option>
-                          <option value="Science">Science</option>
-                          <option value="History">History</option>
-                          <option value="Computer Science">Computer Science</option>
-                          <option value="Business">Business</option>
-                        </select>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                      </div>
-
-                      {/* Status Filter */}
-                      <div className="relative">
-                        <select
-                          value={scheduleStatusFilter}
-                          onChange={(e) => setScheduleStatusFilter(e.target.value)}
-                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-7 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
-                        >
-                          <option value="All Status">All Status</option>
-                          <option value="Live Now">Live Now</option>
-                          <option value="Upcoming">Upcoming</option>
-                        </select>
-                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                      </div>
-                    </div>
-
-                    {/* Search by class, teacher */}
-                    <div className="relative min-w-[220px]">
-                      <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        placeholder="Search by class, teacher, or subject..."
-                        value={scheduleSearchQuery}
-                        onChange={(e) => setScheduleSearchQuery(e.target.value)}
-                        className="w-full pl-8 pr-3 py-1.5 bg-[#F8FAFC] border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#114B44]"
-                      />
                     </div>
                   </div>
 
@@ -7432,7 +7446,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-3 rounded-2xl font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>+ Create Schedule</span>
+                    <span>Create Schedule</span>
                   </button>
 
                   {/* September 2026 Mini Calendar Widget */}
