@@ -114,7 +114,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   // Navigation Items matching media_1790730977291.jpg & media_1790731145724.jpg
   const adminNavItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'teachers', label: 'VIP Teachers & Approvals', icon: GraduationCap, badge: '24 New' },
+    { id: 'teachers', label: 'VIP Teachers', icon: GraduationCap, badge: '24' },
     { id: 'users', label: 'Users', icon: Users },
     { id: 'classes', label: 'Classes', icon: BookOpen },
     { id: 'live', label: 'Live Classrooms', icon: Video },
@@ -1013,18 +1013,22 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       }
                       setActiveNav(item.id);
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer select-none ${
                       isActive
                         ? 'bg-[#114B44] text-white shadow-xs'
                         : 'text-gray-300 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-gray-400'}`} />
                       <span className="truncate">{item.label}</span>
                     </div>
                     {item.badge && (
-                      <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black shrink-0 ${
+                        isActive
+                          ? 'bg-amber-400 text-amber-950 shadow-xs'
+                          : 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                      }`}>
                         {item.badge}
                       </span>
                     )}
@@ -1101,32 +1105,32 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
             <div className="space-y-5 animate-fadeIn">
               
               {/* 1. TOP VIP TEACHERS HEADER */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center shadow-xs shrink-0">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center shadow-xs shrink-0">
                     <GraduationCap className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">VIP Teachers & Approvals</h1>
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300/80 flex items-center gap-1">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">VIP Teachers & Approvals</h1>
+                      <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300/80 flex items-center gap-1 shrink-0">
                         <Sparkles className="w-3 h-3 text-amber-600" />
                         <span>VIP Onboarding</span>
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-500">
+                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
                       Verifikasi pendaftaran guru VIP, keabsahan sanad keilmuan, paket mentorship, dan atur bagi hasil platform.
                     </p>
                   </div>
                 </div>
 
                 {/* Right Action Buttons */}
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2.5 shrink-0">
                   <button
                     onClick={() => setIsAddVipModalOpen(true)}
-                    className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+                    className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
                   >
-                    <UserPlus className="w-3.5 h-3.5" />
+                    <UserPlus className="w-4 h-4 shrink-0" />
                     <span>+ Onboard Guru VIP</span>
                   </button>
 
@@ -1138,15 +1142,15 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                         alert(`Bagi hasil platform berhasil diatur menjadi ${rate}% (Guru menerima ${100 - Number(rate)}%)`);
                       }
                     }}
-                    className="flex items-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                    className="h-10 px-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer whitespace-nowrap"
                   >
-                    <Sliders className="w-3.5 h-3.5 text-gray-500" />
+                    <Sliders className="w-4 h-4 text-gray-500 shrink-0" />
                     <span>Komisi Platform: {platformTakeRate}%</span>
                   </button>
 
                   <button 
                     onClick={() => setIsExportModalOpen(true)}
-                    className="p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs cursor-pointer"
+                    className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs flex items-center justify-center transition-all cursor-pointer shrink-0"
                     title="Ekspor CSV"
                   >
                     <Download className="w-4 h-4" />
@@ -1966,40 +1970,40 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
             <div className="space-y-5 animate-fadeIn">
               
               {/* 1. TOP USERS HEADER */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs shrink-0">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shadow-xs shrink-0">
                     <Users className="w-5 h-5" />
                   </div>
                   <div>
-                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Users</h1>
-                    <p className="text-xs sm:text-sm text-gray-500">
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight whitespace-nowrap">Users</h1>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
                       Manage all users on the platform. View, edit, and control user accounts.
                     </p>
                   </div>
                 </div>
 
                 {/* Right Action Buttons */}
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2.5 shrink-0">
                   <button
                     onClick={() => setIsAddUserModalOpen(true)}
-                    className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+                    className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
                   >
-                    <UserPlus className="w-3.5 h-3.5" />
+                    <UserPlus className="w-4 h-4 shrink-0" />
                     <span>Add User</span>
                   </button>
 
                   <button
                     onClick={() => setIsImportUsersModalOpen(true)}
-                    className="flex items-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                    className="h-10 px-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer whitespace-nowrap"
                   >
-                    <Download className="w-3.5 h-3.5 text-gray-500" />
+                    <Download className="w-4 h-4 text-gray-500 shrink-0" />
                     <span>Import Users</span>
                   </button>
 
                   <button 
                     onClick={() => alert('Opsi lanjutan pengguna')}
-                    className="p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs cursor-pointer"
+                    className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs flex items-center justify-center transition-all cursor-pointer shrink-0"
                   >
                     <MoreVertical className="w-4 h-4" />
                   </button>
