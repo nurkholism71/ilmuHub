@@ -7758,39 +7758,39 @@ export default function TeacherDashboard({ user, onStartLive, onManageCourses, o
             <div className="space-y-6 animate-fadeIn">
               
               {/* 1. TOP HEADER BAR */}
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center shadow-md shrink-0">
-                    <Crown className="w-6 h-6 text-amber-100" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Crown className="w-5 h-5 text-amber-100" />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">VIP Mentorship & Halakah</h1>
-                      <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-wider border border-amber-200">
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-wider border border-amber-200 shrink-0">
                         MRR Center
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 font-medium truncate sm:whitespace-normal mt-0.5">
                       Kelola lingkaran halakah eksklusif, pelanggan bulanan (MRR), jadwal bimbingan live, dan broadcast materi VIP.
                     </p>
                   </div>
                 </div>
 
-                {/* Top Action Buttons */}
-                <div className="flex items-center gap-2.5">
+                {/* Top Action Buttons (Single Line & Perfectly Aligned) */}
+                <div className="flex items-center gap-2.5 shrink-0">
                   <button
                     onClick={() => setIsNewBroadcastModalOpen(true)}
-                    className="flex items-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                    className="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer whitespace-nowrap active:scale-95"
                   >
-                    <Megaphone className="w-3.5 h-3.5 text-[#114B44]" />
+                    <Megaphone className="w-4 h-4 text-[#114B44]" />
                     <span>Broadcast VIP Post</span>
                   </button>
 
                   <button
                     onClick={() => setIsAddTierModalOpen(true)}
-                    className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    className="flex items-center gap-2 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer whitespace-nowrap active:scale-95"
                   >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Plus className="w-4 h-4" />
                     <span>Create Membership Tier</span>
                   </button>
                 </div>
