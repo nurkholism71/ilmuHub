@@ -64,6 +64,16 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   const [scheduleSelectedDay, setScheduleSelectedDay] = useState(23); // 23 Sep (Wed) default
   const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false);
 
+  // Assignments View States (matching media_1790728280277.jpg)
+  const [assignmentTabFilter, setAssignmentTabFilter] = useState('all'); // 'all' | 'todo' | 'in_progress' | 'submitted' | 'graded'
+  const [assignmentSearchQuery, setAssignmentSearchQuery] = useState('');
+  const [assignmentClassFilter, setAssignmentClassFilter] = useState('All Classes');
+  const [assignmentTypeFilter, setAssignmentTypeFilter] = useState('All Types');
+  const [assignmentStatusFilter, setAssignmentStatusFilter] = useState('All Status');
+  const [assignmentSortOrder, setAssignmentSortOrder] = useState('Due Date (Soonest)');
+  const [selectedAssignmentForSubmit, setSelectedAssignmentForSubmit] = useState(null);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+
   // Browse Classes View States (matching media_1790726478349.jpg)
   const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
   const [browseSearchQuery, setBrowseSearchQuery] = useState('');
@@ -748,6 +758,191 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
       icon: '🎙️',
       tag: 'Recorded Submissions',
       tagColor: 'bg-blue-50 text-blue-700 border-blue-200'
+    }
+  ];
+
+  // Assignments Datasets (Matching media_1790728280277.jpg)
+  const studentAssignmentsList = [
+    {
+      id: 'asg-1',
+      title: "Bab 2: Isim Ma'rifah - Exercise",
+      course: 'Nahwu for Beginners',
+      instructor: 'Ustadz Ahmad Fauzi',
+      type: 'Written Assignment',
+      typeIcon: '📄',
+      typeColor: 'bg-blue-50 text-blue-700 border-blue-100',
+      dueDate: '25 Sep 2026, 11:59 PM',
+      dueDaysLeft: '2 days left',
+      status: 'todo',
+      statusBadge: 'Due Soon',
+      statusColor: 'bg-rose-50 text-rose-600 border-rose-200',
+      countdownColor: 'text-rose-600',
+      image: '/images/class_nahwu.jpg',
+      actionType: 'submit',
+      actionLabel: 'Submit Assignment'
+    },
+    {
+      id: 'asg-2',
+      title: 'Conversation Practice Recording',
+      course: 'Arabic Conversation',
+      instructor: 'Ustadz Omar Hassan',
+      type: 'Audio Submission',
+      typeIcon: '🎙️',
+      typeColor: 'bg-sky-50 text-sky-700 border-sky-100',
+      dueDate: '26 Sep 2026, 11:59 PM',
+      dueDaysLeft: '3 days left',
+      status: 'in_progress',
+      statusBadge: 'In Progress',
+      statusColor: 'bg-blue-50 text-blue-600 border-blue-200',
+      countdownColor: 'text-gray-500',
+      image: '/images/class_conversation.jpg',
+      actionType: 'continue',
+      actionLabel: 'Continue'
+    },
+    {
+      id: 'asg-3',
+      title: 'Essay: My Learning Journey',
+      course: 'Academic Writing',
+      instructor: 'Dr. Layla Ahmad',
+      type: 'Essay',
+      typeIcon: '📝',
+      typeColor: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+      dueDate: '28 Sep 2026, 11:59 PM',
+      dueDaysLeft: '5 days left',
+      status: 'todo',
+      statusBadge: 'To Do',
+      statusColor: 'bg-rose-50 text-rose-600 border-rose-200',
+      countdownColor: 'text-rose-600',
+      image: '/images/login_lms_desk_bg.jpg',
+      actionType: 'start',
+      actionLabel: 'Start Assignment'
+    },
+    {
+      id: 'asg-4',
+      title: 'Islamic History Quiz Review',
+      course: 'Islamic History',
+      instructor: 'Ustadz Ali Khan',
+      type: 'Research & Summary',
+      typeIcon: '📄',
+      typeColor: 'bg-amber-50 text-amber-700 border-amber-100',
+      dueDate: '29 Sep 2026, 11:59 PM',
+      dueDaysLeft: '6 days left',
+      status: 'todo',
+      statusBadge: 'To Do',
+      statusColor: 'bg-rose-50 text-rose-600 border-rose-200',
+      countdownColor: 'text-rose-600',
+      image: '/images/class_nahwu.jpg',
+      actionType: 'start',
+      actionLabel: 'Start Assignment'
+    },
+    {
+      id: 'asg-5',
+      title: 'Case Study: Environmental Issues',
+      course: 'Environmental Management',
+      instructor: 'Dr. Sara Nabilah',
+      type: 'Group Assignment',
+      typeIcon: '👥',
+      typeColor: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+      dueDate: '1 Oct 2026, 11:59 PM',
+      dueDaysLeft: '8 days left',
+      status: 'not_started',
+      statusBadge: 'Not Started',
+      statusColor: 'bg-gray-100 text-gray-600 border-gray-200',
+      countdownColor: 'text-gray-500',
+      image: '/images/class_conversation.jpg',
+      actionType: 'view',
+      actionLabel: 'View Details'
+    },
+    {
+      id: 'asg-6',
+      title: 'Final Project Proposal',
+      course: 'Data Analysis',
+      instructor: 'Mr. Ali Rahman',
+      type: 'Project',
+      typeIcon: '📊',
+      typeColor: 'bg-purple-50 text-purple-700 border-purple-100',
+      dueDate: '5 Oct 2026, 11:59 PM',
+      dueDaysLeft: '12 days left',
+      status: 'not_started',
+      statusBadge: 'Not Started',
+      statusColor: 'bg-gray-100 text-gray-600 border-gray-200',
+      countdownColor: 'text-gray-500',
+      image: '/images/login_lms_desk_bg.jpg',
+      actionType: 'view',
+      actionLabel: 'View Details'
+    }
+  ];
+
+  const assignmentUpcomingDeadlinesList = [
+    {
+      id: 'asg-dl-1',
+      month: 'SEP',
+      day: '25',
+      title: "Bab 2: Isim Ma'rifah - Exercise",
+      course: 'Nahwu for Beginners',
+      daysLeft: '2 days left'
+    },
+    {
+      id: 'asg-dl-2',
+      month: 'SEP',
+      day: '26',
+      title: 'Conversation Practice Recording',
+      course: 'Arabic Conversation',
+      daysLeft: '3 days left'
+    },
+    {
+      id: 'asg-dl-3',
+      month: 'SEP',
+      day: '28',
+      title: 'Essay: My Learning Journey',
+      course: 'Academic Writing',
+      daysLeft: '5 days left'
+    },
+    {
+      id: 'asg-dl-4',
+      month: 'SEP',
+      day: '29',
+      title: 'Islamic History Quiz Review',
+      course: 'Islamic History',
+      daysLeft: '6 days left'
+    },
+    {
+      id: 'asg-dl-5',
+      month: 'OCT',
+      day: '01',
+      title: 'Case Study: Environmental Issues',
+      course: 'Environmental Management',
+      daysLeft: '8 days left'
+    }
+  ];
+
+  const assignmentRecentSubmissionsList = [
+    {
+      id: 'asg-sub-1',
+      title: 'Quiz 1: Basic Grammar',
+      course: 'Nahwu for Beginners',
+      date: '20 Sep 2026',
+      grade: '95',
+      icon: '📄',
+      iconBg: 'bg-blue-50 text-blue-600 border-blue-100'
+    },
+    {
+      id: 'asg-sub-2',
+      title: 'Vocabulary Practice',
+      course: 'Arabic Conversation',
+      date: '18 Sep 2026',
+      grade: '88',
+      icon: '📹',
+      iconBg: 'bg-rose-50 text-rose-600 border-rose-100'
+    },
+    {
+      id: 'asg-sub-3',
+      title: 'Introduction Essay',
+      course: 'Academic Writing',
+      date: '15 Sep 2026',
+      grade: '92',
+      icon: '🎙️',
+      iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-100'
     }
   ];
 
@@ -2626,6 +2821,525 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                         className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
                       >
                         Save Schedule
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          ) : activeNav === 'assignments' ? (
+            /* ========================================================= */
+            /* VIEW: ASSIGNMENTS ROOM (MATCHING media_1790728280277.jpg)  */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* 1. PAGE TOP HEADER */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Assignments</h1>
+                    <p className="text-xs text-gray-500 font-medium">View, submit, and track your class assignments.</p>
+                  </div>
+                </div>
+
+                <div className="relative shrink-0">
+                  <select
+                    value={assignmentClassFilter}
+                    onChange={(e) => setAssignmentClassFilter(e.target.value)}
+                    className="appearance-none bg-white border border-gray-200/90 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                  >
+                    <option value="All Classes">All Classes</option>
+                    <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                    <option value="Arabic Conversation">Arabic Conversation</option>
+                    <option value="Academic Writing">Academic Writing</option>
+                    <option value="Islamic History">Islamic History</option>
+                    <option value="Environmental Management">Environmental Management</option>
+                    <option value="Data Analysis">Data Analysis</option>
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* 2. TAB PILLS FILTER TOOLBAR */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {[
+                  { id: 'all', label: 'All Assignments' },
+                  { id: 'todo', label: 'To Do', badge: '3', badgeColor: 'bg-rose-500 text-white' },
+                  { id: 'in_progress', label: 'In Progress', badge: '2', badgeColor: 'bg-blue-500 text-white' },
+                  { id: 'submitted', label: 'Submitted', badge: '5', badgeColor: 'bg-emerald-500 text-white' },
+                  { id: 'graded', label: 'Graded', badge: '4', badgeColor: 'bg-indigo-500 text-white' },
+                ].map((tab) => {
+                  const isActive = assignmentTabFilter === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setAssignmentTabFilter(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/80'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      {tab.badge && (
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                          isActive ? 'bg-white/20 text-white' : tab.badgeColor
+                        }`}>
+                          {tab.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 3. SEARCH & DROPDOWN FILTERS */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
+                {/* Search Input */}
+                <div className="relative flex-1">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={assignmentSearchQuery}
+                    onChange={(e) => setAssignmentSearchQuery(e.target.value)}
+                    placeholder="Search assignments..."
+                    className="w-full bg-[#F8FAFC] border border-gray-200/80 rounded-xl pl-10 pr-4 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all shadow-2xs font-medium"
+                  />
+                </div>
+
+                {/* 4 Dropdown Filters */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Classes */}
+                  <div className="relative">
+                    <select
+                      value={assignmentClassFilter}
+                      onChange={(e) => setAssignmentClassFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Classes">All Classes</option>
+                      <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                      <option value="Arabic Conversation">Arabic Conversation</option>
+                      <option value="Academic Writing">Academic Writing</option>
+                      <option value="Islamic History">Islamic History</option>
+                      <option value="Environmental Management">Environmental Management</option>
+                      <option value="Data Analysis">Data Analysis</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Types */}
+                  <div className="relative">
+                    <select
+                      value={assignmentTypeFilter}
+                      onChange={(e) => setAssignmentTypeFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Types">All Types</option>
+                      <option value="Written Assignment">Written Assignment</option>
+                      <option value="Audio Submission">Audio Submission</option>
+                      <option value="Essay">Essay</option>
+                      <option value="Research & Summary">Research & Summary</option>
+                      <option value="Group Assignment">Group Assignment</option>
+                      <option value="Project">Project</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Status */}
+                  <div className="relative">
+                    <select
+                      value={assignmentStatusFilter}
+                      onChange={(e) => setAssignmentStatusFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Status">All Status</option>
+                      <option value="Due Soon">Due Soon</option>
+                      <option value="To Do">To Do</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Not Started">Not Started</option>
+                      <option value="Submitted">Submitted</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Sort */}
+                  <div className="relative">
+                    <select
+                      value={assignmentSortOrder}
+                      onChange={(e) => setAssignmentSortOrder(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="Due Date (Soonest)">Due Date (Soonest)</option>
+                      <option value="Due Date (Latest)">Due Date (Latest)</option>
+                      <option value="Newest First">Newest First</option>
+                      <option value="Course Name">Course Name</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. MAIN TWO-COLUMN LAYOUT */}
+              <div className="flex flex-col lg:flex-row gap-5 items-start">
+                
+                {/* LEFT CANVAS: LIST OF ASSIGNMENT CARDS */}
+                <div className="flex-1 min-w-0 space-y-3.5 w-full">
+                  {studentAssignmentsList
+                    .filter(a => {
+                      if (assignmentTabFilter === 'todo') return a.status === 'todo';
+                      if (assignmentTabFilter === 'in_progress') return a.status === 'in_progress';
+                      if (assignmentTabFilter === 'submitted') return a.status === 'submitted';
+                      if (assignmentTabFilter === 'graded') return a.status === 'graded';
+                      return true;
+                    })
+                    .filter(a => {
+                      if (assignmentClassFilter !== 'All Classes' && a.course !== assignmentClassFilter) return false;
+                      if (assignmentTypeFilter !== 'All Types' && a.type !== assignmentTypeFilter) return false;
+                      if (assignmentStatusFilter !== 'All Status' && a.statusBadge !== assignmentStatusFilter) return false;
+                      if (assignmentSearchQuery) {
+                        const q = assignmentSearchQuery.toLowerCase();
+                        return a.title.toLowerCase().includes(q) || a.course.toLowerCase().includes(q) || a.instructor.toLowerCase().includes(q);
+                      }
+                      return true;
+                    })
+                    .map((asg) => (
+                      <div
+                        key={asg.id}
+                        className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs hover:shadow-xs hover:border-emerald-300 transition-all flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 group"
+                      >
+                        {/* Left Info: Image + Details */}
+                        <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
+                          {/* Square Image Thumbnail */}
+                          <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0 relative">
+                            <img
+                              src={asg.image}
+                              alt={asg.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => { e.target.src = '/images/class_nahwu.jpg'; }}
+                            />
+                          </div>
+
+                          {/* Info Text */}
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="font-extrabold text-sm text-gray-900 group-hover:text-[#114B44] transition-colors leading-tight">
+                                {asg.title}
+                              </h3>
+                            </div>
+
+                            <p className="text-xs font-semibold text-gray-600 truncate">{asg.course}</p>
+
+                            <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-medium truncate">
+                              <User className="w-3 h-3 text-gray-400 shrink-0" />
+                              <span>{asg.instructor}</span>
+                            </div>
+
+                            {/* Type pill + Due Date */}
+                            <div className="flex items-center gap-2.5 flex-wrap pt-0.5">
+                              <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border ${asg.typeColor}`}>
+                                <span>{asg.typeIcon}</span>
+                                <span>{asg.type}</span>
+                              </span>
+
+                              <span className="flex items-center gap-1 text-[11px] text-gray-400 font-medium">
+                                <Clock className="w-3 h-3 text-gray-400" />
+                                <span>Due: {asg.dueDate}</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right Status & Action Controls */}
+                        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+                          {/* Status Badge + Countdown Pill */}
+                          <div className="flex sm:flex-col items-center sm:items-end gap-1.5">
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${asg.statusColor}`}>
+                              {asg.statusBadge}
+                            </span>
+                            <span className={`text-[10px] font-bold flex items-center gap-1 ${asg.countdownColor}`}>
+                              <span>🗓️</span>
+                              <span>{asg.dueDaysLeft}</span>
+                            </span>
+                          </div>
+
+                          {/* Button & Menu */}
+                          <div className="flex items-center gap-1.5">
+                            {asg.actionType === 'submit' ? (
+                              <button
+                                onClick={() => {
+                                  setSelectedAssignmentForSubmit(asg);
+                                  setIsSubmitModalOpen(true);
+                                }}
+                                className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
+                              >
+                                {asg.actionLabel}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  setSelectedAssignmentForSubmit(asg);
+                                  setIsSubmitModalOpen(true);
+                                }}
+                                className="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                              >
+                                {asg.actionLabel}
+                              </button>
+                            )}
+
+                            <button
+                              onClick={() => alert(`Opsi tugas: ${asg.title}`)}
+                              className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <MoreVertical className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {/* RIGHT SIDEBAR (MATCHING media_1790728280277.jpg) */}
+                <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
+                  
+                  {/* CARD 1: Assignment Progress Donut Chart */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Assignment Progress</h3>
+                      <button
+                        onClick={() => setAssignmentTabFilter('all')}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-1">
+                      {/* Donut Chart */}
+                      <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
+                        <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 80 80">
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="32"
+                            stroke="#E2E8F0"
+                            strokeWidth="8"
+                            fill="transparent"
+                          />
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="32"
+                            stroke="#114B44"
+                            strokeWidth="8"
+                            strokeDasharray={`${0.6 * 201.06} 201.06`}
+                            strokeLinecap="round"
+                            fill="transparent"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none">
+                          <span className="text-lg font-black text-gray-900 leading-none">60%</span>
+                          <span className="text-[8px] font-bold text-gray-400 mt-0.5">Completed</span>
+                        </div>
+                      </div>
+
+                      {/* Legend Breakdown */}
+                      <div className="space-y-1 text-[10.5px] font-bold min-w-0 flex-1">
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-slate-800"></span>
+                            <span className="truncate text-gray-500 font-semibold">Total Assignments</span>
+                          </span>
+                          <span className="font-black text-gray-900">14</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+                            <span className="truncate text-gray-500 font-semibold">Submitted</span>
+                          </span>
+                          <span className="font-black text-gray-900">5</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-teal-500"></span>
+                            <span className="truncate text-gray-500 font-semibold">Graded</span>
+                          </span>
+                          <span className="font-black text-gray-900">4</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span className="truncate text-gray-500 font-semibold">In Progress</span>
+                          </span>
+                          <span className="font-black text-gray-900">2</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                            <span className="truncate text-gray-500 font-semibold">To Do</span>
+                          </span>
+                          <span className="font-black text-gray-900">3</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Upcoming Deadlines */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Upcoming Deadlines</h3>
+                      <button
+                        onClick={() => setAssignmentTabFilter('todo')}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {assignmentUpcomingDeadlinesList.map((dl) => (
+                        <div key={dl.id} className="flex items-center gap-3">
+                          {/* Date Badge */}
+                          <div className="w-10 h-10 rounded-xl bg-rose-50/70 border border-rose-100 text-center flex flex-col items-center justify-center shrink-0">
+                            <span className="text-[8px] font-extrabold text-rose-600 uppercase leading-none">{dl.month}</span>
+                            <span className="text-xs font-black text-gray-900 leading-tight mt-0.5">{dl.day}</span>
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">{dl.title}</h4>
+                            <p className="text-[10px] text-gray-500 truncate">{dl.course}</p>
+                            <span className="text-[9px] font-bold text-rose-600 flex items-center gap-1 mt-0.5">
+                              <Clock className="w-2.5 h-2.5" />
+                              <span>{dl.daysLeft}</span>
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CARD 3: Recent Submissions */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Recent Submissions</h3>
+                      <button
+                        onClick={() => setAssignmentTabFilter('submitted')}
+                        className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>View All</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {assignmentRecentSubmissionsList.map((sub) => (
+                        <div
+                          key={sub.id}
+                          className="p-2.5 rounded-xl border border-gray-100 bg-[#F8FAFC] flex items-center justify-between gap-2.5"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm border shrink-0 ${sub.iconBg}`}>
+                              {sub.icon}
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">{sub.title}</h4>
+                              <p className="text-[10px] text-gray-400 truncate">{sub.course}</p>
+                              <span className="text-[9px] text-gray-400">{sub.date}</span>
+                            </div>
+                          </div>
+
+                          <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-black flex items-center justify-center shrink-0">
+                            {sub.grade}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </aside>
+
+              </div>
+
+              {/* SUBMIT ASSIGNMENT MODAL POPUP */}
+              {isSubmitModalOpen && selectedAssignmentForSubmit && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">Submit Assignment</h3>
+                          <p className="text-xs text-gray-500">{selectedAssignmentForSubmit.course}</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsSubmitModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs cursor-pointer font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 space-y-1">
+                      <h4 className="font-extrabold text-xs text-gray-900">{selectedAssignmentForSubmit.title}</h4>
+                      <div className="flex items-center justify-between text-[11px] text-gray-500">
+                        <span>Instructor: {selectedAssignmentForSubmit.instructor}</span>
+                        <span className="font-bold text-rose-600">Due: {selectedAssignmentForSubmit.dueDate}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      {/* Dropzone */}
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1.5">Upload Submission File / Recording</label>
+                        <div className="border-2 border-dashed border-gray-300 hover:border-[#114B44] rounded-2xl p-6 text-center bg-gray-50/50 transition-colors cursor-pointer space-y-2">
+                          <div className="w-10 h-10 rounded-full bg-emerald-50 text-[#114B44] flex items-center justify-center mx-auto">
+                            <Download className="w-5 h-5 rotate-180" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-xs text-gray-800">Drag & drop files here, or <span className="text-[#114B44] underline">browse</span></p>
+                            <p className="text-[10px] text-gray-400 mt-0.5">Supports PDF, DOCX, MP3, MP4 up to 50MB</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Notes input */}
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Student Notes (Optional)</label>
+                        <textarea
+                          rows={3}
+                          placeholder="Add any comments or questions for your instructor..."
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3 text-xs font-medium focus:outline-none focus:border-[#114B44] resize-none"
+                        ></textarea>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsSubmitModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsSubmitModalOpen(false);
+                          alert(`Tugas "${selectedAssignmentForSubmit.title}" berhasil dikumpulkan ke ${selectedAssignmentForSubmit.instructor}!`);
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Confirm & Submit
                       </button>
                     </div>
                   </div>
