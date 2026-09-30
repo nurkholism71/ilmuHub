@@ -86,6 +86,7 @@ import {
   RefreshCw,
   Play,
   Zap,
+  Terminal,
   RotateCcw,
   Info,
   Image as ImageIcon
@@ -189,7 +190,29 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isClearTempFilesModalOpen, setIsClearTempFilesModalOpen] = useState(false);
   const [autoUpdateMinor, setAutoUpdateMinor] = useState(true);
   const [securityUpdatesOnly, setSecurityUpdatesOnly] = useState(true);
+  const [notifyBeforeUpdates, setNotifyBeforeUpdates] = useState(false);
   const [activeMaintenancePerformanceTooltip, setActiveMaintenancePerformanceTooltip] = useState(null);
+
+  // =========================================================
+  // SYSTEM LOGS STATES
+  // =========================================================
+  const [systemLogLevelFilter, setSystemLogLevelFilter] = useState('ALL');
+  const [systemLogServiceFilter, setSystemLogServiceFilter] = useState('ALL');
+  const [systemLogSearchQuery, setSystemLogSearchQuery] = useState('');
+  const [systemLogAutoScroll, setSystemLogAutoScroll] = useState(true);
+  const [systemLogLiveStreaming, setSystemLogLiveStreaming] = useState(true);
+  const [systemLogTimeRange, setSystemLogTimeRange] = useState('Last 1 Hour');
+  const [selectedSystemLogForDetail, setSelectedSystemLogForDetail] = useState(null);
+  const [isExportLogsModalOpen, setIsExportLogsModalOpen] = useState(false);
+
+  // =========================================================
+  // HEALTH CHECK STATES
+  // =========================================================
+  const [healthCheckCategoryFilter, setHealthCheckCategoryFilter] = useState('ALL');
+  const [healthCheckSearchQuery, setHealthCheckSearchQuery] = useState('');
+  const [isAutoHealingEnabled, setIsAutoHealingEnabled] = useState(true);
+  const [selectedProbeForDetail, setSelectedProbeForDetail] = useState(null);
+  const [isProbeConfigModalOpen, setIsProbeConfigModalOpen] = useState(false);
 
   // =========================================================
   // SYSTEM STATUS STATES (matching media_1790805425473.jpg)
@@ -511,6 +534,378 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
       time: '18 Sep 2026, 14:23 - 15:10',
       desc: 'Some users experienced slow image loading.',
       color: 'bg-amber-100 text-amber-700'
+    }
+  ];
+
+  // =========================================================
+  // SYSTEM AUDIT & SERVER LOGS DATASET
+  // =========================================================
+  const systemLogsList = [
+    {
+      id: 'log-101',
+      timestamp: '2026-09-23 16:42:15 UTC',
+      level: 'INFO',
+      service: 'api-gateway',
+      method: 'GET',
+      path: '/api/v1/classes?page=1&limit=20',
+      status: 200,
+      duration: '18ms',
+      ip: '103.144.18.22',
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+      traceId: 'tr-9f82d1c3a04e',
+      message: 'HTTP Request handled successfully with cached query projection.',
+      details: { queryTime: '2.4ms', cacheHit: true, bytesSent: '24.8 KB' }
+    },
+    {
+      id: 'log-102',
+      timestamp: '2026-09-23 16:42:08 UTC',
+      level: 'AUTH',
+      service: 'auth-service',
+      method: 'POST',
+      path: '/api/v1/auth/login',
+      status: 200,
+      duration: '42ms',
+      ip: '182.253.110.5',
+      userAgent: 'IlmHubMobile/2.4.0 (iOS 17.5)',
+      traceId: 'tr-7c11a098ef32',
+      message: 'JWT Token generated and signed for user: u-8891 (ahmad.fauzi@example.com).',
+      details: { role: 'VIP Teacher', mfaPassed: true, sessionTtl: '7 days' }
+    },
+    {
+      id: 'log-103',
+      timestamp: '2026-09-23 16:41:50 UTC',
+      level: 'CRON',
+      service: 'backup-cron',
+      method: 'EXEC',
+      path: 'task:daily_redis_snapshot',
+      status: 200,
+      duration: '1.4s',
+      ip: '127.0.0.1 (internal)',
+      userAgent: 'CronDaemon/System',
+      traceId: 'tr-bb54101e479a',
+      message: 'Redis RDB snapshot successfully persisted to volume (/data/dump.rdb).',
+      details: { keysSaved: 248900, dumpSize: '48.6 MB', status: 'OK' }
+    },
+    {
+      id: 'log-104',
+      timestamp: '2026-09-23 16:41:22 UTC',
+      level: 'WARN',
+      service: 'storage-s3',
+      method: 'POST',
+      path: '/api/v1/uploads/presigned-url',
+      status: 200,
+      duration: '145ms',
+      ip: '114.125.64.91',
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)',
+      traceId: 'tr-338ad712e091',
+      message: 'S3 multipart upload latency exceeded 120ms threshold (p95 spike detected).',
+      details: { bucket: 'ilmhub-production-assets', region: 'ap-southeast-1', latency: '145ms' }
+    },
+    {
+      id: 'log-105',
+      timestamp: '2026-09-23 16:40:55 UTC',
+      level: 'ERROR',
+      service: 'payment-gateway',
+      method: 'POST',
+      path: '/api/v1/webhooks/midtrans',
+      status: 504,
+      duration: '4200ms',
+      ip: '103.208.23.1',
+      userAgent: 'Midtrans-Notification-Engine/3.0',
+      traceId: 'tr-ee129038ba54',
+      message: 'Webhook acknowledgment timeout from upstream provider. Retry queued #1.',
+      details: { orderId: 'ORDER-20260923-9941', retryCount: 1, maxRetries: 3, nextRetryIn: '30s' }
+    },
+    {
+      id: 'log-106',
+      timestamp: '2026-09-23 16:39:10 UTC',
+      level: 'INFO',
+      service: 'webrtc-live',
+      method: 'WS',
+      path: '/socket.io/room/live-cls-902',
+      status: 101,
+      duration: '1.2ms',
+      ip: '36.88.120.44',
+      userAgent: 'IlmHub-WebClient/2.4.1',
+      traceId: 'tr-a9018442bc71',
+      message: 'Peer connection ICE handshake established for student session std-551.',
+      details: { roomId: 'live-cls-902', codec: 'VP8/Opus', bitrate: '1.8 Mbps' }
+    },
+    {
+      id: 'log-107',
+      timestamp: '2026-09-23 16:38:00 UTC',
+      level: 'SECURITY',
+      service: 'waf-shield',
+      method: 'POST',
+      path: '/api/v1/auth/admin-login',
+      status: 403,
+      duration: '5ms',
+      ip: '45.154.255.89',
+      userAgent: 'python-requests/2.28.1',
+      traceId: 'tr-6610ff92ba88',
+      message: 'Suspicious brute-force attempt blocked by Cloudflare & WAF rate-limiting rule.',
+      details: { ruleId: 'WAF-RATE-04', action: 'BLOCK_IP_24H', country: 'RU', attempts: 42 }
+    },
+    {
+      id: 'log-108',
+      timestamp: '2026-09-23 16:36:44 UTC',
+      level: 'INFO',
+      service: 'database-pg',
+      method: 'QUERY',
+      path: 'pg_pool:query_executor',
+      status: 200,
+      duration: '3.1ms',
+      ip: '10.0.4.12 (vpc-db)',
+      userAgent: 'pgx/v4.18.2 Pooler',
+      traceId: 'tr-1290bb34eac1',
+      message: 'Read-only replica load-balanced query finished across node-pg-replica-02.',
+      details: { connections: '28/100', activeQueries: 4, memoryBuffer: '1.8 GB' }
+    },
+    {
+      id: 'log-109',
+      timestamp: '2026-09-23 16:35:12 UTC',
+      level: 'DEBUG',
+      service: 'elasticsearch',
+      method: 'POST',
+      path: '/_indices/courses/_refresh',
+      status: 200,
+      duration: '11ms',
+      ip: '10.0.5.8 (vpc-es)',
+      userAgent: 'Elasticsearch-Client/8.8',
+      traceId: 'tr-5519cc28a301',
+      message: 'Search cluster shard index synchronized (358 documents re-indexed).',
+      details: { shards: '5 primary, 5 replica', clusterHealth: 'GREEN' }
+    },
+    {
+      id: 'log-110',
+      timestamp: '2026-09-23 16:33:05 UTC',
+      level: 'CRON',
+      service: 'worker-queue',
+      method: 'JOB',
+      path: 'bullmq:send_bulk_certificate_emails',
+      status: 200,
+      duration: '6.8s',
+      ip: '10.0.6.20 (vpc-worker)',
+      userAgent: 'BullMQ-Worker/4.12',
+      traceId: 'tr-9988a011cd23',
+      message: 'Batch completed: 84 certificate completion emails dispatched to SMTP queue.',
+      details: { totalJobs: 84, succeeded: 84, failed: 0, timeTaken: '6.84s' }
+    },
+    {
+      id: 'log-111',
+      timestamp: '2026-09-23 16:30:19 UTC',
+      level: 'WARN',
+      service: 'api-gateway',
+      method: 'GET',
+      path: '/api/v1/analytics/realtime',
+      status: 429,
+      duration: '2ms',
+      ip: '112.215.77.10',
+      userAgent: 'PostmanRuntime/7.32.3',
+      traceId: 'tr-0091aa44be99',
+      message: 'Client exceeded rate limit (100 req/min). 429 Too Many Requests returned.',
+      details: { retryAfter: '30s', clientTier: 'Standard', limit: 100 }
+    },
+    {
+      id: 'log-112',
+      timestamp: '2026-09-23 16:28:44 UTC',
+      level: 'INFO',
+      service: 'auth-service',
+      method: 'POST',
+      path: '/api/v1/auth/refresh-token',
+      status: 200,
+      duration: '14ms',
+      ip: '180.252.88.19',
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+      traceId: 'tr-1144ee8812ad',
+      message: 'Access token rotation successful for session: sess-9921.',
+      details: { userId: 'u-1044', device: 'Chrome 128 / Windows' }
+    }
+  ];
+
+  // =========================================================
+  // HEALTH CHECK & PROBES DATASET
+  // =========================================================
+  const healthCheckProbesList = [
+    {
+      id: 'probe-1',
+      name: 'API Gateway Liveness',
+      category: 'Core Services',
+      endpoint: 'GET /healthz',
+      target: 'api.ilmhub.id',
+      interval: '5s',
+      latency: '8 ms',
+      status: 'Healthy',
+      uptime30d: '99.99%',
+      lastChecked: '2 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { method: 'HTTP/2', tls: 'TLS 1.3', ip: '104.21.45.19', header: 'x-k8s-pod: gw-pod-88a' }
+    },
+    {
+      id: 'probe-2',
+      name: 'API Service Readiness Probe',
+      category: 'Core Services',
+      endpoint: 'GET /readyz',
+      target: 'api.ilmhub.id/readyz',
+      interval: '10s',
+      latency: '12 ms',
+      status: 'Healthy',
+      uptime30d: '99.98%',
+      lastChecked: '4 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { dbPoolReady: true, redisConnected: true, queueDrain: true }
+    },
+    {
+      id: 'probe-3',
+      name: 'PostgreSQL Primary DB Pool',
+      category: 'Database & Cache',
+      endpoint: 'TCP 5432 (SELECT 1)',
+      target: 'pg-primary.internal:5432',
+      interval: '10s',
+      latency: '3.4 ms',
+      status: 'Healthy',
+      uptime30d: '100.0%',
+      lastChecked: '5 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { activeConnections: '24/100', replicationLag: '0 ms', txPerSec: 1420 }
+    },
+    {
+      id: 'probe-4',
+      name: 'Redis Distributed Cache Ping',
+      category: 'Database & Cache',
+      endpoint: 'TCP 6379 (PING)',
+      target: 'redis-cluster.internal:6379',
+      interval: '5s',
+      latency: '1.2 ms',
+      status: 'Healthy',
+      uptime30d: '100.0%',
+      lastChecked: '1 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { memoryUsed: '420 MB / 8 GB', connectedClients: 84, hitRatio: '96.4%' }
+    },
+    {
+      id: 'probe-5',
+      name: 'S3 & CDN Object Storage Probe',
+      category: 'Infrastructure',
+      endpoint: 'HEAD /ilmhub-health/ping.txt',
+      target: 'storage.ilmhub.id',
+      interval: '30s',
+      latency: '24 ms',
+      status: 'Healthy',
+      uptime30d: '99.95%',
+      lastChecked: '12 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { edgeServer: 'SIN (Singapore)', sslExpiry: '180 days', cacheStatus: 'HIT' }
+    },
+    {
+      id: 'probe-6',
+      name: 'Elasticsearch Index Cluster',
+      category: 'Infrastructure',
+      endpoint: 'GET /_cluster/health',
+      target: 'es-cluster.internal:9200',
+      interval: '15s',
+      latency: '9 ms',
+      status: 'Healthy',
+      uptime30d: '99.97%',
+      lastChecked: '8 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { clusterStatus: 'GREEN', numberOfNodes: 3, activeShards: 30 }
+    },
+    {
+      id: 'probe-7',
+      name: 'Midtrans Payment Gateway API',
+      category: 'Integrations',
+      endpoint: 'GET /v2/health',
+      target: 'api.midtrans.com',
+      interval: '30s',
+      latency: '98 ms',
+      status: 'Degraded',
+      uptime30d: '99.40%',
+      lastChecked: '15 detik yang lalu',
+      circuitBreaker: 'Half-Open (Warning)',
+      responseCode: 200,
+      details: { p95Latency: '240ms', timeoutThreshold: '5000ms', retryPolicy: 'Exponential 3x' }
+    },
+    {
+      id: 'probe-8',
+      name: 'SendGrid & SMTP Mail Dispatcher',
+      category: 'Integrations',
+      endpoint: 'TCP 587 (EHLO TLS)',
+      target: 'smtp.sendgrid.net:587',
+      interval: '60s',
+      latency: '45 ms',
+      status: 'Healthy',
+      uptime30d: '99.92%',
+      lastChecked: '25 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 250,
+      details: { queueBacklog: '0 pending', deliveryRate: '99.8%', dkimValid: true }
+    },
+    {
+      id: 'probe-9',
+      name: 'WebRTC Signaling & Media Server',
+      category: 'Core Services',
+      endpoint: 'WS /signaling/probe',
+      target: 'live.ilmhub.id',
+      interval: '10s',
+      latency: '15 ms',
+      status: 'Healthy',
+      uptime30d: '99.96%',
+      lastChecked: '6 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 101,
+      details: { activeRooms: 12, concurrentStreams: 184, packetLoss: '0.01%' }
+    },
+    {
+      id: 'probe-10',
+      name: 'BullMQ Background Job Workers',
+      category: 'Background Workers',
+      endpoint: 'IPC /workers/heartbeat',
+      target: 'worker-daemon.internal',
+      interval: '15s',
+      latency: '2 ms',
+      status: 'Healthy',
+      uptime30d: '99.99%',
+      lastChecked: '9 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { activeWorkers: 10, concurrency: 40, failedJobs24h: 2 }
+    },
+    {
+      id: 'probe-11',
+      name: 'Automated Snapshot & Backup Daemon',
+      category: 'Background Workers',
+      endpoint: 'Cron status check',
+      target: 'backup-manager.internal',
+      interval: '60s',
+      latency: '5 ms',
+      status: 'Healthy',
+      uptime30d: '100.0%',
+      lastChecked: '40 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { lastBackup: '23 Sep 2026 02:30 UTC', size: '1.2 GB', verification: 'PASSED' }
+    },
+    {
+      id: 'probe-12',
+      name: 'Cloudflare Edge & SSL Sentinel',
+      category: 'Infrastructure',
+      endpoint: 'HTTPS /cdn-cgi/trace',
+      target: 'cloudflare.com',
+      interval: '20s',
+      latency: '14 ms',
+      status: 'Healthy',
+      uptime30d: '100.0%',
+      lastChecked: '10 detik yang lalu',
+      circuitBreaker: 'Closed (Normal)',
+      responseCode: 200,
+      details: { colo: 'CGK (Jakarta)', tlsVersion: 'TLSv1.3', sni: 'ilmhub.id' }
     }
   ];
 
@@ -19606,71 +20001,660 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               );
             })()
           ) : activeNav === 'logs' ? (
-            <div className="space-y-5 animate-fadeIn">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shadow-xs shrink-0">
-                    <FileText className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-black text-gray-900 tracking-tight">System Audit & Access Logs</h1>
-                    <p className="text-xs text-gray-500 font-medium">Real-time syslog, access stream, and server runtime journals.</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setActiveNav('activity-log')}
-                  className="px-4 py-2 bg-[#114B44] text-white rounded-xl text-xs font-bold hover:bg-[#0D3B35] cursor-pointer"
-                >
-                  Buka Activity Log Table →
-                </button>
-              </div>
+            (() => {
+              const filteredLogs = systemLogsList.filter((log) => {
+                const matchLevel = systemLogLevelFilter === 'ALL' || log.level === systemLogLevelFilter;
+                const matchService = systemLogServiceFilter === 'ALL' || log.service === systemLogServiceFilter;
+                const matchSearch =
+                  systemLogSearchQuery === '' ||
+                  log.message.toLowerCase().includes(systemLogSearchQuery.toLowerCase()) ||
+                  log.path.toLowerCase().includes(systemLogSearchQuery.toLowerCase()) ||
+                  log.service.toLowerCase().includes(systemLogSearchQuery.toLowerCase()) ||
+                  log.traceId.toLowerCase().includes(systemLogSearchQuery.toLowerCase()) ||
+                  log.ip.toLowerCase().includes(systemLogSearchQuery.toLowerCase());
+                return matchLevel && matchService && matchSearch;
+              });
 
-              <div className="p-4 bg-slate-900 text-emerald-400 rounded-2xl font-mono text-xs space-y-1.5 overflow-x-auto max-h-96">
-                <div>[2026-09-23 14:32:01 UTC] [INFO] system.core: Worker pool healthy (10 workers ready).</div>
-                <div>[2026-09-23 14:31:55 UTC] [HTTP] GET /api/v1/classes - 200 OK - 18ms</div>
-                <div>[2026-09-23 14:31:40 UTC] [HTTP] POST /api/v1/auth/login - 200 OK - 45ms</div>
-                <div>[2026-09-23 14:30:12 UTC] [CRON] daily_backup_task completed in 14.2s (1.2 GB stored).</div>
-                <div>[2026-09-23 14:28:00 UTC] [INFO] redis.cache: Cache hit ratio 94.2% over 100,000 ops.</div>
-              </div>
-            </div>
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  {/* 1. TOP HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0 font-bold">
+                        <Terminal className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h1 className="text-xl font-black text-gray-900 tracking-tight">System Audit & Access Logs</h1>
+                          <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 border border-emerald-200">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Live Ingest Active
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Real-time syslog, API request traces, database queries, and system security journals.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                      <button
+                        onClick={() => setIsExportLogsModalOpen(true)}
+                        className="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Export Logs</span>
+                      </button>
+                      <button
+                        onClick={() => setSystemLogLiveStreaming(!systemLogLiveStreaming)}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer border ${
+                          systemLogLiveStreaming
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                            : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
+                        }`}
+                      >
+                        <Radio className={`w-3.5 h-3.5 ${systemLogLiveStreaming ? 'text-emerald-600 animate-pulse' : 'text-amber-600'}`} />
+                        <span>{systemLogLiveStreaming ? 'Stream: Live' : 'Stream: Paused'}</span>
+                      </button>
+                      <button
+                        onClick={() => setActiveNav('activity-log')}
+                        className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Activity Log Table →</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. LOGS KPI METRICS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Total Log Ingestion (24h)</span>
+                        <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                          <Activity className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-xl font-black text-gray-900">1,284,920</div>
+                      <div className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>+12.4% vs kemarin</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Ingest Throughput</span>
+                        <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                          <Zap className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-xl font-black text-gray-900">480 logs/s</div>
+                      <div className="text-[11px] text-gray-400 font-medium">Peak: 1,250 logs/s pada 14:00</div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Error & Warn Ratio</span>
+                        <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+                          <AlertCircle className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-xl font-black text-emerald-600">0.04%</div>
+                      <div className="text-[11px] text-gray-400 font-medium">48 warn / error events terjadwal</div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Avg Request Latency</span>
+                        <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                          <Clock className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-xl font-black text-gray-900">28.4 ms</div>
+                      <div className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                        <TrendingDown className="w-3 h-3" />
+                        <span>-4.2 ms latency improvement</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. LOGS FILTER BAR */}
+                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                      {/* Search Bar */}
+                      <div className="relative flex-1 min-w-[240px]">
+                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          value={systemLogSearchQuery}
+                          onChange={(e) => setSystemLogSearchQuery(e.target.value)}
+                          placeholder="Search message, endpoint path, trace ID, IP, service..."
+                          className="w-full pl-9 pr-8 py-2 bg-gray-50 hover:bg-gray-100/80 focus:bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#114B44] transition-colors"
+                        />
+                        {systemLogSearchQuery && (
+                          <button
+                            onClick={() => setSystemLogSearchQuery('')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Dropdowns */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Service Filter */}
+                        <select
+                          value={systemLogServiceFilter}
+                          onChange={(e) => setSystemLogServiceFilter(e.target.value)}
+                          className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="ALL">All Services (10)</option>
+                          <option value="api-gateway">api-gateway</option>
+                          <option value="auth-service">auth-service</option>
+                          <option value="database-pg">database-pg</option>
+                          <option value="redis-cache">redis-cache</option>
+                          <option value="storage-s3">storage-s3</option>
+                          <option value="payment-gateway">payment-gateway</option>
+                          <option value="webrtc-live">webrtc-live</option>
+                          <option value="waf-shield">waf-shield</option>
+                          <option value="elasticsearch">elasticsearch</option>
+                          <option value="worker-queue">worker-queue</option>
+                          <option value="backup-cron">backup-cron</option>
+                        </select>
+
+                        {/* Time Range */}
+                        <select
+                          value={systemLogTimeRange}
+                          onChange={(e) => setSystemLogTimeRange(e.target.value)}
+                          className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="Last 15 Minutes">Last 15 Minutes</option>
+                          <option value="Last 1 Hour">Last 1 Hour</option>
+                          <option value="Last 24 Hours">Last 24 Hours</option>
+                          <option value="Last 7 Days">Last 7 Days</option>
+                        </select>
+
+                        {/* Auto Scroll Toggle */}
+                        <button
+                          onClick={() => setSystemLogAutoScroll(!systemLogAutoScroll)}
+                          className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer flex items-center gap-1.5 ${
+                            systemLogAutoScroll
+                              ? 'bg-[#114B44]/10 text-[#114B44] border-[#114B44]/30'
+                              : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'
+                          }`}
+                        >
+                          <CheckCircle2 className={`w-3.5 h-3.5 ${systemLogAutoScroll ? 'text-[#114B44]' : 'text-gray-400'}`} />
+                          <span>Auto-scroll</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Level Filter Pills */}
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 text-xs">
+                      <span className="text-[11px] font-bold text-gray-400 mr-1 shrink-0">Level:</span>
+                      {[
+                        { id: 'ALL', label: 'ALL', count: systemLogsList.length, color: 'bg-gray-100 text-gray-700 hover:bg-gray-200' },
+                        { id: 'INFO', label: 'INFO', count: systemLogsList.filter((l) => l.level === 'INFO').length, color: 'bg-blue-50 text-blue-700 hover:bg-blue-100' },
+                        { id: 'AUTH', label: 'AUTH', count: systemLogsList.filter((l) => l.level === 'AUTH').length, color: 'bg-teal-50 text-teal-700 hover:bg-teal-100' },
+                        { id: 'CRON', label: 'CRON', count: systemLogsList.filter((l) => l.level === 'CRON').length, color: 'bg-purple-50 text-purple-700 hover:bg-purple-100' },
+                        { id: 'SECURITY', label: 'SECURITY', count: systemLogsList.filter((l) => l.level === 'SECURITY').length, color: 'bg-rose-50 text-rose-700 hover:bg-rose-100' },
+                        { id: 'WARN', label: 'WARN', count: systemLogsList.filter((l) => l.level === 'WARN').length, color: 'bg-amber-50 text-amber-700 hover:bg-amber-100' },
+                        { id: 'ERROR', label: 'ERROR', count: systemLogsList.filter((l) => l.level === 'ERROR').length, color: 'bg-red-50 text-red-700 hover:bg-red-100' },
+                        { id: 'DEBUG', label: 'DEBUG', count: systemLogsList.filter((l) => l.level === 'DEBUG').length, color: 'bg-slate-100 text-slate-700 hover:bg-slate-200' }
+                      ].map((lvl) => {
+                        const isActive = systemLogLevelFilter === lvl.id;
+                        return (
+                          <button
+                            key={lvl.id}
+                            onClick={() => setSystemLogLevelFilter(lvl.id)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
+                              isActive
+                                ? 'bg-gray-900 text-white shadow-xs'
+                                : lvl.color
+                            }`}
+                          >
+                            <span>{lvl.label}</span>
+                            <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-gray-700 text-white' : 'bg-white/80 text-gray-600'}`}>
+                              {lvl.count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 4. MAIN LOGS TERMINAL & TABLE */}
+                  <div className="bg-[#0F172A] rounded-2xl border border-slate-800 shadow-xl overflow-hidden font-mono text-xs">
+                    {/* Terminal Top Window Bar */}
+                    <div className="px-4 py-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                          <span className="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                          <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        </div>
+                        <span className="text-slate-400 text-xs font-semibold ml-2">
+                          syslog-daemon@ilmhub-prod-k8s: ~ stdout / stderr ({filteredLogs.length} events)
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="text-[11px] text-slate-400 font-sans">
+                          Showing {filteredLogs.length} of {systemLogsList.length} filtered entries
+                        </span>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard?.writeText(JSON.stringify(filteredLogs, null, 2));
+                            alert('Filtered logs JSON berhasil disalin ke clipboard!');
+                          }}
+                          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-sans font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <Copy className="w-3 h-3" />
+                          <span>Copy</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Terminal Lines Body */}
+                    <div className="p-4 space-y-2.5 max-h-[540px] overflow-y-auto divide-y divide-slate-800/60">
+                      {filteredLogs.length === 0 ? (
+                        <div className="py-12 text-center text-slate-400 font-sans space-y-2">
+                          <FileText className="w-8 h-8 mx-auto text-slate-600" />
+                          <div className="font-bold">Tidak ada log yang cocok dengan filter.</div>
+                          <div className="text-xs text-slate-500">Coba ubah kata kunci pencarian atau level filter.</div>
+                        </div>
+                      ) : (
+                        filteredLogs.map((log) => {
+                          const levelBg =
+                            log.level === 'ERROR'
+                              ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                              : log.level === 'WARN'
+                              ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                              : log.level === 'SECURITY'
+                              ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                              : log.level === 'AUTH'
+                              ? 'bg-teal-500/20 text-teal-400 border border-teal-500/30'
+                              : log.level === 'CRON'
+                              ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                              : log.level === 'DEBUG'
+                              ? 'bg-slate-500/20 text-slate-400 border border-slate-500/30'
+                              : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+
+                          return (
+                            <div
+                              key={log.id}
+                              onClick={() => setSelectedSystemLogForDetail(log)}
+                              className="pt-2.5 first:pt-0 group hover:bg-slate-800/40 p-2 rounded-xl transition-colors cursor-pointer flex flex-col md:flex-row md:items-start justify-between gap-3"
+                            >
+                              <div className="space-y-1 flex-1">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-slate-400 text-[11px]">{log.timestamp}</span>
+                                  <span className={`px-2 py-0.2 rounded text-[10px] font-bold ${levelBg}`}>
+                                    {log.level}
+                                  </span>
+                                  <span className="px-2 py-0.2 rounded bg-slate-800 text-sky-400 text-[10px] font-bold border border-slate-700">
+                                    {log.service}
+                                  </span>
+                                  <span className="text-slate-300 font-bold text-[11px]">
+                                    {log.method} {log.path}
+                                  </span>
+                                  <span
+                                    className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
+                                      log.status >= 500
+                                        ? 'bg-rose-900/60 text-rose-300'
+                                        : log.status >= 400
+                                        ? 'bg-amber-900/60 text-amber-300'
+                                        : 'bg-emerald-900/60 text-emerald-300'
+                                    }`}
+                                  >
+                                    {log.status}
+                                  </span>
+                                  <span className="text-slate-500 text-[10px]">({log.duration})</span>
+                                </div>
+                                <div className="text-slate-200 text-xs pl-0.5">
+                                  {log.message}
+                                </div>
+                                <div className="text-slate-500 text-[10px] flex items-center gap-3 pt-0.5">
+                                  <span>Trace ID: <span className="text-slate-400">{log.traceId}</span></span>
+                                  <span>Client IP: <span className="text-slate-400">{log.ip}</span></span>
+                                </div>
+                              </div>
+
+                              <div className="shrink-0 flex items-center gap-2 font-sans self-end md:self-center">
+                                <span className="text-[11px] text-sky-400 opacity-0 group-hover:opacity-100 transition-opacity font-bold flex items-center gap-1">
+                                  Inspect Details →
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 5. LOG SYSTEM SPECS & RETENTION FOOTER */}
+                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <span>Log Retention: <strong>90 Days</strong> on S3 Glacier • Encrypted with AES-256</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => alert('Log buffer cleared for current browser session!')}
+                        className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-colors cursor-pointer"
+                      >
+                        Clear Session Buffer
+                      </button>
+                      <button
+                        onClick={() => setIsExportLogsModalOpen(true)}
+                        className="px-3 py-1.5 bg-[#114B44] text-white hover:bg-[#0D3B35] rounded-xl font-bold transition-colors cursor-pointer flex items-center gap-1"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download Full Journal</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'health-check' ? (
-            <div className="space-y-5 animate-fadeIn">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shadow-xs shrink-0">
-                    <Heart className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-black text-gray-900 tracking-tight">Health Check & Self-Healing</h1>
-                    <p className="text-xs text-gray-500 font-medium">Automated health probes, readiness checks, and circuit breakers.</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setIsRunHealthCheckModalOpen(true)}
-                  className="px-4 py-2 bg-[#114B44] text-white rounded-xl text-xs font-bold hover:bg-[#0D3B35] cursor-pointer"
-                >
-                  Uji Health Check Sekarang
-                </button>
-              </div>
+            (() => {
+              const filteredProbes = healthCheckProbesList.filter((probe) => {
+                const matchCategory = healthCheckCategoryFilter === 'ALL' || probe.category === healthCheckCategoryFilter;
+                const matchSearch =
+                  healthCheckSearchQuery === '' ||
+                  probe.name.toLowerCase().includes(healthCheckSearchQuery.toLowerCase()) ||
+                  probe.target.toLowerCase().includes(healthCheckSearchQuery.toLowerCase()) ||
+                  probe.endpoint.toLowerCase().includes(healthCheckSearchQuery.toLowerCase());
+                return matchCategory && matchSearch;
+              });
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-2xs space-y-2">
-                  <div className="font-black text-gray-900 text-sm">Liveness Probe</div>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-700">Healthy (200 OK)</span>
-                  <p className="text-xs text-gray-400">Ping interval: 10 detik</p>
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  {/* 1. TOP HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-rose-600 text-white flex items-center justify-center shadow-xs shrink-0 font-bold">
+                        <Heart className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h1 className="text-xl font-black text-gray-900 tracking-tight">Health Check & Self-Healing</h1>
+                          <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 border border-emerald-200">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            11/12 Probes Passing
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Automated liveness/readiness probes, database health, background worker heartbeats, and circuit breakers.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                      <button
+                        onClick={() => setIsProbeConfigModalOpen(true)}
+                        className="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Sliders className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Threshold Settings</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsAutoHealingEnabled(!isAutoHealingEnabled)}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer border ${
+                          isAutoHealingEnabled
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                            : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
+                        }`}
+                      >
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>{isAutoHealingEnabled ? 'Auto-Healing: Active' : 'Auto-Healing: Disabled'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsRunHealthCheckModalOpen(true)}
+                        className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <Zap className="w-3.5 h-3.5" />
+                        <span>Uji Semua Probe Sekarang</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. HEALTH CHECK KPI CARDS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Global Health Score</span>
+                        <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                          <CheckCircle2 className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-xl font-black text-emerald-600">99.98%</div>
+                      <div className="text-[11px] text-gray-400 font-medium">All critical tiers nominal</div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Active Probes Status</span>
+                        <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                          <Activity className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-xl font-black text-gray-900">11 Healthy / 1 Degraded</div>
+                      <div className="text-[11px] text-amber-600 font-bold">1 External probe warning (Midtrans)</div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Circuit Breaker State</span>
+                        <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                          <Shield className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-xl font-black text-gray-900">Closed (0 Tripped)</div>
+                      <div className="text-[11px] text-gray-400 font-medium">Auto-isolation ready if error &gt; 5%</div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-1">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Mean Probe Latency</span>
+                        <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+                          <Clock className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-xl font-black text-gray-900">18.2 ms</div>
+                      <div className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                        <TrendingDown className="w-3 h-3" />
+                        <span>Ultra-low latency across VPC</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. PROBE CATEGORY FILTERS & SEARCH */}
+                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="relative flex-1 max-w-md">
+                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          value={healthCheckSearchQuery}
+                          onChange={(e) => setHealthCheckSearchQuery(e.target.value)}
+                          placeholder="Search probe name, target host, endpoint..."
+                          className="w-full pl-9 pr-8 py-2 bg-gray-50 hover:bg-gray-100/80 focus:bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#114B44] transition-colors"
+                        />
+                        {healthCheckSearchQuery && (
+                          <button
+                            onClick={() => setHealthCheckSearchQuery('')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="text-xs text-gray-400 font-medium">
+                        Showing <strong>{filteredProbes.length}</strong> of {healthCheckProbesList.length} Probes
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+                      {['ALL', 'Core Services', 'Database & Cache', 'Infrastructure', 'Integrations', 'Background Workers'].map((cat) => {
+                        const isActive = healthCheckCategoryFilter === cat;
+                        const count = cat === 'ALL' ? healthCheckProbesList.length : healthCheckProbesList.filter((p) => p.category === cat).length;
+                        return (
+                          <button
+                            key={cat}
+                            onClick={() => setHealthCheckCategoryFilter(cat)}
+                            className={`px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
+                              isActive
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            <span>{cat}</span>
+                            <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-white/20 text-white' : 'bg-white text-gray-600'}`}>
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 4. PROBES GRID */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredProbes.map((probe) => {
+                      const isHealthy = probe.status === 'Healthy';
+                      const isDegraded = probe.status === 'Degraded';
+
+                      return (
+                        <div
+                          key={probe.id}
+                          className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs hover:shadow-md transition-all space-y-3 flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-gray-100 text-gray-600">
+                                {probe.category}
+                              </span>
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${
+                                  isHealthy
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : isDegraded
+                                    ? 'bg-amber-100 text-amber-700'
+                                    : 'bg-rose-100 text-rose-700'
+                                }`}
+                              >
+                                <span className={`w-1.5 h-1.5 rounded-full ${isHealthy ? 'bg-emerald-500' : isDegraded ? 'bg-amber-500' : 'bg-rose-500'}`}></span>
+                                {probe.status}
+                              </span>
+                            </div>
+
+                            <div className="mt-2">
+                              <h3 className="text-sm font-black text-gray-900">{probe.name}</h3>
+                              <div className="text-[11px] font-mono text-gray-500 truncate mt-0.5">
+                                {probe.endpoint}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2 pt-2 border-t border-gray-100 text-xs">
+                            <div className="grid grid-cols-2 gap-2 text-[11px]">
+                              <div>
+                                <span className="text-gray-400 block">Latency</span>
+                                <span className="font-mono font-black text-gray-900">{probe.latency}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-400 block">30d Uptime</span>
+                                <span className="font-bold text-emerald-600">{probe.uptime30d}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-400 block">Check Interval</span>
+                                <span className="font-bold text-gray-700">Every {probe.interval}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-400 block">Circuit Breaker</span>
+                                <span className="font-bold text-gray-700">{probe.circuitBreaker}</span>
+                              </div>
+                            </div>
+
+                            <div className="text-[10px] text-gray-400 pt-1">
+                              Last tested: {probe.lastChecked}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                            <button
+                              onClick={() => {
+                                alert(`Probe [${probe.name}] berhasil diuji ulang secara manual: 200 OK (${probe.latency})`);
+                              }}
+                              className="flex-1 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                            >
+                              <RefreshCw className="w-3 h-3 text-[#114B44]" />
+                              <span>Re-test</span>
+                            </button>
+                            <button
+                              onClick={() => setSelectedProbeForDetail(probe)}
+                              className="px-3 py-1.5 bg-[#114B44]/10 hover:bg-[#114B44]/20 text-[#114B44] rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                            >
+                              Details
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* 5. SELF HEALING ENGINE POLICIES & STATUS */}
+                  <div className="bg-slate-900 rounded-2xl p-5 text-white shadow-xl space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold border border-emerald-500/30">
+                          <ShieldCheck className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-black text-white">Self-Healing & Auto-Recovery Engine</h4>
+                          <p className="text-xs text-slate-400">Autonomous watchdog daemons handling cluster faults and failovers.</p>
+                        </div>
+                      </div>
+                      <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        Watchdog Daemon: Nominal
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                      <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 space-y-1">
+                        <span className="font-black text-slate-200 block">K8s Pod Auto-Restart</span>
+                        <p className="text-[11px] text-slate-400">Restart container on consecutive 3 failed liveness probes.</p>
+                        <span className="text-[10px] font-bold text-emerald-400">Policy: Immediate (0s delay)</span>
+                      </div>
+                      <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 space-y-1">
+                        <span className="font-black text-slate-200 block">DB Connection Pool Flush</span>
+                        <p className="text-[11px] text-slate-400">Auto-kill zombie connections exceeding 300s idle timeout.</p>
+                        <span className="text-[10px] font-bold text-emerald-400">Policy: Dynamic Sweep</span>
+                      </div>
+                      <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 space-y-1">
+                        <span className="font-black text-slate-200 block">Circuit Breaker Auto-Trip</span>
+                        <p className="text-[11px] text-slate-400">Isolate external API if error rate exceeds 5% in 60 seconds.</p>
+                        <span className="text-[10px] font-bold text-emerald-400">Policy: Fallback Mock / Queue</span>
+                      </div>
+                      <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/80 space-y-1">
+                        <span className="font-black text-slate-200 block">Memory Garbage Collect</span>
+                        <p className="text-[11px] text-slate-400">Trigger Node.js heap compaction when RAM &gt; 85%.</p>
+                        <span className="text-[10px] font-bold text-emerald-400">Policy: Safe V8 Compaction</span>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
-                <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-2xs space-y-2">
-                  <div className="font-black text-gray-900 text-sm">Readiness Probe</div>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-700">Ready to Serve</span>
-                  <p className="text-xs text-gray-400">DB connection pool: 24/50 active</p>
-                </div>
-                <div className="p-4 bg-white rounded-2xl border border-gray-200 shadow-2xs space-y-2">
-                  <div className="font-black text-gray-900 text-sm">Circuit Breaker</div>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-700">Closed (Normal)</span>
-                  <p className="text-xs text-gray-400">Error threshold: &lt; 0.05%</p>
-                </div>
-              </div>
-            </div>
+              );
+            })()
           ) : activeNav === 'maintenance' ? (
             (() => {
               return (
@@ -28377,6 +29361,257 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                 <div className="flex items-center justify-end pt-3 border-t border-gray-100">
                   <button onClick={() => setIsStatusPublicPageModalOpen(false)} className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. Modal System Log Inspector */}
+          {selectedSystemLogForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-[#0F172A] text-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200 border border-slate-700 font-mono text-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+                      <Terminal className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white font-sans">Log Trace Inspector: {selectedSystemLogForDetail.id}</h3>
+                      <p className="text-[11px] text-slate-400 font-sans">{selectedSystemLogForDetail.timestamp}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedSystemLogForDetail(null)} className="text-slate-400 hover:text-white p-1 rounded font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] bg-slate-900/90 p-3 rounded-xl border border-slate-800 font-sans">
+                  <div>
+                    <span className="text-slate-500 block">Level</span>
+                    <span className="font-bold text-emerald-400">{selectedSystemLogForDetail.level}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Service</span>
+                    <span className="font-bold text-sky-400">{selectedSystemLogForDetail.service}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">HTTP Status</span>
+                    <span className="font-bold text-amber-400">{selectedSystemLogForDetail.status}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Latency</span>
+                    <span className="font-bold text-white">{selectedSystemLogForDetail.duration}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1 bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block font-sans">Message & Path</span>
+                  <div className="text-emerald-300 font-bold">{selectedSystemLogForDetail.method} {selectedSystemLogForDetail.path}</div>
+                  <div className="text-slate-200 text-xs pt-1">{selectedSystemLogForDetail.message}</div>
+                </div>
+
+                <div className="space-y-1 bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block font-sans">Metadata & Context</span>
+                  <div className="text-slate-400 text-[11px]">Trace ID: <span className="text-slate-200">{selectedSystemLogForDetail.traceId}</span></div>
+                  <div className="text-slate-400 text-[11px]">Client IP: <span className="text-slate-200">{selectedSystemLogForDetail.ip}</span></div>
+                  <div className="text-slate-400 text-[11px]">User Agent: <span className="text-slate-200">{selectedSystemLogForDetail.userAgent}</span></div>
+                  <div className="text-slate-400 text-[11px] pt-1">Payload Trace:</div>
+                  <pre className="text-[11px] text-sky-300 bg-slate-950 p-2 rounded-lg overflow-x-auto">
+                    {JSON.stringify(selectedSystemLogForDetail.details, null, 2)}
+                  </pre>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-800 font-sans">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard?.writeText(JSON.stringify(selectedSystemLogForDetail, null, 2));
+                      alert('Log payload disalin!');
+                    }}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    Salin Raw JSON
+                  </button>
+                  <button
+                    onClick={() => setSelectedSystemLogForDetail(null)}
+                    className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    Tutup
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 8. Modal Export Logs */}
+          {isExportLogsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Export System & Access Logs</h3>
+                      <p className="text-xs text-gray-500">Unduh arsip log untuk audit keamanan</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsExportLogsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Pilih Format File</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['JSON Array', 'CSV Spreadsheet', 'Syslog .gz'].map((fmt, i) => (
+                        <button key={fmt} className={`py-2 px-3 rounded-xl border text-center font-bold cursor-pointer transition-colors ${i === 0 ? 'bg-[#114B44] text-white border-[#114B44]' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}`}>
+                          {fmt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Rentang Waktu</label>
+                    <select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none text-xs">
+                      <option>Last 1 Hour (12,400 logs)</option>
+                      <option>Last 24 Hours (1,284,920 logs)</option>
+                      <option>Last 7 Days (8,920,000 logs)</option>
+                      <option>Custom Date Range</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3 bg-blue-50 text-blue-900 rounded-xl text-[11px] leading-relaxed">
+                    ℹ️ File ekspor akan dipaketkan dalam arsip terkompresi terenkripsi SHA-256 dan siap diunduh dalam hitungan detik.
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsExportLogsModalOpen(false)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      alert('Arsip log sedang disiapkan dan akan segera terunduh!');
+                      setIsExportLogsModalOpen(false);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                  >
+                    Unduh File Log
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 9. Modal Probe Deep Diagnostics */}
+          {selectedProbeForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black">
+                      <Heart className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">{selectedProbeForDetail.name}</h3>
+                      <p className="text-xs text-gray-500">{selectedProbeForDetail.target}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedProbeForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <span className="text-gray-400 block text-[11px]">Endpoint & Method</span>
+                    <span className="font-mono font-bold text-gray-900">{selectedProbeForDetail.endpoint}</span>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <span className="text-gray-400 block text-[11px]">Status Probe</span>
+                    <span className="font-bold text-emerald-600">{selectedProbeForDetail.status} ({selectedProbeForDetail.responseCode})</span>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <span className="text-gray-400 block text-[11px]">Response Time</span>
+                    <span className="font-mono font-black text-gray-900">{selectedProbeForDetail.latency}</span>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <span className="text-gray-400 block text-[11px]">30-Day SLA Uptime</span>
+                    <span className="font-bold text-emerald-600">{selectedProbeForDetail.uptime30d}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1 text-xs">
+                  <span className="font-bold text-gray-700 block">Diagnostic Response Payload</span>
+                  <pre className="p-3 bg-slate-900 text-emerald-400 rounded-xl font-mono text-[11px] overflow-x-auto">
+                    {JSON.stringify(selectedProbeForDetail.details, null, 2)}
+                  </pre>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 text-xs">
+                  <button onClick={() => setSelectedProbeForDetail(null)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      alert(`Probe [${selectedProbeForDetail.name}] triggered test: Success 200 OK!`);
+                      setSelectedProbeForDetail(null);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl font-bold cursor-pointer shadow-xs"
+                  >
+                    Jalankan Uji Sekarang
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 10. Modal Probe Threshold Configuration */}
+          {isProbeConfigModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Sliders className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Health Check & Threshold Settings</h3>
+                      <p className="text-xs text-gray-500">Konfigurasi interval probe dan kebijakan circuit breaker</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsProbeConfigModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Default Ping Interval</label>
+                    <select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none">
+                      <option>5 Detik (High Sensitivity)</option>
+                      <option>10 Detik (Standard Production)</option>
+                      <option>30 Detik (Relaxed)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Circuit Breaker Error Rate Threshold</label>
+                    <select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none">
+                      <option>5% Failed Requests (Strict)</option>
+                      <option>10% Failed Requests (Standard)</option>
+                      <option>20% Failed Requests (Tolerant)</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3 bg-emerald-50 text-emerald-900 rounded-xl text-[11px] leading-relaxed space-y-1">
+                    <span className="font-bold block">✓ Self-Healing Watchdog Siap</span>
+                    <span>Setiap kegagalan beruntun 3 kali akan memicu container recreation secara otomatis tanpa downtime.</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsProbeConfigModalOpen(false)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      alert('Pengaturan ambang batas probe berhasil disimpan!');
+                      setIsProbeConfigModalOpen(false);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                  >
+                    Simpan Konfigurasi
+                  </button>
                 </div>
               </div>
             </div>
