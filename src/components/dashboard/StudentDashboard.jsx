@@ -53,7 +53,19 @@ import {
   TrendingUp,
   ArrowUpRight,
   Target,
-  Activity
+  Activity,
+  Lock,
+  Eye,
+  EyeOff,
+  Palette,
+  Sun,
+  Camera,
+  Edit3,
+  Link2,
+  Trash2,
+  Pause,
+  Mail,
+  Shield
 } from 'lucide-react';
 
 export default function StudentDashboard({ user, onJoinLive, onExploreCourses, onBackToHome, onLogout, onSwitchRole }) {
@@ -127,6 +139,40 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   const [analyticsAssignmentFilter, setAnalyticsAssignmentFilter] = useState('All Assignments');
   const [isAnalyticsDateModalOpen, setIsAnalyticsDateModalOpen] = useState(false);
   const [analyticsHoveredDay, setAnalyticsHoveredDay] = useState(15); // Day 15 active tooltip matching screenshot
+
+  // Settings View States (matching media_1790729523105.jpg)
+  const [settingsTab, setSettingsTab] = useState('account'); // 'account' | 'notifications' | 'appearance' | 'language' | 'privacy' | 'payments' | 'integrations'
+  const [profileFullName, setProfileFullName] = useState('Aisha Rahman');
+  const [profileEmail, setProfileEmail] = useState('aisha.rahman@example.com');
+  const [profileRole, setProfileRole] = useState('Student');
+  const [profileBio, setProfileBio] = useState('Passionate about learning Islam, languages, and technology. Always eager to grow and gain new knowledge.');
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [learningTimezone, setLearningTimezone] = useState('(GMT+2) Cairo');
+  const [learningDefaultLanguage, setLearningDefaultLanguage] = useState('English');
+  const [learningGoals, setLearningGoals] = useState('Personal Development');
+  const [learningWeeklyGoal, setLearningWeeklyGoal] = useState('5 hours per week');
+  const [notifClassReminders, setNotifClassReminders] = useState(true);
+  const [notifLiveClass, setNotifLiveClass] = useState(true);
+  const [notifAssignments, setNotifAssignments] = useState(true);
+  const [notifQuizResults, setNotifQuizResults] = useState(true);
+  const [notifMessages, setNotifMessages] = useState(true);
+  const [notifMarketing, setNotifMarketing] = useState(false);
+  const [appearanceTheme, setAppearanceTheme] = useState('Light');
+  const [appearanceAccentColor, setAppearanceAccentColor] = useState('emerald');
+  const [appearanceFontSize, setAppearanceFontSize] = useState('Medium');
+  const [privacyProfileVisibility, setPrivacyProfileVisibility] = useState('Visible to everyone');
+  const [privacyShowEmail, setPrivacyShowEmail] = useState('Only to teachers');
+  const [privacyAllowMessages, setPrivacyAllowMessages] = useState('Everyone');
+  const [privacyTwoFactor, setPrivacyTwoFactor] = useState(false);
+  const [connectedGoogle, setConnectedGoogle] = useState(false);
+  const [connectedApple, setConnectedApple] = useState(false);
+  const [connectedMicrosoft, setConnectedMicrosoft] = useState(false);
 
   // Browse Classes View States (matching media_1790726478349.jpg)
   const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
@@ -7212,6 +7258,720 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   </div>
 
                 </aside>
+
+              </div>
+
+            </div>
+          ) : activeNav === 'settings' ? (
+            /* ========================================================= */
+            /* VIEW: SETTINGS ROOM (MATCHING media_1790729523105.jpg)    */
+            /* ========================================================= */
+            <div className="space-y-6 animate-fadeIn">
+              
+              {/* 1. TOP HEADER BAR */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#114B44] text-white flex items-center justify-center shadow-xs shrink-0">
+                  <Settings className="w-5 h-5" />
+                </div>
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Settings</h1>
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    Manage your account, preferences, and learning experience.
+                  </p>
+                </div>
+              </div>
+
+              {/* 2. HORIZONTAL TAB SWITCHER (7 Tabs) */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {[
+                  { id: 'account', label: 'Account', icon: User },
+                  { id: 'notifications', label: 'Notifications', icon: Bell },
+                  { id: 'appearance', label: 'Appearance', icon: Palette },
+                  { id: 'language', label: 'Language', icon: Globe },
+                  { id: 'privacy', label: 'Privacy & Security', icon: Shield },
+                  { id: 'payments', label: 'Payments', icon: CreditCard },
+                  { id: 'integrations', label: 'Integrations', icon: Link2 },
+                ].map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = settingsTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setSettingsTab(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-2xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-600 border border-gray-200/80'
+                      }`}
+                    >
+                      <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 3. MAIN SETTINGS CARDS GRID */}
+              <div className="space-y-5">
+                
+                {/* ROW 1: Profile Information (Wide) + Change Password */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                  
+                  {/* CARD 1: Profile Information (2 Cols) */}
+                  <div className="lg:col-span-2 bg-white rounded-3xl border border-gray-200/90 p-5 sm:p-6 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                          <User className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h3 className="font-extrabold text-sm text-gray-900">Profile Information</h3>
+                          <p className="text-[11px] text-gray-400">Update your personal information and profile details.</p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (isEditingProfile) {
+                            alert('Profil berhasil diperbarui!');
+                          }
+                          setIsEditingProfile(!isEditingProfile);
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 text-gray-500" />
+                        <span>{isEditingProfile ? 'Save Changes' : 'Edit Profile'}</span>
+                      </button>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-5 items-start">
+                      {/* Avatar with Camera Overlay */}
+                      <div className="relative shrink-0 mx-auto sm:mx-0">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-gray-100 border-2 border-emerald-500 shadow-xs">
+                          <img
+                            src={studentAvatar}
+                            alt={profileFullName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.target.src = '/images/student_aisha.jpg'; }}
+                          />
+                        </div>
+                        <button
+                          onClick={() => alert('Pilih foto profil baru dari perangkat Anda.')}
+                          className="absolute bottom-0 right-0 w-7 h-7 bg-white hover:bg-gray-100 border border-gray-200 rounded-full flex items-center justify-center text-gray-700 shadow-md cursor-pointer transition-colors"
+                          title="Ganti Foto"
+                        >
+                          <Camera className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Fields Form */}
+                      <div className="flex-1 w-full space-y-3 text-xs">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Full Name</label>
+                            <input
+                              type="text"
+                              value={profileFullName}
+                              disabled={!isEditingProfile}
+                              onChange={(e) => setProfileFullName(e.target.value)}
+                              className={`w-full rounded-xl p-2 text-xs font-semibold focus:outline-none transition-all ${
+                                isEditingProfile
+                                  ? 'bg-white border-2 border-[#114B44] text-gray-900 shadow-2xs'
+                                  : 'bg-[#F8FAFC] border border-gray-200 text-gray-700'
+                              }`}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Email Address</label>
+                            <input
+                              type="email"
+                              value={profileEmail}
+                              disabled={!isEditingProfile}
+                              onChange={(e) => setProfileEmail(e.target.value)}
+                              className={`w-full rounded-xl p-2 text-xs font-semibold focus:outline-none transition-all ${
+                                isEditingProfile
+                                  ? 'bg-white border-2 border-[#114B44] text-gray-900 shadow-2xs'
+                                  : 'bg-[#F8FAFC] border border-gray-200 text-gray-700'
+                              }`}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1 text-[11px]">Role</label>
+                            <select
+                              value={profileRole}
+                              disabled={!isEditingProfile}
+                              onChange={(e) => setProfileRole(e.target.value)}
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 text-xs font-semibold text-gray-700 focus:outline-none"
+                            >
+                              <option value="Student">Student</option>
+                              <option value="Teacher">Teacher</option>
+                              <option value="Guest">Guest</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="block font-bold text-gray-700 text-[11px]">Bio</label>
+                            <span className="text-[10px] text-gray-400 font-bold">{profileBio.length}/200</span>
+                          </div>
+                          <textarea
+                            rows="2"
+                            maxLength={200}
+                            value={profileBio}
+                            disabled={!isEditingProfile}
+                            onChange={(e) => setProfileBio(e.target.value)}
+                            className={`w-full rounded-xl p-2.5 text-xs font-medium focus:outline-none resize-none transition-all ${
+                              isEditingProfile
+                                ? 'bg-white border-2 border-[#114B44] text-gray-900 shadow-2xs'
+                                : 'bg-[#F8FAFC] border border-gray-200 text-gray-700'
+                            }`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Change Password (1 Col) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-sm text-gray-900">Change Password</h3>
+                        <p className="text-[10px] text-gray-400">Keep your account secure with a strong password.</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2.5 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1 text-[11px]">Current Password</label>
+                        <div className="relative">
+                          <input
+                            type={showCurrentPassword ? 'text' : 'password'}
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            placeholder="Enter current password"
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 pr-8 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                          >
+                            {showCurrentPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1 text-[10px]">New Password</label>
+                          <div className="relative">
+                            <input
+                              type={showNewPassword ? 'text' : 'password'}
+                              value={newPassword}
+                              onChange={(e) => setNewPassword(e.target.value)}
+                              placeholder="Enter new password"
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 pr-7 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowNewPassword(!showNewPassword)}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                            >
+                              {showNewPassword ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1 text-[10px]">Confirm New Password</label>
+                          <div className="relative">
+                            <input
+                              type={showConfirmPassword ? 'text' : 'password'}
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
+                              placeholder="Confirm new password"
+                              className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2 pr-7 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                            >
+                              {showConfirmPassword ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (!currentPassword || !newPassword) {
+                            alert('Silakan masukkan password saat ini dan password baru.');
+                            return;
+                          }
+                          if (newPassword !== confirmPassword) {
+                            alert('Konfirmasi password tidak cocok!');
+                            return;
+                          }
+                          alert('Password Anda berhasil diperbarui!');
+                          setCurrentPassword('');
+                          setNewPassword('');
+                          setConfirmPassword('');
+                        }}
+                        className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs transition-all shadow-xs cursor-pointer text-center mt-1"
+                      >
+                        Update Password
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* ROW 2: Learning Preferences + Notification Settings + Appearance (3 Cols) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  
+                  {/* CARD 3: Learning Preferences */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <GraduationCap className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-sm text-gray-900">Learning Preferences</h3>
+                        <p className="text-[10px] text-gray-400">Customize your learning experience.</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-gray-700 font-bold">
+                          <Globe className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Timezone</span>
+                        </div>
+                        <select
+                          value={learningTimezone}
+                          onChange={(e) => setLearningTimezone(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="(GMT+2) Cairo">(GMT+2) Cairo</option>
+                          <option value="(GMT+7) Jakarta">(GMT+7) Jakarta</option>
+                          <option value="(GMT+3) Riyadh">(GMT+3) Riyadh</option>
+                          <option value="(GMT+0) London">(GMT+0) London</option>
+                          <option value="(GMT-5) New York">(GMT-5) New York</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-gray-700 font-bold">
+                          <span className="text-xs font-bold text-gray-400">文A</span>
+                          <span>Default Language</span>
+                        </div>
+                        <select
+                          value={learningDefaultLanguage}
+                          onChange={(e) => setLearningDefaultLanguage(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="English">English</option>
+                          <option value="العربية">العربية</option>
+                          <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-gray-700 font-bold">
+                          <Target className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Learning Goals</span>
+                        </div>
+                        <select
+                          value={learningGoals}
+                          onChange={(e) => setLearningGoals(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="Personal Development">Personal Development</option>
+                          <option value="Academic Degree">Academic Degree</option>
+                          <option value="Career Growth">Career Growth</option>
+                          <option value="Islamic Knowledge">Islamic Knowledge</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-gray-700 font-bold">
+                          <TrendingUp className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Weekly Goal</span>
+                        </div>
+                        <select
+                          value={learningWeeklyGoal}
+                          onChange={(e) => setLearningWeeklyGoal(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="3 hours per week">3 hours per week</option>
+                          <option value="5 hours per week">5 hours per week</option>
+                          <option value="10 hours per week">10 hours per week</option>
+                          <option value="15+ hours per week">15+ hours per week</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 4: Notification Settings */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <Bell className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-sm text-gray-900">Notification Settings</h3>
+                        <p className="text-[10px] text-gray-400">Choose what notifications you want to receive.</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2.5 text-xs">
+                      {[
+                        { label: 'Class reminders', icon: Calendar, val: notifClassReminders, set: setNotifClassReminders },
+                        { label: 'Live class notifications', icon: Video, val: notifLiveClass, set: setNotifLiveClass },
+                        { label: 'Assignment updates', icon: FileText, val: notifAssignments, set: setNotifAssignments },
+                        { label: 'Quiz results', icon: BarChart2, val: notifQuizResults, set: setNotifQuizResults },
+                        { label: 'Messages', icon: MessageSquare, val: notifMessages, set: setNotifMessages },
+                        { label: 'Marketing and news', icon: Bell, val: notifMarketing, set: setNotifMarketing },
+                      ].map((item, i) => {
+                        const Icon = item.icon;
+                        return (
+                          <div key={i} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-gray-700 font-semibold text-[11px]">
+                              <Icon className="w-3.5 h-3.5 text-gray-400" />
+                              <span>{item.label}</span>
+                            </div>
+                            <button
+                              onClick={() => item.set(!item.val)}
+                              className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${
+                                item.val ? 'bg-[#114B44]' : 'bg-gray-300'
+                              }`}
+                            >
+                              <div
+                                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                                  item.val ? 'translate-x-4' : 'translate-x-0'
+                                }`}
+                              ></div>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* CARD 5: Appearance */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <Palette className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-sm text-gray-900">Appearance</h3>
+                        <p className="text-[10px] text-gray-400">Customize how the platform looks.</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3.5 text-xs">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-gray-700 font-bold">
+                          <Sun className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Theme</span>
+                        </div>
+                        <select
+                          value={appearanceTheme}
+                          onChange={(e) => setAppearanceTheme(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="Light">Light</option>
+                          <option value="Dark">Dark</option>
+                          <option value="System">System</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-gray-700 font-bold">
+                          <Sparkles className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Accent Color</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          {[
+                            { id: 'emerald', bg: 'bg-[#114B44]' },
+                            { id: 'blue', bg: 'bg-blue-500' },
+                            { id: 'purple', bg: 'bg-purple-500' },
+                            { id: 'amber', bg: 'bg-amber-400' },
+                            { id: 'coral', bg: 'bg-rose-500' },
+                          ].map((col) => (
+                            <button
+                              key={col.id}
+                              onClick={() => setAppearanceAccentColor(col.id)}
+                              className={`w-5 h-5 rounded-full ${col.bg} flex items-center justify-center transition-transform cursor-pointer ${
+                                appearanceAccentColor === col.id ? 'ring-2 ring-offset-1 ring-gray-400 scale-110' : 'hover:scale-105'
+                              }`}
+                            >
+                              {appearanceAccentColor === col.id && <Check className="w-3 h-3 text-white" />}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-gray-700 font-bold">
+                          <span className="text-xs font-bold text-gray-400">AA</span>
+                          <span>Font Size</span>
+                        </div>
+                        <select
+                          value={appearanceFontSize}
+                          onChange={(e) => setAppearanceFontSize(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="Small">Small</option>
+                          <option value="Medium">Medium</option>
+                          <option value="Large">Large</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* ROW 3: Privacy & Security + Connected Accounts + Account Actions (3 Cols) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  
+                  {/* CARD 6: Privacy & Security */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <Shield className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-sm text-gray-900">Privacy & Security</h3>
+                        <p className="text-[10px] text-gray-400">Manage your privacy and security settings.</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 text-gray-700 font-bold text-[11px]">
+                          <Eye className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Profile Visibility</span>
+                        </div>
+                        <select
+                          value={privacyProfileVisibility}
+                          onChange={(e) => setPrivacyProfileVisibility(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2 py-1 text-[11px] font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="Visible to everyone">Visible to everyone</option>
+                          <option value="Only class members">Only class members</option>
+                          <option value="Private">Private</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 text-gray-700 font-bold text-[11px]">
+                          <Mail className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Show Email Address</span>
+                        </div>
+                        <select
+                          value={privacyShowEmail}
+                          onChange={(e) => setPrivacyShowEmail(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2 py-1 text-[11px] font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="Only to teachers">Only to teachers</option>
+                          <option value="Everyone">Everyone</option>
+                          <option value="Nobody">Nobody</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 text-gray-700 font-bold text-[11px]">
+                          <MessageSquare className="w-3.5 h-3.5 text-gray-400" />
+                          <span>Allow Messages from</span>
+                        </div>
+                        <select
+                          value={privacyAllowMessages}
+                          onChange={(e) => setPrivacyAllowMessages(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-xl px-2 py-1 text-[11px] font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="Everyone">Everyone</option>
+                          <option value="Classmates only">Classmates only</option>
+                          <option value="Teachers only">Teachers only</option>
+                        </select>
+                      </div>
+
+                      <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                          <span className="font-bold text-gray-800 text-[11px] block">Two-Factor Authentication</span>
+                          <span className="text-[9.5px] text-gray-400 block">Add an extra layer of security to your account.</span>
+                        </div>
+                        <button
+                          onClick={() => setPrivacyTwoFactor(!privacyTwoFactor)}
+                          className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer shrink-0 ${
+                            privacyTwoFactor ? 'bg-[#114B44]' : 'bg-gray-300'
+                          }`}
+                        >
+                          <div
+                            className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                              privacyTwoFactor ? 'translate-x-4' : 'translate-x-0'
+                            }`}
+                          ></div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 7: Connected Accounts */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <Link2 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-sm text-gray-900">Connected Accounts</h3>
+                        <p className="text-[10px] text-gray-400">Link your accounts for easier access.</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2.5 text-xs">
+                      {/* Google */}
+                      <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50/70 border border-gray-100">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-white border border-gray-200 flex items-center justify-center font-bold text-xs shadow-2xs">
+                            <span className="text-red-500">G</span>
+                          </div>
+                          <div>
+                            <span className="font-extrabold text-gray-900 text-xs block">Google</span>
+                            <span className="text-[10px] text-gray-400 block">{connectedGoogle ? 'Connected' : 'Not Connected'}</span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setConnectedGoogle(!connectedGoogle)}
+                          className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            connectedGoogle
+                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                              : 'bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 shadow-2xs'
+                          }`}
+                        >
+                          {connectedGoogle ? 'Disconnect' : 'Connect'}
+                        </button>
+                      </div>
+
+                      {/* Apple */}
+                      <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50/70 border border-gray-100">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-black text-white flex items-center justify-center font-bold text-xs shadow-2xs">
+                            
+                          </div>
+                          <div>
+                            <span className="font-extrabold text-gray-900 text-xs block">Apple</span>
+                            <span className="text-[10px] text-gray-400 block">{connectedApple ? 'Connected' : 'Not Connected'}</span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setConnectedApple(!connectedApple)}
+                          className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            connectedApple
+                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                              : 'bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 shadow-2xs'
+                          }`}
+                        >
+                          {connectedApple ? 'Disconnect' : 'Connect'}
+                        </button>
+                      </div>
+
+                      {/* Microsoft */}
+                      <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50/70 border border-gray-100">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-[#00A4EF] text-white flex items-center justify-center font-black text-xs shadow-2xs">
+                            ⊞
+                          </div>
+                          <div>
+                            <span className="font-extrabold text-gray-900 text-xs block">Microsoft</span>
+                            <span className="text-[10px] text-gray-400 block">{connectedMicrosoft ? 'Connected' : 'Not Connected'}</span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setConnectedMicrosoft(!connectedMicrosoft)}
+                          className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            connectedMicrosoft
+                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                              : 'bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 shadow-2xs'
+                          }`}
+                        >
+                          {connectedMicrosoft ? 'Disconnect' : 'Connect'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 8: Account Actions */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-3.5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <Settings className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-sm text-gray-900">Account Actions</h3>
+                        <p className="text-[10px] text-gray-400">Manage your account data and settings.</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 text-xs">
+                      {/* Download My Data */}
+                      <button
+                        onClick={() => alert('Mengunduh seluruh arsip data akun Anda (.zip)...')}
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition-colors cursor-pointer border border-transparent hover:border-gray-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Download className="w-3.5 h-3.5 text-gray-500" />
+                          <span>Download My Data</span>
+                        </div>
+                        <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                      </button>
+
+                      {/* Deactivate Account */}
+                      <button
+                        onClick={() => {
+                          if (window.confirm('Apakah Anda yakin ingin menonaktifkan akun sementara?')) {
+                            alert('Akun dinonaktifkan.');
+                          }
+                        }}
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-gray-700 font-bold transition-colors cursor-pointer border border-transparent hover:border-gray-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Pause className="w-3.5 h-3.5 text-gray-500" />
+                          <span>Deactivate Account</span>
+                        </div>
+                        <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                      </button>
+
+                      {/* Delete Account */}
+                      <button
+                        onClick={() => {
+                          if (window.confirm('PERINGATAN: Penghapusan akun bersifat permanen. Lanjutkan?')) {
+                            alert('Permintaan hapus akun telah diterima.');
+                          }
+                        }}
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl bg-rose-50/80 hover:bg-rose-100/80 text-rose-700 border border-rose-200/80 font-bold transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                          <div className="text-left">
+                            <span className="block text-xs font-black">Delete Account</span>
+                            <span className="block text-[9.5px] text-rose-500 font-medium">This action cannot be undone.</span>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-3.5 h-3.5 text-rose-500" />
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
 
               </div>
 
