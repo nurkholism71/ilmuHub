@@ -528,8 +528,27 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     }
   ]);
 
-  // Selected user currently shown in the right sidebar
-  const currentSelectedUser = adminUsersList.find(u => u.id === selectedUserId) || adminUsersList[0];
+  // Selected user currently shown in the right sidebar with safe fallback
+  const fallbackUser = {
+    id: 'usr-1',
+    number: 1,
+    name: 'Aisha Rahman',
+    email: 'aisha.rahman@example.com',
+    avatar: '/images/student_aisha.jpg',
+    initials: null,
+    userId: 'USR-001245',
+    role: 'Student',
+    roleBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    status: 'Active',
+    statusType: 'active',
+    joinDate: '12 Sep 2026',
+    lastActive: '2 hours ago',
+    classesCount: 8,
+    completedClasses: 5,
+    certificatesCount: 3,
+    bio: 'Passionate student learning Arabic & Islamic studies.'
+  };
+  const currentSelectedUser = adminUsersList.find(u => u.id === selectedUserId) || adminUsersList[0] || fallbackUser;
 
   const toggleSelectUserCheckbox = (id) => {
     setSelectedUserCheckboxes(prev => 
@@ -758,8 +777,42 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     }
   ]);
 
-  // Selected VIP Teacher for Right Panel CRM
-  const currentSelectedVipTeacher = vipTeachersList.find(t => t.id === selectedVipTeacherId) || vipTeachersList[0];
+  // Selected VIP Teacher for Right Panel CRM with safe fallback
+  const currentSelectedVipTeacher = vipTeachersList.find(t => t.id === selectedVipTeacherId) || vipTeachersList[0] || {
+    id: 'vip-1',
+    name: 'Dr. Sheikh Tariq Al-Madani',
+    avatar: '/images/tutor_ahmed.jpg',
+    email: 'tariq.madani@univ-islamic.org',
+    phone: '+62 812-9842-1920',
+    location: 'Madinah / Jakarta',
+    specialty: 'Ushul Fiqh & Qawaid Fiqhiyyah',
+    credentials: "S3 Ushul Fiqh UIM Madinah, Sanad Muttashil Mazhab Syafi'i",
+    experience: '14+ Years Academic & Talaqqi',
+    status: 'Pending Review',
+    statusType: 'pending',
+    submittedDate: '28 Sep 2026',
+    rating: '5.0',
+    classesCount: 42,
+    subscribersCount: 0,
+    pricingTiers: {
+      halakah: { price: 'Rp 199.000 / bln', name: 'VIP Halakah Ushul Fiqh', schedule: 'Setiap Sabtu 20:00 WIB', liveSessionCount: '4x Live / Bln' },
+      mentorship: { price: 'Rp 1.250.000 / bln', name: 'Private 1-on-1 Takhassus', quota: 'Max 10 Santri/Bln', benefits: 'Private Talaqqi + Q&A Fatwa Personal' },
+      lifetime: { price: 'Rp 3.500.000', name: 'Executive Ilmiyah Pass', benefits: 'Akses Semua Rekaman + Sanad Ijazah Bersertifikat' }
+    },
+    documents: [
+      { id: 'doc-1', name: 'Ijazah_Sanad_Ushul_Madinah.pdf', type: 'sanad', size: '2.4 MB', isVerified: true, date: '28 Sep 2026' }
+    ],
+    bankDetails: {
+      bankName: 'BSI (Bank Syariah Indonesia)',
+      accNumber: '7148892301',
+      accName: 'Tariq Al-Madani',
+      mayarId: 'mayar.id/sheikhtariq',
+      isMayarConnected: true
+    },
+    bio: "Dosen tamu di berbagai ma'had 'aly dan pemegang sanad muttashil fiqh serta ushul fiqh dari Masyayikh Masjid Nabawi Madinah.",
+    sanadLineage: "Sanad Fiqh Syafi'i melalui Syaikh Muhammad bin Ali Al-Khatib Al-Makki.",
+    onboardingNote: "Pengajuan kurikulum halakah mingguan fokus pada Matn Al-Waraqat."
+  };
 
   const toggleSelectVipCheckbox = (id) => {
     setSelectedVipCheckboxes(prev => 
