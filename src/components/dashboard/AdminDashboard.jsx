@@ -206,6 +206,23 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isExportLogsModalOpen, setIsExportLogsModalOpen] = useState(false);
 
   // =========================================================
+  // PAYMENTS & GATEWAY MANAGER STATES
+  // =========================================================
+  const [paymentsActiveTab, setPaymentsActiveTab] = useState('transactions'); // 'transactions' | 'webhooks' | 'refunds' | 'channels'
+  const [paymentsSearchQuery, setPaymentsSearchQuery] = useState('');
+  const [paymentsMethodFilter, setPaymentsMethodFilter] = useState('ALL');
+  const [paymentsStatusFilter, setPaymentsStatusFilter] = useState('ALL');
+  const [paymentsDateRangeFilter, setPaymentsDateRangeFilter] = useState('Last 30 Days');
+  const [selectedPaymentTxForDetail, setSelectedPaymentTxForDetail] = useState(null);
+  const [selectedWebhookForDetail, setSelectedWebhookForDetail] = useState(null);
+  const [selectedRefundForProcess, setSelectedRefundForProcess] = useState(null);
+  const [isManualSettlementModalOpen, setIsManualSettlementModalOpen] = useState(false);
+  const [isWebhookSimulatorModalOpen, setIsWebhookSimulatorModalOpen] = useState(false);
+  const [isExportPaymentsModalOpen, setIsExportPaymentsModalOpen] = useState(false);
+  const [manualSettlementOrderId, setManualSettlementOrderId] = useState('');
+  const [manualSettlementNotes, setManualSettlementNotes] = useState('');
+
+  // =========================================================
   // HEALTH CHECK STATES
   // =========================================================
   const [healthCheckCategoryFilter, setHealthCheckCategoryFilter] = useState('ALL');
@@ -423,6 +440,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 'certificates', label: 'Certificates', icon: Award },
     { id: 'messages', label: 'Messages', icon: MessageSquare },
     { id: 'earnings', label: 'Earnings', icon: DollarSign },
+    { id: 'payments', label: 'Payments & Gateway', icon: CreditCard },
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
     { id: 'integrations', label: 'Integrations', icon: Link2 },
     { id: 'reports', label: 'Reports', icon: FileBarChart },
@@ -907,6 +925,293 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
       responseCode: 200,
       details: { colo: 'CGK (Jakarta)', tlsVersion: 'TLSv1.3', sni: 'ilmhub.id' }
     }
+  ];
+
+  // =========================================================
+  // PAYMENTS & TRANSACTIONS DATASETS
+  // =========================================================
+  const paymentTransactionsList = [
+    {
+      id: 'TX-2026-9081',
+      orderId: 'ORDER-20260923-9081',
+      studentName: 'Ahmad Fauzi',
+      studentEmail: 'ahmad.fauzi@example.com',
+      studentAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+      classTitle: 'Mastering Tajweed & Tahsin Al-Quran',
+      teacherName: 'Ustadz Abdullah Said, Lc',
+      method: 'BCA Virtual Account',
+      methodType: 'virtual_account',
+      grossAmount: 450000,
+      gatewayFee: 4400,
+      platformFee: 67500, // 15%
+      teacherNet: 378100, // 85% - gateway fee
+      status: 'settlement', // 'settlement' | 'pending' | 'expire' | 'refunded' | 'deny'
+      createdAt: '23 Sep 2026, 16:15',
+      settledAt: '23 Sep 2026, 16:18',
+      vaNumber: '8910812349081',
+      gatewayTxId: 'mid-bca-88129038',
+      provider: 'Midtrans'
+    },
+    {
+      id: 'TX-2026-9082',
+      orderId: 'ORDER-20260923-9082',
+      studentName: 'Siti Nurhaliza',
+      studentEmail: 'siti.nurhaliza@example.com',
+      studentAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+      classTitle: 'Bahasa Arab Pemula: Kitab Al-Ajurrumiyyah',
+      teacherName: 'Ustadzah Maryam Jamilah, M.Pd',
+      method: 'QRIS Dynamic (GoPay / OVO)',
+      methodType: 'qris',
+      grossAmount: 350000,
+      gatewayFee: 2450, // 0.7%
+      platformFee: 52500,
+      teacherNet: 295050,
+      status: 'settlement',
+      createdAt: '23 Sep 2026, 15:40',
+      settledAt: '23 Sep 2026, 15:41',
+      vaNumber: 'QRIS-MID-992019',
+      gatewayTxId: 'mid-qris-1920381',
+      provider: 'Midtrans'
+    },
+    {
+      id: 'TX-2026-9083',
+      orderId: 'ORDER-20260923-9083',
+      studentName: 'Rian Pratama',
+      studentEmail: 'rian.pratama@example.com',
+      studentAvatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150',
+      classTitle: 'Fiqih Muamalah Kontemporer & Fintech Syariah',
+      teacherName: 'Dr. Erwandi Tarmizi, MA',
+      method: 'Mandiri Virtual Account',
+      methodType: 'virtual_account',
+      grossAmount: 750000,
+      gatewayFee: 4400,
+      platformFee: 112500,
+      teacherNet: 633100,
+      status: 'pending',
+      createdAt: '23 Sep 2026, 15:10',
+      settledAt: '-',
+      vaNumber: '887081992083',
+      gatewayTxId: 'mid-mandiri-441290',
+      provider: 'Midtrans'
+    },
+    {
+      id: 'TX-2026-9084',
+      orderId: 'ORDER-20260923-9084',
+      studentName: 'Fatimah Az-Zahra',
+      studentEmail: 'fatimah.zahra@example.com',
+      studentAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
+      classTitle: 'Hafalan Juz 30 & Tajwid Terpadu',
+      teacherName: 'Syekh Dr. Abdul Karim',
+      method: 'Credit Card (Visa 3DS)',
+      methodType: 'credit_card',
+      grossAmount: 600000,
+      gatewayFee: 14000, // 2% + 2000
+      platformFee: 90000,
+      teacherNet: 496000,
+      status: 'settlement',
+      createdAt: '23 Sep 2026, 14:05',
+      settledAt: '23 Sep 2026, 14:06',
+      vaNumber: '**** **** **** 4819',
+      gatewayTxId: 'mid-cc-9912048',
+      provider: 'Midtrans'
+    },
+    {
+      id: 'TX-2026-9085',
+      orderId: 'ORDER-20260923-9085',
+      studentName: 'Budi Santoso',
+      studentEmail: 'budi.santoso@example.com',
+      studentAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      classTitle: 'Tafsir Ibnu Katsir - Surat Al-Baqarah',
+      teacherName: 'Ustadz Abdullah Said, Lc',
+      method: 'BRI Virtual Account',
+      methodType: 'virtual_account',
+      grossAmount: 500000,
+      gatewayFee: 4400,
+      platformFee: 75000,
+      teacherNet: 420600,
+      status: 'refunded',
+      createdAt: '22 Sep 2026, 11:20',
+      settledAt: '22 Sep 2026, 11:22',
+      vaNumber: '0281081992085',
+      gatewayTxId: 'mid-bri-551029',
+      provider: 'Midtrans'
+    },
+    {
+      id: 'TX-2026-9086',
+      orderId: 'ORDER-20260923-9086',
+      studentName: 'Zulham Efendi',
+      studentEmail: 'zulham.e@example.com',
+      studentAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+      classTitle: 'Sirah Nabawiyah: Perjalanan Hidup Rasulullah',
+      teacherName: 'Ustadz Khalid Basalamah, MA',
+      method: 'ShopeePay QRIS',
+      methodType: 'qris',
+      grossAmount: 400000,
+      gatewayFee: 2800,
+      platformFee: 60000,
+      teacherNet: 337200,
+      status: 'settlement',
+      createdAt: '22 Sep 2026, 09:12',
+      settledAt: '22 Sep 2026, 09:13',
+      vaNumber: 'QRIS-SHOPEE-88192',
+      gatewayTxId: 'mid-qris-771829',
+      provider: 'Midtrans'
+    },
+    {
+      id: 'TX-2026-9087',
+      orderId: 'ORDER-20260923-9087',
+      studentName: 'Dewi Sartika',
+      studentEmail: 'dewi.sartika@example.com',
+      studentAvatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+      classTitle: 'Kaidah Ushul Fiqih untuk Pemula',
+      teacherName: 'Ustadz Firanda Andirja, MA',
+      method: 'BNI Virtual Account',
+      methodType: 'virtual_account',
+      grossAmount: 450000,
+      gatewayFee: 4400,
+      platformFee: 67500,
+      teacherNet: 378100,
+      status: 'expire',
+      createdAt: '21 Sep 2026, 19:30',
+      settledAt: '-',
+      vaNumber: '988081992087',
+      gatewayTxId: 'mid-bni-339182',
+      provider: 'Midtrans'
+    }
+  ];
+
+  const paymentWebhookLogsList = [
+    {
+      id: 'WH-9912',
+      timestamp: '2026-09-23 16:18:04 UTC',
+      provider: 'Midtrans',
+      orderId: 'ORDER-20260923-9081',
+      transactionStatus: 'settlement',
+      httpResponse: 200,
+      duration: '42ms',
+      signatureValid: true,
+      retryCount: 0,
+      rawPayload: {
+        transaction_status: 'settlement',
+        order_id: 'ORDER-20260923-9081',
+        gross_amount: '450000.00',
+        payment_type: 'bank_transfer',
+        va_numbers: [{ bank: 'bca', va_number: '8910812349081' }],
+        transaction_time: '2026-09-23 16:18:02',
+        status_code: '200'
+      }
+    },
+    {
+      id: 'WH-9911',
+      timestamp: '2026-09-23 16:40:55 UTC',
+      provider: 'Midtrans',
+      orderId: 'ORDER-20260923-9941',
+      transactionStatus: 'settlement',
+      httpResponse: 504,
+      duration: '4200ms',
+      signatureValid: true,
+      retryCount: 1,
+      rawPayload: {
+        transaction_status: 'settlement',
+        order_id: 'ORDER-20260923-9941',
+        gross_amount: '750000.00',
+        payment_type: 'echannel',
+        status_code: '200'
+      }
+    },
+    {
+      id: 'WH-9910',
+      timestamp: '2026-09-23 15:41:10 UTC',
+      provider: 'Midtrans',
+      orderId: 'ORDER-20260923-9082',
+      transactionStatus: 'settlement',
+      httpResponse: 200,
+      duration: '38ms',
+      signatureValid: true,
+      retryCount: 0,
+      rawPayload: {
+        transaction_status: 'settlement',
+        order_id: 'ORDER-20260923-9082',
+        gross_amount: '350000.00',
+        payment_type: 'qris',
+        status_code: '200'
+      }
+    },
+    {
+      id: 'WH-9909',
+      timestamp: '2026-09-23 14:06:22 UTC',
+      provider: 'Midtrans',
+      orderId: 'ORDER-20260923-9084',
+      transactionStatus: 'capture',
+      httpResponse: 200,
+      duration: '65ms',
+      signatureValid: true,
+      retryCount: 0,
+      rawPayload: {
+        transaction_status: 'capture',
+        fraud_status: 'accept',
+        order_id: 'ORDER-20260923-9084',
+        gross_amount: '600000.00',
+        payment_type: 'credit_card',
+        status_code: '200'
+      }
+    },
+    {
+      id: 'WH-9908',
+      timestamp: '2026-09-22 11:25:00 UTC',
+      provider: 'Midtrans',
+      orderId: 'ORDER-20260923-9085',
+      transactionStatus: 'refund',
+      httpResponse: 200,
+      duration: '52ms',
+      signatureValid: true,
+      retryCount: 0,
+      rawPayload: {
+        transaction_status: 'refund',
+        order_id: 'ORDER-20260923-9085',
+        refund_amount: '500000.00',
+        refund_key: 'REF-20260922-01',
+        status_code: '200'
+      }
+    }
+  ];
+
+  const paymentRefundRequestsList = [
+    {
+      id: 'REF-01',
+      orderId: 'ORDER-20260923-9085',
+      studentName: 'Budi Santoso',
+      studentEmail: 'budi.santoso@example.com',
+      classTitle: 'Tafsir Ibnu Katsir - Surat Al-Baqarah',
+      amount: 500000,
+      requestDate: '22 Sep 2026',
+      reason: 'Jadwal bentrok dengan jam kerja dinas luar kota',
+      status: 'Approved',
+      processedAt: '22 Sep 2026, 14:00',
+      bankTarget: 'BCA (018299104 - Budi Santoso)'
+    },
+    {
+      id: 'REF-02',
+      orderId: 'ORDER-20260923-9099',
+      studentName: 'Hendra Gunawan',
+      studentEmail: 'hendra.g@example.com',
+      classTitle: 'Bahasa Arab Pemula: Kitab Al-Ajurrumiyyah',
+      amount: 450000,
+      requestDate: '23 Sep 2026',
+      reason: 'Salah memilih level kelas santri pemula vs lanjutan',
+      status: 'Pending',
+      processedAt: '-',
+      bankTarget: 'Mandiri (1370019283 - Hendra Gunawan)'
+    }
+  ];
+
+  const paymentChannelsList = [
+    { id: 'qris', name: 'QRIS Dynamic (GoPay / OVO / ShopeePay)', type: 'E-Wallet & QR', fee: '0.7% MDR', status: 'Active', uptime: '100%', volume24h: 'Rp 42.800.000' },
+    { id: 'bca_va', name: 'BCA Virtual Account', type: 'Bank Transfer', fee: 'Rp 4.000 / tx', status: 'Active', uptime: '99.98%', volume24h: 'Rp 118.500.000' },
+    { id: 'mandiri_va', name: 'Mandiri Virtual Account', type: 'Bank Transfer', fee: 'Rp 4.000 / tx', status: 'Active', uptime: '99.95%', volume24h: 'Rp 64.200.000' },
+    { id: 'bri_va', name: 'BRI Virtual Account', type: 'Bank Transfer', fee: 'Rp 4.000 / tx', status: 'Active', uptime: '100%', volume24h: 'Rp 55.400.000' },
+    { id: 'bni_va', name: 'BNI Virtual Account', type: 'Bank Transfer', fee: 'Rp 4.000 / tx', status: 'Active', uptime: '99.90%', volume24h: 'Rp 38.100.000' },
+    { id: 'cc', name: 'Credit Card (3D Secure Visa/Mastercard)', type: 'Card Payment', fee: '2.0% + Rp 2.000', status: 'Active', uptime: '99.85%', volume24h: 'Rp 82.600.000' }
   ];
 
 
@@ -14711,6 +15016,501 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     </aside>
 
                   </div>
+
+                </div>
+              );
+            })()
+          ) : activeNav === 'payments' ? (
+            (() => {
+              const filteredTransactions = paymentTransactionsList.filter((tx) => {
+                const matchMethod = paymentsMethodFilter === 'ALL' || tx.methodType === paymentsMethodFilter;
+                const matchStatus = paymentsStatusFilter === 'ALL' || tx.status === paymentsStatusFilter;
+                const matchSearch =
+                  paymentsSearchQuery === '' ||
+                  tx.orderId.toLowerCase().includes(paymentsSearchQuery.toLowerCase()) ||
+                  tx.studentName.toLowerCase().includes(paymentsSearchQuery.toLowerCase()) ||
+                  tx.classTitle.toLowerCase().includes(paymentsSearchQuery.toLowerCase()) ||
+                  tx.teacherName.toLowerCase().includes(paymentsSearchQuery.toLowerCase()) ||
+                  tx.gatewayTxId.toLowerCase().includes(paymentsSearchQuery.toLowerCase()) ||
+                  tx.vaNumber.toLowerCase().includes(paymentsSearchQuery.toLowerCase());
+                return matchMethod && matchStatus && matchSearch;
+              });
+
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  {/* 1. TOP PAYMENTS HEADER */}
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                    <div className="flex items-start sm:items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center shadow-xs shrink-0 font-bold">
+                        <CreditCard className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                          <h1 className="text-xl font-black text-gray-900 tracking-tight whitespace-nowrap">
+                            Payments & Gateway Manager
+                          </h1>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0 shadow-2xs">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Midtrans & Xendit Live</span>
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 font-medium mt-1">
+                          Real-time payment gateway reconciliation, webhook listeners, settlement audit, and refund processing.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+                      <button
+                        onClick={() => setIsWebhookSimulatorModalOpen(true)}
+                        className="px-3.5 py-2.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all hover:border-gray-300 cursor-pointer"
+                      >
+                        <Zap className="w-3.5 h-3.5 text-amber-500" />
+                        <span>Simulate Webhook</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsManualSettlementModalOpen(true)}
+                        className="px-3.5 py-2.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all hover:border-gray-300 cursor-pointer"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#114B44]" />
+                        <span>Manual Settlement</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsExportPaymentsModalOpen(true)}
+                        className="px-4 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all hover:shadow-md cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Export Data</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. TOP 4 PAYMENT KPI CARDS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Total Volume (30d)</span>
+                        <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                          <DollarSign className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-2xl font-black text-gray-900">Rp 842.650.000</div>
+                      <div className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                        <TrendingUp className="w-3.5 h-3.5" />
+                        <span>+18.4% vs bulan lalu</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Settlement Success Rate</span>
+                        <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                          <ShieldCheck className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-2xl font-black text-emerald-600">99.2%</div>
+                      <div className="text-[11px] text-gray-400 font-medium">1,468 Settled • 12 Pending</div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Webhook Ingestion & Retries</span>
+                        <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                          <RefreshCw className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-2xl font-black text-gray-900">3 In Queue</div>
+                      <div className="text-[11px] text-amber-600 font-bold">1 Retry active (Midtrans upstream)</div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2">
+                      <div className="flex items-center justify-between text-xs text-gray-500 font-bold">
+                        <span>Active Refund Requests</span>
+                        <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                          <RotateCcw className="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div className="text-2xl font-black text-gray-900">2 Requests</div>
+                      <div className="text-[11px] text-purple-700 font-bold">Rp 950.000 awaiting approval</div>
+                    </div>
+                  </div>
+
+                  {/* 3. GATEWAY LIVE CONNECTIVITY BAR */}
+                  <div className="bg-[#F8FAFC] border border-gray-200/80 rounded-2xl p-3.5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 font-bold text-gray-800">
+                      <Activity className="w-4 h-4 text-[#114B44]" />
+                      <span>Live Gateway Sentinel:</span>
+                    </div>
+                    <div className="flex items-center gap-3 flex-wrap text-[11px]">
+                      <span className="flex items-center gap-1 text-gray-600">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Midtrans Core API: <strong>48ms (99.8%)</strong>
+                      </span>
+                      <span className="flex items-center gap-1 text-gray-600">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Xendit Direct VA: <strong>32ms (100%)</strong>
+                      </span>
+                      <span className="flex items-center gap-1 text-gray-600">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        QRIS Dynamic: <strong>4s avg</strong>
+                      </span>
+                      <span className="flex items-center gap-1 text-gray-600">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        3DS Card Fraud Shield: <strong>Enabled</strong>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 4. TAB NAVIGATION */}
+                  <div className="flex items-center gap-2 border-b border-gray-200 pb-2 overflow-x-auto text-xs font-bold">
+                    {[
+                      { id: 'transactions', label: 'All Transactions', count: paymentTransactionsList.length, icon: DollarSign },
+                      { id: 'webhooks', label: 'Webhook Logs & Retries', count: paymentWebhookLogsList.length, icon: Terminal },
+                      { id: 'refunds', label: 'Refund Management', count: paymentRefundRequestsList.length, icon: RotateCcw },
+                      { id: 'channels', label: 'Payment Channels & Fees', count: paymentChannelsList.length, icon: CreditCard }
+                    ].map((tab) => {
+                      const isActive = paymentsActiveTab === tab.id;
+                      const TabIcon = tab.icon;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setPaymentsActiveTab(tab.id)}
+                          className={`px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 flex items-center gap-2 ${
+                            isActive
+                              ? 'bg-[#114B44] text-white shadow-xs'
+                              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                          }`}
+                        >
+                          <TabIcon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                          <span>{tab.label}</span>
+                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                            {tab.count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* 5. TAB 1: ALL TRANSACTIONS */}
+                  {paymentsActiveTab === 'transactions' && (
+                    <div className="space-y-4">
+                      {/* Search & Filters */}
+                      <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                        <div className="relative flex-1 min-w-[240px]">
+                          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={paymentsSearchQuery}
+                            onChange={(e) => setPaymentsSearchQuery(e.target.value)}
+                            placeholder="Search order ID, student name, class title, VA number..."
+                            className="w-full pl-9 pr-8 py-2 bg-gray-50 hover:bg-gray-100/80 focus:bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:border-[#114B44] transition-colors"
+                          />
+                          {paymentsSearchQuery && (
+                            <button onClick={() => setPaymentsSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-wrap text-xs">
+                          {/* Method Filter */}
+                          <select
+                            value={paymentsMethodFilter}
+                            onChange={(e) => setPaymentsMethodFilter(e.target.value)}
+                            className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold text-gray-700 outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="ALL">All Methods</option>
+                            <option value="virtual_account">Virtual Account</option>
+                            <option value="qris">QRIS & E-Wallet</option>
+                            <option value="credit_card">Credit Card</option>
+                          </select>
+
+                          {/* Status Filter */}
+                          <select
+                            value={paymentsStatusFilter}
+                            onChange={(e) => setPaymentsStatusFilter(e.target.value)}
+                            className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold text-gray-700 outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="ALL">All Status</option>
+                            <option value="settlement">Settlement (Lunas)</option>
+                            <option value="pending">Pending</option>
+                            <option value="refunded">Refunded</option>
+                            <option value="expire">Expired</option>
+                            <option value="deny">Denied</option>
+                          </select>
+
+                          {/* Date Range */}
+                          <select
+                            value={paymentsDateRangeFilter}
+                            onChange={(e) => setPaymentsDateRangeFilter(e.target.value)}
+                            className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold text-gray-700 outline-none focus:border-[#114B44] cursor-pointer"
+                          >
+                            <option value="Last 7 Days">Last 7 Days</option>
+                            <option value="Last 30 Days">Last 30 Days</option>
+                            <option value="This Month">This Month</option>
+                            <option value="All Time">All Time</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Transactions Table */}
+                      <div className="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden">
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left text-xs">
+                            <thead className="bg-[#F8FAFC] text-gray-400 font-bold uppercase text-[10px] border-b border-gray-100">
+                              <tr>
+                                <th className="py-3 px-4">Order ID & Date</th>
+                                <th className="py-3 px-4">Santri / Customer</th>
+                                <th className="py-3 px-4">Class Enrolled</th>
+                                <th className="py-3 px-4">Payment Method</th>
+                                <th className="py-3 px-4 text-right">Gross Amount</th>
+                                <th className="py-3 px-4 text-right">Platform (15%)</th>
+                                <th className="py-3 px-4 text-center">Status</th>
+                                <th className="py-3 px-4 text-center">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 text-[11px]">
+                              {filteredTransactions.map((tx) => {
+                                const isSettled = tx.status === 'settlement';
+                                const isPending = tx.status === 'pending';
+                                const isRefunded = tx.status === 'refunded';
+                                const isExpired = tx.status === 'expire';
+
+                                return (
+                                  <tr key={tx.id} className="hover:bg-gray-50/70 transition-colors">
+                                    <td className="py-3 px-4 whitespace-nowrap">
+                                      <div className="font-mono font-black text-gray-900">{tx.orderId}</div>
+                                      <div className="text-[10px] text-gray-400">{tx.createdAt}</div>
+                                    </td>
+                                    <td className="py-3 px-4 whitespace-nowrap">
+                                      <div className="flex items-center gap-2">
+                                        <img src={tx.studentAvatar} alt={tx.studentName} className="w-6 h-6 rounded-full object-cover" />
+                                        <div>
+                                          <div className="font-bold text-gray-900">{tx.studentName}</div>
+                                          <div className="text-[10px] text-gray-400">{tx.studentEmail}</div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4 max-w-[200px] truncate">
+                                      <div className="font-bold text-gray-800 truncate">{tx.classTitle}</div>
+                                      <div className="text-[10px] text-gray-400">{tx.teacherName}</div>
+                                    </td>
+                                    <td className="py-3 px-4 whitespace-nowrap">
+                                      <div className="font-bold text-gray-800">{tx.method}</div>
+                                      <div className="text-[10px] font-mono text-gray-400">{tx.vaNumber}</div>
+                                    </td>
+                                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                                      <div className="font-mono font-black text-gray-900">
+                                        Rp {tx.grossAmount.toLocaleString('id-ID')}
+                                      </div>
+                                      <div className="text-[10px] text-gray-400">MDR: Rp {tx.gatewayFee.toLocaleString('id-ID')}</div>
+                                    </td>
+                                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                                      <div className="font-mono font-bold text-emerald-600">
+                                        Rp {tx.platformFee.toLocaleString('id-ID')}
+                                      </div>
+                                      <div className="text-[10px] text-gray-400">Guru: Rp {tx.teacherNet.toLocaleString('id-ID')}</div>
+                                    </td>
+                                    <td className="py-3 px-4 text-center whitespace-nowrap">
+                                      <span
+                                        className={`px-2.5 py-1 rounded-full text-[10px] font-black ${
+                                          isSettled
+                                            ? 'bg-emerald-100 text-emerald-700'
+                                            : isPending
+                                            ? 'bg-amber-100 text-amber-700'
+                                            : isRefunded
+                                            ? 'bg-purple-100 text-purple-700'
+                                            : isExpired
+                                            ? 'bg-gray-100 text-gray-600'
+                                            : 'bg-rose-100 text-rose-700'
+                                        }`}
+                                      >
+                                        {tx.status.toUpperCase()}
+                                      </span>
+                                    </td>
+                                    <td className="py-3 px-4 text-center whitespace-nowrap">
+                                      <button
+                                        onClick={() => setSelectedPaymentTxForDetail(tx)}
+                                        className="px-3 py-1.5 bg-[#114B44]/10 hover:bg-[#114B44]/20 text-[#114B44] rounded-xl font-bold transition-colors cursor-pointer"
+                                      >
+                                        Details
+                                      </button>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 6. TAB 2: WEBHOOK LOGS & RETRIES */}
+                  {paymentsActiveTab === 'webhooks' && (
+                    <div className="space-y-4">
+                      <div className="p-4 bg-slate-900 text-white rounded-2xl border border-slate-800 space-y-3">
+                        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                          <div className="flex items-center gap-2 font-mono text-xs">
+                            <Terminal className="w-4 h-4 text-emerald-400" />
+                            <span className="font-bold">Live Payment Webhook Ingestion Listener (/api/v1/webhooks/midtrans)</span>
+                          </div>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            HTTPS Listener OK
+                          </span>
+                        </div>
+
+                        <div className="space-y-2.5 font-mono text-xs max-h-96 overflow-y-auto">
+                          {paymentWebhookLogsList.map((wh) => (
+                            <div
+                              key={wh.id}
+                              className="p-3 bg-slate-800/70 hover:bg-slate-800 rounded-xl border border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-3 transition-colors"
+                            >
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2 flex-wrap text-[11px]">
+                                  <span className="text-slate-400">{wh.timestamp}</span>
+                                  <span className="px-2 py-0.2 rounded bg-slate-900 text-sky-400 font-bold border border-slate-700">
+                                    {wh.provider}
+                                  </span>
+                                  <span className="font-bold text-white">{wh.orderId}</span>
+                                  <span className="px-2 py-0.2 rounded bg-emerald-900/60 text-emerald-300 font-bold">
+                                    {wh.transactionStatus}
+                                  </span>
+                                  <span className={`px-1.5 py-0.2 rounded font-bold ${wh.httpResponse === 200 ? 'bg-emerald-900/60 text-emerald-300' : 'bg-rose-900/60 text-rose-300'}`}>
+                                    HTTP {wh.httpResponse}
+                                  </span>
+                                  <span className="text-slate-500">({wh.duration})</span>
+                                </div>
+                                <div className="text-slate-400 text-[11px] font-sans">
+                                  Signature Hash: SHA-512 Validated • Retries: {wh.retryCount}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 font-sans shrink-0">
+                                <button
+                                  onClick={() => setSelectedWebhookForDetail(wh)}
+                                  className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                >
+                                  View Payload
+                                </button>
+                                {wh.httpResponse !== 200 && (
+                                  <button
+                                    onClick={() => {
+                                      alert(`Webhook [${wh.id}] disimulasikan retry ulang: Sukses HTTP 200 OK!`);
+                                    }}
+                                    className="px-3 py-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-xs"
+                                  >
+                                    <RefreshCw className="w-3 h-3" />
+                                    <span>Retry Now</span>
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 7. TAB 3: REFUND MANAGEMENT */}
+                  {paymentsActiveTab === 'refunds' && (
+                    <div className="space-y-4">
+                      <div className="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden">
+                        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">Daftar Permintaan Pengembalian Dana (Refund)</h3>
+                          <span className="text-xs text-gray-400">SLA Proses: Maksimal 24 Jam Kerja</span>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left text-xs">
+                            <thead className="bg-[#F8FAFC] text-gray-400 font-bold uppercase text-[10px] border-b border-gray-100">
+                              <tr>
+                                <th className="py-3 px-4">Refund ID & Date</th>
+                                <th className="py-3 px-4">Santri</th>
+                                <th className="py-3 px-4">Class</th>
+                                <th className="py-3 px-4">Alasan Refund</th>
+                                <th className="py-3 px-4 text-right">Nominal</th>
+                                <th className="py-3 px-4 text-center">Status</th>
+                                <th className="py-3 px-4 text-center">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 text-[11px]">
+                              {paymentRefundRequestsList.map((ref) => (
+                                <tr key={ref.id} className="hover:bg-gray-50/70 transition-colors">
+                                  <td className="py-3 px-4 font-mono font-bold text-gray-900">
+                                    {ref.id}
+                                    <div className="text-[10px] text-gray-400 font-sans">{ref.requestDate}</div>
+                                  </td>
+                                  <td className="py-3 px-4">
+                                    <div className="font-bold text-gray-900">{ref.studentName}</div>
+                                    <div className="text-[10px] text-gray-400">{ref.studentEmail}</div>
+                                  </td>
+                                  <td className="py-3 px-4 font-bold text-gray-800">{ref.classTitle}</td>
+                                  <td className="py-3 px-4 text-gray-600 max-w-[240px]">{ref.reason}</td>
+                                  <td className="py-3 px-4 text-right font-mono font-black text-gray-900 whitespace-nowrap">
+                                    Rp {ref.amount.toLocaleString('id-ID')}
+                                  </td>
+                                  <td className="py-3 px-4 text-center whitespace-nowrap">
+                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-black ${ref.status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                                      {ref.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-3 px-4 text-center whitespace-nowrap">
+                                    {ref.status === 'Pending' ? (
+                                      <button
+                                        onClick={() => setSelectedRefundForProcess(ref)}
+                                        className="px-3 py-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl font-bold transition-colors cursor-pointer shadow-xs"
+                                      >
+                                        Proses Refund
+                                      </button>
+                                    ) : (
+                                      <span className="text-[10px] text-gray-400 font-bold">Processed ({ref.processedAt})</span>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 8. TAB 4: PAYMENT CHANNELS */}
+                  {paymentsActiveTab === 'channels' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {paymentChannelsList.map((ch) => (
+                        <div key={ch.id} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-gray-100 text-gray-600">
+                              {ch.type}
+                            </span>
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              {ch.status}
+                            </span>
+                          </div>
+
+                          <div>
+                            <h3 className="text-sm font-black text-gray-900">{ch.name}</h3>
+                            <div className="text-[11px] text-gray-400">Gateway MDR Fee: <strong className="text-gray-700">{ch.fee}</strong></div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 text-xs">
+                            <div>
+                              <span className="text-gray-400 block text-[10px]">Volume 24 Jam</span>
+                              <span className="font-bold text-gray-900">{ch.volume24h}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-400 block text-[10px]">Channel Uptime</span>
+                              <span className="font-bold text-emerald-600">{ch.uptime}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                 </div>
               );
@@ -29613,6 +30413,379 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
                   >
                     Simpan Konfigurasi
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 11. Modal Payment Transaction Detail */}
+          {selectedPaymentTxForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <CreditCard className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Rincian Transaksi: {selectedPaymentTxForDetail.orderId}</h3>
+                      <p className="text-xs text-gray-500">ID Sistem: {selectedPaymentTxForDetail.id} • {selectedPaymentTxForDetail.provider}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedPaymentTxForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] text-emerald-800 font-bold block">Total Pembayaran Gross</span>
+                    <span className="text-xl font-black text-emerald-950">Rp {selectedPaymentTxForDetail.grossAmount.toLocaleString('id-ID')}</span>
+                  </div>
+                  <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    {selectedPaymentTxForDetail.status.toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                    <span className="text-gray-400 block text-[10px]">Data Santri</span>
+                    <div className="font-bold text-gray-900">{selectedPaymentTxForDetail.studentName}</div>
+                    <div className="text-[11px] text-gray-500">{selectedPaymentTxForDetail.studentEmail}</div>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                    <span className="text-gray-400 block text-[10px]">Kelas & Pengajar</span>
+                    <div className="font-bold text-gray-900 truncate">{selectedPaymentTxForDetail.classTitle}</div>
+                    <div className="text-[11px] text-gray-500">{selectedPaymentTxForDetail.teacherName}</div>
+                  </div>
+                </div>
+
+                {/* Revenue Split Breakdown */}
+                <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-2 text-xs">
+                  <span className="font-bold text-gray-900 block text-[11px]">Bagi Hasil & Biaya Gateway (Revenue Split)</span>
+                  <div className="flex items-center justify-between py-1 border-b border-gray-200/60">
+                    <span className="text-gray-600">Platform Take Rate (15%)</span>
+                    <span className="font-bold text-emerald-600 font-mono">Rp {selectedPaymentTxForDetail.platformFee.toLocaleString('id-ID')}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-1 border-b border-gray-200/60">
+                    <span className="text-gray-600">Hak Bersih Guru (85% - Gateway Fee)</span>
+                    <span className="font-bold text-blue-600 font-mono">Rp {selectedPaymentTxForDetail.teacherNet.toLocaleString('id-ID')}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-1">
+                    <span className="text-gray-600">MDR Payment Gateway ({selectedPaymentTxForDetail.provider})</span>
+                    <span className="font-bold text-gray-600 font-mono">Rp {selectedPaymentTxForDetail.gatewayFee.toLocaleString('id-ID')}</span>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 text-xs space-y-1 font-mono text-[11px]">
+                  <div>Metode: <strong className="text-gray-900">{selectedPaymentTxForDetail.method}</strong></div>
+                  <div>VA / Ref: <strong className="text-gray-900">{selectedPaymentTxForDetail.vaNumber}</strong></div>
+                  <div>Gateway ID: <strong className="text-gray-900">{selectedPaymentTxForDetail.gatewayTxId}</strong></div>
+                  <div>Waktu Selesai: <strong className="text-gray-900">{selectedPaymentTxForDetail.settledAt}</strong></div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 text-xs">
+                  <button
+                    onClick={() => {
+                      alert(`Kuitansi PDF resmi untuk ${selectedPaymentTxForDetail.orderId} berhasil diunduh!`);
+                    }}
+                    className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-colors cursor-pointer flex items-center gap-1"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Invoice PDF</span>
+                  </button>
+                  <button onClick={() => setSelectedPaymentTxForDetail(null)} className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl font-bold cursor-pointer shadow-xs">
+                    Tutup
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 12. Modal Webhook Detail Inspector */}
+          {selectedWebhookForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-[#0F172A] text-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200 border border-slate-700 font-mono text-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
+                      <Terminal className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white font-sans">Webhook Event: {selectedWebhookForDetail.id}</h3>
+                      <p className="text-[11px] text-slate-400 font-sans">{selectedWebhookForDetail.timestamp}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedWebhookForDetail(null)} className="text-slate-400 hover:text-white p-1 rounded font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-[11px] bg-slate-900/90 p-3 rounded-xl border border-slate-800 font-sans">
+                  <div>
+                    <span className="text-slate-500 block">HTTP Response</span>
+                    <span className={`font-bold ${selectedWebhookForDetail.httpResponse === 200 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {selectedWebhookForDetail.httpResponse} OK
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Status Event</span>
+                    <span className="font-bold text-sky-400">{selectedWebhookForDetail.transactionStatus}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Latency</span>
+                    <span className="font-bold text-white">{selectedWebhookForDetail.duration}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block font-sans">Raw JSON Webhook Ingestion Payload</span>
+                  <pre className="p-3 bg-slate-950 text-emerald-400 rounded-xl font-mono text-[11px] overflow-x-auto border border-slate-800">
+                    {JSON.stringify(selectedWebhookForDetail.rawPayload, null, 2)}
+                  </pre>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-800 font-sans">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard?.writeText(JSON.stringify(selectedWebhookForDetail.rawPayload, null, 2));
+                      alert('Webhook payload copied to clipboard!');
+                    }}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    Copy Payload
+                  </button>
+                  <button onClick={() => setSelectedWebhookForDetail(null)} className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer">
+                    Tutup
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 13. Modal Manual Settlement */}
+          {isManualSettlementModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <CheckCircle2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Manual Payment Settlement</h3>
+                      <p className="text-xs text-gray-500">Konfirmasi pembayaran tertunda secara manual</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsManualSettlementModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Nomor Order ID</label>
+                    <input
+                      type="text"
+                      value={manualSettlementOrderId}
+                      onChange={(e) => setManualSettlementOrderId(e.target.value)}
+                      placeholder="Contoh: ORDER-20260923-9083"
+                      className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono text-xs outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Catatan Audit Admin</label>
+                    <textarea
+                      rows={2}
+                      value={manualSettlementNotes}
+                      onChange={(e) => setManualSettlementNotes(e.target.value)}
+                      placeholder="Bukti mutasi bank sudah dicek manual di e-banking..."
+                      className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="p-3 bg-amber-50 text-amber-900 rounded-xl text-[11px] leading-relaxed">
+                    ⚠️ Tindakan ini akan langsung mengaktifkan status akses kelas santri dan memicu pencatatan bagi hasil ke saldo guru.
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsManualSettlementModalOpen(false)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      alert(`Transaksi ${manualSettlementOrderId || 'ORDER-20260923-9083'} berhasil di-settle secara manual! Akses santri aktif.`);
+                      setIsManualSettlementModalOpen(false);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                  >
+                    Konfirmasi Settlement
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 14. Modal Process Refund Approval */}
+          {selectedRefundForProcess && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <RotateCcw className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Proses Pengembalian Dana (Refund)</h3>
+                      <p className="text-xs text-gray-500">ID: {selectedRefundForProcess.id} • {selectedRefundForProcess.orderId}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedRefundForProcess(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                    <div>Santri: <strong className="text-gray-900">{selectedRefundForProcess.studentName}</strong></div>
+                    <div>Kelas: <strong className="text-gray-900">{selectedRefundForProcess.classTitle}</strong></div>
+                    <div>Rekening Tujuan: <strong className="text-emerald-700">{selectedRefundForProcess.bankTarget}</strong></div>
+                    <div>Nominal Refund: <strong className="text-rose-600 font-mono font-black">Rp {selectedRefundForProcess.amount.toLocaleString('id-ID')}</strong></div>
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <span className="text-gray-400 block text-[10px]">Alasan Permintaan:</span>
+                    <p className="text-gray-700 font-medium italic mt-0.5">"{selectedRefundForProcess.reason}"</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 text-xs">
+                  <button
+                    onClick={() => {
+                      alert(`Permintaan refund [${selectedRefundForProcess.id}] DITOLAK. Notifikasi telah dikirim ke santri.`);
+                      setSelectedRefundForProcess(null);
+                    }}
+                    className="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl font-bold cursor-pointer"
+                  >
+                    Tolak Refund
+                  </button>
+                  <button
+                    onClick={() => {
+                      alert(`Refund [${selectedRefundForProcess.id}] sebesar Rp ${selectedRefundForProcess.amount.toLocaleString('id-ID')} DISETUJUI dan diproses via Midtrans Iris Disbursement!`);
+                      setSelectedRefundForProcess(null);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl font-bold cursor-pointer shadow-xs"
+                  >
+                    Setujui & Transfer Dana
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 15. Modal Webhook Simulator */}
+          {isWebhookSimulatorModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">
+                      <Zap className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Payment Webhook Simulator</h3>
+                      <p className="text-xs text-gray-500">Kirim payload notifikasi dummy ke endpoint backend</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsWebhookSimulatorModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Pilih Status Event</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['settlement', 'pending', 'expire'].map((st, i) => (
+                        <button key={st} className={`py-2 px-3 rounded-xl border text-center font-bold cursor-pointer ${i === 0 ? 'bg-[#114B44] text-white border-[#114B44]' : 'bg-gray-50 text-gray-700 border-gray-200'}`}>
+                          {st}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Metode Pembayaran</label>
+                    <select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none">
+                      <option>BCA Virtual Account</option>
+                      <option>QRIS Dynamic (GoPay/ShopeePay)</option>
+                      <option>Mandiri Virtual Account</option>
+                      <option>Credit Card (3DS)</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3 bg-slate-900 text-emerald-400 rounded-xl font-mono text-[10px] space-y-1">
+                    <div>Target URL: POST /api/v1/webhooks/midtrans</div>
+                    <div>Signature-Key: 5f82a9... (SHA512 Generated)</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsWebhookSimulatorModalOpen(false)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                  <button
+                    onClick={() => {
+                      alert('Webhook simulasi settlement berhasil dikirimkan! Response: 200 OK (34ms).');
+                      setIsWebhookSimulatorModalOpen(false);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                  >
+                    Kirim Simulasi Webhook
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 16. Modal Export Payments */}
+          {isExportPaymentsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Export Rekap Transaksi & Fee</h3>
+                      <p className="text-xs text-gray-500">Laporan keuangan & rekonsiliasi gateway</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsExportPaymentsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Pilih Format Laporan</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['Excel (.xlsx)', 'CSV Data', 'PDF Rekap'].map((fmt, i) => (
+                        <button key={fmt} className={`py-2 px-3 rounded-xl border text-center font-bold cursor-pointer ${i === 0 ? 'bg-[#114B44] text-white border-[#114B44]' : 'bg-gray-50 text-gray-700 border-gray-200'}`}>
+                          {fmt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-gray-700 font-bold block mb-1">Periode Transaksi</label>
+                    <select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none">
+                      <option>Bulan Ini (September 2026 - Rp 842.650.000)</option>
+                      <option>Bulan Lalu (Agustus 2026 - Rp 712.300.000)</option>
+                      <option>Tahun Berjalan (YTD 2026)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsExportPaymentsModalOpen(false)} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      alert('Laporan transaksi dan rekonsiliasi payment gateway berhasil diunduh!');
+                      setIsExportPaymentsModalOpen(false);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                  >
+                    Unduh Rekap
                   </button>
                 </div>
               </div>
