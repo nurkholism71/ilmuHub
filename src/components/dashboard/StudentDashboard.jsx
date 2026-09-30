@@ -54,6 +54,16 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   const [selectedCalendarMonth, setSelectedCalendarMonth] = useState('September 2026');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
+  // Schedule View States (matching media_1790727369755.jpg)
+  const [scheduleTab, setScheduleTab] = useState('class_schedule'); // 'class_schedule' | 'upcoming' | 'deadlines' | 'reminders' | 'calendar_view'
+  const [scheduleViewMode, setScheduleViewMode] = useState('week'); // 'week' | 'month' | 'agenda'
+  const [scheduleClassFilter, setScheduleClassFilter] = useState('All Classes');
+  const [scheduleInstructorFilter, setScheduleInstructorFilter] = useState('All Instructors');
+  const [scheduleTypeFilter, setScheduleTypeFilter] = useState('All Types');
+  const [scheduleMonthFilter, setScheduleMonthFilter] = useState('September 2026');
+  const [scheduleSelectedDay, setScheduleSelectedDay] = useState(23); // 23 Sep (Wed) default
+  const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false);
+
   // Browse Classes View States (matching media_1790726478349.jpg)
   const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
   const [browseSearchQuery, setBrowseSearchQuery] = useState('');
@@ -473,6 +483,272 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
     { id: 'tch-1', name: 'Ustadz Ahmad Fauzi', rating: 4.9, reviews: 328, students: '2.1K', avatar: '/images/tutor_ahmed.jpg' },
     { id: 'tch-2', name: 'Ustadzah Fatimah Zahra', rating: 4.8, reviews: 214, students: '1.6K', avatar: '/images/student_fatimah.jpg' },
     { id: 'tch-3', name: 'Ustadz Omar Hassan', rating: 4.7, reviews: 186, students: '980', avatar: '/images/student_ali.jpg' },
+  ];
+
+  // Schedule Datasets (Matching media_1790727369755.jpg)
+  const scheduleDays = [
+    { dayNumber: 20, dayName: 'Sun', fullDate: 'Sunday, 20 Sep' },
+    { dayNumber: 21, dayName: 'Mon', fullDate: 'Monday, 21 Sep' },
+    { dayNumber: 22, dayName: 'Tue', fullDate: 'Tuesday, 22 Sep' },
+    { dayNumber: 23, dayName: 'Wed', fullDate: 'Wednesday, 23 Sep', isToday: true },
+    { dayNumber: 24, dayName: 'Thu', fullDate: 'Thursday, 24 Sep' },
+    { dayNumber: 25, dayName: 'Fri', fullDate: 'Friday, 25 Sep' },
+    { dayNumber: 26, dayName: 'Sat', fullDate: 'Saturday, 26 Sep' },
+  ];
+
+  const scheduleHours = [
+    { hour: 8, label: '8:00 AM' },
+    { hour: 9, label: '9:00 AM' },
+    { hour: 10, label: '10:00 AM' },
+    { hour: 11, label: '11:00 AM' },
+    { hour: 12, label: '12:00 PM' },
+    { hour: 13, label: '1:00 PM' },
+    { hour: 14, label: '2:00 PM' },
+    { hour: 15, label: '3:00 PM' },
+    { hour: 16, label: '4:00 PM' },
+    { hour: 17, label: '5:00 PM' },
+  ];
+
+  const scheduleWeeklyEvents = [
+    {
+      id: 'sch-1',
+      dayNumber: 21,
+      dayName: 'Mon',
+      title: 'Nahwu for Beginners',
+      time: '10:00 AM - 11:30 AM',
+      startHour: 10,
+      durationHours: 1.5,
+      room: 'Room A',
+      instructor: 'Ust. Ahmad Fauzi',
+      type: 'Live Class',
+      badge: 'Live',
+      badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+      themeClass: 'bg-emerald-50/90 border-l-4 border-emerald-500 text-emerald-950 hover:bg-emerald-100/90 shadow-2xs'
+    },
+    {
+      id: 'sch-2',
+      dayNumber: 21,
+      dayName: 'Mon',
+      title: 'Sharaf Basic',
+      time: '02:00 PM - 03:30 PM',
+      startHour: 14,
+      durationHours: 1.5,
+      room: 'Room B',
+      instructor: 'Ustzh. Fatimah',
+      type: 'Live Class',
+      badge: 'Live',
+      badgeClass: 'bg-purple-100 text-purple-800 border-purple-300',
+      themeClass: 'bg-purple-50/90 border-l-4 border-purple-500 text-purple-950 hover:bg-purple-100/90 shadow-2xs'
+    },
+    {
+      id: 'sch-3',
+      dayNumber: 22,
+      dayName: 'Tue',
+      title: 'Islamic History',
+      time: '09:00 AM - 10:30 AM',
+      startHour: 9,
+      durationHours: 1.5,
+      room: 'Online Portal',
+      instructor: 'Ust. Ali Khan',
+      type: 'Recorded',
+      badge: 'Recorded',
+      badgeClass: 'bg-amber-100 text-amber-800 border-amber-300',
+      themeClass: 'bg-amber-50/90 border-l-4 border-amber-500 text-amber-950 hover:bg-amber-100/90 shadow-2xs'
+    },
+    {
+      id: 'sch-4',
+      dayNumber: 22,
+      dayName: 'Tue',
+      title: 'Quran Tajweed',
+      time: '01:00 PM - 02:30 PM',
+      startHour: 13,
+      durationHours: 1.5,
+      room: 'Room A',
+      instructor: 'Ustzh. Fatimah',
+      type: 'Live Class',
+      badge: 'Live',
+      badgeClass: 'bg-teal-100 text-teal-800 border-teal-300',
+      themeClass: 'bg-teal-50/90 border-l-4 border-teal-500 text-teal-950 hover:bg-teal-100/90 shadow-2xs'
+    },
+    {
+      id: 'sch-5',
+      dayNumber: 23,
+      dayName: 'Wed',
+      title: 'Nahwu for Beginners',
+      time: '10:00 AM - 11:30 AM',
+      startHour: 10,
+      durationHours: 1.5,
+      room: 'Room A',
+      instructor: 'Ust. Ahmad Fauzi',
+      type: 'Live Class',
+      badge: 'Live Now',
+      badgeClass: 'bg-rose-100 text-rose-700 border-rose-300 animate-pulse font-extrabold',
+      themeClass: 'bg-emerald-100/95 border-l-4 border-[#114B44] text-emerald-950 shadow-sm ring-1 ring-emerald-300/80',
+      isLiveNow: true
+    },
+    {
+      id: 'sch-6',
+      dayNumber: 23,
+      dayName: 'Wed',
+      title: 'Arabic Conversation',
+      time: '03:00 PM - 04:30 PM',
+      startHour: 15,
+      durationHours: 1.5,
+      room: 'Room C',
+      instructor: 'Ust. Omar Hassan',
+      type: 'Live Class',
+      badge: 'Live',
+      badgeClass: 'bg-sky-100 text-sky-800 border-sky-300',
+      themeClass: 'bg-sky-50/90 border-l-4 border-sky-500 text-sky-950 hover:bg-sky-100/90 shadow-2xs'
+    },
+    {
+      id: 'sch-7',
+      dayNumber: 24,
+      dayName: 'Thu',
+      title: 'Academic Writing',
+      time: '11:00 AM - 12:30 PM',
+      startHour: 11,
+      durationHours: 1.5,
+      room: 'Online Portal',
+      instructor: 'Dr. Layla Ahmad',
+      type: 'Live Class',
+      badge: 'Live',
+      badgeClass: 'bg-blue-100 text-blue-800 border-blue-300',
+      themeClass: 'bg-blue-50/90 border-l-4 border-blue-500 text-blue-950 hover:bg-blue-100/90 shadow-2xs'
+    },
+    {
+      id: 'sch-8',
+      dayNumber: 25,
+      dayName: 'Fri',
+      title: 'Fiqh Ibadah',
+      time: '09:00 AM - 10:30 AM',
+      startHour: 9,
+      durationHours: 1.5,
+      room: 'Room B',
+      instructor: 'Ust. Ahmad Fauzi',
+      type: 'Live Class',
+      badge: 'Live',
+      badgeClass: 'bg-rose-100 text-rose-800 border-rose-300',
+      themeClass: 'bg-rose-50/90 border-l-4 border-rose-500 text-rose-950 hover:bg-rose-100/90 shadow-2xs'
+    }
+  ];
+
+  const scheduleUpcomingClasses = [
+    {
+      id: 'sch-up-1',
+      title: 'Nahwu for Beginners',
+      instructor: 'Ustadz Ahmad Fauzi',
+      avatar: '/images/tutor_ahmed.jpg',
+      date: 'Wednesday, 23 Sep',
+      time: '10:00 AM - 11:30 AM',
+      room: 'Room A (Interactive Talaqqi)',
+      tag: 'Live Today',
+      tagClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      isJoinable: true,
+      category: 'Arabic Grammar'
+    },
+    {
+      id: 'sch-up-2',
+      title: 'Arabic Conversation',
+      instructor: 'Ustadz Omar Hassan',
+      avatar: '/images/student_ali.jpg',
+      date: 'Wednesday, 23 Sep',
+      time: '03:00 PM - 04:30 PM',
+      room: 'Room C (Speaking Lab)',
+      tag: 'Live Today',
+      tagClass: 'bg-sky-50 text-sky-700 border-sky-200',
+      isJoinable: false,
+      category: 'Language'
+    },
+    {
+      id: 'sch-up-3',
+      title: 'Academic Writing & Research',
+      instructor: 'Dr. Layla Ahmad',
+      avatar: '/images/student_layla.jpg',
+      date: 'Thursday, 24 Sep',
+      time: '11:00 AM - 12:30 PM',
+      room: 'Online Portal',
+      tag: 'Live Session',
+      tagClass: 'bg-blue-50 text-blue-700 border-blue-200',
+      isJoinable: false,
+      category: 'Academic'
+    },
+    {
+      id: 'sch-up-4',
+      title: 'Islamic History & Civilizations',
+      instructor: 'Ustadz Ali Khan',
+      avatar: '/images/student_fatimah.jpg',
+      date: 'Friday, 25 Sep',
+      time: '09:00 AM - 10:30 AM',
+      room: 'Room B',
+      tag: 'Recorded & Q&A',
+      tagClass: 'bg-purple-50 text-purple-700 border-purple-200',
+      isJoinable: false,
+      category: 'History'
+    }
+  ];
+
+  const scheduleTodayList = [
+    {
+      id: 'td-1',
+      title: 'Nahwu for Beginners',
+      time: '10:00 - 11:30 AM',
+      instructor: 'Ust. Ahmad Fauzi',
+      room: 'Room A',
+      status: 'Live Now',
+      isLive: true,
+      color: 'bg-emerald-50 text-emerald-800 border-emerald-200'
+    },
+    {
+      id: 'td-2',
+      title: 'Arabic Conversation',
+      time: '03:00 - 04:30 PM',
+      instructor: 'Ust. Omar Hassan',
+      room: 'Room C',
+      status: 'Upcoming',
+      isLive: false,
+      color: 'bg-sky-50 text-sky-700 border-sky-200'
+    },
+    {
+      id: 'td-3',
+      title: 'Fiqh Reading Task',
+      time: '08:00 PM',
+      instructor: 'Self-Study Review',
+      room: 'Chapter 4',
+      status: 'Reminder',
+      isLive: false,
+      color: 'bg-amber-50 text-amber-700 border-amber-200'
+    }
+  ];
+
+  const scheduleDeadlinesList = [
+    {
+      id: 'dl-1',
+      title: "Assignment 3: Nahwu I'rab Exercise",
+      due: 'Tomorrow, 11:59 PM',
+      course: 'Nahwu for Beginners',
+      icon: '⏰',
+      tag: 'High Priority',
+      tagColor: 'bg-rose-50 text-rose-700 border-rose-200'
+    },
+    {
+      id: 'dl-2',
+      title: 'Quiz: Sharaf Chapter 2 Tashrif',
+      due: '26 Sep, 5:00 PM',
+      course: 'Sharaf Basic',
+      icon: '📝',
+      tag: 'Upcoming',
+      tagColor: 'bg-amber-50 text-amber-700 border-amber-200'
+    },
+    {
+      id: 'dl-3',
+      title: 'Mid-term Tajweed Talaqqi Recording',
+      due: '28 Sep, 10:00 AM',
+      course: 'Quran Tajweed Mastery',
+      icon: '🎙️',
+      tag: 'Recorded Submissions',
+      tagColor: 'bg-blue-50 text-blue-700 border-blue-200'
+    }
   ];
 
   return (
@@ -1744,6 +2020,617 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                 </div>
 
               </div>
+
+            </div>
+          ) : activeNav === 'schedule' ? (
+            /* ========================================================= */
+            /* VIEW: SCHEDULES ROOM (MATCHING media_1790727369755.jpg)  */
+            /* ========================================================= */
+            <div className="space-y-6">
+              
+              {/* 1. PAGE TOP HEADER */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <Calendar className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Schedules</h1>
+                    <p className="text-xs text-gray-500 font-medium">Manage your class schedule, upcoming sessions, and deadlines.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsAddScheduleModalOpen(true)}
+                    className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add to Calendar</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. TAB PILLS NAVIGATION TOOLBAR */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                {[
+                  { id: 'class_schedule', label: 'Class Schedule', icon: '📅', count: 8 },
+                  { id: 'upcoming', label: 'Upcoming Classes', icon: '🗓️', count: 4 },
+                  { id: 'deadlines', label: 'Deadlines', icon: '⏰', count: 3 },
+                  { id: 'reminders', label: 'Reminders', icon: '🔔', count: 2 },
+                  { id: 'calendar_view', label: 'Calendar View', icon: '📆' },
+                ].map((tab) => {
+                  const isActive = scheduleTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setScheduleTab(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
+                        isActive
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200/80'
+                      }`}
+                    >
+                      <span>{tab.icon}</span>
+                      <span>{tab.label}</span>
+                      {tab.count !== undefined && (
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                          isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {tab.count}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 3. FILTER DROPDOWNS & VIEW SWITCHER TOOLBAR */}
+              <div className="bg-white rounded-2xl border border-gray-200/80 p-3 shadow-2xs flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
+                {/* 4 Filter Dropdowns */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* All Classes Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={scheduleClassFilter}
+                      onChange={(e) => setScheduleClassFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Classes">All Classes</option>
+                      <option value="Nahwu for Beginners">Nahwu for Beginners</option>
+                      <option value="Sharaf Basic">Sharaf Basic</option>
+                      <option value="Arabic Conversation">Arabic Conversation</option>
+                      <option value="Academic Writing">Academic Writing</option>
+                      <option value="Islamic History">Islamic History</option>
+                      <option value="Quran Tajweed">Quran Tajweed</option>
+                      <option value="Fiqh Ibadah">Fiqh Ibadah</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* All Instructors Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={scheduleInstructorFilter}
+                      onChange={(e) => setScheduleInstructorFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Instructors">All Instructors</option>
+                      <option value="Ust. Ahmad Fauzi">Ust. Ahmad Fauzi</option>
+                      <option value="Ustzh. Fatimah Zahra">Ustzh. Fatimah Zahra</option>
+                      <option value="Ust. Omar Hassan">Ust. Omar Hassan</option>
+                      <option value="Dr. Layla Ahmad">Dr. Layla Ahmad</option>
+                      <option value="Ust. Ali Khan">Ust. Ali Khan</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* All Types Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={scheduleTypeFilter}
+                      onChange={(e) => setScheduleTypeFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="All Types">All Types</option>
+                      <option value="Live Class">Live Class</option>
+                      <option value="Recorded">Recorded</option>
+                      <option value="Assignment">Assignment</option>
+                      <option value="Quiz">Quiz</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {/* Month Selector Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={scheduleMonthFilter}
+                      onChange={(e) => setScheduleMonthFilter(e.target.value)}
+                      className="appearance-none bg-[#F8FAFC] border border-gray-200/80 hover:border-gray-300 rounded-xl pl-3 pr-8 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#114B44] cursor-pointer shadow-2xs transition-all"
+                    >
+                      <option value="September 2026">📅 September 2026</option>
+                      <option value="October 2026">📅 October 2026</option>
+                      <option value="November 2026">📅 November 2026</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Right View Switcher: Week / Month / Agenda */}
+                <div className="flex items-center bg-[#F1F5F9] p-1 rounded-xl shrink-0 self-start xl:self-center">
+                  {[
+                    { id: 'week', label: 'Week' },
+                    { id: 'month', label: 'Month' },
+                    { id: 'agenda', label: 'Agenda' },
+                  ].map((mode) => {
+                    const isActive = scheduleViewMode === mode.id;
+                    return (
+                      <button
+                        key={mode.id}
+                        onClick={() => setScheduleViewMode(mode.id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-[#114B44] text-white shadow-2xs'
+                            : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        {mode.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 4. MAIN TWO-COLUMN LAYOUT: CENTER CANVAS + RIGHT SIDEBAR */}
+              <div className="flex flex-col lg:flex-row gap-5 items-start">
+                
+                {/* LEFT/CENTER MAIN CONTENT AREA */}
+                <div className="flex-1 min-w-0 space-y-5 w-full">
+                  
+                  {/* VIEW: WEEKLY TIMETABLE GRID (When scheduleViewMode === 'week' or scheduleTab === 'class_schedule') */}
+                  {(scheduleViewMode === 'week' || scheduleTab === 'class_schedule') && (
+                    <div className="bg-white rounded-3xl border border-gray-200/90 shadow-2xs overflow-hidden">
+                      
+                      {/* Grid Header: Days of the Week */}
+                      <div className="grid grid-cols-8 border-b border-gray-200 bg-[#F8FAFC]">
+                        {/* Time label corner */}
+                        <div className="p-3 text-center border-r border-gray-200 flex items-center justify-center">
+                          <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">GMT+3</span>
+                        </div>
+
+                        {/* 7 Days: Sun 20 - Sat 26 */}
+                        {scheduleDays.map((d) => (
+                          <div
+                            key={d.dayNumber}
+                            onClick={() => setScheduleSelectedDay(d.dayNumber)}
+                            className={`p-2.5 sm:p-3 text-center border-r border-gray-200 last:border-r-0 cursor-pointer transition-colors ${
+                              scheduleSelectedDay === d.dayNumber ? 'bg-emerald-50/50' : 'hover:bg-gray-100/50'
+                            }`}
+                          >
+                            <span className="block text-[11px] font-bold text-gray-500 uppercase">{d.dayName}</span>
+                            <div className="mt-1 flex items-center justify-center">
+                              <span className={`w-7 h-7 rounded-full text-xs flex items-center justify-center font-extrabold transition-all ${
+                                d.isToday
+                                  ? 'bg-[#114B44] text-white shadow-xs ring-2 ring-emerald-500/20'
+                                  : scheduleSelectedDay === d.dayNumber
+                                  ? 'bg-emerald-200 text-[#114B44]'
+                                  : 'text-gray-800'
+                              }`}>
+                                {d.dayNumber}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Timetable Body (8:00 AM - 5:00 PM) */}
+                      <div className="relative overflow-x-auto">
+                        <div className="min-w-[650px] relative" style={{ height: '576px' }}>
+                          
+                          {/* Background Horizontal Hour Grid Lines (9 hourly intervals = 9 * 64px = 576px) */}
+                          <div className="absolute inset-0 grid grid-rows-9 pointer-events-none">
+                            {scheduleHours.slice(0, 9).map((h, index) => (
+                              <div key={h.hour} className="grid grid-cols-8 border-b border-gray-100/80 h-16">
+                                <div className="p-2 text-right pr-3 border-r border-gray-100 text-[10px] font-bold text-gray-400 select-none">
+                                  {h.label}
+                                </div>
+                                <div className="border-r border-gray-100/70"></div>
+                                <div className="border-r border-gray-100/70"></div>
+                                <div className="border-r border-gray-100/70"></div>
+                                <div className="border-r border-gray-100/70 bg-emerald-50/20"></div>
+                                <div className="border-r border-gray-100/70"></div>
+                                <div className="border-r border-gray-100/70"></div>
+                                <div></div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* 7 Columns Container for Absolute Event Placement */}
+                          <div className="absolute inset-0 grid grid-cols-8 pointer-events-none">
+                            {/* Empty col 1 for time */}
+                            <div></div>
+
+                            {/* 7 Day Columns (Sun 20 to Sat 26) */}
+                            {scheduleDays.map((day) => {
+                              const dayEvents = scheduleWeeklyEvents.filter(e => e.dayNumber === day.dayNumber);
+                              return (
+                                <div key={day.dayNumber} className="relative h-full pointer-events-auto">
+                                  {dayEvents.map((evt) => {
+                                    const topPx = (evt.startHour - 8) * 64 + 2;
+                                    const heightPx = evt.durationHours * 64 - 4;
+                                    return (
+                                      <div
+                                        key={evt.id}
+                                        onClick={() => {
+                                          if (evt.isLiveNow || evt.badge === 'Live') {
+                                            onJoinLive({
+                                              title: evt.title,
+                                              tutor: { name: evt.instructor, avatar: '/images/tutor_ahmed.jpg' },
+                                              image: '/images/class_nahwu.jpg'
+                                            });
+                                          } else {
+                                            alert(`Detail Jadwal:\n${evt.title}\nWaktu: ${evt.time}\nPengajar: ${evt.instructor}\nRuang: ${evt.room}`);
+                                          }
+                                        }}
+                                        style={{
+                                          top: `${topPx}px`,
+                                          height: `${heightPx}px`,
+                                        }}
+                                        className={`absolute left-1 right-1 rounded-xl p-2 flex flex-col justify-between cursor-pointer transition-all hover:scale-[1.02] hover:z-20 ${evt.themeClass}`}
+                                      >
+                                        <div>
+                                          <div className="flex items-center justify-between gap-1">
+                                            <span className={`text-[8px] font-black px-1.5 py-0.2 rounded border ${evt.badgeClass}`}>
+                                              {evt.badge}
+                                            </span>
+                                            <span className="text-[8px] font-semibold opacity-70">
+                                              {evt.time.split(' - ')[0]}
+                                            </span>
+                                          </div>
+                                          <h4 className="font-extrabold text-[10.5px] leading-tight mt-1 truncate">
+                                            {evt.title}
+                                          </h4>
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-[9px] font-medium opacity-80 pt-0.5">
+                                          <span className="truncate">{evt.room}</span>
+                                          <span className="truncate">{evt.instructor.split(' ')[1] || evt.instructor}</span>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </div>
+                  )}
+
+                  {/* 5. UPCOMING CLASSES HORIZONTAL CARD ROWS (Bottom Left) */}
+                  <div className="bg-white rounded-3xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-base font-extrabold text-gray-900">Upcoming Classes</h2>
+                        <span className="text-xs font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                          4 Sessions
+                        </span>
+                      </div>
+                      <button 
+                        onClick={() => setActiveNav('classes')}
+                        className="text-xs font-bold text-[#114B44] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>View All Classes</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {scheduleUpcomingClasses.map((item) => (
+                        <div
+                          key={item.id}
+                          className="p-3.5 rounded-2xl border border-gray-200/80 bg-white hover:bg-gray-50/80 hover:border-emerald-300 transition-all shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                        >
+                          <div className="flex items-center gap-3.5 min-w-0">
+                            {/* Avatar or Icon */}
+                            <div className="w-10 h-10 rounded-xl overflow-hidden bg-emerald-100 border border-emerald-200 shrink-0">
+                              <img
+                                src={item.avatar}
+                                alt={item.instructor}
+                                className="w-full h-full object-cover"
+                                onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                              />
+                            </div>
+
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <h3 className="font-extrabold text-xs text-gray-900 truncate group-hover:text-[#114B44] transition-colors">
+                                  {item.title}
+                                </h3>
+                                <span className={`text-[9px] font-bold px-2 py-0.2 rounded-md border ${item.tagClass}`}>
+                                  {item.tag}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-3 text-[11px] text-gray-500 mt-1 flex-wrap font-medium">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3 text-gray-400" />
+                                  <span>{item.date}</span>
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3 text-gray-400" />
+                                  <span>{item.time}</span>
+                                </span>
+                                <span className="flex items-center gap-1 text-gray-400">
+                                  <span>•</span>
+                                  <span>{item.room}</span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Action Button */}
+                          <div className="shrink-0 self-end sm:self-center">
+                            {item.isJoinable ? (
+                              <button
+                                onClick={() => onJoinLive({
+                                  title: item.title,
+                                  tutor: { name: item.instructor, avatar: item.avatar },
+                                  image: '/images/class_nahwu.jpg'
+                                })}
+                                className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                              >
+                                <Video className="w-3.5 h-3.5" />
+                                <span>Join Class</span>
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => alert(`Pengingat disetel untuk sesi ${item.title} pada ${item.date} (${item.time})`)}
+                                className="px-3.5 py-2 bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                              >
+                                <Bell className="w-3.5 h-3.5 text-gray-400" />
+                                <span>Set Reminder</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR (Matching media_1790727369755.jpg) */}
+                <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4">
+                  
+                  {/* CARD 1: Interactive Mini Calendar */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">September 2026</h3>
+                      <div className="flex items-center gap-1">
+                        <button className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 cursor-pointer">
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <button className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 cursor-pointer">
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Day labels: S M T W T F S */}
+                    <div className="grid grid-cols-7 text-center text-[10px] font-bold text-gray-400">
+                      <span>S</span>
+                      <span>M</span>
+                      <span>T</span>
+                      <span>W</span>
+                      <span>T</span>
+                      <span>F</span>
+                      <span>S</span>
+                    </div>
+
+                    {/* Dates 1-30 */}
+                    <div className="grid grid-cols-7 gap-1 text-center text-xs">
+                      {/* Empty padding for start of month (Tuesday start) */}
+                      <span className="p-1 text-gray-300">30</span>
+                      <span className="p-1 text-gray-300">31</span>
+                      
+                      {Array.from({ length: 30 }).map((_, i) => {
+                        const dayNum = i + 1;
+                        const isToday = dayNum === 23;
+                        const isSelected = scheduleSelectedDay === dayNum;
+                        const hasEvent = [21, 22, 23, 24, 25].includes(dayNum);
+
+                        return (
+                          <button
+                            key={dayNum}
+                            onClick={() => setScheduleSelectedDay(dayNum)}
+                            className={`p-1 rounded-lg font-bold text-[11px] relative flex flex-col items-center justify-center transition-colors cursor-pointer ${
+                              isToday
+                                ? 'bg-[#114B44] text-white shadow-xs'
+                                : isSelected
+                                ? 'bg-emerald-100 text-[#114B44]'
+                                : 'hover:bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            <span>{dayNum}</span>
+                            {hasEvent && (
+                              <span className={`w-1 h-1 rounded-full mt-0.5 ${
+                                isToday ? 'bg-amber-300' : 'bg-emerald-600'
+                              }`}></span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* CARD 2: Today's Schedule List (Wed, 23 Sep) */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <div>
+                        <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Today's Schedule</h3>
+                        <p className="text-[10px] text-gray-400">Wed, 23 Sep 2026</p>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">
+                        2 Classes
+                      </span>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {scheduleTodayList.map((td) => (
+                        <div
+                          key={td.id}
+                          className="p-2.5 rounded-xl border border-gray-200/80 bg-[#F8FAFC] hover:bg-emerald-50/50 transition-colors flex items-center justify-between gap-2"
+                        >
+                          <div className="min-w-0">
+                            <h4 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">{td.title}</h4>
+                            <p className="text-[10px] text-gray-500 mt-0.5 flex items-center gap-1">
+                              <Clock className="w-2.5 h-2.5 text-gray-400" />
+                              <span>{td.time}</span>
+                            </p>
+                            <p className="text-[9px] text-gray-400 truncate">{td.instructor} • {td.room}</p>
+                          </div>
+
+                          {td.isLive ? (
+                            <button
+                              onClick={() => onJoinLive({
+                                title: td.title,
+                                tutor: { name: td.instructor, avatar: '/images/tutor_ahmed.jpg' },
+                                image: '/images/class_nahwu.jpg'
+                              })}
+                              className="px-2.5 py-1 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-lg text-[10px] font-black shrink-0 shadow-2xs cursor-pointer flex items-center gap-1"
+                            >
+                              <Play className="w-2.5 h-2.5 fill-current" />
+                              <span>Join</span>
+                            </button>
+                          ) : (
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-600 shrink-0">
+                              {td.status}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CARD 3: Reminders & Deadlines List */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                      <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Reminders & Deadlines</h3>
+                      <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
+                        3 Tasks
+                      </span>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {scheduleDeadlinesList.map((dl) => (
+                        <div
+                          key={dl.id}
+                          className="p-2.5 rounded-xl border border-gray-100 bg-gray-50/60 hover:bg-gray-100/60 transition-colors space-y-1"
+                        >
+                          <div className="flex items-start justify-between gap-1">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="text-xs shrink-0">{dl.icon}</span>
+                              <h4 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">
+                                {dl.title}
+                              </h4>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-[9px] text-gray-500 font-medium pl-4">
+                            <span className="truncate">{dl.course}</span>
+                            <span className="font-bold text-rose-600 shrink-0">{dl.due}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </aside>
+
+              </div>
+
+              {/* ADD TO CALENDAR MODAL POPUP */}
+              {isAddScheduleModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <CalendarPlus className="w-4 h-4" />
+                        </div>
+                        <h3 className="font-black text-base text-gray-900">Add to Calendar</h3>
+                      </div>
+                      <button
+                        onClick={() => setIsAddScheduleModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1 rounded-lg text-xs cursor-pointer font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Class Title</label>
+                        <input
+                          type="text"
+                          defaultValue="Nahwu for Beginners"
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Date</label>
+                          <input
+                            type="date"
+                            defaultValue="2026-09-23"
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Time Slot</label>
+                          <input
+                            type="time"
+                            defaultValue="10:00"
+                            className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Instructor / Room</label>
+                        <input
+                          type="text"
+                          defaultValue="Ustadz Ahmad Fauzi • Room A"
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsAddScheduleModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsAddScheduleModalOpen(false);
+                          alert('Jadwal baru berhasil ditambahkan ke kalender!');
+                        }}
+                        className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Save Schedule
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
             </div>
           ) : (
