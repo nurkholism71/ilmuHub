@@ -172,7 +172,11 @@ export default function App() {
   };
 
   const handleLeaveLive = () => {
-    setCurrentTab(previousTab === 'live' || previousTab === 'login' ? 'universities' : previousTab);
+    if (currentUser) {
+      setCurrentTab('dashboard');
+    } else {
+      setCurrentTab(previousTab === 'live' || previousTab === 'login' ? 'universities' : previousTab);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

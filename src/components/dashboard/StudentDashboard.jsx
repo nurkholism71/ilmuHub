@@ -680,10 +680,16 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                   <button
                     key={item.id}
                     onClick={() => {
-                      setActiveNav(item.id);
-                      if (item.id === 'browse') {
-                        onExploreCourses();
+                      if (item.id === 'live') {
+                        onJoinLive({
+                          title: 'Nahwu for Beginners (Live Interactive Classroom)',
+                          tutor: 'Ustadz Ahmad Fauzi',
+                          thumbnail: '/images/class_nahwu.jpg',
+                          avatar: '/images/tutor_ahmed.jpg'
+                        });
+                        return;
                       }
+                      setActiveNav(item.id);
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       isActive
@@ -935,7 +941,13 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                         return (
                           <div 
                             key={item.id} 
-                            className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                            onClick={() => onJoinLive({
+                              title: item.title,
+                              tutor: item.tutor,
+                              thumbnail: item.image,
+                              avatar: '/images/tutor_ahmed.jpg'
+                            })}
+                            className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
                           >
                             <div>
                               {/* Thumbnail with Badge & Heart Button */}
@@ -1040,7 +1052,13 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                         return (
                           <div 
                             key={item.id} 
-                            className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                            onClick={() => onJoinLive({
+                              title: item.title,
+                              tutor: item.tutor,
+                              thumbnail: item.image,
+                              avatar: '/images/tutor_ahmed.jpg'
+                            })}
+                            className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
                           >
                             <div>
                               {/* Thumbnail */}
