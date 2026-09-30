@@ -79,6 +79,7 @@ import {
   Archive,
   HardDrive,
   File,
+  Send,
   Image as ImageIcon
 } from 'lucide-react';
 
@@ -112,6 +113,35 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isViewAllLearningOutcomesModalOpen, setIsViewAllLearningOutcomesModalOpen] = useState(false);
   const [activeReportsTooltip, setActiveReportsTooltip] = useState(null);
   const [activeRevenueReportsTooltip, setActiveRevenueReportsTooltip] = useState(null);
+
+  // =========================================================
+  // HELP & SUPPORT CENTER STATES (matching media_1790804776961.jpg)
+  // =========================================================
+  const [helpSearchQuery, setHelpSearchQuery] = useState('');
+  const [ticketTabFilter, setTicketTabFilter] = useState('all'); // 'all' (12) | 'open' (3) | 'in-progress' (4) | 'resolved' (5) | 'closed' (0)
+  const [ticketCategoryFilter, setTicketCategoryFilter] = useState('All Categories');
+  const [ticketPriorityFilter, setTicketPriorityFilter] = useState('All Priorities');
+  const [isCreateTicketModalOpen, setIsCreateTicketModalOpen] = useState(false);
+  const [selectedTicketForDetail, setSelectedTicketForDetail] = useState(null);
+  const [selectedArticleForView, setSelectedArticleForView] = useState(null);
+  const [selectedHelpTopicForView, setSelectedHelpTopicForView] = useState(null);
+  const [isViewAllHelpTopicsModalOpen, setIsViewAllHelpTopicsModalOpen] = useState(false);
+  const [isViewAllArticlesModalOpen, setIsViewAllArticlesModalOpen] = useState(false);
+  const [isLiveChatModalOpen, setIsLiveChatModalOpen] = useState(false);
+  const [isSystemStatusModalOpen, setIsSystemStatusModalOpen] = useState(false);
+  const [isReportBugModalOpen, setIsReportBugModalOpen] = useState(false);
+  const [isFeatureRequestModalOpen, setIsFeatureRequestModalOpen] = useState(false);
+  const [newTicketForm, setNewTicketForm] = useState({
+    subject: '',
+    category: 'Live Class',
+    priority: 'Medium',
+    description: '',
+    requesterEmail: 'admin@ilmhub.com'
+  });
+  const [liveChatMessages, setLiveChatMessages] = useState([
+    { id: 1, sender: 'bot', text: "Assalamu'alaikum! Selamat datang di Helpdesk Live Chat IlmHub. Ada yang bisa kami bantu hari ini?", time: 'Baru saja' }
+  ]);
+  const [liveChatInput, setLiveChatInput] = useState('');
 
   // =========================================================
   // VIP TEACHER APPLICATIONS STATES (Pendaftaran Guru VIP)
@@ -311,7 +341,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const systemNavItems = [
     { id: 'integrations', label: 'Integrations', icon: Link2 },
     { id: 'reports', label: 'Reports', icon: FileBarChart },
-    { id: 'help', label: 'Help & Support', icon: LifeBuoy },
+    { id: 'help', label: 'Help & Support', icon: HelpCircle },
   ];
 
   // Top 4 Main KPI Cards Data (Dashboard)
@@ -4061,6 +4091,281 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 3, title: 'Assignment Submission', value: '92%', score: '92%', color: 'bg-cyan-500', textColor: 'text-cyan-600', icon: FileText, iconBg: 'bg-cyan-100 text-cyan-700' },
     { id: 4, title: 'Certificate Issuance', value: '68%', score: '68%', color: 'bg-amber-500', textColor: 'text-amber-600', icon: Award, iconBg: 'bg-amber-100 text-amber-700' },
     { id: 5, title: 'Student Satisfaction', value: '4.6 / 5', score: '92%', color: 'bg-rose-500', textColor: 'text-rose-600', icon: Star, iconBg: 'bg-rose-100 text-rose-700' }
+  ];
+
+  // =========================================================
+  // HELP & SUPPORT CENTER DATASETS (matching media_1790804776961.jpg)
+  // =========================================================
+  const helpTopicsList = [
+    {
+      id: 'topic-getting-started',
+      title: 'Getting Started',
+      description: 'Learn the basics and set up your platform.',
+      count: '24 articles',
+      icon: BookOpen,
+      iconBg: 'bg-blue-50 text-blue-600 border border-blue-200/80',
+      countColor: 'text-blue-600'
+    },
+    {
+      id: 'topic-users-roles',
+      title: 'Users & Roles',
+      description: 'Manage users, teachers, and roles.',
+      count: '18 articles',
+      icon: Users,
+      iconBg: 'bg-purple-50 text-purple-600 border border-purple-200/80',
+      countColor: 'text-purple-600'
+    },
+    {
+      id: 'topic-classes-learning',
+      title: 'Classes & Learning',
+      description: 'Create classes, assignments, quizzes.',
+      count: '32 articles',
+      icon: GraduationCap,
+      iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200/80',
+      countColor: 'text-emerald-600'
+    },
+    {
+      id: 'topic-payments-earnings',
+      title: 'Payments & Earnings',
+      description: 'Setup payments, subscriptions, payouts.',
+      count: '16 articles',
+      icon: CreditCard,
+      iconBg: 'bg-amber-50 text-amber-600 border border-amber-200/80',
+      countColor: 'text-amber-600'
+    },
+    {
+      id: 'topic-platform-settings',
+      title: 'Platform Settings',
+      description: 'Configure your platform preferences.',
+      count: '20 articles',
+      icon: Settings,
+      iconBg: 'bg-rose-50 text-rose-600 border border-rose-200/80',
+      countColor: 'text-rose-600'
+    },
+    {
+      id: 'topic-integrations',
+      title: 'Integrations',
+      description: 'Connect third-party services and tools.',
+      count: '14 articles',
+      icon: Link2,
+      iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-200/80',
+      countColor: 'text-indigo-600'
+    }
+  ];
+
+  const helpPopularArticles = [
+    {
+      id: 'art-1',
+      title: 'How to Create a New Class',
+      subtitle: 'Step-by-step guide to create and manage online classes.',
+      icon: FileText,
+      iconBg: 'bg-blue-50 text-blue-600',
+      category: 'Classes',
+      categoryBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      level: 'Beginner',
+      levelBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      readTime: '4 min read',
+      views: '4,820 views',
+      author: 'Admin Support',
+      updated: '22 Sep 2026',
+      content: "Langkah-langkah membuat kelas baru di IlmHub:\n\n1. Masuk ke menu 'Classes' di sidebar panel admin.\n2. Klik tombol '+ Create Class' di pojok kanan atas.\n3. Masukkan judul kelas, deskripsi, pilih instruktur bersanad, dan tentukan kuota santri.\n4. Pilih jadwal live pertemuan (Zoom/Live Room) serta tarif pendaftaran.\n5. Susun silabus modul dan terbitkan kelas."
+    },
+    {
+      id: 'art-2',
+      title: 'Add and Manage Teachers',
+      subtitle: 'Learn how to invite teachers and manage their permissions.',
+      icon: User,
+      iconBg: 'bg-blue-50 text-blue-600',
+      category: 'Users',
+      categoryBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      level: 'Beginner',
+      levelBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      readTime: '3 min read',
+      views: '3,940 views',
+      author: 'Academic Lead',
+      updated: '20 Sep 2026',
+      content: "Panduan mengundang pengajar & asatidz:\n\n1. Akses halaman 'Teachers' atau 'VIP Teachers'.\n2. Klik '+ Add Teacher' atau 'Onboard Guru VIP'.\n3. Isi data profil, keahlian subjek, riwayat sanad, dan tautan Mayar/Stripe untuk bagi hasil.\n4. Sistem akan mengirimkan email undangan otomatis dengan kredensial akses dashboard."
+    },
+    {
+      id: 'art-3',
+      title: 'Setup Payment Gateways',
+      subtitle: 'Configure Stripe, PayPal, and local payment methods.',
+      icon: CreditCard,
+      iconBg: 'bg-amber-50 text-amber-600',
+      category: 'Payments',
+      categoryBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      level: 'Intermediate',
+      levelBadge: 'bg-yellow-50 text-amber-800 border-amber-300',
+      readTime: '6 min read',
+      views: '3,120 views',
+      author: 'Finance Team',
+      updated: '18 Sep 2026',
+      content: "Konfigurasi gateway pembayaran:\n\n1. Masuk ke 'Integrations' atau 'Settings > Payment Settings'.\n2. Aktifkan Mayar / Stripe / PayPal dengan memasukkan API Key dan Secret Key resmi.\n3. Salin Webhook Endpoint URL dan daftarkan di dashboard gateway.\n4. Lakukan pengujian di Sandbox Mode sebelum beralih ke Live Production."
+    },
+    {
+      id: 'art-4',
+      title: 'Start a Live Class',
+      subtitle: 'How to schedule and run live classes with Zoom or Google Meet.',
+      icon: Radio,
+      iconBg: 'bg-rose-50 text-rose-600',
+      category: 'Live Class',
+      categoryBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      level: 'Beginner',
+      levelBadge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      readTime: '5 min read',
+      views: '2,890 views',
+      author: 'Tech Specialist',
+      updated: '17 Sep 2026',
+      content: "Memulai kelas live tatap muka:\n\n1. Buka 'Live Classrooms' dan pilih ruang kelas yang berjadwal aktif.\n2. Klik 'Start Live Room' untuk meluncurkan sesi WebSDK.\n3. Bagikan link sesi kepada santri terdaftar.\n4. Fitur cloud recording akan otomatis merekam dan menyimpan arsip ke modul silabus."
+    },
+    {
+      id: 'art-5',
+      title: 'Create and Issue Certificates',
+      subtitle: 'Design and issue certificates for students automatically.',
+      icon: Award,
+      iconBg: 'bg-emerald-50 text-emerald-600',
+      category: 'Certificates',
+      categoryBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      level: 'Intermediate',
+      levelBadge: 'bg-yellow-50 text-amber-800 border-amber-300',
+      readTime: '4 min read',
+      views: '2,640 views',
+      author: 'Certification Bureau',
+      updated: '15 Sep 2026',
+      content: "Penerbitan sertifikat digital:\n\n1. Akses menu 'Certificates' dan pilih template sertifikat kelulusan bersanad.\n2. Sesuaikan variabel nama santri, nilai akhir, tanda tangan digital asatidz, dan barcode verifikasi.\n3. Atur kriteria kelulusan otomatis (misal: skor kuis min. 75% dan kehadiran 80%)."
+    },
+    {
+      id: 'art-6',
+      title: 'Integrate with External Tools',
+      subtitle: 'Connect with Google Drive, YouTube, and other services.',
+      icon: Link2,
+      iconBg: 'bg-indigo-50 text-indigo-600',
+      category: 'Integrations',
+      categoryBadge: 'bg-purple-50 text-purple-700 border-purple-200',
+      level: 'Advanced',
+      levelBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      readTime: '8 min read',
+      views: '2,150 views',
+      author: 'DevOps Lead',
+      updated: '14 Sep 2026',
+      content: "Integrasi sistem eksternal:\n\n1. Dapatkan Client ID dan OAuth Secret dari Google Cloud Platform & YouTube API.\n2. Masukkan kredensial ke menu Integrations.\n3. Konfigurasikan folder target Google Drive untuk penyimpanan video dan sinkronisasi kalender kelas."
+    }
+  ];
+
+  const [supportTicketsList, setSupportTicketsList] = useState([
+    {
+      id: 'tkt-1',
+      number: '#1024',
+      subject: 'Issue with live class audio',
+      category: 'Live Class',
+      categoryIcon: Radio,
+      categoryColor: 'text-rose-600 bg-rose-50',
+      priority: 'High',
+      priorityBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      status: 'Open',
+      statusDot: 'bg-rose-500',
+      statusColor: 'text-rose-600',
+      created: '23 Sep 2026',
+      lastUpdate: '23 Sep 2026',
+      requester: 'Ust. Ahmed Mohamed',
+      requesterRole: 'Instructor',
+      requesterAvatar: '/images/tutor_ahmed.jpg',
+      description: 'Santri melaporkan suara audio terputus-putus pada sesi Talaqqi Nahwu Room 1 saat menggunakan browser mobile.',
+      replies: [
+        { id: 'r-1', sender: 'Ust. Ahmed Mohamed', role: 'Instructor', time: '23 Sep 2026, 09:15', text: 'Mohon dicek latensi server audio Zoom WebSDK untuk ruang Live Room 1.' },
+        { id: 'r-2', sender: 'Tim Support IlmHub', role: 'Staff', time: '23 Sep 2026, 09:30', text: 'Wa alaikumussalam Ustadz, tim teknis sedang melakukan rerouting bandwidth server media relay.' }
+      ]
+    },
+    {
+      id: 'tkt-2',
+      number: '#1023',
+      subject: 'Payment not received',
+      category: 'Payments',
+      categoryIcon: CreditCard,
+      categoryColor: 'text-amber-600 bg-amber-50',
+      priority: 'High',
+      priorityBadge: 'bg-rose-50 text-rose-700 border-rose-200',
+      status: 'In Progress',
+      statusDot: 'bg-blue-500',
+      statusColor: 'text-blue-600',
+      created: '22 Sep 2026',
+      lastUpdate: '23 Sep 2026',
+      requester: 'Aisha Rahman',
+      requesterRole: 'Student',
+      requesterAvatar: '/images/student_aisha.jpg',
+      description: 'Pembayaran biaya kelas Tajweed via QRIS berhasil di bank santri, namun status akses kelas masih menunggu verifikasi.',
+      replies: [
+        { id: 'r-1', sender: 'Aisha Rahman', role: 'Student', time: '22 Sep 2026, 14:20', text: 'Berikut saya lampirkan bukti transfer QRIS Rp 299.000.' }
+      ]
+    },
+    {
+      id: 'tkt-3',
+      number: '#1022',
+      subject: 'Cannot create new class',
+      category: 'Classes',
+      categoryIcon: BookOpen,
+      categoryColor: 'text-emerald-600 bg-emerald-50',
+      priority: 'Medium',
+      priorityBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      status: 'In Progress',
+      statusDot: 'bg-blue-500',
+      statusColor: 'text-blue-600',
+      created: '21 Sep 2026',
+      lastUpdate: '22 Sep 2026',
+      requester: 'Siti Aisyah',
+      requesterRole: 'Instructor',
+      requesterAvatar: '/images/student_fatimah.jpg',
+      description: 'Muncul limit ukuran upload saat mengunggah file silabus PDF modul 3.',
+      replies: []
+    },
+    {
+      id: 'tkt-4',
+      number: '#1021',
+      subject: 'Certificate template issue',
+      category: 'Certificates',
+      categoryIcon: Award,
+      categoryColor: 'text-purple-600 bg-purple-50',
+      priority: 'Medium',
+      priorityBadge: 'bg-amber-50 text-amber-700 border-amber-200',
+      status: 'Resolved',
+      statusDot: 'bg-emerald-500',
+      statusColor: 'text-emerald-600',
+      created: '20 Sep 2026',
+      lastUpdate: '22 Sep 2026',
+      requester: 'Muhammad Khan',
+      requesterRole: 'Instructor',
+      requesterAvatar: '/images/student_ali.jpg',
+      description: 'Nama santri dengan gelar panjang terpotong di layout template PDF sertifikat.',
+      replies: []
+    },
+    {
+      id: 'tkt-5',
+      number: '#1020',
+      subject: 'Integration with Google Drive',
+      category: 'Integrations',
+      categoryIcon: Link2,
+      categoryColor: 'text-indigo-600 bg-indigo-50',
+      priority: 'Low',
+      priorityBadge: 'bg-blue-50 text-blue-700 border-blue-200',
+      status: 'Resolved',
+      statusDot: 'bg-emerald-500',
+      statusColor: 'text-emerald-600',
+      created: '19 Sep 2026',
+      lastUpdate: '21 Sep 2026',
+      requester: 'Dr. Ahmad Fauzi',
+      requesterRole: 'Super Admin',
+      requesterAvatar: '/images/tutor_ahmed.jpg',
+      description: 'Penyambungan token OAuth Google Drive untuk auto-backup rekaman video kuliah umum.',
+      replies: []
+    }
+  ]);
+
+  const helpSystemStatusList = [
+    { name: 'Website', status: 'Operational', isHealthy: true },
+    { name: 'Learning Platform', status: 'Operational', isHealthy: true },
+    { name: 'Live Classes', status: 'Operational', isHealthy: true },
+    { name: 'Payment System', status: 'Operational', isHealthy: true },
+    { name: 'File Storage', status: 'Operational', isHealthy: true }
   ];
 
   // =========================================================
@@ -16957,6 +17262,512 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 </div>
               );
             })()
+          ) : activeNav === 'help' ? (
+            (() => {
+              // Filtered tickets based on active tab and search
+              const filteredTickets = supportTicketsList.filter((tkt) => {
+                if (ticketTabFilter === 'open' && tkt.status !== 'Open') return false;
+                if (ticketTabFilter === 'in-progress' && tkt.status !== 'In Progress') return false;
+                if (ticketTabFilter === 'resolved' && tkt.status !== 'Resolved') return false;
+                if (ticketTabFilter === 'closed' && tkt.status !== 'Closed') return false;
+                if (ticketCategoryFilter !== 'All Categories' && tkt.category !== ticketCategoryFilter) return false;
+                if (ticketPriorityFilter !== 'All Priorities' && tkt.priority !== ticketPriorityFilter) return false;
+                if (helpSearchQuery) {
+                  const q = helpSearchQuery.toLowerCase();
+                  return tkt.subject.toLowerCase().includes(q) || tkt.number.toLowerCase().includes(q) || tkt.requester.toLowerCase().includes(q);
+                }
+                return true;
+              });
+
+              return (
+                <div className="space-y-6 animate-fadeIn min-w-0">
+                  
+                  {/* 1. HERO BANNER: HELP & SUPPORT CENTER (Matching media_1790804776961.jpg) */}
+                  <div className="bg-gradient-to-r from-purple-50/90 via-indigo-50/40 to-blue-50/80 rounded-3xl p-6 sm:p-8 border border-purple-100/90 shadow-xs relative overflow-hidden">
+                    
+                    {/* Background Decorative Rings */}
+                    <div className="absolute right-0 top-0 bottom-0 w-80 bg-gradient-to-l from-purple-200/20 to-transparent pointer-events-none rounded-r-3xl"></div>
+                    <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-purple-300/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+                      
+                      {/* Left Side: Title, Subtitle, & Search Bar */}
+                      <div className="max-w-2xl space-y-4">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xs shrink-0 font-black">
+                            <HelpCircle className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Help & Support Center</h1>
+                            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                              Find answers, guides, and support to help you manage IlmHub effectively.
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Search Input Box */}
+                        <div className="relative flex items-center gap-2 max-w-xl">
+                          <div className="relative flex-1">
+                            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="text"
+                              value={helpSearchQuery}
+                              onChange={(e) => setHelpSearchQuery(e.target.value)}
+                              placeholder="Search for help articles, troubleshooting, or type your question..."
+                              className="w-full bg-white border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 sm:py-3 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 shadow-2xs transition-all"
+                            />
+                            {helpSearchQuery && (
+                              <button
+                                type="button"
+                                onClick={() => setHelpSearchQuery('')}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (helpSearchQuery.trim()) {
+                                setIsViewAllArticlesModalOpen(true);
+                              } else {
+                                alert('Silakan masukkan kata kunci pertanyaan atau topik bantuan.');
+                              }
+                            }}
+                            className="px-5 py-2.5 sm:py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white rounded-2xl text-xs font-black shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
+                          >
+                            Search
+                          </button>
+                        </div>
+
+                        {/* Popular Searches Tags */}
+                        <div className="flex items-center gap-2 flex-wrap text-xs pt-0.5">
+                          <span className="text-[11px] font-bold text-gray-500">Popular searches:</span>
+                          {[
+                            { label: 'create class', query: 'create class' },
+                            { label: 'add teacher', query: 'add teacher' },
+                            { label: 'payment setup', query: 'payment setup' },
+                            { label: 'live class', query: 'live class' },
+                            { label: 'certificate', query: 'certificate' },
+                            { label: 'integrations', query: 'integrations' }
+                          ].map((tag) => (
+                            <button
+                              key={tag.label}
+                              type="button"
+                              onClick={() => {
+                                setHelpSearchQuery(tag.query);
+                                setIsViewAllArticlesModalOpen(true);
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-white/90 hover:bg-white border border-purple-100 hover:border-purple-300 text-purple-900 font-bold text-[11px] shadow-2xs transition-all cursor-pointer"
+                            >
+                              {tag.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Right Side: Friendly Support Avatar / Illustration */}
+                      <div className="hidden lg:flex items-center justify-center shrink-0 pr-4">
+                        <div className="relative">
+                          {/* Floating Question Bubble */}
+                          <div className="absolute -top-3 -left-4 bg-white px-2.5 py-1 rounded-xl shadow-md border border-purple-100 text-[10px] font-black text-purple-600 animate-bounce flex items-center gap-1">
+                            <span>💬</span>
+                            <span>Ada pertanyaan?</span>
+                          </div>
+
+                          {/* Floating Book/Graduation Icon */}
+                          <div className="absolute -bottom-2 -left-3 bg-white p-2 rounded-xl shadow-md border border-purple-100 text-purple-600">
+                            <BookOpen className="w-3.5 h-3.5 text-purple-600" />
+                          </div>
+
+                          {/* Support Agent Avatar Container */}
+                          <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-tr from-purple-600 to-indigo-500 p-1 shadow-lg relative flex items-center justify-center overflow-hidden">
+                            <img
+                              src="/images/tutor_ahmed.jpg"
+                              alt="Support Specialist"
+                              className="w-full h-full object-cover rounded-[22px]"
+                              onError={(e) => { e.target.src = '/images/student_ali.jpg'; }}
+                            />
+                            <div className="absolute bottom-1.5 right-1.5 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-xs"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {/* 2. MAIN 2-COLUMN LAYOUT: 9 COLS CANVAS + 3 COLS SIDEBAR */}
+                  <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 min-w-0">
+                    
+                    {/* LEFT MAIN CANVAS (9 COLS) */}
+                    <div className="xl:col-span-9 space-y-6 min-w-0">
+                      
+                      {/* SECTION A: BROWSE HELP TOPICS */}
+                      <div className="space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-sm sm:text-base font-black text-gray-900">Browse Help Topics</h2>
+                          <button
+                            type="button"
+                            onClick={() => setIsViewAllHelpTopicsModalOpen(true)}
+                            className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <span>View All Topics</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* 6 Topic Cards Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                          {helpTopicsList.map((topic) => {
+                            const TopicIcon = topic.icon;
+                            return (
+                              <div
+                                key={topic.id}
+                                onClick={() => {
+                                  setSelectedHelpTopicForView(topic);
+                                  setIsViewAllArticlesModalOpen(true);
+                                }}
+                                className="bg-white rounded-2xl p-4 sm:p-4.5 border border-gray-100 shadow-xs hover:shadow-md hover:border-gray-200 transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+                              >
+                                <div className="space-y-2.5">
+                                  <div className={`w-9 h-9 rounded-xl ${topic.iconBg} flex items-center justify-center font-black group-hover:scale-105 transition-transform`}>
+                                    <TopicIcon className="w-4 h-4" />
+                                  </div>
+                                  <div>
+                                    <h3 className="font-black text-gray-900 text-xs sm:text-sm group-hover:text-[#114B44] transition-colors">{topic.title}</h3>
+                                    <p className="text-[11px] text-gray-500 mt-0.5 line-clamp-2">{topic.description}</p>
+                                  </div>
+                                </div>
+                                <div className={`text-[11px] font-black ${topic.countColor} pt-1`}>
+                                  {topic.count}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* SECTION B: POPULAR ARTICLES */}
+                      <div className="space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-sm sm:text-base font-black text-gray-900">Popular Articles</h2>
+                          <button
+                            type="button"
+                            onClick={() => setIsViewAllArticlesModalOpen(true)}
+                            className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <span>View All Articles</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* 6 Popular Articles Grid (2 Columns x 3 Rows) */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                          {helpPopularArticles.map((art) => {
+                            const ArtIcon = art.icon;
+                            return (
+                              <div
+                                key={art.id}
+                                onClick={() => setSelectedArticleForView(art)}
+                                className="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs hover:shadow-md hover:border-gray-200 transition-all cursor-pointer flex flex-col justify-between space-y-3 group"
+                              >
+                                <div className="space-y-2">
+                                  <div className="flex items-start gap-2.5">
+                                    <div className={`w-8 h-8 rounded-xl ${art.iconBg} flex items-center justify-center shrink-0 font-black`}>
+                                      <ArtIcon className="w-4 h-4" />
+                                    </div>
+                                    <div className="min-w-0">
+                                      <h3 className="font-black text-gray-900 text-xs truncate group-hover:text-[#114B44] transition-colors">{art.title}</h3>
+                                      <p className="text-[10px] text-gray-400 line-clamp-2 mt-0.5 leading-snug">{art.subtitle}</p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center justify-between pt-2 border-t border-gray-100/80">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className={`px-2 py-0.5 rounded-md text-[9px] font-black border ${art.categoryBadge}`}>
+                                      {art.category}
+                                    </span>
+                                    <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${art.levelBadge}`}>
+                                      {art.level}
+                                    </span>
+                                  </div>
+                                  <span className="text-gray-400 group-hover:text-[#114B44] font-black text-xs transition-colors">
+                                    →
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* SECTION C: SUPPORT TICKETS TABLE */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                        
+                        {/* Section Header & Tabs & New Ticket Button */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <h2 className="text-sm sm:text-base font-black text-gray-900">Support Tickets</h2>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => setIsCreateTicketModalOpen(true)}
+                            className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 self-start sm:self-auto"
+                          >
+                            <Plus className="w-4 h-4" />
+                            <span>New Ticket</span>
+                          </button>
+                        </div>
+
+                        {/* Filter Tabs Strip */}
+                        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap py-0.5">
+                          {[
+                            { id: 'all', label: 'All Tickets', count: 12 },
+                            { id: 'open', label: 'Open', count: 3 },
+                            { id: 'in-progress', label: 'In Progress', count: 4 },
+                            { id: 'resolved', label: 'Resolved', count: 5 },
+                            { id: 'closed', label: 'Closed', count: 0 }
+                          ].map((tab) => {
+                            const isActive = ticketTabFilter === tab.id;
+                            return (
+                              <button
+                                key={tab.id}
+                                type="button"
+                                onClick={() => setTicketTabFilter(tab.id)}
+                                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                                  isActive
+                                    ? 'bg-[#114B44] text-white shadow-xs font-black'
+                                    : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                                }`}
+                              >
+                                <span>{tab.label}</span>
+                                <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${
+                                  isActive ? 'bg-emerald-800 text-white' : 'bg-white text-gray-700'
+                                }`}>
+                                  {tab.count}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Tickets Table */}
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left text-xs min-w-[720px]">
+                            <thead>
+                              <tr className="border-b border-gray-100 text-[10px] uppercase font-bold text-gray-400 bg-gray-50/60">
+                                <th className="py-2.5 px-3">#</th>
+                                <th className="py-2.5 px-3">Subject</th>
+                                <th className="py-2.5 px-3">Category</th>
+                                <th className="py-2.5 px-3">Priority</th>
+                                <th className="py-2.5 px-3">Status</th>
+                                <th className="py-2.5 px-3">Created</th>
+                                <th className="py-2.5 px-3">Last Update</th>
+                                <th className="py-2.5 px-3 text-right">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 text-[11px]">
+                              {filteredTickets.map((tkt) => {
+                                const CatIcon = tkt.categoryIcon;
+                                return (
+                                  <tr key={tkt.id} className="hover:bg-gray-50/70 transition-colors">
+                                    <td className="py-3 px-3 font-mono font-bold text-gray-500">{tkt.number}</td>
+                                    <td className="py-3 px-3 font-extrabold text-gray-900 max-w-[200px] truncate">{tkt.subject}</td>
+                                    <td className="py-3 px-3">
+                                      <div className="flex items-center gap-1.5">
+                                        <div className={`w-5 h-5 rounded-md ${tkt.categoryColor} flex items-center justify-center text-[10px] font-bold`}>
+                                          <CatIcon className="w-3 h-3" />
+                                        </div>
+                                        <span className="font-bold text-gray-700">{tkt.category}</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-3">
+                                      <span className={`px-2 py-0.5 rounded-md text-[9px] font-black border ${tkt.priorityBadge}`}>
+                                        {tkt.priority}
+                                      </span>
+                                    </td>
+                                    <td className="py-3 px-3">
+                                      <div className="flex items-center gap-1.5">
+                                        <span className={`w-2 h-2 rounded-full ${tkt.statusDot} shrink-0`}></span>
+                                        <span className={`font-bold ${tkt.statusColor}`}>{tkt.status}</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-3 font-medium text-gray-500">{tkt.created}</td>
+                                    <td className="py-3 px-3 font-medium text-gray-500">{tkt.lastUpdate}</td>
+                                    <td className="py-3 px-3 text-right">
+                                      <div className="flex items-center justify-end gap-1.5">
+                                        <button
+                                          type="button"
+                                          onClick={() => setSelectedTicketForDetail(tkt)}
+                                          className="px-2.5 py-1 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-[10px] font-bold rounded-lg cursor-pointer shadow-2xs"
+                                        >
+                                          View
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => alert(`Aksi tiket ${tkt.number}: Ubah status atau tetapkan teknisi support.`)}
+                                          className="p-1 text-gray-400 hover:text-gray-600 rounded-md cursor-pointer"
+                                        >
+                                          <MoreHorizontal className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* RIGHT SIDEBAR (3 COLS) */}
+                    <aside className="xl:col-span-3 space-y-5 min-w-0">
+                      
+                      {/* CARD 1: CONTACT SUPPORT */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-4">
+                        <div>
+                          <h3 className="text-sm font-black text-gray-900">Contact Support</h3>
+                          <p className="text-[11px] text-gray-500">Our support team is here to help.</p>
+                        </div>
+
+                        {/* Send a Support Ticket Button */}
+                        <button
+                          type="button"
+                          onClick={() => setIsCreateTicketModalOpen(true)}
+                          className="w-full py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Send a Support Ticket</span>
+                        </button>
+
+                        {/* Communication Channels List */}
+                        <div className="space-y-3 pt-1 text-xs">
+                          {/* Live Chat */}
+                          <div
+                            onClick={() => setIsLiveChatModalOpen(true)}
+                            className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors"
+                          >
+                            <MessageSquare className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-extrabold text-gray-900 text-[11px]">Live Chat Support</div>
+                              <div className="text-[10px] text-gray-400">Usually replies in minutes</div>
+                            </div>
+                          </div>
+
+                          {/* Email Support */}
+                          <div
+                            onClick={() => {
+                              window.location.href = 'mailto:support@ilmhub.com';
+                            }}
+                            className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors"
+                          >
+                            <Mail className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-extrabold text-gray-900 text-[11px]">Email Support</div>
+                              <div className="text-[10px] text-gray-500 font-mono">support@ilmhub.com</div>
+                            </div>
+                          </div>
+
+                          {/* WhatsApp Support */}
+                          <div
+                            onClick={() => {
+                              window.open('https://wa.me/6281234567890', '_blank');
+                            }}
+                            className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors"
+                          >
+                            <Phone className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-extrabold text-gray-900 text-[11px]">WhatsApp Support</div>
+                              <div className="text-[10px] text-gray-500 font-mono">+62 812-3456-7890</div>
+                            </div>
+                          </div>
+
+                          {/* Support Hours */}
+                          <div className="flex items-start gap-2.5 p-2 rounded-xl bg-gray-50 border border-gray-100">
+                            <Clock className="w-4 h-4 text-gray-500 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-extrabold text-gray-900 text-[11px]">Support Hours</div>
+                              <div className="text-[10px] text-gray-500 font-medium">Mon - Fri, 08:00 - 20:00 (WIB)</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CARD 2: SYSTEM STATUS */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-black text-gray-900">System Status</h3>
+                          <button
+                            type="button"
+                            onClick={() => setIsSystemStatusModalOpen(true)}
+                            className="text-xs font-black text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <span>View Status Page</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="space-y-2.5 text-xs">
+                          {helpSystemStatusList.map((sys, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-1.5 rounded-xl hover:bg-gray-50 transition-colors">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span className="font-extrabold text-gray-800 text-[11px]">{sys.name}</span>
+                              </div>
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                {sys.status}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* CARD 3: QUICK LINKS */}
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3.5">
+                        <h3 className="text-sm font-black text-gray-900">Quick Links</h3>
+
+                        <div className="space-y-2 text-xs">
+                          {[
+                            { name: 'Documentation', desc: 'Complete guides and references', icon: BookOpen, action: () => setIsViewAllHelpTopicsModalOpen(true) },
+                            { name: 'Video Tutorials', desc: 'Step-by-step video guides', icon: Video, action: () => alert('Membuka Pusat Video Tutorial & Demo Interaktif IlmHub...') },
+                            { name: 'Community Forum', desc: 'Ask and share with other users', icon: Users, action: () => alert('Membuka Forum Komunitas Asatidz & Santri IlmHub...') },
+                            { name: 'Feature Requests', desc: 'Suggest new features', icon: Sparkles, action: () => setIsFeatureRequestModalOpen(true) },
+                            { name: 'Report a Bug', desc: 'Report issues or problems', icon: AlertCircle, action: () => setIsReportBugModalOpen(true) }
+                          ].map((lnk, idx) => {
+                            const LnkIcon = lnk.icon;
+                            return (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={lnk.action}
+                                className="w-full flex items-start gap-2.5 p-2 rounded-xl hover:bg-gray-50 text-left transition-colors cursor-pointer group"
+                              >
+                                <div className="w-7 h-7 rounded-lg bg-gray-100 group-hover:bg-emerald-50 group-hover:text-[#114B44] text-gray-600 flex items-center justify-center shrink-0 transition-colors">
+                                  <LnkIcon className="w-3.5 h-3.5" />
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="font-extrabold text-gray-900 text-[11px] group-hover:text-[#114B44] transition-colors">{lnk.name}</div>
+                                  <div className="text-[10px] text-gray-400 truncate">{lnk.desc}</div>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                    </aside>
+
+                  </div>
+
+                </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -23165,6 +23976,692 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                     className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer"
                   >
                     <span>Simpan Jadwal</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+
+          {/* ========================================================= */}
+          {/* HELP & SUPPORT CENTER INTERACTIVE MODALS                  */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal Create New Support Ticket */}
+          {isCreateTicketModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <HelpCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Buat Tiket Bantuan Baru</h3>
+                      <p className="text-xs text-gray-500">Tim teknis & operasional IlmHub siap membantu Anda</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsCreateTicketModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Subjek Masalah / Pertanyaan *</label>
+                    <input
+                      type="text"
+                      value={newTicketForm.subject}
+                      onChange={(e) => setNewTicketForm({ ...newTicketForm, subject: e.target.value })}
+                      placeholder="Contoh: Kendala sinkronisasi webhook payout Mayar"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-600"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Kategori Masalah</label>
+                      <select
+                        value={newTicketForm.category}
+                        onChange={(e) => setNewTicketForm({ ...newTicketForm, category: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-600"
+                      >
+                        <option value="Live Class">Live Class & Zoom</option>
+                        <option value="Payment & Payout">Payment & Payout</option>
+                        <option value="Teacher Access">Teacher Access & Role</option>
+                        <option value="Certificate">Certificate & Ijazah</option>
+                        <option value="Platform Setting">Platform Setting & API</option>
+                        <option value="General">Lainnya / General</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Prioritas</label>
+                      <select
+                        value={newTicketForm.priority}
+                        onChange={(e) => setNewTicketForm({ ...newTicketForm, priority: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-600"
+                      >
+                        <option value="Low">Low (Biasa)</option>
+                        <option value="Medium">Medium (Penting)</option>
+                        <option value="High">High (Mendesak)</option>
+                        <option value="Urgent">Urgent (Sistem Terganggu)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Email Pelapor</label>
+                    <input
+                      type="email"
+                      value={newTicketForm.requesterEmail}
+                      onChange={(e) => setNewTicketForm({ ...newTicketForm, requesterEmail: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-purple-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Deskripsi Detail Masalah *</label>
+                    <textarea
+                      rows={4}
+                      value={newTicketForm.description}
+                      onChange={(e) => setNewTicketForm({ ...newTicketForm, description: e.target.value })}
+                      placeholder="Jelaskan langkah-langkah terjadinya kendala, pesan error yang muncul, atau pertanyaan yang ingin ditanyakan secara spesifik..."
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-normal focus:outline-none focus:border-purple-600"
+                    />
+                  </div>
+
+                  <div className="p-3 bg-purple-50 rounded-xl border border-purple-100 flex items-start gap-2.5">
+                    <Sparkles className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-purple-800 leading-relaxed">
+                      Tiket Anda akan diteruskan ke Tim Dukungan IlmHub dengan perkiraan SLA respon perdana <strong>kurang dari 15 menit</strong> pada jam kerja aktif.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsCreateTicketModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (!newTicketForm.subject.trim() || !newTicketForm.description.trim()) {
+                        alert('Silakan isi subjek dan deskripsi masalah.');
+                        return;
+                      }
+                      const newTkt = {
+                        id: `ticket-${Date.now()}`,
+                        number: `#TKT-${Math.floor(1000 + Math.random() * 9000)}`,
+                        subject: newTicketForm.subject,
+                        requester: 'Admin IlmHub',
+                        email: newTicketForm.requesterEmail,
+                        category: newTicketForm.category,
+                        priority: newTicketForm.priority,
+                        status: 'Open',
+                        statusType: 'open',
+                        repliesCount: 1,
+                        updatedAt: 'Baru saja',
+                        messages: [
+                          { sender: 'Admin IlmHub', role: 'Super Admin', time: 'Baru saja', text: newTicketForm.description }
+                        ]
+                      };
+                      setSupportTicketsList([newTkt, ...supportTicketsList]);
+                      setIsCreateTicketModalOpen(false);
+                      setNewTicketForm({ subject: '', category: 'Live Class', priority: 'Medium', description: '', requesterEmail: 'admin@ilmhub.com' });
+                      alert(`Tiket bantuan ${newTkt.number} berhasil dibuat dan dikirim ke tim teknis!`);
+                    }}
+                    className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Kirim Tiket</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal Ticket Detail & Reply Thread */}
+          {selectedTicketForDetail && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-start justify-between pb-3 border-b border-gray-100">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md font-mono">{selectedTicketForDetail.number}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        selectedTicketForDetail.priority === 'High' ? 'bg-amber-100 text-amber-700' :
+                        selectedTicketForDetail.priority === 'Urgent' ? 'bg-rose-100 text-rose-700' :
+                        'bg-blue-100 text-blue-700'
+                      }`}>
+                        {selectedTicketForDetail.priority} Priority
+                      </span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        selectedTicketForDetail.status === 'Open' ? 'bg-blue-100 text-blue-700' :
+                        selectedTicketForDetail.status === 'In Progress' ? 'bg-amber-100 text-amber-700' :
+                        'bg-emerald-100 text-emerald-700'
+                      }`}>
+                        {selectedTicketForDetail.status}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-black text-gray-900">{selectedTicketForDetail.subject}</h3>
+                    <p className="text-xs text-gray-400">
+                      Diajukan oleh <strong className="text-gray-700">{selectedTicketForDetail.requester}</strong> ({selectedTicketForDetail.email}) • Kategori: <span className="font-bold text-gray-700">{selectedTicketForDetail.category}</span>
+                    </p>
+                  </div>
+                  <button onClick={() => setSelectedTicketForDetail(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                {/* Conversation Thread */}
+                <div className="space-y-3 max-h-72 overflow-y-auto p-1">
+                  {selectedTicketForDetail.messages?.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-3.5 rounded-xl border text-xs leading-relaxed space-y-1 ${
+                        msg.role === 'Support Agent' || msg.role === 'Technical Support'
+                          ? 'bg-purple-50/60 border-purple-200 ml-4'
+                          : 'bg-gray-50 border-gray-200 mr-4'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="font-extrabold text-gray-900 flex items-center gap-1.5">
+                          {msg.sender}
+                          <span className="text-[10px] font-semibold text-purple-600 bg-white px-1.5 py-0.2 rounded border border-purple-200">{msg.role}</span>
+                        </span>
+                        <span className="text-gray-400 text-[10px]">{msg.time}</span>
+                      </div>
+                      <p className="text-gray-700">{msg.text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Reply Form */}
+                <div className="pt-3 border-t border-gray-100 space-y-2.5">
+                  <label className="block text-xs font-bold text-gray-700">Tulis Balasan / Catatan Penyelesaian:</label>
+                  <textarea
+                    id="ticketReplyTextarea"
+                    rows={3}
+                    placeholder="Tulis instruksi solusi atau update status tiket di sini..."
+                    className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-purple-600"
+                  />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-gray-500 font-bold">Ubah Status:</span>
+                      <select
+                        defaultValue={selectedTicketForDetail.status}
+                        id="ticketStatusUpdateSelect"
+                        className="bg-gray-100 border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-gray-700 focus:outline-none"
+                      >
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                      </select>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setSelectedTicketForDetail(null)} className="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                      <button
+                        onClick={() => {
+                          const replyInput = document.getElementById('ticketReplyTextarea');
+                          const statusSelect = document.getElementById('ticketStatusUpdateSelect');
+                          const replyText = replyInput?.value || '';
+                          const newStatus = statusSelect?.value || selectedTicketForDetail.status;
+
+                          const updatedMessages = [
+                            ...(selectedTicketForDetail.messages || []),
+                            ...(replyText.trim() ? [{ sender: 'Admin IlmHub', role: 'Super Admin', time: 'Baru saja', text: replyText.trim() }] : [])
+                          ];
+
+                          const updatedList = supportTicketsList.map(t => {
+                            if (t.id === selectedTicketForDetail.id) {
+                              return {
+                                ...t,
+                                status: newStatus,
+                                statusType: newStatus.toLowerCase().replace(' ', '-'),
+                                repliesCount: updatedMessages.length,
+                                updatedAt: 'Baru saja',
+                                messages: updatedMessages
+                              };
+                            }
+                            return t;
+                          });
+
+                          setSupportTicketsList(updatedList);
+                          setSelectedTicketForDetail(null);
+                          alert(`Tiket ${selectedTicketForDetail.number} berhasil diperbarui (Status: ${newStatus})!`);
+                        }}
+                        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Kirim & Update</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal Article Reader */}
+          {selectedArticleForView && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-start justify-between pb-3 border-b border-gray-100">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-black text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md">{selectedArticleForView.category}</span>
+                      <span className="text-[11px] text-gray-400 flex items-center gap-1 font-semibold">
+                        <Clock className="w-3 h-3" /> {selectedArticleForView.readTime} baca
+                      </span>
+                      <span className="text-[11px] text-gray-400 font-semibold">• {selectedArticleForView.views} pembaca</span>
+                    </div>
+                    <h3 className="text-lg font-black text-gray-900 leading-snug">{selectedArticleForView.title}</h3>
+                  </div>
+                  <button onClick={() => setSelectedArticleForView(null)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3.5 text-xs text-gray-700 leading-relaxed">
+                  <p className="font-medium text-gray-600">{selectedArticleForView.description}</p>
+                  
+                  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
+                    <h4 className="font-black text-gray-900 text-xs flex items-center gap-1.5">
+                      <BookOpen className="w-3.5 h-3.5 text-purple-600" />
+                      Langkah-langkah Panduan Praktis:
+                    </h4>
+                    <ol className="list-decimal list-inside space-y-1.5 text-gray-700 pl-1">
+                      <li>Buka menu navigasi utama di bilah samping dashboard.</li>
+                      <li>Pilih modul yang sesuai (misal: <strong>Kelas & Jadwal</strong> atau <strong>Integrasi & Pembayaran</strong>).</li>
+                      <li>Klik tombol aksi utama berwarna hijau di sudut kanan atas halaman.</li>
+                      <li>Lengkapi seluruh formulir verifikasi parameter dan prasyarat data.</li>
+                      <li>Klik tombol <strong>Simpan Perubahan</strong> dan verifikasi log audit di tab notifikasi.</li>
+                    </ol>
+                  </div>
+
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-emerald-800 text-[11px] flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Panduan ini terverifikasi kompatibel dengan IlmHub Platform v3.4.2 Enterprise.</span>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 font-medium">Apakah panduan ini membantu?</span>
+                    <button
+                      onClick={() => alert('Terima kasih atas masukan Anda! Rating artikel dicatat.')}
+                      className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold cursor-pointer border border-emerald-200"
+                    >
+                      👍 Ya
+                    </button>
+                    <button
+                      onClick={() => alert('Terima kasih atas masukan Anda! Kami akan menyempurnakan artikel ini.')}
+                      className="px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold cursor-pointer"
+                    >
+                      👎 Tidak
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => setSelectedArticleForView(null)}
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold cursor-pointer"
+                  >
+                    Tutup Artikel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal View All Help Topics Catalog */}
+          {isViewAllHelpTopicsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-3xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <BookOpen className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Semua Kategori & Topik Bantuan</h3>
+                      <p className="text-xs text-gray-500">Pusat dokumentasi dan knowledge base lengkap IlmHub</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllHelpTopicsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {helpTopicsList.map((topic) => {
+                    const TopicIcon = topic.icon;
+                    return (
+                      <div
+                        key={topic.id}
+                        onClick={() => {
+                          setSelectedHelpTopicForView(topic);
+                          setIsViewAllHelpTopicsModalOpen(false);
+                        }}
+                        className="p-4 bg-[#F8FAFC] hover:bg-purple-50/50 rounded-2xl border border-gray-200 hover:border-purple-300 transition-all cursor-pointer space-y-2 group"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className={`w-9 h-9 rounded-xl ${topic.iconBg} flex items-center justify-center`}>
+                            <TopicIcon className="w-5 h-5" />
+                          </div>
+                          <span className="text-[11px] font-bold text-gray-400 group-hover:text-purple-600">{topic.articlesCount} artikel →</span>
+                        </div>
+                        <h4 className="text-sm font-black text-gray-900 group-hover:text-purple-900">{topic.title}</h4>
+                        <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{topic.desc}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllHelpTopicsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal Knowledge Base / View All Articles */}
+          {isViewAllArticlesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-3xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Knowledge Base & Artikel Bantuan</h3>
+                      <p className="text-xs text-gray-500">Pencarian artikel dan tutorial operasional sistem</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewAllArticlesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="relative">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={helpSearchQuery}
+                    onChange={(e) => setHelpSearchQuery(e.target.value)}
+                    placeholder="Ketik kata kunci artikel yang dicari..."
+                    className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-9 pr-3 py-2.5 text-xs font-semibold focus:outline-none focus:border-purple-600"
+                  />
+                </div>
+
+                <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+                  {helpPopularArticles
+                    .filter(art => {
+                      if (!helpSearchQuery) return true;
+                      const q = helpSearchQuery.toLowerCase();
+                      return art.title.toLowerCase().includes(q) || art.category.toLowerCase().includes(q) || art.description.toLowerCase().includes(q);
+                    })
+                    .map((art) => {
+                      const ArtIcon = art.icon;
+                      return (
+                        <div
+                          key={art.id}
+                          onClick={() => {
+                            setSelectedArticleForView(art);
+                            setIsViewAllArticlesModalOpen(false);
+                          }}
+                          className="p-3.5 bg-[#F8FAFC] hover:bg-purple-50/50 rounded-xl border border-gray-200 hover:border-purple-300 transition-all cursor-pointer flex items-center justify-between group"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-lg ${art.iconBg} flex items-center justify-center shrink-0`}>
+                              <ArtIcon className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <span className="text-[10px] font-bold text-purple-700 bg-purple-100 px-1.5 py-0.2 rounded">{art.category}</span>
+                                <span className="text-[10px] text-gray-400">{art.readTime} • {art.views} views</span>
+                              </div>
+                              <h4 className="text-xs font-black text-gray-900 group-hover:text-purple-900">{art.title}</h4>
+                            </div>
+                          </div>
+                          <span className="text-xs font-bold text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">Baca →</span>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewAllArticlesModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Modal Live Chat Support Simulator */}
+          {isLiveChatModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200 h-[520px]">
+                {/* Chat Header */}
+                <div className="p-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="relative">
+                      <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center font-bold text-sm">
+                        💬
+                      </div>
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-white rounded-full"></span>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black">IlmHub Support Specialist</h3>
+                      <p className="text-[11px] text-purple-100 flex items-center gap-1 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Online • Respon &lt; 2 menit
+                      </p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsLiveChatModalOpen(false)} className="text-white/80 hover:text-white p-1 rounded-lg text-sm font-bold cursor-pointer">✕</button>
+                </div>
+
+                {/* Chat Body */}
+                <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#F8FAFC]">
+                  {liveChatMessages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] p-3 rounded-2xl text-xs leading-relaxed ${
+                          msg.sender === 'user'
+                            ? 'bg-purple-600 text-white rounded-br-none shadow-xs'
+                            : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-xs'
+                        }`}
+                      >
+                        {msg.text}
+                      </div>
+                      <span className="text-[10px] text-gray-400 mt-1 px-1">{msg.time}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Quick Prompts */}
+                <div className="px-3 py-2 bg-white border-t border-gray-100 flex items-center gap-1.5 overflow-x-auto text-[11px]">
+                  <button
+                    onClick={() => {
+                      const userMsg = { id: Date.now(), sender: 'user', text: 'Bagaimana cara withdraw saldo Mayar?', time: 'Baru saja' };
+                      setLiveChatMessages((prev) => [...prev, userMsg]);
+                      setTimeout(() => {
+                        const botReply = {
+                          id: Date.now() + 1,
+                          sender: 'bot',
+                          text: 'Untuk penarikan dana via Mayar, silakan buka menu Pendapatan & Payroll > Pengaturan Payout, lalu klik tombol Tarik Saldo.',
+                          time: 'Baru saja'
+                        };
+                        setLiveChatMessages((prev) => [...prev, botReply]);
+                      }, 700);
+                    }}
+                    className="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 font-bold shrink-0 cursor-pointer"
+                  >
+                    Withdraw Mayar
+                  </button>
+                  <button
+                    onClick={() => {
+                      const userMsg = { id: Date.now(), sender: 'user', text: 'Jadwal Zoom kelas live saya belum muncul di kalender santri.', time: 'Baru saja' };
+                      setLiveChatMessages((prev) => [...prev, userMsg]);
+                      setTimeout(() => {
+                        const botReply = {
+                          id: Date.now() + 1,
+                          sender: 'bot',
+                          text: 'Mohon pastikan status sesi kelas sudah diatur ke "Published" dan host key Zoom telah terisi pada menu Integrasi Zoom.',
+                          time: 'Baru saja'
+                        };
+                        setLiveChatMessages((prev) => [...prev, botReply]);
+                      }, 700);
+                    }}
+                    className="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 font-bold shrink-0 cursor-pointer"
+                  >
+                    Kendala Zoom
+                  </button>
+                </div>
+
+                {/* Chat Input */}
+                <div className="p-3 bg-white border-t border-gray-200 flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={liveChatInput}
+                    onChange={(e) => setLiveChatInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && liveChatInput.trim()) {
+                        const text = liveChatInput.trim();
+                        setLiveChatInput('');
+                        const userMsg = { id: Date.now(), sender: 'user', text, time: 'Baru saja' };
+                        setLiveChatMessages((prev) => [...prev, userMsg]);
+                        setTimeout(() => {
+                          const botReply = {
+                            id: Date.now() + 1,
+                            sender: 'bot',
+                            text: `Terima kasih! Pesan Anda: "${text}" telah dicatat oleh agen kami dan segera ditindaklanjuti.`,
+                            time: 'Baru saja'
+                          };
+                          setLiveChatMessages((prev) => [...prev, botReply]);
+                        }, 800);
+                      }
+                    }}
+                    placeholder="Ketik pesan chat..."
+                    className="flex-1 bg-[#F8FAFC] border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-purple-600"
+                  />
+                  <button
+                    onClick={() => {
+                      if (!liveChatInput.trim()) return;
+                      const text = liveChatInput.trim();
+                      setLiveChatInput('');
+                      const userMsg = { id: Date.now(), sender: 'user', text, time: 'Baru saja' };
+                      setLiveChatMessages((prev) => [...prev, userMsg]);
+                      setTimeout(() => {
+                        const botReply = {
+                          id: Date.now() + 1,
+                          sender: 'bot',
+                          text: `Terima kasih! Pesan Anda: "${text}" telah dicatat oleh agen kami dan segera ditindaklanjuti.`,
+                          time: 'Baru saja'
+                        };
+                        setLiveChatMessages((prev) => [...prev, botReply]);
+                      }, 800);
+                    }}
+                    className="p-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl cursor-pointer"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. Modal System Status Diagnostics */}
+          {isSystemStatusModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <CheckCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Diagnostik Status Sistem & Server</h3>
+                      <p className="text-xs text-gray-500">Pemantauan real-time infrastruktur IlmHub</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsSystemStatusModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span className="text-xs font-black text-emerald-900">All Systems Operational</span>
+                  </div>
+                  <span className="text-xs font-black text-emerald-700 font-mono">99.98% Uptime</span>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {helpSystemStatusList.map((st) => (
+                    <div key={st.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span className="font-extrabold text-gray-800">{st.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-mono text-gray-400">{st.latency}</span>
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">{st.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-gray-600 text-[11px] space-y-1">
+                  <div className="font-black text-gray-900">Riwayat Insiden Terakhir:</div>
+                  <p>Tidak ada gangguan layanan tercatat dalam 30 hari terakhir. Semua gateway API dan sinkronisasi basis data berjalan lancar.</p>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsSystemStatusModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 8. Modal Bug Report / Feature Request */}
+          {(isReportBugModalOpen || isFeatureRequestModalOpen) && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-9 h-9 rounded-xl ${isReportBugModalOpen ? 'bg-rose-100 text-rose-700' : 'bg-purple-100 text-purple-700'} flex items-center justify-center font-black`}>
+                      {isReportBugModalOpen ? <AlertCircle className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">{isReportBugModalOpen ? 'Laporkan Bug / Kendala Teknis' : 'Ajukan Fitur Baru (Feature Request)'}</h3>
+                      <p className="text-xs text-gray-500">Masukan Anda membantu menyempurnakan platform</p>
+                    </div>
+                  </div>
+                  <button onClick={() => { setIsReportBugModalOpen(false); setIsFeatureRequestModalOpen(false); }} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Judul {isReportBugModalOpen ? 'Bug' : 'Fitur'}</label>
+                    <input
+                      type="text"
+                      placeholder={isReportBugModalOpen ? 'Contoh: Tombol download sertifikat error 404' : 'Contoh: Integrasi payment gateway QRIS dinamis'}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-purple-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Detail Keterangan & Rincian</label>
+                    <textarea
+                      rows={4}
+                      placeholder={isReportBugModalOpen ? 'Tuliskan URL halaman, waktu kejadian, dan pesan error...' : 'Jelaskan manfaat dan alur penggunaan fitur yang Anda inginkan...'}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-normal focus:outline-none focus:border-purple-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => { setIsReportBugModalOpen(false); setIsFeatureRequestModalOpen(false); }} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsReportBugModalOpen(false);
+                      setIsFeatureRequestModalOpen(false);
+                      alert('Terima kasih! Laporan Anda berhasil dikirim ke tim Product & Engineering IlmHub.');
+                    }}
+                    className={`px-5 py-2.5 ${isReportBugModalOpen ? 'bg-rose-600 hover:bg-rose-700' : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-xl text-xs font-extrabold shadow-xs transition-colors cursor-pointer`}
+                  >
+                    <span>Kirim Laporan</span>
                   </button>
                 </div>
               </div>
