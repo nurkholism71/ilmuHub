@@ -47,11 +47,21 @@ import {
   Mail,
   Upload,
   Shield,
-  UploadCloud
+  UploadCloud,
+  Star,
+  CheckCircle,
+  AlertCircle,
+  XCircle,
+  FileCheck,
+  Phone,
+  Sliders,
+  CheckSquare,
+  X,
+  CreditCard
 } from 'lucide-react';
 
 export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, onLogout, onSwitchRole }) {
-  const [activeNav, setActiveNav] = useState('users'); // default to 'users' to view immediately or switch to 'dashboard'
+  const [activeNav, setActiveNav] = useState('teachers'); // default to 'teachers' (VIP Teacher Applications & Approvals) or 'users' / 'dashboard'
   const [dateRangeFilter, setDateRangeFilter] = useState('1 Sep 2026 - 30 Sep 2026');
   const [isDateRangeDropdownOpen, setIsDateRangeDropdownOpen] = useState(false);
   const [revenuePeriodFilter, setRevenuePeriodFilter] = useState('All Time');
@@ -59,6 +69,25 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [contentManagementOpen, setContentManagementOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
+
+  // =========================================================
+  // VIP TEACHER APPLICATIONS STATES (Pendaftaran Guru VIP)
+  // =========================================================
+  const [vipTabFilter, setVipTabFilter] = useState('all'); // 'all' | 'pending' | 'verified' | 'approved' | 'revision'
+  const [vipSearchQuery, setVipSearchQuery] = useState('');
+  const [vipSubjectFilter, setVipSubjectFilter] = useState('All Subjects');
+  const [vipTierFilter, setVipTierFilter] = useState('All Tiers');
+  const [selectedVipTeacherId, setSelectedVipTeacherId] = useState('vip-1');
+  const [selectedVipDetailTab, setSelectedVipDetailTab] = useState('dossier'); // 'dossier' | 'tiers' | 'documents' | 'financials'
+  const [selectedVipCheckboxes, setSelectedVipCheckboxes] = useState([]);
+  const [isApproveVipModalOpen, setIsApproveVipModalOpen] = useState(false);
+  const [isRevisionVipModalOpen, setIsRevisionVipModalOpen] = useState(false);
+  const [isScheduleVipModalOpen, setIsScheduleVipModalOpen] = useState(false);
+  const [isAddVipModalOpen, setIsAddVipModalOpen] = useState(false);
+  const [isDocViewerModalOpen, setIsDocViewerModalOpen] = useState(false);
+  const [activeDocPreview, setActiveDocPreview] = useState(null);
+  const [targetVipTeacher, setTargetVipTeacher] = useState(null);
+  const [platformTakeRate, setPlatformTakeRate] = useState(15); // Platform 15%, Teacher 85%
 
   // =========================================================
   // USERS ROOM STATES (matching media_1790731145724.jpg)
@@ -85,8 +114,8 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   // Navigation Items matching media_1790730977291.jpg & media_1790731145724.jpg
   const adminNavItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'teachers', label: 'VIP Teachers & Approvals', icon: GraduationCap, badge: '24 New' },
     { id: 'users', label: 'Users', icon: Users },
-    { id: 'teachers', label: 'Teachers', icon: GraduationCap },
     { id: 'classes', label: 'Classes', icon: BookOpen },
     { id: 'live', label: 'Live Classrooms', icon: Video },
     { id: 'schedules', label: 'Schedules', icon: Calendar },
@@ -508,12 +537,290 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     );
   };
 
-  const toggleSelectAllUsers = () => {
-    if (selectedUserCheckboxes.length === adminUsersList.length) {
-      setSelectedUserCheckboxes([]);
-    } else {
-      setSelectedUserCheckboxes(adminUsersList.map(u => u.id));
+  // =========================================================
+  // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
+  // =========================================================
+  const [vipTeachersList, setVipTeachersList] = useState([
+    {
+      id: 'vip-1',
+      name: 'Dr. Sheikh Tariq Al-Madani',
+      avatar: '/images/tutor_ahmed.jpg',
+      email: 'tariq.madani@univ-islamic.org',
+      phone: '+62 812-9842-1920',
+      location: 'Madinah / Jakarta',
+      specialty: 'Ushul Fiqh & Qawaid Fiqhiyyah',
+      credentials: "S3 Ushul Fiqh UIM Madinah, Sanad Muttashil Mazhab Syafi'i",
+      experience: '14+ Years Academic & Talaqqi',
+      status: 'Pending Review', // 'Pending Review' | 'Sanad Verified' | 'Approved VIP' | 'Needs Revision'
+      statusType: 'pending',
+      submittedDate: '28 Sep 2026',
+      rating: '5.0',
+      classesCount: 42,
+      subscribersCount: 0,
+      pricingTiers: {
+        halakah: { price: 'Rp 199.000 / bln', name: 'VIP Halakah Ushul Fiqh', schedule: 'Setiap Sabtu 20:00 WIB', liveSessionCount: '4x Live / Bln' },
+        mentorship: { price: 'Rp 1.250.000 / bln', name: 'Private 1-on-1 Takhassus', quota: 'Max 10 Santri/Bln', benefits: 'Private Talaqqi + Q&A Fatwa Personal' },
+        lifetime: { price: 'Rp 3.500.000', name: 'Executive Ilmiyah Pass', benefits: 'Akses Semua Rekaman + Sanad Ijazah Bersertifikat' }
+      },
+      documents: [
+        { id: 'doc-1', name: 'Ijazah_Sanad_Ushul_Madinah.pdf', type: 'sanad', size: '2.4 MB', isVerified: true, date: '28 Sep 2026' },
+        { id: 'doc-2', name: 'Curriculum_VIP_Halakah_2026.pdf', type: 'curriculum', size: '1.1 MB', isVerified: false, date: '28 Sep 2026' },
+        { id: 'doc-3', name: 'Sample_Lectures_Talaqqi.mp4', type: 'video', size: '48.2 MB', isVerified: true, date: '28 Sep 2026' }
+      ],
+      bankDetails: {
+        bankName: 'BSI (Bank Syariah Indonesia)',
+        accNumber: '7148892301',
+        accName: 'Tariq Al-Madani',
+        mayarId: 'mayar.id/sheikhtariq',
+        isMayarConnected: true
+      },
+      bio: "Dosen tamu di berbagai ma'had 'aly dan pemegang sanad muttashil fiqh serta ushul fiqh dari Masyayikh Masjid Nabawi Madinah. Berpengalaman membimbing riset fatwa kontemporer.",
+      sanadLineage: "Sanad Fiqh Syafi'i melalui Syaikh Muhammad bin Ali Al-Khatib Al-Makki hingga Imam Asy-Syafi'i RA.",
+      onboardingNote: "Pengajuan kurikulum halakah mingguan fokus pada Matn Al-Waraqat & Ghayatul Wushul."
+    },
+    {
+      id: 'vip-2',
+      name: 'Ustadzah Fatimah Zahra, Lc., M.Ag.',
+      avatar: '/images/tutor_sarah.jpg',
+      email: 'fatimah.zahra@ilmuhub.id',
+      phone: '+62 821-4455-8900',
+      location: 'Solo, Jawa Tengah',
+      specialty: "Tahsin Bersanad Qira'at Ashim",
+      credentials: "Al-Azhar Cairo, Sanad Matn Jazariyyah & Thayyibah",
+      experience: '9+ Years Pengasuh Tahfidz',
+      status: 'Sanad Verified',
+      statusType: 'verified',
+      submittedDate: '26 Sep 2026',
+      rating: '4.95',
+      classesCount: 28,
+      subscribersCount: 84,
+      pricingTiers: {
+        halakah: { price: 'Rp 149.000 / bln', name: 'Halakah Tahsin Khusus Akhwat', schedule: 'Setiap Ahad 06:00 WIB', liveSessionCount: '4x Live / Bln' },
+        mentorship: { price: 'Rp 850.000 / bln', name: '1-on-1 Talaqqi Ijazah Sanad', quota: 'Max 8 Santri/Bln', benefits: 'Setoran Hafalan 1-on-1 + Koreksi Makhraj' },
+        lifetime: { price: 'Rp 2.200.000', name: 'Sanad Tajwid Complete Bundle', benefits: 'Modul Tajwid Lengkap + Ujian Sanad Matn Jazariyyah' }
+      },
+      documents: [
+        { id: 'doc-4', name: 'Sanad_Qiraat_Ashim_Mesir.pdf', type: 'sanad', size: '3.8 MB', isVerified: true, date: '26 Sep 2026' },
+        { id: 'doc-5', name: 'Silabus_Tahsin_Takhassus.pdf', type: 'curriculum', size: '950 KB', isVerified: true, date: '26 Sep 2026' }
+      ],
+      bankDetails: {
+        bankName: 'BCA Syariah',
+        accNumber: '0283492810',
+        accName: 'Fatimah Zahra',
+        mayarId: 'mayar.id/ustadzahfatimah',
+        isMayarConnected: true
+      },
+      bio: "Pengasuh Ma'had Tahfidz Putri & pengajar tajwid tahlili bersanad resmi dari Mesir. Telah meluluskan puluhan penghafal Quran bersanad.",
+      sanadLineage: "Sanad Qira'at Ashim Riwayat Hafs & Syu'bah dari Syaikhah Ummu Ahmad Al-Mishriyyah (Mesir).",
+      onboardingNote: "Dokumen sanad telah diverifikasi oleh tim kurikulum Al-Quran IlmuHub."
+    },
+    {
+      id: 'vip-3',
+      name: 'Ustadz Dr. Muhammad Zulkarnain',
+      avatar: '/images/tutor_omar.jpg',
+      email: 'zulkarnain.sharia@gmail.com',
+      phone: '+62 811-2299-7711',
+      location: 'Kuala Lumpur / Bandung',
+      specialty: 'Islamic Wealth & Sharia FinTech',
+      credentials: 'PhD Islamic Banking IIUM, Dewan Pengawas Syariah (DSN-MUI)',
+      experience: '12+ Years Konsultan Syariah',
+      status: 'Approved VIP',
+      statusType: 'approved',
+      submittedDate: '15 Sep 2026',
+      rating: '4.98',
+      classesCount: 56,
+      subscribersCount: 142,
+      pricingTiers: {
+        halakah: { price: 'Rp 299.000 / bln', name: 'Executive Sharia FinTech Halakah', schedule: 'Setiap Rabu 19:30 WIB', liveSessionCount: '4x Live / Bln' },
+        mentorship: { price: 'Rp 2.500.000 / bln', name: '1-on-1 Sharia Business Advisory', quota: 'Max 5 CEO/Founder', benefits: 'Review Akad Bisnis & Konsultasi FinTech' },
+        lifetime: { price: 'Rp 7.500.000', name: 'Lifetime Sharia Wealth Masterclass', benefits: 'Semua Template Akad + Akses Eksklusif Group DPS' }
+      },
+      documents: [
+        { id: 'doc-6', name: 'Sertifikat_DPS_DSN_MUI.pdf', type: 'certificate', size: '1.7 MB', isVerified: true, date: '15 Sep 2026' },
+        { id: 'doc-7', name: 'Executive_Mentorship_Modules.pdf', type: 'curriculum', size: '4.2 MB', isVerified: true, date: '15 Sep 2026' }
+      ],
+      bankDetails: {
+        bankName: 'Bank Mandiri',
+        accNumber: '131008829102',
+        accName: 'Muhammad Zulkarnain',
+        mayarId: 'mayar.id/zulkarnain',
+        isMayarConnected: true
+      },
+      bio: "Praktisi & konsultan muamalah kontemporer untuk institusi perbankan syariah dan fintech global. Anggota DSN-MUI.",
+      sanadLineage: "Sertifikasi Kompetensi Pengawas Syariah Lembaga Keuangan Bank & Non-Bank dari OJK/DSN-MUI.",
+      onboardingNote: "Status VIP Aktif. Revenue bagi hasil 85% Ustadz / 15% Platform IlmuHub berjalan lancar."
+    },
+    {
+      id: 'vip-4',
+      name: 'Syaikh Abdullah Al-Habsyi',
+      avatar: '/images/tutor_ahmed.jpg',
+      email: 'alhabsyi.nahwu@ilmuhub.id',
+      phone: '+62 857-1122-3344',
+      location: 'Tarim / Surabaya',
+      specialty: 'Nahwu Shorof & Alfiyyah Ibn Malik',
+      credentials: 'Dirasah Lughawiyyah Ribath Tarim Hadramaut',
+      experience: '16+ Years Pengajar Bahasa Arab',
+      status: 'Approved VIP',
+      statusType: 'approved',
+      submittedDate: '10 Sep 2026',
+      rating: '5.0',
+      classesCount: 64,
+      subscribersCount: 215,
+      pricingTiers: {
+        halakah: { price: 'Rp 129.000 / bln', name: 'Kajian Rutin Alfiyyah Ibn Malik', schedule: 'Setiap Selasa & Kamis 20:00 WIB', liveSessionCount: '8x Live / Bln' },
+        mentorship: { price: 'Rp 650.000 / bln', name: 'Private Talaqqi I’rab Kitab Kuning', quota: 'Max 12 Santri/Bln', benefits: 'Bedah Teks Kitab Klasik Baris-per-Baris' },
+        lifetime: { price: 'Rp 1.800.000', name: 'Master Nahwu Shorof Lifetime', benefits: 'Akses 1000+ Bait Nadzam & Video Syarah' }
+      },
+      documents: [
+        { id: 'doc-8', name: 'Ijazah_Lughah_Tarim_Hadramaut.pdf', type: 'sanad', size: '2.1 MB', isVerified: true, date: '10 Sep 2026' }
+      ],
+      bankDetails: {
+        bankName: 'BSI (Bank Syariah Indonesia)',
+        accNumber: '7091823901',
+        accName: 'Abdullah Al-Habsyi',
+        mayarId: 'mayar.id/alhabsyi',
+        isMayarConnected: true
+      },
+      bio: "Pengajar spesialis kitab-kitab induk tata bahasa Arab tingkat lanjutan dengan metode talaqqi interaktif dari Hadramaut.",
+      sanadLineage: "Sanad Alfiyyah Ibn Malik bersambung hingga Pengarang Kitab melalui Masyayikh Ribath Tarim.",
+      onboardingNote: "Mentor VIP terfavorit untuk kategori Bahasa Arab & Gramatika Klasik."
+    },
+    {
+      id: 'vip-5',
+      name: 'Ustadz Rayhan Firdaus, M.A.',
+      avatar: '/images/tutor_omar.jpg',
+      email: 'rayhan.firdaus@gmail.com',
+      phone: '+62 813-7788-9900',
+      location: 'Jakarta Selatan',
+      specialty: 'Tazkiyatun Nafs & Parenting Islami',
+      credentials: 'M.A. Islamic Studies UI, Penulis 4 Buku Parenting',
+      experience: '7+ Years Praktisi Konseling',
+      status: 'Needs Revision',
+      statusType: 'revision',
+      submittedDate: '29 Sep 2026',
+      rating: '4.8',
+      classesCount: 15,
+      subscribersCount: 0,
+      pricingTiers: {
+        halakah: { price: 'Rp 119.000 / bln', name: 'Halakah Parenting Qurani Bulanan', schedule: 'Setiap Sabtu 09:00 WIB', liveSessionCount: '4x Live / Bln' },
+        mentorship: { price: 'Rp 500.000 / bln', name: 'Private Family Counseling', quota: 'Max 10 Keluarga', benefits: 'Sesi Curhat Konseling 1 Jam / Minggu' },
+        lifetime: { price: 'Rp 1.500.000', name: 'Tazkiyatun Nafs Complete Series', benefits: 'Semua E-Book + Rekaman Kajian Keluarga' }
+      },
+      documents: [
+        { id: 'doc-9', name: 'Proposal_Keluarga_Sakinah.pdf', type: 'curriculum', size: '820 KB', isVerified: false, date: '29 Sep 2026' }
+      ],
+      bankDetails: {
+        bankName: 'BCA',
+        accNumber: '882019284',
+        accName: 'Rayhan Firdaus',
+        mayarId: 'mayar.id/rayhan',
+        isMayarConnected: false
+      },
+      bio: "Trainer keluarga sakinah, konselor pra-nikah, dan pembina komunitas pemuda hijrah.",
+      sanadLineage: "Kajian Tazkiyatun Nafs berbasis Kitab Ihya Ulumuddin & Risalah Al-Mustarsyidin.",
+      onboardingNote: "Perlu revisi: Mohon upload sertifikat/ijazah pendukung dan hubungkan akun Mayar.id untuk auto-payout."
+    },
+    {
+      id: 'vip-6',
+      name: 'Dr. Maryam Al-Khatib',
+      avatar: '/images/tutor_sarah.jpg',
+      email: 'maryam.khatib@univ.ac.id',
+      phone: '+62 819-0123-4567',
+      location: 'Amman / Malang',
+      specialty: 'Musthalah Hadits & Takhrij Sanad',
+      credentials: 'PhD Hadith Sciences University of Jordan',
+      experience: '11+ Years Peneliti Manuskrip',
+      status: 'Pending Review',
+      statusType: 'pending',
+      submittedDate: '30 Sep 2026',
+      rating: '4.9',
+      classesCount: 19,
+      subscribersCount: 0,
+      pricingTiers: {
+        halakah: { price: 'Rp 189.000 / bln', name: 'Halakah Takhrij Hadits Takhassus', schedule: 'Setiap Senin 20:00 WIB', liveSessionCount: '4x Live / Bln' },
+        mentorship: { price: 'Rp 950.000 / bln', name: '1-on-1 Bimbingan Tahqiq Sanad', quota: 'Max 6 Mahasiswa S2/S3', benefits: 'Bimbingan Skripsi/Tesis Hadits + Takhrij Riwayat' },
+        lifetime: { price: 'Rp 2.800.000', name: 'Koleksi Sanad & Manuskrip Hadits', benefits: 'Akses Database Manuskrip Digital + Ijazah Sanad Hadits' }
+      },
+      documents: [
+        { id: 'doc-10', name: 'Ijazah_Doctorate_Jordan.pdf', type: 'sanad', size: '3.1 MB', isVerified: true, date: '30 Sep 2026' },
+        { id: 'doc-11', name: 'Katalog_Sanad_Hadits.pdf', type: 'sanad', size: '1.9 MB', isVerified: false, date: '30 Sep 2026' }
+      ],
+      bankDetails: {
+        bankName: 'BSI (Bank Syariah Indonesia)',
+        accNumber: '7192830192',
+        accName: 'Maryam Al-Khatib',
+        mayarId: 'mayar.id/maryam',
+        isMayarConnected: true
+      },
+      bio: "Peneliti manuskrip hadits klasik dan pengampu kajian tahqiq sanad. Mengajar metodologi kritik matan dan sanad.",
+      sanadLineage: "Sanad Shahih Bukhari & Shahih Muslim melalui Muhaddits Jordan dan Syaikh Abdul Fattah Abu Ghuddah.",
+      onboardingNote: "Pengajuan baru hari ini. Memerlukan konfirmasi jadwal interview sanad online."
     }
+  ]);
+
+  // Selected VIP Teacher for Right Panel CRM
+  const currentSelectedVipTeacher = vipTeachersList.find(t => t.id === selectedVipTeacherId) || vipTeachersList[0];
+
+  const toggleSelectVipCheckbox = (id) => {
+    setSelectedVipCheckboxes(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllVip = () => {
+    if (selectedVipCheckboxes.length === vipTeachersList.length) {
+      setSelectedVipCheckboxes([]);
+    } else {
+      setSelectedVipCheckboxes(vipTeachersList.map(t => t.id));
+    }
+  };
+
+  // Quick Action Handlers for VIP Teachers
+  const handleApproveTeacher = (teacherId) => {
+    setVipTeachersList(prev => prev.map(t => {
+      if (t.id === teacherId) {
+        return {
+          ...t,
+          status: 'Approved VIP',
+          statusType: 'approved',
+          onboardingNote: `Telah disetujui sebagai VIP Mentor pada ${new Date().toLocaleDateString('id-ID')}. Bagi hasil platform ${platformTakeRate}%.`
+        };
+      }
+      return t;
+    }));
+    setIsApproveVipModalOpen(false);
+    alert('Alhamdulillah! Status Guru VIP berhasil disetujui & badge VIP resmi diterbitkan.');
+  };
+
+  const handleVerifySanad = (teacherId) => {
+    setVipTeachersList(prev => prev.map(t => {
+      if (t.id === teacherId) {
+        return {
+          ...t,
+          status: 'Sanad Verified',
+          statusType: 'verified',
+          documents: t.documents.map(d => ({ ...d, isVerified: true }))
+        };
+      }
+      return t;
+    }));
+    alert('Sanad & ijazah guru telah berhasil ditandai Terverifikasi Valid.');
+  };
+
+  const handleRequestRevision = (teacherId, notes) => {
+    setVipTeachersList(prev => prev.map(t => {
+      if (t.id === teacherId) {
+        return {
+          ...t,
+          status: 'Needs Revision',
+          statusType: 'revision',
+          onboardingNote: notes || 'Perlu melengkapi dokumen sanad dan detail kurikulum halakah.'
+        };
+      }
+      return t;
+    }));
+    setIsRevisionVipModalOpen(false);
+    alert('Permintaan revisi berhasil dikirimkan ke Ustadz/Pengajar.');
   };
 
   return (
@@ -714,8 +1021,13 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                   >
                     <div className="flex items-center gap-3">
                       <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}`} />
-                      <span>{item.label}</span>
+                      <span className="truncate">{item.label}</span>
                     </div>
+                    {item.badge && (
+                      <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                        {item.badge}
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -782,7 +1094,875 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
           {/* ========================================================= */}
           {/* VIEW 1: USERS ROOM (MATCHING media_1790731145724.jpg)      */}
           {/* ========================================================= */}
-          {activeNav === 'users' ? (
+          {/* ========================================================= */}
+          {/* VIEW 0: VIP TEACHERS & APPROVALS ROOM (Pendaftaran Guru VIP) */}
+          {/* ========================================================= */}
+          {activeNav === 'teachers' ? (
+            <div className="space-y-5 animate-fadeIn">
+              
+              {/* 1. TOP VIP TEACHERS HEADER */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                    <GraduationCap className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">VIP Teachers & Approvals</h1>
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300/80 flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-amber-600" />
+                        <span>VIP Onboarding</span>
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      Verifikasi pendaftaran guru VIP, keabsahan sanad keilmuan, paket mentorship, dan atur bagi hasil platform.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Action Buttons */}
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => setIsAddVipModalOpen(true)}
+                    className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>+ Onboard Guru VIP</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const rate = prompt('Masukkan persentase komisi platform IlmuHub (%):', platformTakeRate);
+                      if (rate !== null && !isNaN(rate) && rate >= 0 && rate <= 50) {
+                        setPlatformTakeRate(Number(rate));
+                        alert(`Bagi hasil platform berhasil diatur menjadi ${rate}% (Guru menerima ${100 - Number(rate)}%)`);
+                      }
+                    }}
+                    className="flex items-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                  >
+                    <Sliders className="w-3.5 h-3.5 text-gray-500" />
+                    <span>Komisi Platform: {platformTakeRate}%</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsExportModalOpen(true)}
+                    className="p-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs cursor-pointer"
+                    title="Ekspor CSV"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. TOP 4 KPI CARDS FOR VIP TEACHERS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* Total Registered Teachers */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Total Guru Terdaftar</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">1,248</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>+8% dari bulan lalu</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-blue-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-blue-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-blue-300 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* VIP Mentors Approved */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                        <Award className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">VIP Mentors Aktif</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">342</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>+28% pertumbuhan VIP</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-amber-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-amber-200 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-amber-300 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-amber-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-amber-500 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Pending VIP Applications */}
+                <div className="bg-white rounded-2xl border border-amber-200/80 bg-gradient-to-br from-white to-amber-50/40 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs animate-pulse">
+                        <Clock className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-amber-900">Menunggu Review</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-amber-900 leading-tight">24 Pengajuan</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-amber-700 mt-0.5">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>Butuh verifikasi sanad & kurikulum</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-200 text-amber-900">
+                    Action
+                  </span>
+                </div>
+
+                {/* VIP Mentorship GMV & Platform Fee */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                        <Coins className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Total GMV Mentorship</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-xl font-black text-gray-900 leading-tight">Rp 184.500.000</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-700 mt-0.5">
+                        <Sparkles className="w-3 h-3 text-emerald-600" />
+                        <span>Komisi Admin: Rp 27.675.000</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-emerald-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-emerald-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-emerald-300 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-emerald-500 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* 3. MAIN SECTION: Two-Column Layout (70% Table & CRM on Left, 30% Sticky Dossier on Right) */}
+              <div className="flex flex-col xl:flex-row gap-5 items-start">
+                
+                {/* LEFT MAIN AREA: TAB SWITCHER, SEARCH, TABLE & PAGINATION (70%) */}
+                <div className="flex-1 w-full min-w-0 space-y-4">
+                  
+                  {/* Status Tabs Switcher */}
+                  <div className="bg-white p-1 rounded-2xl border border-gray-200/90 shadow-2xs flex flex-wrap items-center gap-1">
+                    {[
+                      { id: 'all', label: 'Semua Pendaftar', count: vipTeachersList.length },
+                      { id: 'pending', label: 'Menunggu Review', count: vipTeachersList.filter(t => t.status === 'Pending Review').length, color: 'text-amber-600' },
+                      { id: 'verified', label: 'Sanad Terverifikasi', count: vipTeachersList.filter(t => t.status === 'Sanad Verified').length, color: 'text-blue-600' },
+                      { id: 'approved', label: 'VIP Aktif', count: vipTeachersList.filter(t => t.status === 'Approved VIP').length, color: 'text-emerald-600' },
+                      { id: 'revision', label: 'Butuh Revisi', count: vipTeachersList.filter(t => t.status === 'Needs Revision').length, color: 'text-rose-600' },
+                    ].map((tab) => {
+                      const isActive = vipTabFilter === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setVipTabFilter(tab.id)}
+                          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            isActive
+                              ? 'bg-[#114B44] text-white shadow-xs'
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span>{tab.label}</span>
+                          <span
+                            className={`px-1.5 py-0.5 rounded-md text-[10px] font-black ${
+                              isActive
+                                ? 'bg-white/20 text-white'
+                                : 'bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            {tab.count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Search and Multi-Filter Bar */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs space-y-3">
+                    <div className="flex flex-col md:flex-row gap-2.5 items-center justify-between">
+                      {/* Search input */}
+                      <div className="relative w-full md:flex-1">
+                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          value={vipSearchQuery}
+                          onChange={(e) => setVipSearchQuery(e.target.value)}
+                          placeholder="Cari nama ustadz, sanad, universitas, atau bidang keilmuan..."
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl pl-10 pr-4 py-2 text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all shadow-2xs"
+                        />
+                      </div>
+
+                      {/* Dropdown Filters */}
+                      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        {/* Filter by Subject */}
+                        <select
+                          value={vipSubjectFilter}
+                          onChange={(e) => setVipSubjectFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Subjects">Semua Bidang Keilmuan</option>
+                          <option value="Ushul Fiqh & Qawaid Fiqhiyyah">Ushul Fiqh & Qawaid</option>
+                          <option value="Tahsin Bersanad Qira'at Ashim">Tahsin & Qira'at</option>
+                          <option value="Islamic Wealth & Sharia FinTech">Islamic FinTech & Muamalah</option>
+                          <option value="Nahwu Shorof & Alfiyyah Ibn Malik">Nahwu Shorof & Balaghah</option>
+                          <option value="Musthalah Hadits & Takhrij Sanad">Hadits & Takhrij</option>
+                          <option value="Tazkiyatun Nafs & Parenting Islami">Tazkiyatun Nafs</option>
+                        </select>
+
+                        {/* Filter by Tier */}
+                        <select
+                          value={vipTierFilter}
+                          onChange={(e) => setVipTierFilter(e.target.value)}
+                          className="bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl px-3 py-2 shadow-2xs focus:outline-none cursor-pointer"
+                        >
+                          <option value="All Tiers">Semua Tier Ditawarkan</option>
+                          <option value="halakah">VIP Halakah Rutin</option>
+                          <option value="mentorship">1-on-1 Private Mentorship</option>
+                          <option value="lifetime">Executive Lifetime Pass</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Batch Selection Bar (if any checkboxes checked) */}
+                    {selectedVipCheckboxes.length > 0 && (
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 animate-fadeIn font-bold">
+                        <div className="flex items-center gap-2">
+                          <CheckSquare className="w-4 h-4 text-amber-700" />
+                          <span>{selectedVipCheckboxes.length} Pengajuan Pengajar Dipilih</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              selectedVipCheckboxes.forEach(id => handleApproveTeacher(id));
+                              setSelectedVipCheckboxes([]);
+                            }}
+                            className="bg-[#114B44] hover:bg-[#0D3B35] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                          >
+                            Setujui Masal (Bulk Approve)
+                          </button>
+                          <button
+                            onClick={() => {
+                              selectedVipCheckboxes.forEach(id => handleRequestRevision(id, 'Perlu perbaikan kelengkapan berkas sanad.'));
+                              setSelectedVipCheckboxes([]);
+                            }}
+                            className="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                          >
+                            Minta Revisi Masal
+                          </button>
+                          <button
+                            onClick={() => setSelectedVipCheckboxes([])}
+                            className="p-1 hover:bg-amber-100 rounded text-amber-700 cursor-pointer"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* VIP TEACHERS CRM TABLE */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider">
+                            <th className="p-3.5 pl-4 w-10">
+                              <input
+                                type="checkbox"
+                                checked={selectedVipCheckboxes.length === vipTeachersList.length && vipTeachersList.length > 0}
+                                onChange={toggleSelectAllVip}
+                                className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                              />
+                            </th>
+                            <th className="py-3.5 px-3">Guru / Ustadz</th>
+                            <th className="py-3.5 px-3">Spesialisasi & Sanad</th>
+                            <th className="py-3.5 px-3">Tarif VIP Diajukan</th>
+                            <th className="py-3.5 px-3">Berkas & Bukti</th>
+                            <th className="py-3.5 px-3">Status Pengajuan</th>
+                            <th className="py-3.5 px-3 text-right pr-4">Aksi Cepat</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {vipTeachersList
+                            .filter((t) => {
+                              if (vipTabFilter === 'pending') return t.status === 'Pending Review';
+                              if (vipTabFilter === 'verified') return t.status === 'Sanad Verified';
+                              if (vipTabFilter === 'approved') return t.status === 'Approved VIP';
+                              if (vipTabFilter === 'revision') return t.status === 'Needs Revision';
+                              return true;
+                            })
+                            .filter((t) => {
+                              if (vipSubjectFilter !== 'All Subjects') return t.specialty === vipSubjectFilter;
+                              return true;
+                            })
+                            .filter((t) => {
+                              if (!vipSearchQuery) return true;
+                              const q = vipSearchQuery.toLowerCase();
+                              return (
+                                t.name.toLowerCase().includes(q) ||
+                                t.email.toLowerCase().includes(q) ||
+                                t.specialty.toLowerCase().includes(q) ||
+                                t.credentials.toLowerCase().includes(q) ||
+                                t.location.toLowerCase().includes(q)
+                              );
+                            })
+                            .map((teacher) => {
+                              const isSelected = selectedVipTeacherId === teacher.id;
+                              const isChecked = selectedVipCheckboxes.includes(teacher.id);
+
+                              return (
+                                <tr
+                                  key={teacher.id}
+                                  onClick={() => setSelectedVipTeacherId(teacher.id)}
+                                  className={`transition-colors cursor-pointer group ${
+                                    isSelected
+                                      ? 'bg-amber-50/50'
+                                      : 'hover:bg-gray-50/80'
+                                  }`}
+                                >
+                                  {/* Checkbox */}
+                                  <td className="p-3.5 pl-4" onClick={(e) => e.stopPropagation()}>
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={() => toggleSelectVipCheckbox(teacher.id)}
+                                      className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Teacher Column */}
+                                  <td className="py-3 px-3">
+                                    <div className="flex items-center gap-3">
+                                      <div className="relative shrink-0">
+                                        <img
+                                          src={teacher.avatar}
+                                          alt={teacher.name}
+                                          className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                                          onError={(e) => {
+                                            e.target.src = '/images/tutor_ahmed.jpg';
+                                          }}
+                                        />
+                                        {teacher.status === 'Approved VIP' && (
+                                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-500 rounded-full text-white flex items-center justify-center text-[8px] font-black shadow-xs">
+                                            ★
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="min-w-0">
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="font-extrabold text-gray-900 group-hover:text-[#114B44] transition-colors truncate">
+                                            {teacher.name}
+                                          </span>
+                                        </div>
+                                        <div className="text-[11px] text-gray-500 truncate flex items-center gap-1.5 mt-0.5">
+                                          <span>{teacher.location}</span>
+                                          <span>•</span>
+                                          <span className="text-gray-400 font-mono text-[10px]">{teacher.phone}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Specialty & Sanad Column */}
+                                  <td className="py-3 px-3">
+                                    <div className="space-y-1 max-w-[200px]">
+                                      <span className="inline-block px-2 py-0.5 rounded-md font-bold text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                        {teacher.specialty}
+                                      </span>
+                                      <p className="text-[11px] text-gray-600 truncate font-medium">
+                                        {teacher.credentials}
+                                      </p>
+                                    </div>
+                                  </td>
+
+                                  {/* Proposed VIP Pricing */}
+                                  <td className="py-3 px-3">
+                                    <div className="space-y-0.5 text-[11px]">
+                                      <div className="font-extrabold text-gray-900 flex items-center gap-1">
+                                        <span className="text-gray-400 font-normal">Halakah:</span>
+                                        <span className="text-emerald-700">{teacher.pricingTiers.halakah.price}</span>
+                                      </div>
+                                      <div className="text-gray-600 font-semibold flex items-center gap-1">
+                                        <span className="text-gray-400 font-normal">1-on-1:</span>
+                                        <span>{teacher.pricingTiers.mentorship.price}</span>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Documents & Sanad Badge */}
+                                  <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex flex-wrap gap-1 items-center max-w-[170px]">
+                                      {teacher.documents.map((doc) => (
+                                        <button
+                                          key={doc.id}
+                                          onClick={() => {
+                                            setActiveDocPreview({ ...doc, teacherName: teacher.name });
+                                            setIsDocViewerModalOpen(true);
+                                          }}
+                                          className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer ${
+                                            doc.isVerified
+                                              ? 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
+                                              : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+                                          }`}
+                                          title={`Lihat ${doc.name}`}
+                                        >
+                                          <FileCheck className="w-3 h-3 text-blue-600" />
+                                          <span className="truncate max-w-[90px]">{doc.name}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </td>
+
+                                  {/* Status Column */}
+                                  <td className="py-3 px-3">
+                                    {teacher.status === 'Approved VIP' && (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                        <span>VIP Aktif</span>
+                                      </span>
+                                    )}
+                                    {teacher.status === 'Sanad Verified' && (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200">
+                                        <ShieldCheck className="w-3 h-3 text-blue-600" />
+                                        <span>Sanad Valid</span>
+                                      </span>
+                                    )}
+                                    {teacher.status === 'Pending Review' && (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
+                                        <Clock className="w-3 h-3 text-amber-600" />
+                                        <span>Menunggu Review</span>
+                                      </span>
+                                    )}
+                                    {teacher.status === 'Needs Revision' && (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200">
+                                        <AlertCircle className="w-3 h-3 text-rose-600" />
+                                        <span>Butuh Revisi</span>
+                                      </span>
+                                    )}
+                                  </td>
+
+                                  {/* Quick Actions Column */}
+                                  <td className="py-3 px-3 text-right pr-4" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex items-center justify-end gap-1">
+                                      {teacher.status !== 'Approved VIP' && (
+                                        <button
+                                          onClick={() => {
+                                            setTargetVipTeacher(teacher);
+                                            setIsApproveVipModalOpen(true);
+                                          }}
+                                          className="p-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                          title="Setujui sebagai VIP Mentor"
+                                        >
+                                          <Check className="w-3.5 h-3.5" />
+                                        </button>
+                                      )}
+
+                                      <button
+                                        onClick={() => {
+                                          setTargetVipTeacher(teacher);
+                                          setIsScheduleVipModalOpen(true);
+                                        }}
+                                        className="p-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                        title="Jadwalkan Interview Sanad"
+                                      >
+                                        <Calendar className="w-3.5 h-3.5" />
+                                      </button>
+
+                                      <button
+                                        onClick={() => {
+                                          setTargetVipTeacher(teacher);
+                                          setIsRevisionVipModalOpen(true);
+                                        }}
+                                        className="p-1.5 hover:bg-gray-100 text-gray-600 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                        title="Minta Revisi Dokumen"
+                                      >
+                                        <Edit3 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination Footer */}
+                    <div className="p-3.5 border-t border-gray-100 bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500 font-semibold">
+                      <div className="flex items-center gap-1">
+                        <span>Menampilkan</span>
+                        <span className="font-extrabold text-gray-900">1-{vipTeachersList.length}</span>
+                        <span>dari</span>
+                        <span className="font-extrabold text-gray-900">24 Pengajuan VIP</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold disabled:opacity-50 cursor-pointer">
+                          &lt;
+                        </button>
+                        <button className="px-3 py-1 rounded-lg bg-[#114B44] text-white font-bold cursor-pointer">
+                          1
+                        </button>
+                        <button className="px-3 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold cursor-pointer">
+                          2
+                        </button>
+                        <button className="px-2.5 py-1 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold cursor-pointer">
+                          &gt;
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT STICKY DOSSIER PANEL: SELECTED TEACHER APPLICATION DEEP-DIVE (30%) */}
+                <aside className="w-full xl:w-96 shrink-0 bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-5 animate-fadeIn">
+                  
+                  {/* Selected Teacher Header Profile */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <img
+                          src={currentSelectedVipTeacher.avatar}
+                          alt={currentSelectedVipTeacher.name}
+                          className="w-13 h-13 rounded-2xl object-cover border-2 border-[#114B44]/20 shadow-xs"
+                          onError={(e) => {
+                            e.target.src = '/images/tutor_ahmed.jpg';
+                          }}
+                        />
+                        {currentSelectedVipTeacher.status === 'Approved VIP' ? (
+                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-amber-500 rounded-full text-white flex items-center justify-center text-[10px] font-black border-2 border-white shadow-xs" title="Verified VIP Mentor">
+                            ★
+                          </div>
+                        ) : (
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>
+                        )}
+                      </div>
+                      <div>
+                        <h2 className="font-extrabold text-sm text-gray-900 leading-tight">
+                          {currentSelectedVipTeacher.name}
+                        </h2>
+                        <p className="text-gray-500 text-xs truncate max-w-[170px]">{currentSelectedVipTeacher.email}</p>
+                        <div className="mt-1 flex items-center gap-1.5">
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold ${
+                            currentSelectedVipTeacher.status === 'Approved VIP'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : currentSelectedVipTeacher.status === 'Sanad Verified'
+                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                              : currentSelectedVipTeacher.status === 'Pending Review'
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                              : 'bg-rose-50 text-rose-700 border border-rose-200'
+                          }`}>
+                            <span>{currentSelectedVipTeacher.status}</span>
+                          </span>
+                          <span className="text-[10px] font-bold text-gray-400">
+                            ★ {currentSelectedVipTeacher.rating}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setTargetVipTeacher(currentSelectedVipTeacher);
+                        setIsRevisionVipModalOpen(true);
+                      }}
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer"
+                      title="Kirim Catatan / Feedback"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* 4 Detail Sub-Tabs */}
+                  <div className="flex items-center justify-between border-b border-gray-100 text-xs font-bold text-gray-500">
+                    {[
+                      { id: 'dossier', label: 'Dossier & Bio' },
+                      { id: 'tiers', label: 'Paket & Tarif' },
+                      { id: 'documents', label: 'Sanad & Dokumen' },
+                      { id: 'financials', label: 'Bank & Payout' },
+                    ].map((tab) => {
+                      const isActive = selectedVipDetailTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setSelectedVipDetailTab(tab.id)}
+                          className={`pb-2.5 transition-colors cursor-pointer relative ${
+                            isActive ? 'text-[#114B44] font-extrabold' : 'hover:text-gray-900'
+                          }`}
+                        >
+                          <span>{tab.label}</span>
+                          {isActive && (
+                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#114B44] rounded-full"></span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* TAB 1: DOSSIER & BIO */}
+                  {selectedVipDetailTab === 'dossier' && (
+                    <div className="space-y-3.5 text-xs animate-fadeIn">
+                      <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1">
+                        <span className="text-[10px] font-bold uppercase text-gray-400 block">Biografi & Pengantar</span>
+                        <p className="text-gray-700 leading-relaxed text-[11px] font-medium">
+                          {currentSelectedVipTeacher.bio}
+                        </p>
+                      </div>
+
+                      <div className="space-y-2 text-xs">
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-gray-400 font-bold shrink-0">Gelar & Asal Univ:</span>
+                          <span className="font-extrabold text-gray-900 text-right">{currentSelectedVipTeacher.credentials}</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-gray-400 font-bold shrink-0">Silsilah Sanad:</span>
+                          <span className="font-semibold text-emerald-800 text-right text-[11px]">{currentSelectedVipTeacher.sanadLineage}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Pengalaman:</span>
+                          <span className="font-bold text-gray-800">{currentSelectedVipTeacher.experience}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Tanggal Pengajuan:</span>
+                          <span className="font-bold text-gray-800">{currentSelectedVipTeacher.submittedDate}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Subscribers Aktif:</span>
+                          <span className="font-extrabold text-emerald-700">{currentSelectedVipTeacher.subscribersCount} Santri VIP</span>
+                        </div>
+                      </div>
+
+                      {/* Onboarding Admin Note */}
+                      <div className="p-2.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-[11px] text-amber-900 font-medium">
+                        <span className="font-bold block mb-0.5 text-amber-950">📌 Catatan Verifikasi:</span>
+                        {currentSelectedVipTeacher.onboardingNote}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 2: PAKET VIP & TARIF */}
+                  {selectedVipDetailTab === 'tiers' && (
+                    <div className="space-y-3 text-xs animate-fadeIn">
+                      {/* Tier 1: Halakah */}
+                      <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-emerald-950 text-xs">Tier 1: VIP Halakah</span>
+                          <span className="font-black text-emerald-700 text-xs">{currentSelectedVipTeacher.pricingTiers.halakah.price}</span>
+                        </div>
+                        <p className="text-[11px] text-emerald-900 font-semibold">{currentSelectedVipTeacher.pricingTiers.halakah.name}</p>
+                        <div className="text-[10px] text-emerald-700 font-medium flex items-center justify-between pt-1 border-t border-emerald-100">
+                          <span>Jadwal: {currentSelectedVipTeacher.pricingTiers.halakah.schedule}</span>
+                          <span className="font-bold">{currentSelectedVipTeacher.pricingTiers.halakah.liveSessionCount}</span>
+                        </div>
+                      </div>
+
+                      {/* Tier 2: 1-on-1 Mentorship */}
+                      <div className="p-3 rounded-xl border border-blue-200 bg-blue-50/40 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-blue-950 text-xs">Tier 2: Private 1-on-1</span>
+                          <span className="font-black text-blue-700 text-xs">{currentSelectedVipTeacher.pricingTiers.mentorship.price}</span>
+                        </div>
+                        <p className="text-[11px] text-blue-900 font-semibold">{currentSelectedVipTeacher.pricingTiers.mentorship.name}</p>
+                        <div className="text-[10px] text-blue-700 font-medium flex items-center justify-between pt-1 border-t border-blue-100">
+                          <span>Kuota: {currentSelectedVipTeacher.pricingTiers.mentorship.quota}</span>
+                          <span className="font-bold truncate max-w-[120px]">{currentSelectedVipTeacher.pricingTiers.mentorship.benefits}</span>
+                        </div>
+                      </div>
+
+                      {/* Tier 3: Lifetime Pass */}
+                      <div className="p-3 rounded-xl border border-purple-200 bg-purple-50/40 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-purple-950 text-xs">Tier 3: Lifetime Pass</span>
+                          <span className="font-black text-purple-700 text-xs">{currentSelectedVipTeacher.pricingTiers.lifetime.price}</span>
+                        </div>
+                        <p className="text-[11px] text-purple-900 font-semibold">{currentSelectedVipTeacher.pricingTiers.lifetime.name}</p>
+                        <p className="text-[10px] text-purple-700 font-medium pt-1 border-t border-purple-100">
+                          Benefit: {currentSelectedVipTeacher.pricingTiers.lifetime.benefits}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 3: SANAD & DOKUMEN */}
+                  {selectedVipDetailTab === 'documents' && (
+                    <div className="space-y-3 text-xs animate-fadeIn">
+                      <div className="space-y-2">
+                        {currentSelectedVipTeacher.documents.map((doc) => (
+                          <div
+                            key={doc.id}
+                            className="p-2.5 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-between gap-2"
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <FileCheck className={`w-4 h-4 shrink-0 ${doc.isVerified ? 'text-blue-600' : 'text-gray-400'}`} />
+                              <div className="min-w-0">
+                                <p className="font-bold text-gray-900 text-[11px] truncate">{doc.name}</p>
+                                <p className="text-[10px] text-gray-400">{doc.size} • Diunggah {doc.date}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                              <button
+                                onClick={() => {
+                                  setActiveDocPreview({ ...doc, teacherName: currentSelectedVipTeacher.name });
+                                  setIsDocViewerModalOpen(true);
+                                }}
+                                className="p-1 rounded bg-white border border-gray-200 text-gray-600 hover:text-gray-900 text-[10px] font-bold cursor-pointer"
+                              >
+                                Lihat
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Sanad Verification Checklist */}
+                      <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200/80 space-y-2 text-[11px]">
+                        <span className="font-black text-emerald-950 block">Verifikasi Sanad & Kurikulum:</span>
+                        <label className="flex items-center gap-2 text-emerald-900 font-semibold cursor-pointer">
+                          <input type="checkbox" defaultChecked className="rounded text-[#114B44] focus:ring-[#114B44]" />
+                          <span>Sanad muttashil bersambung ke Rasulullah SAW</span>
+                        </label>
+                        <label className="flex items-center gap-2 text-emerald-900 font-semibold cursor-pointer">
+                          <input type="checkbox" defaultChecked className="rounded text-[#114B44] focus:ring-[#114B44]" />
+                          <span>Ijazah pengajaran resmi dari Masyayikh / Ma'had</span>
+                        </label>
+                        <label className="flex items-center gap-2 text-emerald-900 font-semibold cursor-pointer">
+                          <input type="checkbox" defaultChecked className="rounded text-[#114B44] focus:ring-[#114B44]" />
+                          <span>Silabus Halakah sesuai aqidah Ahlussunnah</span>
+                        </label>
+                      </div>
+
+                      <button
+                        onClick={() => handleVerifySanad(currentSelectedVipTeacher.id)}
+                        className="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-blue-600" />
+                        <span>Tandai Semua Sanad Valid</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* TAB 4: BANK & PAYOUT */}
+                  {selectedVipDetailTab === 'financials' && (
+                    <div className="space-y-3 text-xs animate-fadeIn">
+                      <div className="p-3 rounded-xl border border-gray-200 bg-[#F8FAFC] space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Bank Penerima:</span>
+                          <span className="font-extrabold text-gray-900">{currentSelectedVipTeacher.bankDetails.bankName}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">No. Rekening:</span>
+                          <span className="font-mono font-bold text-gray-800">{currentSelectedVipTeacher.bankDetails.accNumber}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 font-bold">Atas Nama:</span>
+                          <span className="font-bold text-gray-800">{currentSelectedVipTeacher.bankDetails.accName}</span>
+                        </div>
+                        <div className="flex items-center justify-between pt-1 border-t border-gray-200">
+                          <span className="text-gray-400 font-bold">Mayar.id Handle:</span>
+                          <span className="font-bold text-emerald-700 flex items-center gap-1">
+                            {currentSelectedVipTeacher.bankDetails.mayarId}
+                            {currentSelectedVipTeacher.bankDetails.isMayarConnected && (
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Revenue Split Simulation */}
+                      <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-200 space-y-2">
+                        <span className="font-black text-emerald-950 block text-xs">Simulasi Bagi Hasil Platform:</span>
+                        <div className="flex items-center justify-between text-[11px] font-semibold">
+                          <span className="text-emerald-900">Hak Pengajar / Ustadz ({100 - platformTakeRate}%):</span>
+                          <span className="font-bold text-emerald-950">85% Masuk Otomatis</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px] font-semibold">
+                          <span className="text-emerald-900">Komisi Platform IlmuHub ({platformTakeRate}%):</span>
+                          <span className="font-bold text-[#114B44]">{platformTakeRate}% Pemeliharaan Server</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Actions Section Footer */}
+                  <div className="space-y-2 pt-3 border-t border-gray-100">
+                    {/* Primary Button: Approve VIP */}
+                    <button
+                      onClick={() => {
+                        setTargetVipTeacher(currentSelectedVipTeacher);
+                        setIsApproveVipModalOpen(true);
+                      }}
+                      className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
+                    >
+                      <Sparkles className="w-4 h-4 text-amber-300" />
+                      <span>{currentSelectedVipTeacher.status === 'Approved VIP' ? 'Perbarui Pengaturan VIP' : 'Setujui & Terbitkan VIP'}</span>
+                    </button>
+
+                    {/* Schedule & Chat Side by Side */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => {
+                          setTargetVipTeacher(currentSelectedVipTeacher);
+                          setIsScheduleVipModalOpen(true);
+                        }}
+                        className="flex items-center justify-center gap-1 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-[11px] font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <Calendar className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Jadwal Sanad Call</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          window.open(`https://wa.me/${currentSelectedVipTeacher.phone.replace(/[^0-9]/g, '')}?text=Assalamu'alaikum%20${encodeURIComponent(currentSelectedVipTeacher.name)},%20kami%20dari%20Tim%20Kurikulum%20IlmuHub...`, '_blank');
+                        }}
+                        className="flex items-center justify-center gap-1 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-[11px] font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Chat WhatsApp</span>
+                      </button>
+                    </div>
+
+                    {/* Request Revision */}
+                    <button
+                      onClick={() => {
+                        setTargetVipTeacher(currentSelectedVipTeacher);
+                        setIsRevisionVipModalOpen(true);
+                      }}
+                      className="w-full bg-rose-50 hover:bg-rose-100/80 text-rose-700 border border-rose-200 py-2 rounded-xl text-[11px] font-extrabold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Minta Revisi Berkas / Sanad</span>
+                    </button>
+                  </div>
+
+                </aside>
+
+              </div>
+
+            </div>
+          ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
               {/* 1. TOP USERS HEADER */}
@@ -2020,6 +3200,367 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
                   <button onClick={() => setIsExportModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Cancel</button>
                   <button onClick={() => { setIsExportModalOpen(false); alert('Laporan platform berhasil diunduh!'); }} className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs">Download Report</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* VIP TEACHERS MODALS                                        */}
+          {/* ========================================================= */}
+
+          {/* 1. APPROVE VIP TEACHER MODAL */}
+          {isApproveVipModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Setujui & Terbitkan Guru VIP</h3>
+                      <p className="text-xs text-gray-500">Berikan akses fitur VIP Mentorship & Halakah</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsApproveVipModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                {/* Target Teacher Profile Preview */}
+                {targetVipTeacher && (
+                  <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100/40 border border-amber-200 flex items-center gap-3">
+                    <img
+                      src={targetVipTeacher.avatar}
+                      alt={targetVipTeacher.name}
+                      className="w-12 h-12 rounded-xl object-cover border border-amber-300 shadow-xs shrink-0"
+                      onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                    />
+                    <div className="min-w-0">
+                      <h4 className="font-extrabold text-sm text-gray-900 truncate">{targetVipTeacher.name}</h4>
+                      <p className="text-xs text-amber-900 font-semibold truncate">{targetVipTeacher.specialty}</p>
+                      <p className="text-[11px] text-gray-500 truncate">{targetVipTeacher.email}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">
+                      Bagi Hasil Platform IlmuHub (%)
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="number"
+                        min="0"
+                        max="50"
+                        defaultValue={platformTakeRate}
+                        onChange={(e) => setPlatformTakeRate(Number(e.target.value))}
+                        className="w-24 bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-bold text-gray-900 text-center focus:outline-none focus:border-[#114B44]"
+                      />
+                      <span className="text-gray-500 font-medium">
+                        Guru menerima <span className="font-black text-emerald-700">{100 - platformTakeRate}%</span> otomatis via Mayar.id / Bank.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Tipe Badge Kehormatan Guru</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none">
+                      <option value="gold">★ VIP Verified Mentor (Emas)</option>
+                      <option value="grand">👑 Grand Master Ulumuddin (Platinum)</option>
+                      <option value="sanad">🏅 Pemegang Sanad Muttashil (Spesialis)</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 space-y-2 text-[11px]">
+                    <span className="font-bold text-gray-900 block">Otomasi Sistem yang Dijalankan:</span>
+                    <label className="flex items-center gap-2 text-gray-700 font-medium cursor-pointer">
+                      <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                      <span>Aktifkan Room VIP Mentorship di Dashboard Guru</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-gray-700 font-medium cursor-pointer">
+                      <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                      <span>Kirim email resmi pemberitahuan penerimaan VIP</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-gray-700 font-medium cursor-pointer">
+                      <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                      <span>Hubungkan link pembayaran Mayar.id ke landing page</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsApproveVipModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (targetVipTeacher) {
+                        handleApproveTeacher(targetVipTeacher.id);
+                      }
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Setujui & Terbitkan VIP Sekarang</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. REQUEST REVISION MODAL */}
+          {isRevisionVipModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center">
+                      <AlertCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Minta Revisi Berkas Pengajar</h3>
+                      <p className="text-xs text-gray-500">Kirimkan poin-poin yang perlu diperbaiki oleh calon Guru VIP</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsRevisionVipModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 space-y-2 text-[11px]">
+                    <span className="font-bold text-gray-900 block">Pilih Poin Revisi Standar:</span>
+                    <label className="flex items-center gap-2 text-gray-700 font-medium cursor-pointer">
+                      <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                      <span>Sanad / Ijazah keilmuan belum terbaca jelas (Mohon upload scan PDF HD)</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-gray-700 font-medium cursor-pointer">
+                      <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                      <span>Silabus kurikulum VIP Halakah belum mencantumkan target kitab mingguan</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-gray-700 font-medium cursor-pointer">
+                      <input type="checkbox" defaultChecked className="rounded text-[#114B44]" />
+                      <span>Sambungkan akun Mayar.id atau nomor rekening bank syariah yang valid</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-gray-700 font-medium cursor-pointer">
+                      <input type="checkbox" className="rounded text-[#114B44]" />
+                      <span>Penyesuaian kuota santri bimbingan 1-on-1 agar tetap kondusif</span>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Pesan Khusus untuk Ustadz/Pengajar</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Tuliskan catatan tambahan dengan bahasa yang sopan dan ramah..."
+                      defaultValue="Jazakallahu khair atas pengajuannya. Mohon melengkapi dokumen sanad serta nomor rekening bank syariah agar dapat segera kami verifikasi dan terbitkan badge VIP."
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsRevisionVipModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      if (targetVipTeacher) {
+                        handleRequestRevision(targetVipTeacher.id, 'Perlu melengkapi dokumen sanad dan detail rekening.');
+                      }
+                    }}
+                    className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>Kirim Permintaan Revisi</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. SCHEDULE SANAD VERIFICATION INTERVIEW MODAL */}
+          {isScheduleVipModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                      <Video className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Jadwalkan Sanad & Curriculum Call</h3>
+                      <p className="text-xs text-gray-500">Sesi tatap muka online verifikasi keabsahan sanad</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsScheduleVipModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Tanggal Sesi</label>
+                      <input type="date" defaultValue="2026-10-02" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Waktu (WIB)</label>
+                      <input type="time" defaultValue="14:00" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Platform Video Conference</label>
+                    <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none">
+                      <option value="meet">Google Meet (Auto-generated link: meet.google.com/ilm-talaqqi)</option>
+                      <option value="zoom">Zoom Video Meeting</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Pewawancara / Tim Verifikasi</label>
+                    <input type="text" defaultValue="Dewan Kurikulum & Sanad Syariah IlmuHub" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsScheduleVipModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsScheduleVipModalOpen(false);
+                      alert('Undangan interview sanad & link Google Meet telah berhasil dikirimkan ke email dan WhatsApp Ustadz.');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>Kirim Undangan Jadwal</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. MANUAL ADD / ONBOARD VIP TEACHER MODAL */}
+          {isAddVipModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-xl w-full p-6 space-y-4 animate-fadeIn max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                      <UserPlus className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Onboard Guru VIP Baru</h3>
+                      <p className="text-xs text-gray-500">Daftarkan Ustadz/Pengajar terkemuka langsung dengan status VIP</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsAddVipModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Nama Lengkap & Gelar *</label>
+                      <input type="text" placeholder="Contoh: Syaikh Dr. Hamdan Al-Atsari" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Bidang Spesialisasi *</label>
+                      <input type="text" placeholder="Contoh: Ulumul Hadits & Takhrij" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Email Pengajar *</label>
+                      <input type="email" placeholder="ustadz@ilmuhub.id" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Nomor WhatsApp *</label>
+                      <input type="text" placeholder="+62 812-xxxx-xxxx" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Tarif VIP Halakah (Bulanan)</label>
+                      <input type="text" defaultValue="Rp 199.000 / bln" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Mayar.id Handle</label>
+                      <input type="text" placeholder="mayar.id/namaguru" className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Silsilah Sanad & Kredensial</label>
+                    <textarea rows={2} placeholder="Sebutkan sanad muttashil atau nama guru/masyayikh..." className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"></textarea>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsAddVipModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsAddVipModalOpen(false);
+                      alert('Guru VIP baru berhasil didaftarkan dan diaktifkan di platform!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Daftarkan & Terbitkan VIP</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. SANAD / DOCUMENT LIGHTBOX VIEWER MODAL */}
+          {isDocViewerModalOpen && activeDocPreview && (
+            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-2xl w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                      <FileCheck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">{activeDocPreview.name}</h3>
+                      <p className="text-xs text-gray-500">Dokumen Pengajuan: {activeDocPreview.teacherName || 'Guru VIP'}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsDocViewerModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                {/* Simulated PDF / Certificate Viewer Sheet */}
+                <div className="p-6 rounded-2xl bg-amber-50/40 border-2 border-dashed border-amber-300 text-center space-y-3">
+                  <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shadow-xs">
+                    <Award className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-sm text-gray-900">IJAZAH & SANAD KEILMUAN MUTTASHIL</h4>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Dokumen resmi bertandatangan Masyayikh, stempel ma'had 'aly, dan silsilah talaqqi.
+                    </p>
+                  </div>
+                  <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black border border-emerald-300">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Keaslian Dokumen Terverifikasi Tim Ahli</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs">
+                  <span className="text-gray-500 font-medium">Ukuran: {activeDocPreview.size || '2.4 MB'}</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        alert(`Mengunduh salinan berkas ${activeDocPreview.name}...`);
+                      }}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold cursor-pointer flex items-center gap-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download Asli</span>
+                    </button>
+                    <button
+                      onClick={() => setIsDocViewerModalOpen(false)}
+                      className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl font-bold cursor-pointer"
+                    >
+                      Tutup Pratinjau
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
