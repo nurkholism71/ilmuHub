@@ -81,6 +81,13 @@ import {
   File,
   Send,
   Wrench,
+  Database,
+  Server,
+  RefreshCw,
+  Play,
+  Zap,
+  RotateCcw,
+  Info,
   Image as ImageIcon
 } from 'lucide-react';
 
@@ -164,6 +171,27 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isViewAllSecurityEventsModalOpen, setIsViewAllSecurityEventsModalOpen] = useState(false);
   const [activeActivityOverviewTooltip, setActiveActivityOverviewTooltip] = useState(null);
   const [activeActivityDonutTooltip, setActiveActivityDonutTooltip] = useState(null);
+
+  // =========================================================
+  // MAINTENANCE STATES (matching media_1790805407476.jpg)
+  // =========================================================
+  const [maintenanceActiveTab, setMaintenanceActiveTab] = useState('overview'); // 'overview' | 'updates' | 'backups' | 'database' | 'storage' | 'cache' | 'tasks' | 'logs' | 'tools'
+  const [maintenancePerformanceRange, setMaintenancePerformanceRange] = useState('Last 24 Hours');
+  const [isRunMaintenanceModalOpen, setIsRunMaintenanceModalOpen] = useState(false);
+  const [isViewChangelogModalOpen, setIsViewChangelogModalOpen] = useState(false);
+  const [isRestoreBackupModalOpen, setIsRestoreBackupModalOpen] = useState(false);
+  const [selectedBackupForRestore, setSelectedBackupForRestore] = useState(null);
+  const [isSystemInfoModalOpen, setIsSystemInfoModalOpen] = useState(false);
+  const [isManageCronModalOpen, setIsManageCronModalOpen] = useState(false);
+  const [isTestEmailModalOpen, setIsTestEmailModalOpen] = useState(false);
+  const [isRestartServicesModalOpen, setIsRestartServicesModalOpen] = useState(false);
+  const [isRunDiagnosticsModalOpen, setIsRunDiagnosticsModalOpen] = useState(false);
+  const [isClearTempFilesModalOpen, setIsClearTempFilesModalOpen] = useState(false);
+  const [autoUpdateMinor, setAutoUpdateMinor] = useState(true);
+  const [securityUpdatesOnly, setSecurityUpdatesOnly] = useState(true);
+  const [notifyBeforeUpdates, setNotifyBeforeUpdates] = useState(true);
+  const [activeMaintenancePerformanceTooltip, setActiveMaintenancePerformanceTooltip] = useState(null);
+
 
 
   // =========================================================
@@ -361,12 +389,102 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 'reports', label: 'Reports', icon: FileBarChart },
     { id: 'help', label: 'Help & Support', icon: HelpCircle },
     { id: 'activity-log', label: 'Activity Log', icon: Clock },
+    { id: 'maintenance', label: 'Maintenance', icon: Wrench },
   ];
 
   const systemNavItems = [
     { id: 'system-status', label: 'System Status', icon: Activity },
-    { id: 'maintenance', label: 'Maintenance', icon: Wrench },
+    { id: 'logs', label: 'Logs', icon: FileText },
   ];
+
+  // =========================================================
+  // MAINTENANCE DATASETS (matching media_1790805407476.jpg)
+  // =========================================================
+  const maintenanceTopMetrics = [
+    {
+      id: 'health',
+      title: 'System Health',
+      value: 'Healthy',
+      subtext: 'All systems operational',
+      icon: CheckCircle2,
+      iconBg: 'bg-emerald-100 text-emerald-700'
+    },
+    {
+      id: 'uptime',
+      title: 'Server Uptime',
+      value: '99.98%',
+      subtext: 'Last 30 days',
+      icon: Server,
+      iconBg: 'bg-blue-100 text-blue-700'
+    },
+    {
+      id: 'backup',
+      title: 'Last Backup',
+      value: '23 Sep 2026, 02:30',
+      subtext: 'Success (Daily)',
+      icon: Database,
+      iconBg: 'bg-purple-100 text-purple-700'
+    },
+    {
+      id: 'version',
+      title: 'Latest Version',
+      value: 'v2.4.1',
+      subtext: 'Up to date',
+      icon: RotateCcw,
+      iconBg: 'bg-amber-100 text-amber-700'
+    }
+  ];
+
+  const maintenanceNavTabs = [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'updates', label: 'System Updates', icon: RefreshCw },
+    { id: 'backups', label: 'Backups', icon: Database },
+    { id: 'database', label: 'Database', icon: Server },
+    { id: 'storage', label: 'Storage', icon: HardDrive },
+    { id: 'cache', label: 'Cache', icon: Zap },
+    { id: 'tasks', label: 'Scheduled Tasks', icon: Clock },
+    { id: 'logs', label: 'Logs', icon: FileText },
+    { id: 'tools', label: 'Tools', icon: Wrench },
+  ];
+
+  const maintenanceSystemResources = [
+    { id: 'cpu', label: 'CPU', percent: 32, value: '3.2 / 10 Cores', color: '#10B981', ringBg: 'text-emerald-500' },
+    { id: 'memory', label: 'Memory', percent: 68, value: '10.8 / 16 GB', color: '#3B82F6', ringBg: 'text-blue-500' },
+    { id: 'storage', label: 'Disk Storage', percent: 45, value: '90 / 200 GB', color: '#8B5CF6', ringBg: 'text-purple-500' },
+    { id: 'network', label: 'Network', percent: 18, value: '180 / 1,000 Mbps', color: '#F59E0B', ringBg: 'text-amber-500' },
+  ];
+
+  const maintenanceScheduledTasks = [
+    { id: 'task-1', name: 'Daily Backup', icon: Database, iconColor: 'text-blue-600 bg-blue-50', schedule: 'Daily 02:00', nextRun: '24 Sep 2026', status: 'Active' },
+    { id: 'task-2', name: 'Database Optimization', icon: Server, iconColor: 'text-blue-600 bg-blue-50', schedule: 'Weekly (Sun)', nextRun: '27 Sep 2026', status: 'Active' },
+    { id: 'task-3', name: 'Clear Cache', icon: Trash2, iconColor: 'text-rose-600 bg-rose-50', schedule: 'Daily 03:00', nextRun: '24 Sep 2026', status: 'Active' },
+    { id: 'task-4', name: 'Log Rotation', icon: FileText, iconColor: 'text-rose-600 bg-rose-50', schedule: 'Weekly (Mon)', nextRun: '28 Sep 2026', status: 'Active' },
+    { id: 'task-5', name: 'System Update Check', icon: RefreshCw, iconColor: 'text-purple-600 bg-purple-50', schedule: 'Daily 01:00', nextRun: '24 Sep 2026', status: 'Active' },
+  ];
+
+  const maintenanceRecentActivities = [
+    { id: 'rec-1', time: '23 Sep 2026, 02:30', action: 'Automatic backup completed', status: 'Success' },
+    { id: 'rec-2', time: '22 Sep 2026, 03:15', action: 'Cache cleared', status: 'Success' },
+    { id: 'rec-3', time: '22 Sep 2026, 02:00', action: 'Database optimized', status: 'Success' },
+    { id: 'rec-4', time: '21 Sep 2026, 18:42', action: 'Search index rebuilt', status: 'Success' },
+    { id: 'rec-5', time: '21 Sep 2026, 14:20', action: 'System update checked', status: 'Success' },
+  ];
+
+  const maintenanceBackupsList = [
+    { id: 'bk-1', date: '23 Sep 2026, 02:30', type: 'Full Backup', size: '1.2 GB', status: 'Success' },
+    { id: 'bk-2', date: '22 Sep 2026, 02:30', type: 'Full Backup', size: '1.1 GB', status: 'Success' },
+    { id: 'bk-3', date: '21 Sep 2026, 02:30', type: 'Full Backup', size: '1.2 GB', status: 'Success' },
+    { id: 'bk-4', date: '20 Sep 2026, 02:30', type: 'Full Backup', size: '1.1 GB', status: 'Success' },
+  ];
+
+  const maintenanceStorageBreakdown = [
+    { label: 'Application Files', size: '42 GB', percentage: 47, color: '#3B82F6', bg: 'bg-blue-500' },
+    { label: 'User Uploads', size: '28 GB', percentage: 31, color: '#8B5CF6', bg: 'bg-purple-500' },
+    { label: 'Database', size: '12 GB', percentage: 13, color: '#10B981', bg: 'bg-emerald-500' },
+    { label: 'Logs', size: '6 GB', percentage: 7, color: '#F59E0B', bg: 'bg-amber-500' },
+    { label: 'Others', size: '2 GB', percentage: 2, color: '#06B6D4', bg: 'bg-cyan-500' },
+  ];
+
 
   // =========================================================
   // ACTIVITY LOG DATASET (matching media_1790805383784.jpg)
@@ -18858,41 +18976,673 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
             </div>
           ) : activeNav === 'maintenance' ? (
-            <div className="space-y-5 animate-fadeIn">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shadow-xs shrink-0">
-                    <Wrench className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-black text-gray-900 tracking-tight">Platform Maintenance & Tuning</h1>
-                    <p className="text-xs text-gray-500 font-medium">Database index vacuuming, CDN cache flushing, and maintenance mode scheduler.</p>
-                  </div>
-                </div>
-              </div>
+            (() => {
+              return (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* 1. TOP MAINTENANCE HEADER */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xs shrink-0 font-bold">
+                        <Wrench className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl font-black text-gray-900 tracking-tight">Maintenance</h1>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Manage system health, updates, backups, and maintenance tasks.
+                        </p>
+                      </div>
+                    </div>
 
-              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-2xs space-y-4 text-xs">
-                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
-                  <div>
-                    <div className="font-black text-gray-900">Maintenance Mode</div>
-                    <div className="text-gray-500 text-[11px]">Ketika aktif, santri dan guru akan melihat halaman pemeliharaan sistem sementara.</div>
-                  </div>
-                  <span className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full font-bold text-[11px]">Disabled (Normal Ops)</span>
-                </div>
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                      <button
+                        onClick={() => setIsViewChangelogModalOpen(true)}
+                        className="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-gray-500" />
+                        <span>View Changelog</span>
+                      </button>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <button onClick={() => alert('Cache CDN & Redis berhasil dibersihkan!')} className="p-3.5 bg-[#F8FAFC] hover:bg-gray-100 border border-gray-200 rounded-xl font-extrabold text-gray-800 text-center cursor-pointer">
-                    🧹 Purge Redis Cache
-                  </button>
-                  <button onClick={() => alert('Indeks database PostgreSQL berhasil dioptimasi!')} className="p-3.5 bg-[#F8FAFC] hover:bg-gray-100 border border-gray-200 rounded-xl font-extrabold text-gray-800 text-center cursor-pointer">
-                    ⚡ Reindex Database
-                  </button>
-                  <button onClick={() => alert('Log rotasi 30 hari berhasil dijalankan!')} className="p-3.5 bg-[#F8FAFC] hover:bg-gray-100 border border-gray-200 rounded-xl font-extrabold text-gray-800 text-center cursor-pointer">
-                    📦 Archive S3 Logs
-                  </button>
+                      <button
+                        onClick={() => setIsSystemStatusModalOpen(true)}
+                        className="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Activity className="w-3.5 h-3.5 text-purple-600" />
+                        <span>System Status</span>
+                      </button>
+
+                      <button
+                        onClick={() => setIsRunMaintenanceModalOpen(true)}
+                        className="px-4 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-current" />
+                        <span>Run Maintenance</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. TOP 4 STATUS KPI CARDS */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {maintenanceTopMetrics.map((kpi) => {
+                      const KpiIcon = kpi.icon;
+                      return (
+                        <div
+                          key={kpi.id}
+                          className="bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs hover:shadow-sm transition-all flex items-center gap-3.5"
+                        >
+                          <div className={`w-11 h-11 rounded-2xl ${kpi.iconBg} flex items-center justify-center shrink-0`}>
+                            <KpiIcon className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <span className="text-[11px] font-bold text-gray-400 block">{kpi.title}</span>
+                            <div className="text-base font-black text-gray-900 leading-tight">{kpi.value}</div>
+                            <span className="text-[11px] font-semibold text-gray-500">{kpi.subtext}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* 3. SUB-NAVIGATION PILLS TABS */}
+                  <div className="bg-white rounded-2xl p-2 border border-gray-100 shadow-2xs flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                    {maintenanceNavTabs.map((tab) => {
+                      const TabIcon = tab.icon;
+                      const isActive = maintenanceActiveTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setMaintenanceActiveTab(tab.id)}
+                          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all shrink-0 cursor-pointer ${
+                            isActive
+                              ? 'bg-[#114B44] text-white shadow-xs'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          }`}
+                        >
+                          <TabIcon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                          <span>{tab.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* 4. ROW 1: System Resources (Gauge) + Server Performance (Chart) + Maintenance Actions */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    
+                    {/* CARD 1: SYSTEM RESOURCES (4 GAUGE RINGS) - 4 COLS */}
+                    <div className="lg:col-span-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xs font-black text-gray-900">System Resources</h3>
+                        <span className="text-[10px] text-gray-400 font-bold">Real-time</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-3">
+                        {maintenanceSystemResources.map((res) => {
+                          // SVG circumference 2 * PI * r = 2 * 3.14159 * 28 = ~175.9
+                          const r = 28;
+                          const circ = 2 * Math.PI * r;
+                          const strokeDashoffset = circ - (res.percent / 100) * circ;
+
+                          return (
+                            <div key={res.id} className="flex flex-col items-center text-center space-y-1">
+                              <div className="relative w-16 h-16 flex items-center justify-center">
+                                <svg className="w-full h-full -rotate-90" viewBox="0 0 70 70">
+                                  <circle
+                                    cx="35"
+                                    cy="35"
+                                    r={r}
+                                    className="stroke-gray-100"
+                                    strokeWidth="6"
+                                    fill="transparent"
+                                  />
+                                  <circle
+                                    cx="35"
+                                    cy="35"
+                                    r={r}
+                                    stroke={res.color}
+                                    strokeWidth="6"
+                                    strokeDasharray={circ}
+                                    strokeDashoffset={strokeDashoffset}
+                                    strokeLinecap="round"
+                                    fill="transparent"
+                                  />
+                                </svg>
+                                <span className="absolute text-xs font-black text-gray-900">{res.percent}%</span>
+                              </div>
+                              <span className="text-xs font-black text-gray-800">{res.label}</span>
+                              <span className="text-[10px] text-gray-400 font-semibold">{res.value}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* CARD 2: SERVER PERFORMANCE (LINE CHART) - 5 COLS */}
+                    <div className="lg:col-span-5 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-xs font-black text-gray-900">Server Performance</h3>
+                          <p className="text-[10px] text-gray-400">CPU, memory, and disk usage over time</p>
+                        </div>
+                        <select
+                          value={maintenancePerformanceRange}
+                          onChange={(e) => setMaintenancePerformanceRange(e.target.value)}
+                          className="bg-[#F8FAFC] border border-gray-200 rounded-lg px-2 py-1 text-[11px] font-bold text-gray-700 focus:outline-none cursor-pointer"
+                        >
+                          <option>Last 24 Hours</option>
+                          <option>Last 7 Days</option>
+                          <option>Last 30 Days</option>
+                        </select>
+                      </div>
+
+                      {/* Legend */}
+                      <div className="flex items-center gap-3 text-[10px] font-bold">
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          <span className="text-gray-600">CPU</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                          <span className="text-gray-600">Memory</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                          <span className="text-gray-600">Disk</span>
+                        </div>
+                      </div>
+
+                      {/* SVG Performance Line Chart */}
+                      <div className="relative h-40 w-full pt-1">
+                        <svg viewBox="0 0 350 140" className="w-full h-full overflow-visible">
+                          {/* Horizontal Grid lines */}
+                          <line x1="25" y1="15" x2="340" y2="15" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                          <line x1="25" y1="45" x2="340" y2="45" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                          <line x1="25" y1="75" x2="340" y2="75" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                          <line x1="25" y1="105" x2="340" y2="105" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                          <line x1="25" y1="120" x2="340" y2="120" stroke="#E2E8F0" strokeWidth="1" />
+
+                          {/* Y-Axis Labels */}
+                          <text x="18" y="18" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">100%</text>
+                          <text x="18" y="48" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">75%</text>
+                          <text x="18" y="78" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">50%</text>
+                          <text x="18" y="108" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">25%</text>
+                          <text x="18" y="123" textAnchor="end" fontSize="8" fill="#94A3B8" fontWeight="bold">0%</text>
+
+                          {/* 1. CPU Series (Emerald) */}
+                          <path
+                            d="M 40 100 C 90 98, 140 92, 190 95 C 240 85, 290 90, 330 88"
+                            fill="none"
+                            stroke="#10B981"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          {[{ x: 40, y: 100, val: '28%' }, { x: 100, y: 98, val: '30%' }, { x: 160, y: 92, val: '35%' }, { x: 220, y: 95, val: '32%' }, { x: 280, y: 88, val: '36%' }, { x: 330, y: 88, val: '32%' }].map((p, i) => (
+                            <circle
+                              key={`cpu-${i}`}
+                              cx={p.x}
+                              cy={p.y}
+                              r="3"
+                              fill="#10B981"
+                              stroke="#FFFFFF"
+                              strokeWidth="1"
+                              className="cursor-pointer hover:r-4 transition-all"
+                              onMouseEnter={() => setActiveMaintenancePerformanceTooltip({ text: `CPU: ${p.val}`, x: p.x, y: p.y })}
+                              onMouseLeave={() => setActiveMaintenancePerformanceTooltip(null)}
+                            />
+                          ))}
+
+                          {/* 2. Memory Series (Blue) - with spike at ~14:00 */}
+                          <path
+                            d="M 40 85 C 90 82, 140 78, 190 75 L 220 40 L 250 72 C 290 70, 310 68, 330 65"
+                            fill="none"
+                            stroke="#3B82F6"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          {[{ x: 40, y: 85, val: '45%' }, { x: 100, y: 82, val: '48%' }, { x: 160, y: 78, val: '52%' }, { x: 220, y: 40, val: '76% (Spike)' }, { x: 280, y: 70, val: '58%' }, { x: 330, y: 65, val: '68%' }].map((p, i) => (
+                            <circle
+                              key={`mem-${i}`}
+                              cx={p.x}
+                              cy={p.y}
+                              r="3"
+                              fill="#3B82F6"
+                              stroke="#FFFFFF"
+                              strokeWidth="1"
+                              className="cursor-pointer hover:r-4 transition-all"
+                              onMouseEnter={() => setActiveMaintenancePerformanceTooltip({ text: `Memory: ${p.val}`, x: p.x, y: p.y })}
+                              onMouseLeave={() => setActiveMaintenancePerformanceTooltip(null)}
+                            />
+                          ))}
+
+                          {/* 3. Disk Series (Purple) */}
+                          <path
+                            d="M 40 92 C 90 90, 140 88, 190 85 C 240 85, 290 82, 330 80"
+                            fill="none"
+                            stroke="#8B5CF6"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          {[{ x: 40, y: 92, val: '40%' }, { x: 100, y: 90, val: '42%' }, { x: 160, y: 88, val: '44%' }, { x: 220, y: 85, val: '45%' }, { x: 280, y: 82, val: '45%' }, { x: 330, y: 80, val: '45%' }].map((p, i) => (
+                            <circle
+                              key={`dsk-${i}`}
+                              cx={p.x}
+                              cy={p.y}
+                              r="3"
+                              fill="#8B5CF6"
+                              stroke="#FFFFFF"
+                              strokeWidth="1"
+                              className="cursor-pointer hover:r-4 transition-all"
+                              onMouseEnter={() => setActiveMaintenancePerformanceTooltip({ text: `Disk: ${p.val}`, x: p.x, y: p.y })}
+                              onMouseLeave={() => setActiveMaintenancePerformanceTooltip(null)}
+                            />
+                          ))}
+
+                          {/* X-Axis Labels */}
+                          <text x="40" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">00:00</text>
+                          <text x="100" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">04:00</text>
+                          <text x="160" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">08:00</text>
+                          <text x="220" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">12:00</text>
+                          <text x="280" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">16:00</text>
+                          <text x="330" y="134" textAnchor="middle" fontSize="8" fill="#94A3B8" fontWeight="bold">20:00</text>
+                        </svg>
+
+                        {activeMaintenancePerformanceTooltip && (
+                          <div
+                            className="absolute z-10 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg pointer-events-none -translate-x-1/2 -translate-y-full"
+                            style={{ left: `${(activeMaintenancePerformanceTooltip.x / 350) * 100}%`, top: `${(activeMaintenancePerformanceTooltip.y / 140) * 100}%` }}
+                          >
+                            {activeMaintenancePerformanceTooltip.text}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* CARD 3: MAINTENANCE ACTIONS - 3 COLS */}
+                    <div className="lg:col-span-3 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-2.5">
+                      <h3 className="text-xs font-black text-gray-900">Maintenance Actions</h3>
+
+                      <div className="space-y-2 text-xs">
+                        {[
+                          { id: 'act-cache', title: 'Clear Application Cache', desc: 'Remove temporary cache files', icon: Zap, iconBg: 'bg-rose-50 text-rose-600', action: () => alert('Cache aplikasi berhasil dibersihkan!') },
+                          { id: 'act-db', title: 'Optimize Database', desc: 'Clean and optimize tables', icon: Database, iconBg: 'bg-blue-50 text-blue-600', action: () => alert('Database berhasil dioptimasi!') },
+                          { id: 'act-search', title: 'Rebuild Search Index', desc: 'Reindex content and metadata', icon: RotateCcw, iconBg: 'bg-amber-50 text-amber-600', action: () => alert('Indeks pencarian berhasil di-rebuild!') },
+                          { id: 'act-logs', title: 'Clear Logs', desc: 'Archive and remove old logs', icon: FileText, iconBg: 'bg-purple-50 text-purple-600', action: () => setIsClearOldLogsModalOpen(true) },
+                        ].map((mAct) => {
+                          const MActIcon = mAct.icon;
+                          return (
+                            <div key={mAct.id} className="p-2.5 bg-[#F8FAFC] hover:bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between gap-2 transition-all">
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className={`w-7 h-7 rounded-lg ${mAct.iconBg} flex items-center justify-center shrink-0`}>
+                                  <MActIcon className="w-3.5 h-3.5" />
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="font-extrabold text-gray-900 text-[11px] truncate">{mAct.title}</div>
+                                  <div className="text-[10px] text-gray-400 truncate">{mAct.desc}</div>
+                                </div>
+                              </div>
+                              <button
+                                onClick={mAct.action}
+                                className="px-2.5 py-1 bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 text-[10px] font-bold rounded-lg shadow-2xs transition-colors shrink-0 cursor-pointer"
+                              >
+                                Run
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 5. ROW 2: Scheduled Maintenance (Table) + Recent Activities (Table) + Update Management */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    
+                    {/* CARD 4: SCHEDULED MAINTENANCE (5 COLS) */}
+                    <div className="lg:col-span-5 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-xs font-black text-gray-900">Scheduled Maintenance</h3>
+                          <p className="text-[10px] text-gray-400">Upcoming and recurring maintenance tasks.</p>
+                        </div>
+                        <button
+                          onClick={() => setIsManageCronModalOpen(true)}
+                          className="text-[11px] font-bold text-[#114B44] hover:underline cursor-pointer"
+                        >
+                          View All →
+                        </button>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs text-gray-600">
+                          <thead className="bg-[#F8FAFC] text-gray-400 text-[10px] font-bold uppercase border-b border-gray-100">
+                            <tr>
+                              <th className="py-2 px-2.5">Task</th>
+                              <th className="py-2 px-2.5">Schedule</th>
+                              <th className="py-2 px-2.5">Next Run</th>
+                              <th className="py-2 px-2.5">Status</th>
+                              <th className="py-2 px-2 text-center">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100 text-[11px]">
+                            {maintenanceScheduledTasks.map((t) => {
+                              const TIcon = t.icon;
+                              return (
+                                <tr key={t.id} className="hover:bg-gray-50/70 transition-colors">
+                                  <td className="py-2.5 px-2.5 font-extrabold text-gray-900">
+                                    <div className="flex items-center gap-1.5 whitespace-nowrap">
+                                      <div className={`w-5 h-5 rounded-md ${t.iconColor} flex items-center justify-center`}>
+                                        <TIcon className="w-3 h-3" />
+                                      </div>
+                                      <span>{t.name}</span>
+                                    </div>
+                                  </td>
+                                  <td className="py-2.5 px-2.5 text-gray-500 whitespace-nowrap">{t.schedule}</td>
+                                  <td className="py-2.5 px-2.5 text-gray-500 whitespace-nowrap">{t.nextRun}</td>
+                                  <td className="py-2.5 px-2.5 whitespace-nowrap">
+                                    <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-100 text-emerald-700">
+                                      {t.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-2.5 px-2 text-center">
+                                    <button
+                                      onClick={() => alert(`Pengaturan jadwal task: ${t.name}`)}
+                                      className="text-gray-400 hover:text-gray-700 p-1 cursor-pointer"
+                                    >
+                                      <MoreHorizontal className="w-3.5 h-3.5" />
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* CARD 5: RECENT MAINTENANCE ACTIVITIES (4 COLS) */}
+                    <div className="lg:col-span-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xs font-black text-gray-900">Recent Maintenance Activities</h3>
+                        <button
+                          onClick={() => setActiveNav('activity-log')}
+                          className="text-[11px] font-bold text-[#114B44] hover:underline cursor-pointer"
+                        >
+                          View All →
+                        </button>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs text-gray-600">
+                          <thead className="bg-[#F8FAFC] text-gray-400 text-[10px] font-bold uppercase border-b border-gray-100">
+                            <tr>
+                              <th className="py-2 px-2.5">Time</th>
+                              <th className="py-2 px-2.5">Action</th>
+                              <th className="py-2 px-2.5">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100 text-[11px]">
+                            {maintenanceRecentActivities.map((act) => (
+                              <tr key={act.id} className="hover:bg-gray-50/70 transition-colors">
+                                <td className="py-2.5 px-2.5 text-gray-500 whitespace-nowrap">{act.time}</td>
+                                <td className="py-2.5 px-2.5 font-extrabold text-gray-800">{act.action}</td>
+                                <td className="py-2.5 px-2.5 whitespace-nowrap">
+                                  <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-100 text-emerald-700">
+                                    {act.status}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* CARD 6: UPDATE MANAGEMENT (3 COLS) */}
+                    <div className="lg:col-span-3 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-6 h-6 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                            <RefreshCw className="w-3.5 h-3.5" />
+                          </div>
+                          <h3 className="text-xs font-black text-gray-900">Update Management</h3>
+                        </div>
+                        <button onClick={() => setIsViewChangelogModalOpen(true)} className="text-[11px] font-bold text-[#114B44] hover:underline cursor-pointer">
+                          View All →
+                        </button>
+                      </div>
+
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] text-gray-400 font-bold block">Current Version</span>
+                            <span className="text-sm font-black text-gray-900">v2.4.1</span>
+                          </div>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-700">
+                            Up to date
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-gray-400 font-medium">Last Checked: 23 Sep 2026, 16:20</div>
+
+                        <button
+                          onClick={() => alert('Sistem telah memeriksa pembaruan: Anda menggunakan versi terbaru IlmHub v2.4.1 Enterprise!')}
+                          className="w-full py-1.5 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-800 flex items-center justify-center gap-1.5 shadow-2xs transition-colors cursor-pointer mt-1"
+                        >
+                          <RefreshCw className="w-3 h-3 text-[#114B44]" />
+                          <span>Check for Updates</span>
+                        </button>
+                      </div>
+
+                      {/* Toggles */}
+                      <div className="space-y-2 text-[11px]">
+                        <label className="flex items-center justify-between cursor-pointer">
+                          <span className="text-gray-700 font-medium">Auto-update (minor versions)</span>
+                          <input
+                            type="checkbox"
+                            checked={autoUpdateMinor}
+                            onChange={(e) => setAutoUpdateMinor(e.target.checked)}
+                            className="w-4 h-4 rounded text-[#114B44] accent-[#114B44] cursor-pointer"
+                          />
+                        </label>
+                        <label className="flex items-center justify-between cursor-pointer">
+                          <span className="text-gray-700 font-medium">Security updates only</span>
+                          <input
+                            type="checkbox"
+                            checked={securityUpdatesOnly}
+                            onChange={(e) => setSecurityUpdatesOnly(e.target.checked)}
+                            className="w-4 h-4 rounded text-[#114B44] accent-[#114B44] cursor-pointer"
+                          />
+                        </label>
+                        <label className="flex items-center justify-between cursor-pointer">
+                          <span className="text-gray-700 font-medium">Notify before updates</span>
+                          <input
+                            type="checkbox"
+                            checked={notifyBeforeUpdates}
+                            onChange={(e) => setNotifyBeforeUpdates(e.target.checked)}
+                            className="w-4 h-4 rounded text-[#114B44] accent-[#114B44] cursor-pointer"
+                          />
+                        </label>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* 6. ROW 3: Backup Management (Table) + Storage Usage (Progress) + System Tools (Grid) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    
+                    {/* CARD 7: BACKUP MANAGEMENT (5 COLS) */}
+                    <div className="lg:col-span-5 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                            <Database className="w-3.5 h-3.5" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black text-gray-900">Backup Management</h3>
+                            <p className="text-[10px] text-gray-400">Manage system backups and restore data.</p>
+                          </div>
+                        </div>
+                        <button onClick={() => alert('Membuka seluruh riwayat snapshot backup...')} className="text-[11px] font-bold text-[#114B44] hover:underline cursor-pointer">
+                          View All →
+                        </button>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs text-gray-600">
+                          <thead className="bg-[#F8FAFC] text-gray-400 text-[10px] font-bold uppercase border-b border-gray-100">
+                            <tr>
+                              <th className="py-2 px-2.5">Date & Time</th>
+                              <th className="py-2 px-2.5">Type</th>
+                              <th className="py-2 px-2.5">Size</th>
+                              <th className="py-2 px-2.5">Status</th>
+                              <th className="py-2 px-2 text-center">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100 text-[11px]">
+                            {maintenanceBackupsList.map((bk) => (
+                              <tr key={bk.id} className="hover:bg-gray-50/70 transition-colors">
+                                <td className="py-2.5 px-2.5 font-bold text-gray-900 whitespace-nowrap">{bk.date}</td>
+                                <td className="py-2.5 px-2.5 text-gray-500 whitespace-nowrap">{bk.type}</td>
+                                <td className="py-2.5 px-2.5 font-mono text-gray-700 whitespace-nowrap">{bk.size}</td>
+                                <td className="py-2.5 px-2.5 whitespace-nowrap">
+                                  <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-100 text-emerald-700">
+                                    {bk.status}
+                                  </span>
+                                </td>
+                                <td className="py-2.5 px-2 text-center">
+                                  <div className="flex items-center justify-center gap-1">
+                                    <button
+                                      onClick={() => {
+                                        setSelectedBackupForRestore(bk);
+                                        setIsRestoreBackupModalOpen(true);
+                                      }}
+                                      className="px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md text-[10px] font-extrabold transition-colors cursor-pointer flex items-center gap-1"
+                                    >
+                                      <span>⬇ Restore</span>
+                                    </button>
+                                    <button
+                                      onClick={() => alert(`Opsi cadangan snapshot ${bk.date}`)}
+                                      className="text-gray-400 hover:text-gray-700 p-1 cursor-pointer"
+                                    >
+                                      <MoreHorizontal className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* CARD 8: STORAGE USAGE (4 COLS) */}
+                    <div className="lg:col-span-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                            <HardDrive className="w-3.5 h-3.5" />
+                          </div>
+                          <h3 className="text-xs font-black text-gray-900">Storage Usage</h3>
+                        </div>
+                        <button onClick={() => alert('Membuka rincian partisi NVMe SSD disk...')} className="text-[11px] font-bold text-[#114B44] hover:underline cursor-pointer">
+                          View Details →
+                        </button>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="space-y-1.5">
+                        <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden flex">
+                          <div className="bg-blue-500 h-3" style={{ width: '47%' }}></div>
+                          <div className="bg-purple-500 h-3" style={{ width: '31%' }}></div>
+                          <div className="bg-emerald-500 h-3" style={{ width: '13%' }}></div>
+                          <div className="bg-amber-500 h-3" style={{ width: '7%' }}></div>
+                          <div className="bg-cyan-500 h-3" style={{ width: '2%' }}></div>
+                        </div>
+                        <div className="text-center font-mono font-bold text-gray-700 text-[11px]">
+                          90 GB / 200 GB (45%)
+                        </div>
+                      </div>
+
+                      {/* Legend List */}
+                      <div className="space-y-1.5 text-[11px]">
+                        {maintenanceStorageBreakdown.map((item, idx) => (
+                          <div key={idx} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className={`w-2 h-2 rounded-full ${item.bg}`}></span>
+                              <span className="text-gray-700 font-semibold">{item.label}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-gray-400">{item.size}</span>
+                              <span className="font-bold text-gray-900 w-7 text-right">{item.percentage}%</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* CARD 9: SYSTEM TOOLS (3 COLS) */}
+                    <div className="lg:col-span-3 bg-white rounded-2xl p-4 border border-gray-100 shadow-2xs space-y-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                          <Wrench className="w-3.5 h-3.5" />
+                        </div>
+                        <h3 className="text-xs font-black text-gray-900">System Tools</h3>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <button
+                          onClick={() => setIsRestartServicesModalOpen(true)}
+                          className="p-2.5 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer"
+                        >
+                          <RefreshCw className="w-4 h-4 text-blue-600" />
+                          <span className="text-[10px]">Restart Services</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsRunDiagnosticsModalOpen(true)}
+                          className="p-2.5 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer"
+                        >
+                          <Activity className="w-4 h-4 text-emerald-600" />
+                          <span className="text-[10px]">Run Diagnostics</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsSystemInfoModalOpen(true)}
+                          className="p-2.5 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer"
+                        >
+                          <Info className="w-4 h-4 text-purple-600" />
+                          <span className="text-[10px]">View System Info</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsManageCronModalOpen(true)}
+                          className="p-2.5 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer"
+                        >
+                          <Clock className="w-4 h-4 text-amber-600" />
+                          <span className="text-[10px]">Manage Cron Jobs</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsTestEmailModalOpen(true)}
+                          className="p-2.5 bg-[#F8FAFC] hover:bg-gray-100 rounded-xl border border-gray-200 text-gray-700 font-extrabold flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer"
+                        >
+                          <Mail className="w-4 h-4 text-sky-600" />
+                          <span className="text-[10px]">Test Email Service</span>
+                        </button>
+
+                        <button
+                          onClick={() => setIsClearTempFilesModalOpen(true)}
+                          className="p-2.5 bg-rose-50/50 hover:bg-rose-50 rounded-xl border border-rose-200 text-rose-700 font-extrabold flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4 text-rose-600" />
+                          <span className="text-[10px]">Clear Temp Files</span>
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+
                 </div>
-              </div>
-            </div>
+              );
+            })()
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -26198,6 +26948,435 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
 
                 <div className="flex items-center justify-end pt-3 border-t border-gray-100">
                   <button onClick={() => setIsViewAllSecurityEventsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* MAINTENANCE INTERACTIVE MODALS                            */}
+          {/* ========================================================= */}
+
+          {/* 1. Modal Run Full Maintenance */}
+          {isRunMaintenanceModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Play className="w-5 h-5 fill-current" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Jalankan Pemeliharaan Sistem (Run Maintenance)</h3>
+                      <p className="text-xs text-gray-500">Eksekusi otomatis pembersihan cache, reindex, dan optimasi</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsRunMaintenanceModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-emerald-800 text-[11px] flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Pemeliharaan ini dapat berjalan di latar belakang tanpa mengganggu sesi live santri.</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <span className="font-bold text-gray-700 block">Pilih Tugas Pemeliharaan:</span>
+                    {[
+                      { id: 'm-cache', label: 'Clear Application & Redis Cache', desc: 'Kosongkan memori cache sementara' },
+                      { id: 'm-db', label: 'Optimize & Vacuum PostgreSQL Tables', desc: 'Reclaim unused database disk space' },
+                      { id: 'm-index', label: 'Rebuild Global Search Index', desc: 'Sinkronisasi ulang metadata materi & santri' },
+                      { id: 'm-cdn', label: 'Purge Cloudflare CDN Edge Cache', desc: 'Segarkan aset statis frontend secara global' },
+                    ].map((task) => (
+                      <label key={task.id} className="p-3 rounded-xl border border-gray-200 bg-[#F8FAFC] flex items-start gap-2.5 cursor-pointer hover:border-[#114B44] transition-colors">
+                        <input type="checkbox" defaultChecked className="mt-0.5 rounded text-[#114B44] accent-[#114B44]" />
+                        <div>
+                          <span className="font-extrabold text-gray-900 block">{task.label}</span>
+                          <span className="text-[10px] text-gray-400">{task.desc}</span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsRunMaintenanceModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsRunMaintenanceModalOpen(false);
+                      alert('Proses pemeliharaan sistem berhasil dijalankan! Cache dibersihkan, database dioptimasi, dan CDN edge disegarkan.');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>Eksekusi Sekarang</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Modal View Changelog */}
+          {isViewChangelogModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Catatan Pembaruan & Changelog Platform</h3>
+                      <p className="text-xs text-gray-500">Riwayat versi dan rilis fitur IlmHub Platform</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsViewChangelogModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  {/* Version 2.4.1 */}
+                  <div className="p-4 bg-[#F8FAFC] rounded-2xl border border-gray-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-black text-gray-900 text-sm">v2.4.1</span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-700">Latest Release</span>
+                      </div>
+                      <span className="text-[11px] text-gray-400 font-semibold">23 Sep 2026</span>
+                    </div>
+                    <ul className="list-disc list-inside space-y-1 text-gray-600 leading-relaxed pl-1">
+                      <li>Optimasi dashboard Activity Log dan audit security alerts real-time.</li>
+                      <li>Peningkatan sinkronisasi webhook otomatis Mayar payout & QRIS settlement.</li>
+                      <li>Perbaikan kompatibilitas room Zoom live streaming untuk koneksi mobile santri.</li>
+                    </ul>
+                  </div>
+
+                  {/* Version 2.4.0 */}
+                  <div className="p-4 bg-[#F8FAFC] rounded-2xl border border-gray-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-black text-gray-900 text-sm">v2.4.0</span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-700">Major Feature</span>
+                      </div>
+                      <span className="text-[11px] text-gray-400 font-semibold">15 Sep 2026</span>
+                    </div>
+                    <ul className="list-disc list-inside space-y-1 text-gray-600 leading-relaxed pl-1">
+                      <li>Peluncuran modul Pendaftaran Guru VIP & sistem bagi hasil berjenjang (Tiering).</li>
+                      <li>Integrasi sistem sertifikat digital otomatis dengan QR code verifikasi publik.</li>
+                      <li>Pembaruan tampilan analitik grafik multi-series dan ekspor laporan PDF/Excel.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsViewChangelogModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Modal Restore Backup */}
+          {isRestoreBackupModalOpen && selectedBackupForRestore && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <Database className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Pulihkan Cadangan Database (Restore)</h3>
+                      <p className="text-xs text-gray-500">Snapshot: {selectedBackupForRestore.date}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsRestoreBackupModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs leading-relaxed">
+                    <strong>Peringatan Restorasi:</strong> Data yang ada setelah tanggal <strong>{selectedBackupForRestore.date}</strong> akan ditimpa dengan snapshot cadangan berukuran <strong>{selectedBackupForRestore.size}</strong>.
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500">Tipe Cadangan:</span>
+                      <span className="font-extrabold text-gray-900">{selectedBackupForRestore.type}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500">Ukuran File:</span>
+                      <span className="font-mono font-bold text-gray-900">{selectedBackupForRestore.size}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsRestoreBackupModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsRestoreBackupModalOpen(false);
+                      alert(`Pemulihan database snapshot ${selectedBackupForRestore.date} berhasil dijalankan!`);
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Konfirmasi Restore
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Modal View System Info */}
+          {isSystemInfoModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">
+                      <Info className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Spesifikasi Infrastruktur & Server</h3>
+                      <p className="text-xs text-gray-500">Informasi lingkungan server produksi IlmHub</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsSystemInfoModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2.5 text-xs">
+                  {[
+                    { label: 'Sistem Operasi Host', val: 'Ubuntu Linux 22.04.4 LTS (x86_64)' },
+                    { label: 'Node.js Runtime', val: 'v20.12.2 (LTS Iron)' },
+                    { label: 'Basis Data Utama', val: 'PostgreSQL 16.2 Enterprise with PgBouncer' },
+                    { label: 'In-Memory Cache', val: 'Redis v7.2.4 Standalone Cluster' },
+                    { label: 'Kapasitas vCPU', val: '10 vCPU Cores (AMD EPYC™ 7763)' },
+                    { label: 'Kapasitas RAM', val: '16.0 GB DDR5 ECC Memory' },
+                    { label: 'Penyimpanan Utama', val: '200 GB NVMe SSD (PCIe 4.0)' },
+                    { label: 'SSL / TLS Certificate', val: "Let's Encrypt Authority X3 (Valid sd 15 Jan 2027)" },
+                  ].map((spec, sIdx) => (
+                    <div key={sIdx} className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                      <span className="text-gray-500 font-semibold">{spec.label}</span>
+                      <span className="font-extrabold text-gray-900 font-mono text-[11px]">{spec.val}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsSystemInfoModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. Modal Manage Cron Jobs */}
+          {isManageCronModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Manajemen Scheduled Tasks (Cron Jobs)</h3>
+                      <p className="text-xs text-gray-500">Daftar automasi tugas berkala sistem</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsManageCronModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {maintenanceScheduledTasks.map((task) => (
+                    <div key={task.id} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                      <div>
+                        <div className="font-extrabold text-gray-900">{task.name}</div>
+                        <div className="text-[10px] text-gray-400">{task.schedule} • Berikutnya: {task.nextRun}</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">Active</span>
+                        <button
+                          onClick={() => alert(`Task ${task.name} berhasil dijalankan sekarang!`)}
+                          className="px-2.5 py-1 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg text-[10px] font-bold text-gray-700 cursor-pointer"
+                        >
+                          Trigger Now
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsManageCronModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Modal Test Email Service */}
+          {isTestEmailModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-black">
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Uji Koneksi Layanan Email (SMTP)</h3>
+                      <p className="text-xs text-gray-500">Kirim email percobaan untuk memverifikasi relay</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsTestEmailModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Email Penerima Uji Coba</label>
+                    <input
+                      type="email"
+                      defaultValue="admin@ilmhub.com"
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1 text-[11px] text-gray-600">
+                    <div>SMTP Host: <strong>smtp.sendgrid.net:587</strong></div>
+                    <div>TLS Encryption: <strong>STARTTLS (Enabled)</strong></div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsTestEmailModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsTestEmailModalOpen(false);
+                      alert('Email uji coba berhasil dikirim! Status SMTP Relay: 250 OK.');
+                    }}
+                    className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Kirim Uji Coba
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. Modal Restart Services */}
+          {isRestartServicesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                      <RefreshCw className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Restart Layanan Microservices</h3>
+                      <p className="text-xs text-gray-500">Mulai ulang service daemon tanpa downtime</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsRestartServicesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {['Core API Gateway', 'WebSocket Live Streaming Daemon', 'Background Job Queue (BullMQ)', 'Redis Cache Worker'].map((srv, idx) => (
+                    <label key={idx} className="p-2.5 rounded-xl border border-gray-200 bg-[#F8FAFC] flex items-center gap-2.5 cursor-pointer">
+                      <input type="checkbox" defaultChecked className="rounded text-blue-600" />
+                      <span className="font-bold text-gray-800">{srv}</span>
+                    </label>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsRestartServicesModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsRestartServicesModalOpen(false);
+                      alert('Semua layanan yang dipilih berhasil dimuat ulang dengan graceful reload!');
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Restart Services
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 8. Modal Run Diagnostics */}
+          {isRunDiagnosticsModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                      <Activity className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Diagnostik Lengkap Sistem</h3>
+                      <p className="text-xs text-gray-500">Pengujian performa & konektivitas jaringan</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsRunDiagnosticsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {[
+                    { test: 'Database Read/Write IOPS', result: '1,420 IOPS (Optimal)' },
+                    { test: 'Redis Memory Latency', result: '0.8 ms (Super Fast)' },
+                    { test: 'Cloudflare Edge CDN Ping', result: '12 ms (Low Latency)' },
+                    { test: 'Mayar Webhook Endpoint', result: 'HTTP 200 OK' },
+                    { test: 'Zoom SDK JWT Token Auth', result: 'Valid (Expires 2028)' }
+                  ].map((diag, dIdx) => (
+                    <div key={dIdx} className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                      <span className="text-gray-700 font-semibold">{diag.test}</span>
+                      <span className="font-extrabold text-emerald-700 text-[11px]">{diag.result}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsRunDiagnosticsModalOpen(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Tutup</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 9. Modal Clear Temporary Files */}
+          {isClearTempFilesModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black">
+                      <Trash2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900">Bersihkan File Sementara (Temp Files)</h3>
+                      <p className="text-xs text-gray-500">Bebaskan ruang penyimpanan dari cache sampah</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsClearTempFilesModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <p className="text-gray-600">
+                    Proses ini akan menghapus <strong>1,482 file sementara</strong> (thumbnail cache, temporary export CSV, dan session dump yang tidak terpakai).
+                  </p>
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-emerald-800 font-bold">
+                    Estimasi ruang yang dibebaskan: ± 1.84 GB
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                  <button onClick={() => setIsClearTempFilesModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsClearTempFilesModalOpen(false);
+                      alert('1.84 GB file sementara berhasil dibersihkan!');
+                    }}
+                    className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black shadow-xs cursor-pointer"
+                  >
+                    Bersihkan Sekarang
+                  </button>
                 </div>
               </div>
             </div>
