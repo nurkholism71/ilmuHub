@@ -60,7 +60,8 @@ import {
   CreditCard,
   Edit2,
   User,
-  MoreHorizontal
+  MoreHorizontal,
+  MapPin
 } from 'lucide-react';
 
 export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, onLogout, onSwitchRole }) {
@@ -123,6 +124,29 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
   const [isAddFacultyModalOpen, setIsAddFacultyModalOpen] = useState(false);
   const [isImportFacultyModalOpen, setIsImportFacultyModalOpen] = useState(false);
 
+  // =========================================================
+  // STUDENTS ROOM STATES (Data Mahasiswa & Siswa)
+  // =========================================================
+  const [studentTabFilter, setStudentTabFilter] = useState('all'); // 'all' (8,156) | 'active' (7,420) | 'graduated' (1,890) | 'inactive' (736)
+  const [studentSearchQuery, setStudentSearchQuery] = useState('');
+  const [studentProgramFilter, setStudentProgramFilter] = useState('All Programs');
+  const [studentStatusFilter, setStudentStatusFilter] = useState('All Status');
+  const [studentJoinDateFilter, setStudentJoinDateFilter] = useState('All Joining Dates');
+  const [selectedStudentId, setSelectedStudentId] = useState('std-1'); // Default to Aisha Rahman
+  const [selectedStudentDetailTab, setSelectedStudentDetailTab] = useState('profile'); // 'profile' | 'courses' | 'certificates' | 'payments'
+  const [selectedStudentCheckboxes, setSelectedStudentCheckboxes] = useState([]);
+  const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+  const [isImportStudentModalOpen, setIsImportStudentModalOpen] = useState(false);
+  const [newStudent, setNewStudent] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    city: 'Jakarta, Indonesia',
+    program: 'Bahasa Arab & Nahwu',
+    level: 'Beginner',
+    status: 'Active'
+  });
+
   const adminName = user?.name || 'Admin';
   const adminRole = 'Super Admin';
   const adminEmail = user?.email || 'admin@ilmhub.com';
@@ -134,6 +158,7 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     { id: 'users', label: 'Users', icon: Users },
     { id: 'vip-teachers', label: 'VIP Teachers', icon: Award, badge: '24' },
     { id: 'teachers', label: 'Teachers', icon: GraduationCap },
+    { id: 'students', label: 'Students', icon: UserCheck },
     { id: 'classes', label: 'Classes', icon: BookOpen },
     { id: 'live', label: 'Live Classrooms', icon: Video },
     { id: 'schedules', label: 'Schedules', icon: Calendar },
@@ -827,6 +852,370 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
       setSelectedFacultyCheckboxes([]);
     } else {
       setSelectedFacultyCheckboxes(facultyTeachersList.map(f => f.id));
+    }
+  };
+
+  // =========================================================
+  // 10 STUDENTS FULL DATASET (Data Mahasiswa & Siswa)
+  // =========================================================
+  const [studentsList, setStudentsList] = useState([
+    {
+      id: 'std-1',
+      number: 1,
+      name: 'Aisha Rahman',
+      email: 'aisha.rahman@example.com',
+      avatar: '/images/student_aisha.jpg',
+      studentId: 'STD-2026-001',
+      phone: '+62 812-3456-7890',
+      city: 'Jakarta, Indonesia',
+      program: 'Bahasa Arab & Nahwu',
+      level: 'Intermediate',
+      enrolledCourses: 5,
+      completedCourses: 3,
+      progress: 78,
+      gpa: '3.88',
+      attendance: '96%',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '12 Sep 2026',
+      lastActive: '10 mins ago',
+      vipMentorship: true,
+      bio: 'Mahasiswi tekun memperdalam Nahwu-Shorof dan literatur klasik Islam.',
+      guardian: 'H. Rahman (Ayah) • +62 811-9988-7711',
+      courses: [
+        { name: 'Nahwu for Beginners', tutor: 'Ust. Ahmed Mohamed', progress: 100, score: '95/100 (A)' },
+        { name: 'Arabic Conversation B2', tutor: 'Ust. Siti Aisyah', progress: 85, score: '90/100 (A-)' },
+        { name: 'Balaghah & Retorika', tutor: 'Dr. Tariq Al-Madani', progress: 50, score: 'Sedang Berjalan' }
+      ],
+      certificates: [
+        { title: 'Sertifikat Kelulusan Nahwu Dasar', issueDate: '15 Ags 2026', code: 'CERT-ILM-2026-0812' },
+        { title: 'Tashrif & Shorof Kilat Level 1', issueDate: '28 Jul 2026', code: 'CERT-ILM-2026-0744' }
+      ],
+      payments: [
+        { item: 'VIP Mentorship Bulanan', amount: 'Rp 199.000', date: '01 Sep 2026', status: 'Lunas' },
+        { item: 'Paket Kelas Bahasa Arab', amount: 'Rp 450.000', date: '12 Ags 2026', status: 'Lunas' }
+      ]
+    },
+    {
+      id: 'std-2',
+      number: 2,
+      name: 'Omar Hassan',
+      email: 'omar.hassan@example.com',
+      avatar: '/images/student_omar.jpg',
+      studentId: 'STD-2026-002',
+      phone: '+62 813-8877-6655',
+      city: 'Surabaya, Indonesia',
+      program: 'Arabic Conversation',
+      level: 'Beginner',
+      enrolledCourses: 3,
+      completedCourses: 1,
+      progress: 45,
+      gpa: '3.65',
+      attendance: '90%',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '10 Sep 2026',
+      lastActive: '1 hour ago',
+      vipMentorship: false,
+      bio: 'Fokus melancarkan muhadatsah harian dan percakapan bisnis Arab.',
+      guardian: 'Ibu Fatimah • +62 813-2211-4433',
+      courses: [
+        { name: 'Dasar Percakapan Arab', tutor: 'Ust. Siti Aisyah', progress: 100, score: '88/100 (B+)' },
+        { name: 'Muhadatsah Lanjutan', tutor: 'Ust. Bilal Mansur', progress: 35, score: 'Sedang Berjalan' }
+      ],
+      certificates: [
+        { title: 'Kemahiran Muhadatsah Level 1', issueDate: '01 Sep 2026', code: 'CERT-ILM-2026-0901' }
+      ],
+      payments: [
+        { item: 'Kelas Reguler Muhadatsah', amount: 'Rp 250.000', date: '10 Sep 2026', status: 'Lunas' }
+      ]
+    },
+    {
+      id: 'std-3',
+      number: 3,
+      name: 'Muhammad Khan',
+      email: 'muhammad.khan@example.com',
+      avatar: '/images/student_ali.jpg',
+      studentId: 'STD-2026-003',
+      phone: '+60 12-345-6789',
+      city: 'Kuala Lumpur, Malaysia',
+      program: 'Tahsin & Tahfidz',
+      level: 'Advanced',
+      enrolledCourses: 6,
+      completedCourses: 4,
+      progress: 85,
+      gpa: '3.92',
+      attendance: '98%',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '28 Aug 2026',
+      lastActive: '4 hours ago',
+      vipMentorship: true,
+      bio: "Penghafal Al-Qur'an mengambil sanad Matn Al-Jazariyyah.",
+      guardian: 'Khan Senior • +60 19-876-5432',
+      courses: [
+        { name: 'Tahsin Matn Al-Jazariyyah', tutor: 'Syaikh Yusuf Al-Qari', progress: 100, score: '98/100 (A+)' },
+        { name: 'Hifdz Juz 28-30 Talaqqi', tutor: 'Ust. Ahmad Fauzi', progress: 80, score: '94/100 (A)' }
+      ],
+      certificates: [
+        { title: 'Ijazah Matn Al-Jazariyyah Bersanad', issueDate: '20 Ags 2026', code: 'CERT-ILM-2026-0820' },
+        { title: 'Tahsin Level 3 Mutamayyiz', issueDate: '10 Jul 2026', code: 'CERT-ILM-2026-0710' }
+      ],
+      payments: [
+        { item: 'Talaqqi Sanad VIP 3 Bulan', amount: 'Rp 750.000', date: '28 Ags 2026', status: 'Lunas' }
+      ]
+    },
+    {
+      id: 'std-4',
+      number: 4,
+      name: 'Zahra Putri',
+      email: 'zahra.putri@example.com',
+      avatar: '/images/student_fatimah.jpg',
+      studentId: 'STD-2026-004',
+      phone: '+62 811-2233-4455',
+      city: 'Bandung, Indonesia',
+      program: 'Fiqih & Muamalah',
+      level: 'Intermediate',
+      enrolledCourses: 4,
+      completedCourses: 4,
+      progress: 100,
+      gpa: '3.95',
+      attendance: '100%',
+      status: 'Graduated',
+      statusType: 'graduated',
+      joinDate: '15 Jul 2026',
+      lastActive: '2 days ago',
+      vipMentorship: false,
+      bio: "Telah menyelesaikan seluruh jenjang Fiqih Ibadah Mazhab Syafi'i dengan predikat Mumtaz.",
+      guardian: 'Drs. Hendra • +62 811-3322-1100',
+      courses: [
+        { name: "Fiqih Matan Abu Syuja'", tutor: 'Dr. Tariq Al-Madani', progress: 100, score: '97/100 (A+)' },
+        { name: 'Faraidh Dasar', tutor: 'Ust. Ridwan', progress: 100, score: '96/100 (A+)' }
+      ],
+      certificates: [
+        { title: 'Diploma Fiqih Ibadah Lengkap', issueDate: '25 Sep 2026', code: 'CERT-ILM-2026-0925' }
+      ],
+      payments: [
+        { item: 'Diploma Fiqih Final Fee', amount: 'Rp 500.000', date: '15 Jul 2026', status: 'Lunas' }
+      ]
+    },
+    {
+      id: 'std-5',
+      number: 5,
+      name: 'Bilal Tariq',
+      email: 'bilal.tariq@example.com',
+      avatar: null,
+      initials: 'BT',
+      studentId: 'STD-2026-005',
+      phone: '+44 7700 900077',
+      city: 'London, United Kingdom',
+      program: 'Bahasa Arab & Nahwu',
+      level: 'Beginner',
+      enrolledCourses: 2,
+      completedCourses: 0,
+      progress: 20,
+      gpa: '3.40',
+      attendance: '82%',
+      status: 'Pending',
+      statusType: 'pending',
+      joinDate: '20 Sep 2026',
+      lastActive: '3 days ago',
+      vipMentorship: false,
+      bio: 'International student studying classical Arabic linguistics online.',
+      guardian: 'Tariq Sr. • +44 7700 900088',
+      courses: [
+        { name: 'Introduction to Arabic Morphology', tutor: 'Ust. Siti Aisyah', progress: 20, score: 'Sedang Berjalan' }
+      ],
+      certificates: [],
+      payments: [
+        { item: 'Course Registration', amount: '$45.00', date: '20 Sep 2026', status: 'Pending Review' }
+      ]
+    },
+    {
+      id: 'std-6',
+      number: 6,
+      name: 'Maryam Abdullah',
+      email: 'maryam.abdullah@example.com',
+      avatar: null,
+      initials: 'MA',
+      studentId: 'STD-2026-006',
+      phone: '+62 819-9988-7766',
+      city: 'Yogyakarta, Indonesia',
+      program: 'Tafsir & Ulumul Quran',
+      level: 'Advanced',
+      enrolledCourses: 7,
+      completedCourses: 5,
+      progress: 90,
+      gpa: '3.97',
+      attendance: '99%',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '5 Aug 2026',
+      lastActive: '15 mins ago',
+      vipMentorship: true,
+      bio: 'Santriwati berprestasi dengan spesialisasi Tafsir Jalalain dan Kaidah Tafsir.',
+      guardian: 'H. Abdullah • +62 819-1122-3344',
+      courses: [
+        { name: 'Kaidah-Kaidah Tafsir', tutor: 'Dr. Tariq Al-Madani', progress: 100, score: '99/100 (A+)' },
+        { name: 'Tafsir Juz 1-5', tutor: 'Ust. Ahmad Fauzi', progress: 85, score: '96/100 (A)' }
+      ],
+      certificates: [
+        { title: "Sertifikat Mumtaz Ulumul Qur'an", issueDate: '10 Sep 2026', code: 'CERT-ILM-2026-0910' }
+      ],
+      payments: [
+        { item: 'VIP Tafsir Membership', amount: 'Rp 199.000', date: '05 Sep 2026', status: 'Lunas' }
+      ]
+    },
+    {
+      id: 'std-7',
+      number: 7,
+      name: 'Hamzah Al-Farisi',
+      email: 'hamzah.alfarisi@example.com',
+      avatar: null,
+      initials: 'HA',
+      studentId: 'STD-2026-007',
+      phone: '+62 821-4455-6677',
+      city: 'Medan, Indonesia',
+      program: 'Hadits & Sunnah',
+      level: 'Intermediate',
+      enrolledCourses: 3,
+      completedCourses: 1,
+      progress: 50,
+      gpa: '3.55',
+      attendance: '88%',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '18 Aug 2026',
+      lastActive: '1 day ago',
+      vipMentorship: false,
+      bio: "Mengkaji syarah Hadits Arba'in dan Musthalah Hadits dasar.",
+      guardian: 'Farisi Family • +62 821-9988-1122',
+      courses: [
+        { name: "Syarah 40 Hadits Nawawi", tutor: 'Ust. Ahmed Mohamed', progress: 60, score: '86/100 (B+)' }
+      ],
+      certificates: [
+        { title: 'Sertifikat Musthalah Hadits', issueDate: '01 Sep 2026', code: 'CERT-ILM-2026-0902' }
+      ],
+      payments: [
+        { item: 'Reguler Hadits Course', amount: 'Rp 200.000', date: '18 Ags 2026', status: 'Lunas' }
+      ]
+    },
+    {
+      id: 'std-8',
+      number: 8,
+      name: 'Nurul Hidayah',
+      email: 'nurul.hidayah@example.com',
+      avatar: null,
+      initials: 'NH',
+      studentId: 'STD-2026-008',
+      phone: '+62 857-1122-3344',
+      city: 'Semarang, Indonesia',
+      program: 'Khat & Kaligrafi',
+      level: 'Beginner',
+      enrolledCourses: 1,
+      completedCourses: 0,
+      progress: 15,
+      gpa: '3.30',
+      attendance: '75%',
+      status: 'Inactive',
+      statusType: 'inactive',
+      joinDate: '10 Jul 2026',
+      lastActive: '3 weeks ago',
+      vipMentorship: false,
+      bio: 'Sedang cuti sementara karena kesibukan tugas akhir perkuliahan umum.',
+      guardian: 'H. Sudirman • +62 857-9988-3322',
+      courses: [
+        { name: "Khat Naskhi & Riq'ah", tutor: 'Ust. Bilal Mansur', progress: 15, score: 'Cuti Belajar' }
+      ],
+      certificates: [],
+      payments: [
+        { item: 'Khat Workshop', amount: 'Rp 150.000', date: '10 Jul 2026', status: 'Lunas' }
+      ]
+    },
+    {
+      id: 'std-9',
+      number: 9,
+      name: 'Zaid Ibrahim',
+      email: 'zaid.ibrahim@example.com',
+      avatar: null,
+      initials: 'ZI',
+      studentId: 'STD-2026-009',
+      phone: '+65 9123 4567',
+      city: 'Singapore',
+      program: 'Bahasa Arab & Nahwu',
+      level: 'Advanced',
+      enrolledCourses: 8,
+      completedCourses: 6,
+      progress: 92,
+      gpa: '3.90',
+      attendance: '97%',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '1 Jun 2026',
+      lastActive: '5 hours ago',
+      vipMentorship: true,
+      bio: "Menguasai Alfiyyah Ibnu Malik dan I'rob Al-Qur'an tingkat lanjut.",
+      guardian: 'Ibrahim Sr. • +65 9988 1122',
+      courses: [
+        { name: 'Alfiyyah Ibnu Malik Jilid 1', tutor: 'Dr. Tariq Al-Madani', progress: 100, score: '95/100 (A)' },
+        { name: "I'rob Al-Qur'an Terapan", tutor: 'Ust. Ahmed Mohamed', progress: 90, score: '93/100 (A)' }
+      ],
+      certificates: [
+        { title: 'Sertifikat Alfiyyah 500 Bait Pertama', issueDate: '15 Ags 2026', code: 'CERT-ILM-2026-0815' }
+      ],
+      payments: [
+        { item: 'VIP Alfiyyah Mentorship', amount: '$75.00', date: '01 Sep 2026', status: 'Lunas' }
+      ]
+    },
+    {
+      id: 'std-10',
+      number: 10,
+      name: 'Khadijah Nur',
+      email: 'khadijah.nur@example.com',
+      avatar: null,
+      initials: 'KN',
+      studentId: 'STD-2026-010',
+      phone: '+62 812-9900-1122',
+      city: 'Makassar, Indonesia',
+      program: 'Tahsin & Tahfidz',
+      level: 'Intermediate',
+      enrolledCourses: 4,
+      completedCourses: 3,
+      progress: 80,
+      gpa: '3.80',
+      attendance: '94%',
+      status: 'Active',
+      statusType: 'active',
+      joinDate: '22 Aug 2026',
+      lastActive: 'Just now',
+      vipMentorship: false,
+      bio: 'Sedang menyelesaikan talaqqi surat Al-Baqarah dengan makharijul huruf tepat.',
+      guardian: 'H. Nuruddin • +62 812-8877-4455',
+      courses: [
+        { name: 'Tahsin Talaqqi Bersanad', tutor: 'Syaikh Yusuf Al-Qari', progress: 80, score: '92/100 (A-)' }
+      ],
+      certificates: [
+        { title: 'Tahsin Mutawassith Bersanad', issueDate: '12 Sep 2026', code: 'CERT-ILM-2026-0912' }
+      ],
+      payments: [
+        { item: 'Paket Talaqqi 30 Sesi', amount: 'Rp 400.000', date: '22 Ags 2026', status: 'Lunas' }
+      ]
+    }
+  ]);
+
+  const currentSelectedStudent = studentsList.find(s => s.id === selectedStudentId) || studentsList[0];
+
+  const toggleSelectStudentCheckbox = (id) => {
+    setSelectedStudentCheckboxes(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllStudents = () => {
+    if (selectedStudentCheckboxes.length === studentsList.length) {
+      setSelectedStudentCheckboxes([]);
+    } else {
+      setSelectedStudentCheckboxes(studentsList.map(s => s.id));
     }
   };
 
@@ -3044,6 +3433,811 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
               </div>
 
             </div>
+          ) : activeNav === 'students' ? (
+            <div className="space-y-5 animate-fadeIn">
+              
+              {/* 1. TOP STUDENTS HEADER */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-[#114B44] flex items-center justify-center shadow-xs shrink-0">
+                    <UserCheck className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight whitespace-nowrap">Students</h1>
+                      <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300/80 flex items-center gap-1 shrink-0">
+                        <Users className="w-3 h-3 text-emerald-700" />
+                        <span>8,156 Enrolled</span>
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                      Kelola seluruh data mahasiswa & santri, pantau progres kurikulum, transkrip nilai, dan keaktifan kelas.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Action Buttons */}
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <button
+                    onClick={() => setIsAddStudentModalOpen(true)}
+                    className="h-10 px-4 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                  >
+                    <Plus className="w-4 h-4 shrink-0" />
+                    <span>Add Student</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsImportStudentModalOpen(true)}
+                    className="h-10 px-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <Download className="w-4 h-4 text-gray-500 shrink-0" />
+                    <span>Import Students</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setIsExportModalOpen(true)}
+                    className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 shadow-2xs flex items-center justify-center transition-all cursor-pointer shrink-0"
+                    title="Export Student List"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. TOP 4 KPI CARDS FOR STUDENTS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* Total Students */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Total Students</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">8,156</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>14% from last month</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-blue-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-blue-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-blue-300 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-blue-500 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-blue-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Active Learners */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Active Learners</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">7,420</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>91% Active Rate</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-emerald-100 rounded-full h-3"></div>
+                    <div className="w-1.5 bg-emerald-200 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-emerald-300 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-emerald-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-emerald-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Course Completions */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                        <Award className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Certificates Issued</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">3,862</div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>24% from last month</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-purple-100 rounded-full h-4"></div>
+                    <div className="w-1.5 bg-purple-200 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-purple-300 rounded-full h-8"></div>
+                    <div className="w-1.5 bg-purple-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-purple-600 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+                {/* Average Score / GPA */}
+                <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-2xs flex items-center justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                        <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-500">Average GPA Score</span>
+                    </div>
+                    <div className="pt-2">
+                      <div className="text-2xl font-black text-gray-900 leading-tight">3.82 <span className="text-xs font-bold text-gray-400">/ 4.0</span></div>
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        <span>4.2% Mumtaz Rate</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-1 h-10 pb-1">
+                    <div className="w-1.5 bg-amber-100 rounded-full h-5"></div>
+                    <div className="w-1.5 bg-amber-200 rounded-full h-7"></div>
+                    <div className="w-1.5 bg-amber-300 rounded-full h-6"></div>
+                    <div className="w-1.5 bg-amber-400 rounded-full h-9"></div>
+                    <div className="w-1.5 bg-amber-500 rounded-full h-10"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* 3. MAIN 2-COLUMN VIEW: LEFT TABLE + RIGHT DOSSIER PROFILE */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                {/* 3A. LEFT 8-COLS (TABLE & FILTERS) */}
+                <div className="lg:col-span-8 space-y-4">
+                  
+                  {/* Status Pills Tabs */}
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+                    <button
+                      onClick={() => setStudentTabFilter('all')}
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                        studentTabFilter === 'all'
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      All Students (8,156)
+                    </button>
+                    <button
+                      onClick={() => setStudentTabFilter('active')}
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                        studentTabFilter === 'active'
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      Active (7,420)
+                    </button>
+                    <button
+                      onClick={() => setStudentTabFilter('graduated')}
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                        studentTabFilter === 'graduated'
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      Graduated (1,890)
+                    </button>
+                    <button
+                      onClick={() => setStudentTabFilter('inactive')}
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                        studentTabFilter === 'inactive'
+                          ? 'bg-[#114B44] text-white shadow-xs'
+                          : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      Inactive / Cuti (736)
+                    </button>
+                  </div>
+
+                  {/* Filter & Search Bar */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 p-3.5 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                    
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search student name, email, student ID..."
+                        value={studentSearchQuery}
+                        onChange={(e) => setStudentSearchQuery(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2 bg-[#F8FAFC] border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+
+                    {/* Filter Dropdowns */}
+                    <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                      {/* Program Filter */}
+                      <div className="relative">
+                        <select
+                          value={studentProgramFilter}
+                          onChange={(e) => setStudentProgramFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Programs">All Programs</option>
+                          <option value="Bahasa Arab & Nahwu">Bahasa Arab & Nahwu</option>
+                          <option value="Arabic Conversation">Arabic Conversation</option>
+                          <option value="Tahsin & Tahfidz">Tahsin & Tahfidz</option>
+                          <option value="Fiqih & Muamalah">Fiqih & Muamalah</option>
+                          <option value="Tafsir & Ulumul Quran">Tafsir & Ulumul Quran</option>
+                          <option value="Hadits & Sunnah">Hadits & Sunnah</option>
+                          <option value="Khat & Kaligrafi">Khat & Kaligrafi</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+
+                      {/* Status Filter */}
+                      <div className="relative">
+                        <select
+                          value={studentStatusFilter}
+                          onChange={(e) => setStudentStatusFilter(e.target.value)}
+                          className="appearance-none bg-white border border-gray-200 text-gray-700 text-xs font-bold py-2 pl-3 pr-8 rounded-xl focus:outline-none focus:border-[#114B44] cursor-pointer"
+                        >
+                          <option value="All Status">All Status</option>
+                          <option value="Active">Active</option>
+                          <option value="Graduated">Graduated</option>
+                          <option value="Inactive">Inactive</option>
+                          <option value="Pending">Pending</option>
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bulk Actions Banner */}
+                  {selectedStudentCheckboxes.length > 0 && (
+                    <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs font-bold text-emerald-900 animate-fadeIn">
+                      <div className="flex items-center gap-2">
+                        <CheckSquare className="w-4 h-4 text-emerald-700" />
+                        <span>{selectedStudentCheckboxes.length} mahasiswa terpilih</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => alert(`Kirim pesan massal ke ${selectedStudentCheckboxes.length} mahasiswa`)}
+                          className="px-3 py-1 bg-white border border-emerald-300 rounded-lg text-emerald-800 hover:bg-emerald-100 cursor-pointer"
+                        >
+                          Kirim Pengumuman
+                        </button>
+                        <button
+                          onClick={() => alert(`Export ${selectedStudentCheckboxes.length} data mahasiswa terpilih`)}
+                          className="px-3 py-1 bg-[#114B44] text-white rounded-lg hover:bg-[#0D3B35] cursor-pointer"
+                        >
+                          Export Terpilih
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Table of Students */}
+                  <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs min-w-[760px]">
+                        <thead>
+                          <tr className="border-b border-gray-100 bg-[#F8FAFC] text-gray-500 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
+                            <th className="p-3.5 pl-4 w-8">
+                              <input
+                                type="checkbox"
+                                checked={selectedStudentCheckboxes.length === studentsList.length && studentsList.length > 0}
+                                onChange={toggleSelectAllStudents}
+                                className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                              />
+                            </th>
+                            <th className="py-3.5 px-3">Student Name</th>
+                            <th className="py-3.5 px-3">Program & Level</th>
+                            <th className="py-3.5 px-3">Progres & GPA</th>
+                            <th className="py-3.5 px-3">Attendance</th>
+                            <th className="py-3.5 px-3">Status</th>
+                            <th className="py-3.5 px-3">Join Date</th>
+                            <th className="py-3.5 px-3 text-right pr-4">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {studentsList
+                            .filter((s) => {
+                              // Tab Filter
+                              if (studentTabFilter === 'active' && s.status !== 'Active') return false;
+                              if (studentTabFilter === 'graduated' && s.status !== 'Graduated') return false;
+                              if (studentTabFilter === 'inactive' && s.status !== 'Inactive' && s.status !== 'Pending') return false;
+
+                              // Program Filter
+                              if (studentProgramFilter !== 'All Programs' && !s.program.toLowerCase().includes(studentProgramFilter.toLowerCase())) {
+                                return false;
+                              }
+
+                              // Status Filter
+                              if (studentStatusFilter !== 'All Status' && s.status !== studentStatusFilter) {
+                                return false;
+                              }
+
+                              // Search Query
+                              if (studentSearchQuery.trim()) {
+                                const q = studentSearchQuery.toLowerCase();
+                                return (
+                                  s.name.toLowerCase().includes(q) ||
+                                  s.email.toLowerCase().includes(q) ||
+                                  s.studentId.toLowerCase().includes(q) ||
+                                  s.city.toLowerCase().includes(q)
+                                );
+                              }
+                              return true;
+                            })
+                            .map((student) => {
+                              const isSelectedRow = student.id === selectedStudentId;
+                              const isChecked = selectedStudentCheckboxes.includes(student.id);
+
+                              return (
+                                <tr
+                                  key={student.id}
+                                  onClick={() => setSelectedStudentId(student.id)}
+                                  className={`hover:bg-gray-50/80 transition-colors cursor-pointer ${
+                                    isSelectedRow ? 'bg-emerald-50/40 font-semibold' : ''
+                                  }`}
+                                >
+                                  {/* Checkbox */}
+                                  <td className="p-3.5 pl-4" onClick={(e) => e.stopPropagation()}>
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={() => toggleSelectStudentCheckbox(student.id)}
+                                      className="rounded text-[#114B44] focus:ring-[#114B44] cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* Student Name & ID */}
+                                  <td className="py-3 px-3">
+                                    <div className="flex items-center gap-3">
+                                      {student.avatar ? (
+                                        <img
+                                          src={student.avatar}
+                                          alt={student.name}
+                                          className="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
+                                        />
+                                      ) : (
+                                        <div className="w-9 h-9 rounded-full bg-emerald-700 text-white font-black flex items-center justify-center text-xs shrink-0 shadow-2xs">
+                                          {student.initials || student.name.substring(0, 2).toUpperCase()}
+                                        </div>
+                                      )}
+                                      <div className="min-w-0">
+                                        <div className="flex items-center gap-1.5 flex-wrap">
+                                          <span className="font-extrabold text-gray-900 text-xs hover:text-[#114B44]">
+                                            {student.name}
+                                          </span>
+                                          {student.vipMentorship && (
+                                            <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-100 text-amber-800 border border-amber-300">
+                                              VIP
+                                            </span>
+                                          )}
+                                        </div>
+                                        <div className="text-[11px] text-gray-400 font-mono">
+                                          {student.studentId} • {student.city}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Program & Level */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <div className="space-y-0.5">
+                                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                        {student.program}
+                                      </span>
+                                      <div className="text-[10px] text-gray-500 font-semibold pl-0.5">
+                                        Level: <span className="text-gray-700">{student.level}</span>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Progress & GPA */}
+                                  <td className="py-3 px-3 whitespace-nowrap min-w-[130px]">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center justify-between text-[11px]">
+                                        <span className="font-bold text-gray-700">{student.progress}%</span>
+                                        <span className="font-mono text-emerald-700 font-black">GPA {student.gpa}</span>
+                                      </div>
+                                      <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                        <div
+                                          className={`h-full rounded-full ${
+                                            student.progress === 100
+                                              ? 'bg-purple-600'
+                                              : student.progress >= 70
+                                              ? 'bg-emerald-500'
+                                              : 'bg-blue-500'
+                                          }`}
+                                          style={{ width: `${student.progress}%` }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* Attendance */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md text-[11px] border border-emerald-200">
+                                      {student.attendance}
+                                    </span>
+                                  </td>
+
+                                  {/* Status */}
+                                  <td className="py-3 px-3 whitespace-nowrap">
+                                    {student.status === 'Active' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        Active
+                                      </span>
+                                    )}
+                                    {student.status === 'Graduated' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                                        Graduated
+                                      </span>
+                                    )}
+                                    {student.status === 'Pending' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                        Pending
+                                      </span>
+                                    )}
+                                    {student.status === 'Inactive' && (
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                        Inactive
+                                      </span>
+                                    )}
+                                  </td>
+
+                                  {/* Join Date */}
+                                  <td className="py-3 px-3 text-gray-500 font-medium whitespace-nowrap text-xs">
+                                    {student.joinDate}
+                                  </td>
+
+                                  {/* Actions */}
+                                  <td className="py-3 px-3 text-right pr-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex items-center justify-end gap-1.5 text-gray-400">
+                                      <button
+                                        onClick={() => setSelectedStudentId(student.id)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="View Student Dossier"
+                                      >
+                                        <Eye className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => alert(`Edit data mahasiswa ${student.name}`)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="Edit Student"
+                                      >
+                                        <Edit2 className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => alert(`Opsi lanjutan untuk ${student.name}`)}
+                                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                                        title="More Options"
+                                      >
+                                        <MoreHorizontal className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="p-3.5 border-t border-gray-100 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500 font-semibold">
+                      <div>
+                        Showing 1 to 10 of 8,156 students
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 disabled:opacity-50 cursor-pointer">
+                          Previous
+                        </button>
+                        <button className="w-7 h-7 bg-[#114B44] text-white rounded-lg font-bold flex items-center justify-center">
+                          1
+                        </button>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          2
+                        </button>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          3
+                        </button>
+                        <span className="px-1 text-gray-400">...</span>
+                        <button className="w-7 h-7 hover:bg-gray-100 text-gray-600 rounded-lg font-bold flex items-center justify-center cursor-pointer">
+                          816
+                        </button>
+                        <button className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 cursor-pointer">
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* 3B. RIGHT 4-COLS (STUDENT DOSSIER / PROFILE PANEL) */}
+                <aside className="lg:col-span-4 bg-white rounded-2xl border border-gray-200/90 p-5 shadow-2xs space-y-4">
+                  
+                  {/* Student Header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      {currentSelectedStudent.avatar ? (
+                        <img
+                          src={currentSelectedStudent.avatar}
+                          alt={currentSelectedStudent.name}
+                          className="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-500/30 shadow-xs"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-2xl bg-emerald-800 text-white font-black flex items-center justify-center text-lg shadow-xs">
+                          {currentSelectedStudent.initials || currentSelectedStudent.name.substring(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <h2 className="text-base font-black text-gray-900 leading-tight">
+                            {currentSelectedStudent.name}
+                          </h2>
+                        </div>
+                        <p className="text-xs text-gray-500 font-mono mt-0.5">{currentSelectedStudent.studentId}</p>
+                        <div className="flex items-center gap-1.5 mt-1.5">
+                          {currentSelectedStudent.status === 'Active' && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              Active Student
+                            </span>
+                          )}
+                          {currentSelectedStudent.status === 'Graduated' && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                              Alumni / Graduated
+                            </span>
+                          )}
+                          {currentSelectedStudent.status === 'Inactive' && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                              Cuti / Inactive
+                            </span>
+                          )}
+                          {currentSelectedStudent.status === 'Pending' && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                              Pending
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 text-gray-400">
+                      <button 
+                        onClick={() => alert(`Edit ${currentSelectedStudent.name}`)}
+                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                        title="Edit Student Data"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => alert('Options')}
+                        className="p-1 hover:text-gray-700 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 4 Detail Tabs */}
+                  <div className="flex border-b border-gray-100 text-xs font-bold text-gray-500 pt-1">
+                    <button
+                      onClick={() => setSelectedStudentDetailTab('profile')}
+                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                        selectedStudentDetailTab === 'profile'
+                          ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
+                          : 'hover:text-gray-900'
+                      }`}
+                    >
+                      Profile
+                    </button>
+                    <button
+                      onClick={() => setSelectedStudentDetailTab('courses')}
+                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                        selectedStudentDetailTab === 'courses'
+                          ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
+                          : 'hover:text-gray-900'
+                      }`}
+                    >
+                      Classes ({currentSelectedStudent.enrolledCourses})
+                    </button>
+                    <button
+                      onClick={() => setSelectedStudentDetailTab('certificates')}
+                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                        selectedStudentDetailTab === 'certificates'
+                          ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
+                          : 'hover:text-gray-900'
+                      }`}
+                    >
+                      Certificates ({currentSelectedStudent.certificates.length})
+                    </button>
+                    <button
+                      onClick={() => setSelectedStudentDetailTab('payments')}
+                      className={`pb-2.5 px-3 transition-colors cursor-pointer ${
+                        selectedStudentDetailTab === 'payments'
+                          ? 'text-[#114B44] border-b-2 border-[#114B44] font-black'
+                          : 'hover:text-gray-900'
+                      }`}
+                    >
+                      Payments
+                    </button>
+                  </div>
+
+                  {/* TAB 1: PROFILE */}
+                  {selectedStudentDetailTab === 'profile' && (
+                    <div className="space-y-3.5 text-xs animate-fadeIn">
+                      
+                      {/* Bio */}
+                      <div className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-100 text-gray-600 text-[11px] leading-relaxed italic">
+                        "{currentSelectedStudent.bio}"
+                      </div>
+
+                      {/* Contact Info List */}
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-2.5 text-gray-700">
+                          <Mail className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                          <span className="truncate">{currentSelectedStudent.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-gray-700">
+                          <Phone className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                          <span>{currentSelectedStudent.phone}</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-gray-700">
+                          <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                          <span>{currentSelectedStudent.city}</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-gray-700">
+                          <Clock className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                          <span>Join: {currentSelectedStudent.joinDate} • Aktif: {currentSelectedStudent.lastActive}</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-gray-700 pt-1 border-t border-gray-100">
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <span className="text-[11px]">Wali: {currentSelectedStudent.guardian}</span>
+                        </div>
+                      </div>
+
+                      {/* Performance Mini Grid */}
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
+                        <div className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                          <div className="text-[10px] text-gray-500 font-bold">Total Nilai / GPA</div>
+                          <div className="text-base font-black text-gray-900">{currentSelectedStudent.gpa} / 4.0</div>
+                        </div>
+                        <div className="p-2.5 bg-[#F8FAFC] rounded-xl border border-gray-200">
+                          <div className="text-[10px] text-gray-500 font-bold">Kehadiran Live</div>
+                          <div className="text-base font-black text-emerald-700">{currentSelectedStudent.attendance}</div>
+                        </div>
+                      </div>
+
+                    </div>
+                  )}
+
+                  {/* TAB 2: COURSES */}
+                  {selectedStudentDetailTab === 'courses' && (
+                    <div className="space-y-2 text-xs animate-fadeIn">
+                      <span className="text-gray-500 font-bold block">Kelas Terdaftar ({currentSelectedStudent.courses.length})</span>
+                      {currentSelectedStudent.courses.map((c, i) => (
+                        <div key={i} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="font-black text-gray-900">{c.name}</span>
+                            <span className="text-[10px] font-extrabold text-[#114B44] bg-emerald-100 px-1.5 py-0.5 rounded">{c.score}</span>
+                          </div>
+                          <div className="text-[11px] text-gray-500">Pengajar: {c.tutor}</div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                            <div className="h-full bg-[#114B44] rounded-full" style={{ width: `${c.progress}%` }}></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* TAB 3: CERTIFICATES */}
+                  {selectedStudentDetailTab === 'certificates' && (
+                    <div className="space-y-2 text-xs animate-fadeIn">
+                      <span className="text-gray-500 font-bold block">Sertifikat & Ijazah Resmi</span>
+                      {currentSelectedStudent.certificates.length === 0 ? (
+                        <div className="p-4 bg-gray-50 rounded-xl text-center text-gray-400 font-medium text-xs">
+                          Belum ada sertifikat yang diterbitkan.
+                        </div>
+                      ) : (
+                        currentSelectedStudent.certificates.map((cert, idx) => (
+                          <div key={idx} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                                <Award className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <div className="font-bold text-gray-900 leading-tight">{cert.title}</div>
+                                <div className="text-[10px] text-gray-400 font-mono mt-0.5">{cert.code} • {cert.issueDate}</div>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => alert(`Mengunduh berkas sertifikat ${cert.title}`)}
+                              className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg cursor-pointer"
+                              title="Download PDF"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+
+                  {/* TAB 4: PAYMENTS */}
+                  {selectedStudentDetailTab === 'payments' && (
+                    <div className="space-y-2 text-xs animate-fadeIn">
+                      <span className="text-gray-500 font-bold block">Riwayat Transaksi & SPP</span>
+                      {currentSelectedStudent.payments.map((p, pIdx) => (
+                        <div key={pIdx} className="p-3 bg-[#F8FAFC] rounded-xl border border-gray-200 flex items-center justify-between">
+                          <div>
+                            <div className="font-bold text-gray-900">{p.item}</div>
+                            <div className="text-[10px] text-gray-500">{p.date}</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-black text-gray-900">{p.amount}</div>
+                            <span className="text-[9px] font-black text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                              {p.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Action Buttons Footer */}
+                  <div className="space-y-2 pt-3 border-t border-gray-100">
+                    {/* Send Message */}
+                    <button
+                      onClick={() => alert(`Buka chat & WhatsApp dengan ${currentSelectedStudent.name} (${currentSelectedStudent.phone})`)}
+                      className="w-full bg-[#114B44] hover:bg-[#0D3B35] text-white py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
+                    >
+                      <MessageSquare className="w-4 h-4 text-white" />
+                      <span>Kirim Pesan / WhatsApp</span>
+                    </button>
+
+                    {/* Transkrip & Reset Password */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => alert(`Mencetak Transkrip Akademik Mahasiswa ${currentSelectedStudent.name}`)}
+                        className="flex items-center justify-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Transkrip</span>
+                      </button>
+
+                      <button
+                        onClick={() => alert(`Kirim tautan reset password ke email ${currentSelectedStudent.email}`)}
+                        className="flex items-center justify-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 py-2 rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <Key className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Reset Sandi</span>
+                      </button>
+                    </div>
+
+                    {/* Suspend / Deactivate Button */}
+                    <button
+                      onClick={() => alert(`Status akun santri/mahasiswa ${currentSelectedStudent.name} diubah.`)}
+                      className="w-full bg-rose-50/50 hover:bg-rose-100/80 text-rose-700 border border-rose-200 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Ban className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Cuti / Non-aktifkan Santri</span>
+                    </button>
+                  </div>
+
+                </aside>
+
+              </div>
+
+            </div>
           ) : activeNav === 'users' ? (
             <div className="space-y-5 animate-fadeIn">
               
@@ -4643,6 +5837,218 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
                       Tutup Pratinjau
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. ADD STUDENT MODAL */}
+          {isAddStudentModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                      <UserPlus className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Add New Student</h3>
+                      <p className="text-xs text-gray-500">Daftarkan santri/mahasiswa baru ke sistem IlmuHub</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsAddStudentModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Nama Lengkap Santri/Mahasiswa *</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Muhammad Farhan"
+                      value={newStudent.name}
+                      onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Email *</label>
+                      <input
+                        type="email"
+                        placeholder="farhan@example.com"
+                        value={newStudent.email}
+                        onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">No. WhatsApp *</label>
+                      <input
+                        type="text"
+                        placeholder="+62 812-xxxx-xxxx"
+                        value={newStudent.phone}
+                        onChange={(e) => setNewStudent({ ...newStudent, phone: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Program Studi / Minat</label>
+                      <select
+                        value={newStudent.program}
+                        onChange={(e) => setNewStudent({ ...newStudent, program: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Bahasa Arab & Nahwu">Bahasa Arab & Nahwu</option>
+                        <option value="Arabic Conversation">Arabic Conversation</option>
+                        <option value="Tahsin & Tahfidz">Tahsin & Tahfidz</option>
+                        <option value="Fiqih & Muamalah">Fiqih & Muamalah</option>
+                        <option value="Tafsir & Ulumul Quran">Tafsir & Ulumul Quran</option>
+                        <option value="Hadits & Sunnah">Hadits & Sunnah</option>
+                        <option value="Khat & Kaligrafi">Khat & Kaligrafi</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Level Kemampuan</label>
+                      <select
+                        value={newStudent.level}
+                        onChange={(e) => setNewStudent({ ...newStudent, level: e.target.value })}
+                        className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none cursor-pointer"
+                      >
+                        <option value="Beginner">Beginner (Pemula)</option>
+                        <option value="Intermediate">Intermediate (Menengah)</option>
+                        <option value="Advanced">Advanced (Lanjutan)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Kota / Domisili</label>
+                    <input
+                      type="text"
+                      placeholder="Jakarta, Indonesia"
+                      value={newStudent.city}
+                      onChange={(e) => setNewStudent({ ...newStudent, city: e.target.value })}
+                      className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:border-[#114B44]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsAddStudentModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!newStudent.name.trim() || !newStudent.email.trim()) {
+                        alert('Silakan lengkapi nama dan email santri/mahasiswa.');
+                        return;
+                      }
+                      const newId = `std-${Date.now()}`;
+                      const studentObj = {
+                        id: newId,
+                        number: studentsList.length + 1,
+                        name: newStudent.name,
+                        email: newStudent.email,
+                        avatar: null,
+                        initials: newStudent.name.substring(0, 2).toUpperCase(),
+                        studentId: `STD-2026-${String(studentsList.length + 1).padStart(3, '0')}`,
+                        phone: newStudent.phone || '+62 812-0000-0000',
+                        city: newStudent.city || 'Indonesia',
+                        program: newStudent.program,
+                        level: newStudent.level,
+                        enrolledCourses: 1,
+                        completedCourses: 0,
+                        progress: 0,
+                        gpa: '0.00',
+                        attendance: '100%',
+                        status: 'Active',
+                        statusType: 'active',
+                        joinDate: 'Just Now',
+                        lastActive: 'Baru Mendaftar',
+                        vipMentorship: false,
+                        bio: `Mahasiswa baru pada program ${newStudent.program}.`,
+                        guardian: 'Wali Siswa',
+                        courses: [
+                          { name: `Orientasi ${newStudent.program}`, tutor: 'Ust. Ahmed Mohamed', progress: 0, score: 'Belum Ujian' }
+                        ],
+                        certificates: [],
+                        payments: [
+                          { item: 'Pendaftaran Mahasiswa Baru', amount: 'Rp 150.000', date: 'Hari Ini', status: 'Lunas' }
+                        ]
+                      };
+                      setStudentsList([studentObj, ...studentsList]);
+                      setSelectedStudentId(newId);
+                      setIsAddStudentModalOpen(false);
+                      setNewStudent({
+                        name: '',
+                        email: '',
+                        phone: '',
+                        city: 'Jakarta, Indonesia',
+                        program: 'Bahasa Arab & Nahwu',
+                        level: 'Beginner',
+                        status: 'Active'
+                      });
+                      alert(`Mahasiswa ${studentObj.name} berhasil ditambahkan ke database!`);
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Daftarkan Mahasiswa</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. IMPORT STUDENTS MODAL */}
+          {isImportStudentModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                      <Download className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-base text-gray-900 leading-tight">Import Data Mahasiswa</h3>
+                      <p className="text-xs text-gray-500">Unggah berkas CSV / Excel data santri massal</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setIsImportStudentModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div className="p-6 border-2 border-dashed border-gray-200 rounded-2xl text-center space-y-3 bg-[#F8FAFC]">
+                  <UploadCloud className="w-10 h-10 text-gray-400 mx-auto" />
+                  <div>
+                    <span className="font-bold text-xs text-gray-700 block">Tarik & lepas file CSV / Excel di sini</span>
+                    <span className="text-[11px] text-gray-400">atau klik untuk memilih file dari komputer</span>
+                  </div>
+                  <button className="px-3 py-1.5 bg-white border border-gray-200 text-gray-700 rounded-lg text-xs font-bold shadow-2xs hover:bg-gray-50 cursor-pointer">
+                    Pilih Berkas (.csv, .xlsx)
+                  </button>
+                </div>
+
+                <div className="text-[11px] text-gray-500 space-y-1">
+                  <div className="font-bold text-gray-700">Format Template Kolom:</div>
+                  <div>`Name`, `Email`, `Phone`, `City`, `Program`, `Level`, `Status`</div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <button onClick={() => setIsImportStudentModalOpen(false)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer">Batal</button>
+                  <button
+                    onClick={() => {
+                      setIsImportStudentModalOpen(false);
+                      alert('Simulasi Import: 45 data mahasiswa baru berhasil diimpor ke sistem!');
+                    }}
+                    className="px-5 py-2.5 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Mulai Impor Data</span>
+                  </button>
                 </div>
               </div>
             </div>
