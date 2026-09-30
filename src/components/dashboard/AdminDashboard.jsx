@@ -556,6 +556,14 @@ export default function AdminDashboard({ user, onNavigateToLive, onBackToHome, o
     );
   };
 
+  const toggleSelectAllUsers = () => {
+    if (selectedUserCheckboxes.length === adminUsersList.length) {
+      setSelectedUserCheckboxes([]);
+    } else {
+      setSelectedUserCheckboxes(adminUsersList.map(u => u.id));
+    }
+  };
+
   // =========================================================
   // VIP TEACHERS & APPLICATIONS MOCK DATA (Model 4 Mentorship)
   // =========================================================
