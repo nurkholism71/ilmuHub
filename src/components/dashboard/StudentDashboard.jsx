@@ -43,7 +43,11 @@ import {
   Crown,
   Layers,
   GraduationCap,
-  Share2
+  Share2,
+  Send,
+  Paperclip,
+  Smile,
+  Phone
 } from 'lucide-react';
 
 export default function StudentDashboard({ user, onJoinLive, onExploreCourses, onBackToHome, onLogout, onSwitchRole }) {
@@ -94,6 +98,14 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
   const [selectedCertificateId, setSelectedCertificateId] = useState('cert-1');
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  // Messages View States (matching media_1790728623094.jpg)
+  const [messageFilter, setMessageFilter] = useState('all'); // 'all' | 'unread' | 'groups' | 'teachers'
+  const [messageSearchQuery, setMessageSearchQuery] = useState('');
+  const [activeConversationId, setActiveConversationId] = useState('conv-1');
+  const [chatInputText, setChatInputText] = useState('');
+  const [activeChatMessages, setActiveChatMessages] = useState([]);
+  const [isNewMessageModalOpen, setIsNewMessageModalOpen] = useState(false);
 
   // Browse Classes View States (matching media_1790726478349.jpg)
   const [browseCategory, setBrowseCategory] = useState('all'); // 'all', 'islamic', 'language', 'academic', 'professional', 'personal', 'kids'
@@ -1260,6 +1272,233 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
       bgTheme: 'from-indigo-50/40 via-blue-50/20 to-slate-50/40',
       borderPattern: 'navy',
       grade: '94/100 (Distinction)'
+    }
+  ];
+
+  // Messages Datasets (Matching media_1790728623094.jpg)
+  const studentConversationsList = [
+    {
+      id: 'conv-1',
+      name: 'Ustadz Ahmad Fauzi',
+      type: 'teacher',
+      role: 'Instructor',
+      course: 'Nahwu for Beginners',
+      avatar: '/images/tutor_ahmed.jpg',
+      isOnline: true,
+      lastMessage: 'Baik, untuk tugas minggu ini silakan...',
+      time: '10:24 AM',
+      unreadCount: 2,
+      isGroup: false,
+      messages: [
+        {
+          id: 'm1',
+          sender: 'them',
+          senderName: 'Ustadz Ahmad Fauzi',
+          text: 'Assalamualaikum Aisha,\nBagaimana progres belajar Nahwu minggu ini?\nApakah ada bagian yang masih membingungkan?',
+          time: '10:12 AM'
+        },
+        {
+          id: 'm2',
+          sender: 'me',
+          senderName: 'Aisha Rahman',
+          text: "Waalaikumsalam Ustadz,\nAlhamdulillah sejauh ini baik. Saya masih sedikit bingung pada bagian Isim Ma'rifah, terutama perbedaannya dengan Isim Nakirah.",
+          time: '10:18 AM',
+          status: 'read'
+        },
+        {
+          id: 'm3',
+          sender: 'them',
+          senderName: 'Ustadz Ahmad Fauzi',
+          text: 'Baik, untuk tugas minggu ini silakan kerjakan latihan soal Bab 2 yang sudah saya kirim di kelas. Jika masih ada pertanyaan, boleh langsung ditanyakan di sini atau saat live class besok.',
+          time: '10:24 AM',
+          attachment: {
+            name: 'Latihan_Bab2_Isim_Marifah.pdf',
+            size: '1.2 MB',
+            type: 'PDF'
+          }
+        },
+        {
+          id: 'm4',
+          sender: 'me',
+          senderName: 'Aisha Rahman',
+          text: 'Baik Ustadz, terima kasih banyak 🙏',
+          time: '10:26 AM',
+          status: 'read'
+        }
+      ],
+      sharedFiles: [
+        { name: 'Latihan_Bab2_Isim_Marifah.pdf', size: '1.2 MB', date: '10:24 AM', type: 'pdf' },
+        { name: 'Rangkuman_Materi_Bab1.docx', size: '850 KB', date: '18 Sep 2026', type: 'docx' },
+        { name: 'Panduan_Belajar_Nahwu.pdf', size: '2.1 MB', date: '12 Sep 2026', type: 'pdf' }
+      ]
+    },
+    {
+      id: 'conv-2',
+      name: 'Arabic Conversation (Class)',
+      type: 'group',
+      role: 'Class Group',
+      course: 'Arabic Conversation',
+      avatar: '/images/class_conversation.jpg',
+      isOnline: true,
+      lastMessage: 'Omar: Assalamualaikum, apakah...',
+      time: '9:18 AM',
+      unreadCount: 5,
+      isGroup: true,
+      messages: [
+        {
+          id: 'm2-1',
+          sender: 'them',
+          senderName: 'Omar Hassan',
+          text: 'Assalamualaikum rekan-rekan, apakah ada yang mau latihan muhadatsah sore ini?',
+          time: '9:15 AM'
+        },
+        {
+          id: 'm2-2',
+          sender: 'them',
+          senderName: 'Fatimah Zahra',
+          text: 'Waalaikumsalam, saya bisa jam 4 sore!',
+          time: '9:18 AM'
+        }
+      ],
+      sharedFiles: [
+        { name: 'Audio_Muhadatsah_Bab1.mp3', size: '4.5 MB', date: 'Yesterday', type: 'audio' }
+      ]
+    },
+    {
+      id: 'conv-3',
+      name: 'Dr. Layla Ahmad',
+      type: 'teacher',
+      role: 'Instructor',
+      course: 'Academic Writing',
+      avatar: '/images/student_layla.jpg',
+      isOnline: false,
+      lastMessage: 'Terima kasih, saya sudah periksa esai...',
+      time: 'Yesterday',
+      unreadDot: true,
+      isGroup: false,
+      messages: [
+        {
+          id: 'm3-1',
+          sender: 'them',
+          senderName: 'Dr. Layla Ahmad',
+          text: 'Terima kasih, saya sudah periksa draf esai Anda. Struktur argumennya sudah sangat baik!',
+          time: 'Yesterday, 4:30 PM'
+        }
+      ],
+      sharedFiles: [
+        { name: 'Feedback_Essay_Draft.docx', size: '1.1 MB', date: 'Yesterday', type: 'docx' }
+      ]
+    },
+    {
+      id: 'conv-4',
+      name: 'Ustadz Ali Khan',
+      type: 'teacher',
+      role: 'Instructor',
+      course: 'Islamic History',
+      avatar: '/images/student_ali.jpg',
+      isOnline: false,
+      lastMessage: 'Jazakumullah, sampai jumpa di kelas...',
+      time: 'Yesterday',
+      isGroup: false,
+      messages: [
+        {
+          id: 'm4-1',
+          sender: 'them',
+          senderName: 'Ustadz Ali Khan',
+          text: 'Jazakumullah khair Aisha, sampai jumpa di sesi tanya jawab sejarah Islam besok.',
+          time: 'Yesterday, 2:10 PM'
+        }
+      ],
+      sharedFiles: []
+    },
+    {
+      id: 'conv-5',
+      name: 'Study Group - Beginners',
+      type: 'group',
+      role: 'Study Group',
+      course: 'General Studies',
+      avatar: '/images/student_fatimah.jpg',
+      isOnline: true,
+      lastMessage: 'Fatimah: Siap, kita ketemu jam 9 ya',
+      time: 'Mon',
+      unreadCount: 3,
+      isGroup: true,
+      messages: [
+        {
+          id: 'm5-1',
+          sender: 'them',
+          senderName: 'Fatimah',
+          text: 'Siap, kita ketemu jam 9 ya di ruang belajar kelompok!',
+          time: 'Mon, 8:45 AM'
+        }
+      ],
+      sharedFiles: []
+    },
+    {
+      id: 'conv-6',
+      name: 'Omar Hassan',
+      type: 'teacher',
+      role: 'Instructor',
+      course: 'Arabic Conversation',
+      avatar: '/images/student_ali.jpg',
+      isOnline: true,
+      lastMessage: 'File rangkuman materi sudah saya...',
+      time: 'Mon',
+      isGroup: false,
+      messages: [
+        {
+          id: 'm6-1',
+          sender: 'them',
+          senderName: 'Omar Hassan',
+          text: 'File rangkuman materi sudah saya upload di portal, silakan diunduh.',
+          time: 'Mon, 11:20 AM'
+        }
+      ],
+      sharedFiles: []
+    },
+    {
+      id: 'conv-7',
+      name: 'Sara Nabilah',
+      type: 'teacher',
+      role: 'Instructor',
+      course: 'Environmental Management',
+      avatar: '/images/student_fatimah.jpg',
+      isOnline: false,
+      lastMessage: 'Baik, terima kasih informasinya 🙏',
+      time: 'Sun',
+      isGroup: false,
+      messages: [
+        {
+          id: 'm7-1',
+          sender: 'them',
+          senderName: 'Sara Nabilah',
+          text: 'Baik, terima kasih informasinya 🙏 Sampai jumpa di kelas berikutnya.',
+          time: 'Sun, 3:15 PM'
+        }
+      ],
+      sharedFiles: []
+    },
+    {
+      id: 'conv-8',
+      name: 'General Discussion',
+      type: 'group',
+      role: 'Discussion Forum',
+      course: 'Community',
+      avatar: '/images/class_nahwu.jpg',
+      isOnline: true,
+      lastMessage: 'Ali: Pertanyaannya bagus sekali 👍',
+      time: 'Sun',
+      isGroup: true,
+      messages: [
+        {
+          id: 'm8-1',
+          sender: 'them',
+          senderName: 'Ali',
+          text: 'Pertanyaannya bagus sekali 👍 Membantu kita semua memahami bab ini.',
+          time: 'Sun, 1:40 PM'
+        }
+      ],
+      sharedFiles: []
     }
   ];
 
@@ -4723,6 +4962,576 @@ export default function StudentDashboard({ user, onJoinLive, onExploreCourses, o
                         className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
                       >
                         Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          ) : activeNav === 'messages' ? (
+            /* ========================================================= */
+            /* VIEW: MESSAGES ROOM (MATCHING media_1790728623094.jpg)    */
+            /* ========================================================= */
+            <div className="space-y-4">
+              
+              {/* 1. PAGE TOP HEADER */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#114B44] text-white flex items-center justify-center shadow-xs">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Messages</h1>
+                    <p className="text-xs text-gray-500 font-medium">Chat with your teachers, classmates, and class groups.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {/* Header Search Box */}
+                  <div className="relative w-56 sm:w-64">
+                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={messageSearchQuery}
+                      onChange={(e) => setMessageSearchQuery(e.target.value)}
+                      placeholder="Search messages..."
+                      className="w-full bg-white border border-gray-200/90 rounded-xl pl-9 pr-3 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] shadow-2xs font-medium"
+                    />
+                  </div>
+
+                  {/* New Message Button */}
+                  <button
+                    onClick={() => setIsNewMessageModalOpen(true)}
+                    className="flex items-center gap-1.5 bg-[#114B44] hover:bg-[#0D3B35] text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>New Message</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. 3-PANEL MESSAGING INTERFACE */}
+              {(() => {
+                const activeConv = studentConversationsList.find(c => c.id === activeConversationId) || studentConversationsList[0];
+                const messagesList = (activeChatMessages[activeConv.id] || activeConv.messages || []);
+
+                const handleSendMessage = () => {
+                  if (!chatInputText.trim()) return;
+                  const newMsg = {
+                    id: 'm-' + Date.now(),
+                    sender: 'me',
+                    senderName: studentName,
+                    text: chatInputText.trim(),
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    status: 'sent'
+                  };
+                  setActiveChatMessages(prev => ({
+                    ...prev,
+                    [activeConv.id]: [...(prev[activeConv.id] || activeConv.messages || []), newMsg]
+                  }));
+                  setChatInputText('');
+                };
+
+                return (
+                  <div className="flex flex-col lg:flex-row gap-4 items-stretch h-[calc(100vh-210px)] min-h-[580px]">
+                    
+                    {/* PANEL 1: CONVERSATIONS LIST (LEFT) */}
+                    <div className="w-full lg:w-72 xl:w-80 shrink-0 bg-white rounded-3xl border border-gray-200/90 shadow-2xs flex flex-col overflow-hidden">
+                      
+                      {/* Filter Pills */}
+                      <div className="p-3 border-b border-gray-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                        {[
+                          { id: 'all', label: 'All' },
+                          { id: 'unread', label: 'Unread', badge: '5', badgeColor: 'bg-rose-500 text-white' },
+                          { id: 'groups', label: 'Groups' },
+                          { id: 'teachers', label: 'Teachers' },
+                        ].map((f) => {
+                          const isActive = messageFilter === f.id;
+                          return (
+                            <button
+                              key={f.id}
+                              onClick={() => setMessageFilter(f.id)}
+                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                                isActive
+                                  ? 'bg-[#114B44] text-white shadow-2xs'
+                                  : 'bg-gray-50 hover:bg-gray-100 text-gray-600'
+                              }`}
+                            >
+                              <span>{f.label}</span>
+                              {f.badge && (
+                                <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-black ${
+                                  isActive ? 'bg-white/20 text-white' : f.badgeColor
+                                }`}>
+                                  {f.badge}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Conversations Scrollable List */}
+                      <div className="flex-1 overflow-y-auto divide-y divide-gray-100/70 p-1.5 space-y-0.5">
+                        {studentConversationsList
+                          .filter(c => {
+                            if (messageFilter === 'unread') return c.unreadCount || c.unreadDot;
+                            if (messageFilter === 'groups') return c.isGroup;
+                            if (messageFilter === 'teachers') return c.type === 'teacher';
+                            return true;
+                          })
+                          .filter(c => {
+                            if (messageSearchQuery) {
+                              const q = messageSearchQuery.toLowerCase();
+                              return c.name.toLowerCase().includes(q) || c.lastMessage.toLowerCase().includes(q) || c.course.toLowerCase().includes(q);
+                            }
+                            return true;
+                          })
+                          .map((conv) => {
+                            const isSelected = activeConversationId === conv.id;
+                            return (
+                              <div
+                                key={conv.id}
+                                onClick={() => setActiveConversationId(conv.id)}
+                                className={`p-3 rounded-2xl flex items-center gap-3 transition-all cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-emerald-50/70 border-l-4 border-[#114B44] shadow-2xs'
+                                    : 'hover:bg-gray-50/80 border-l-4 border-transparent'
+                                }`}
+                              >
+                                {/* Avatar */}
+                                <div className="relative shrink-0">
+                                  {conv.isGroup ? (
+                                    <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center border border-blue-200 font-bold shadow-2xs">
+                                      <Users className="w-5 h-5" />
+                                    </div>
+                                  ) : (
+                                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 border border-gray-200 shadow-2xs">
+                                      <img
+                                        src={conv.avatar}
+                                        alt={conv.name}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => { e.target.src = '/images/student_aisha.jpg'; }}
+                                      />
+                                    </div>
+                                  )}
+                                  {conv.isOnline && (
+                                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+                                  )}
+                                </div>
+
+                                {/* Info */}
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center justify-between gap-1">
+                                    <h4 className={`text-xs font-extrabold truncate leading-tight ${
+                                      isSelected ? 'text-[#114B44]' : 'text-gray-900'
+                                    }`}>
+                                      {conv.name}
+                                    </h4>
+                                    <span className="text-[10px] font-semibold text-gray-400 shrink-0">
+                                      {conv.time}
+                                    </span>
+                                  </div>
+
+                                  <p className="text-[11px] text-gray-500 truncate mt-0.5">
+                                    {conv.lastMessage}
+                                  </p>
+                                </div>
+
+                                {/* Unread Badge or Dot */}
+                                {conv.unreadCount ? (
+                                  <span className="w-4 h-4 rounded-full bg-emerald-600 text-white text-[9px] font-black flex items-center justify-center shrink-0 shadow-2xs">
+                                    {conv.unreadCount}
+                                  </span>
+                                ) : conv.unreadDot ? (
+                                  <span className="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span>
+                                ) : null}
+                              </div>
+                            );
+                          })}
+                      </div>
+
+                    </div>
+
+                    {/* PANEL 2: CENTER CHAT THREAD (CANVAS) */}
+                    <div className="flex-1 min-w-0 bg-white rounded-3xl border border-gray-200/90 shadow-2xs flex flex-col overflow-hidden">
+                      
+                      {/* Chat Top Bar Header */}
+                      <div className="p-3.5 px-5 border-b border-gray-100 flex items-center justify-between gap-3 bg-[#FAFBFD]">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="relative shrink-0">
+                            {activeConv.isGroup ? (
+                              <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center border border-blue-200">
+                                <Users className="w-5 h-5" />
+                              </div>
+                            ) : (
+                              <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 border border-emerald-300">
+                                <img
+                                  src={activeConv.avatar}
+                                  alt={activeConv.name}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                                />
+                              </div>
+                            )}
+                            {activeConv.isOnline && (
+                              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+                            )}
+                          </div>
+
+                          <div className="min-w-0">
+                            <h3 className="font-black text-sm text-gray-900 truncate leading-tight flex items-center gap-2">
+                              <span>{activeConv.name}</span>
+                              {activeConv.isOnline && (
+                                <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                  <span>Online</span>
+                                </span>
+                              )}
+                            </h3>
+                            <p className="text-[11px] text-gray-500 truncate">
+                              {activeConv.role} • {activeConv.course}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Top Call & Option Action Icons */}
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            onClick={() => alert(`Memulai Video Call dengan ${activeConv.name}...`)}
+                            className="p-2 text-gray-500 hover:text-[#114B44] hover:bg-emerald-50 rounded-xl transition-colors cursor-pointer"
+                            title="Video Call"
+                          >
+                            <Video className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => alert(`Memulai Audio Call dengan ${activeConv.name}...`)}
+                            className="p-2 text-gray-500 hover:text-[#114B44] hover:bg-emerald-50 rounded-xl transition-colors cursor-pointer"
+                            title="Audio Call"
+                          >
+                            <Phone className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => alert(`Opsi obrolan dengan ${activeConv.name}`)}
+                            className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+                          >
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Chat Messages Stream */}
+                      <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-[#F8FAFC]/50">
+                        
+                        {/* Centered Date Badge */}
+                        <div className="flex items-center justify-center">
+                          <span className="bg-gray-200/70 text-gray-600 text-[10px] font-bold px-3 py-0.5 rounded-full shadow-2xs">
+                            Today
+                          </span>
+                        </div>
+
+                        {/* Messages List */}
+                        {messagesList.map((msg) => {
+                          const isMe = msg.sender === 'me';
+                          return (
+                            <div
+                              key={msg.id}
+                              className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
+                            >
+                              <div
+                                className={`max-w-md sm:max-w-lg p-3.5 sm:p-4 rounded-2xl shadow-2xs text-xs space-y-2.5 ${
+                                  isMe
+                                    ? 'bg-[#E7F3F1] border border-emerald-200 text-gray-900 rounded-tr-xs'
+                                    : 'bg-white border border-gray-200/90 text-gray-800 rounded-tl-xs'
+                                }`}
+                              >
+                                <p className="leading-relaxed whitespace-pre-line font-medium text-xs">
+                                  {msg.text}
+                                </p>
+
+                                {/* File Attachment if present */}
+                                {msg.attachment && (
+                                  <div className="p-3 bg-white/90 rounded-xl border border-gray-200 flex items-center justify-between gap-3 shadow-2xs mt-2">
+                                    <div className="flex items-center gap-2.5 min-w-0">
+                                      <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center text-xs font-black shrink-0">
+                                        📄
+                                      </div>
+                                      <div className="min-w-0">
+                                        <h5 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">
+                                          {msg.attachment.name}
+                                        </h5>
+                                        <span className="text-[9px] text-gray-400 font-semibold">
+                                          {msg.attachment.type} • {msg.attachment.size}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <button
+                                      onClick={() => alert(`Mengunduh berkas: ${msg.attachment.name}`)}
+                                      className="p-1.5 text-gray-500 hover:text-[#114B44] hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer shrink-0"
+                                      title="Download Attachment"
+                                    >
+                                      <Download className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Timestamp + Read Receipt */}
+                              <div className="flex items-center gap-1 mt-1 px-1">
+                                <span className="text-[10px] text-gray-400 font-semibold">{msg.time}</span>
+                                {isMe && (
+                                  <span className="text-emerald-600 text-[10px] font-bold">✓✓</span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                      </div>
+
+                      {/* Chat Input Bar */}
+                      <div className="p-3 bg-white border-t border-gray-100 flex items-center gap-2">
+                        <button
+                          onClick={() => alert('Lampirkan berkas (PDF, DOCX, gambar)...')}
+                          className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+                          title="Attach file"
+                        >
+                          <Paperclip className="w-4 h-4" />
+                        </button>
+
+                        <input
+                          type="text"
+                          value={chatInputText}
+                          onChange={(e) => setChatInputText(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSendMessage();
+                          }}
+                          placeholder="Type a message..."
+                          className="flex-1 bg-[#F8FAFC] border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#114B44] focus:bg-white transition-all shadow-2xs font-medium"
+                        />
+
+                        <button
+                          onClick={() => alert('Pilih Emoji 😊')}
+                          className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+                          title="Add emoji"
+                        >
+                          <Smile className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={handleSendMessage}
+                          className="w-9 h-9 rounded-xl bg-[#114B44] hover:bg-[#0D3B35] text-white flex items-center justify-center transition-all cursor-pointer shadow-xs shrink-0"
+                          title="Send Message"
+                        >
+                          <Send className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                    </div>
+
+                    {/* PANEL 3: RIGHT SIDEBAR (CHAT DETAILS & SHARED FILES) */}
+                    <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-4 overflow-y-auto">
+                      
+                      {/* CARD 1: Chat Details */}
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3.5 text-center">
+                        <h3 className="font-extrabold text-xs text-gray-900 tracking-tight text-left pb-1 border-b border-gray-100">
+                          Chat Details
+                        </h3>
+
+                        <div className="flex flex-col items-center">
+                          <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 border-2 border-emerald-300 shadow-2xs relative">
+                            <img
+                              src={activeConv.avatar}
+                              alt={activeConv.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => { e.target.src = '/images/tutor_ahmed.jpg'; }}
+                            />
+                          </div>
+
+                          <h4 className="font-black text-sm text-gray-900 mt-2 leading-tight">
+                            {activeConv.name}
+                          </h4>
+                          <span className="text-xs text-gray-400 font-semibold">{activeConv.role}</span>
+
+                          {activeConv.isOnline && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 mt-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              <span>Online</span>
+                            </span>
+                          )}
+                        </div>
+
+                        {/* 4 Action Buttons Grid */}
+                        <div className="grid grid-cols-4 gap-1 pt-1 text-center">
+                          <button
+                            onClick={() => alert(`Memulai Video Call dengan ${activeConv.name}...`)}
+                            className="p-2 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-1 cursor-pointer transition-colors border border-gray-100"
+                          >
+                            <Video className="w-4 h-4" />
+                            <span className="text-[8px] font-bold truncate">Video Call</span>
+                          </button>
+
+                          <button
+                            onClick={() => alert(`Memulai Audio Call dengan ${activeConv.name}...`)}
+                            className="p-2 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-1 cursor-pointer transition-colors border border-gray-100"
+                          >
+                            <Phone className="w-4 h-4" />
+                            <span className="text-[8px] font-bold truncate">Audio Call</span>
+                          </button>
+
+                          <button
+                            onClick={() => alert(`Membuka Profil ${activeConv.name}`)}
+                            className="p-2 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-1 cursor-pointer transition-colors border border-gray-100"
+                          >
+                            <User className="w-4 h-4" />
+                            <span className="text-[8px] font-bold truncate">View Profile</span>
+                          </button>
+
+                          <button
+                            onClick={() => alert(`Pengaturan obrolan ${activeConv.name}`)}
+                            className="p-2 rounded-xl bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-[#114B44] flex flex-col items-center gap-1 cursor-pointer transition-colors border border-gray-100"
+                          >
+                            <MoreVertical className="w-4 h-4" />
+                            <span className="text-[8px] font-bold truncate">More</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* CARD 2: Shared Files */}
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                        <div className="flex items-center justify-between pb-1 border-b border-gray-100">
+                          <h3 className="font-extrabold text-xs text-gray-900 tracking-tight">Shared Files</h3>
+                          <button
+                            onClick={() => alert('Melihat semua berkas yang dibagikan...')}
+                            className="text-[10px] font-bold text-[#114B44] hover:underline flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <span>View All</span>
+                            <span>→</span>
+                          </button>
+                        </div>
+
+                        <div className="space-y-2.5">
+                          {(activeConv.sharedFiles || []).map((file, idx) => (
+                            <div
+                              key={idx}
+                              onClick={() => alert(`Mengunduh berkas: ${file.name}`)}
+                              className="p-2 rounded-xl border border-gray-100 bg-[#F8FAFC] hover:bg-emerald-50/50 flex items-center gap-2.5 transition-colors cursor-pointer"
+                            >
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0 border ${
+                                file.type === 'pdf' ? 'bg-rose-50 text-rose-600 border-rose-200' : 'bg-blue-50 text-blue-600 border-blue-200'
+                              }`}>
+                                {file.type === 'pdf' ? '📄' : '📝'}
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <h5 className="font-extrabold text-[11px] text-gray-900 truncate leading-tight">
+                                  {file.name}
+                                </h5>
+                                <span className="text-[9px] text-gray-400 font-semibold">
+                                  {file.size} • {file.date}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* CARD 3: Class Information */}
+                      <div className="bg-white rounded-2xl border border-gray-200/90 p-4 shadow-2xs space-y-3">
+                        <h3 className="font-extrabold text-xs text-gray-900 tracking-tight pb-1 border-b border-gray-100">
+                          Class Information
+                        </h3>
+
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                            <img
+                              src="/images/class_nahwu.jpg"
+                              alt="Class banner"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          <div className="min-w-0">
+                            <h4 className="font-extrabold text-xs text-gray-900 truncate">{activeConv.course}</h4>
+                            <p className="text-[10px] text-gray-400">Arabic • Beginner</p>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => setActiveNav('classes')}
+                          className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1 cursor-pointer"
+                        >
+                          <span>Go to Class</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                    </aside>
+
+                  </div>
+                );
+              })()}
+
+              {/* NEW MESSAGE MODAL POPUP */}
+              {isNewMessageModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-100 text-[#114B44] flex items-center justify-center">
+                          <MessageSquare className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-base text-gray-900 leading-tight">New Message</h3>
+                          <p className="text-xs text-gray-500">Send a direct message or create a discussion</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsNewMessageModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg text-xs cursor-pointer font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">To (Teacher or Group)</label>
+                        <select className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#114B44]">
+                          <option value="conv-1">Ustadz Ahmad Fauzi (Nahwu for Beginners)</option>
+                          <option value="conv-2">Arabic Conversation (Class Group)</option>
+                          <option value="conv-3">Dr. Layla Ahmad (Academic Writing)</option>
+                          <option value="conv-4">Ustadz Ali Khan (Islamic History)</option>
+                          <option value="conv-5">Study Group - Beginners</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Message</label>
+                        <textarea
+                          rows={4}
+                          placeholder="Type your message here..."
+                          className="w-full bg-[#F8FAFC] border border-gray-200 rounded-xl p-3 text-xs font-medium focus:outline-none focus:border-[#114B44] resize-none"
+                        ></textarea>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setIsNewMessageModalOpen(false)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsNewMessageModalOpen(false);
+                          alert('Pesan berhasil dikirim!');
+                        }}
+                        className="px-5 py-2 bg-[#114B44] hover:bg-[#0D3B35] text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        Send Message
                       </button>
                     </div>
                   </div>
